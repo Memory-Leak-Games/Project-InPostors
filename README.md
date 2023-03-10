@@ -1,3 +1,5 @@
+![](../../actions/workflows/cmake.yml/badge.svg)
+
 # Project InPostors
 
 ## Credits:
