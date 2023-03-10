@@ -1,5 +1,7 @@
 name: CMake
 
+
+
 on:
   push:
     branches: [ "master" ]
@@ -18,6 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: NishkarshRaj/OpenGL_Actions@1.0
     - uses: actions/checkout@v3
 
     - name: Configure CMake
