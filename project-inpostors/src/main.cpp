@@ -1,10 +1,10 @@
 #include <ctime>
 
-#include <CoreEngine.h>
-#include <Nodes/FreeCameraNode.h>
-#include <ShaderWrapper.h>
-#include <Mesh/Model.h>
-#include <Nodes/ModelNode.h>
+#include "CoreEngine.h"
+#include "Mesh/Model.h"
+#include "Nodes/FreeCameraNode.h"
+#include "Nodes/ModelNode.h"
+#include "ShaderWrapper.h"
 
 class ProjectInpostors {
 private:
