@@ -2,6 +2,8 @@
 #include "Gizmos/Arrow.h"
 #include "Gizmos/SphereGizmo.h"
 
+using namespace mlg;
+
 Lights::Lights()
 {
     InitializeLights();

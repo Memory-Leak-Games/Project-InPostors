@@ -1,4 +1,4 @@
-#include "MainEngine.h"
+#include "CoreEngine.h"
 
 #include <glad/glad.h>
 
@@ -13,13 +13,14 @@
 #include "MouseHandler.h"
 #include "Lights.h"
 #include "Gizmos/Gizmo.h"
-#include "Skybox.h"
 
 #include "Nodes/FreeCameraNode.h"
 
-int32_t MainEngine::Init()
+using namespace mlg;
+
+int32_t CoreEngine::Init()
 {
-    glfwSetErrorCallback(MainEngine::GLFWErrorCallback);
+    glfwSetErrorCallback(CoreEngine::GLFWErrorCallback);
     if (!glfwInit())
         return 1;
 
@@ -56,7 +57,7 @@ int32_t MainEngine::Init()
     return 0;
 }
 
-int32_t MainEngine::InitializeWindow(const std::string& WindowName = "MemoryLeakEngine")
+int32_t CoreEngine::InitializeWindow(const std::string& WindowName = "MemoryLeakEngine")
 {
     window = glfwCreateWindow(1280, 720, WindowName.c_str(), nullptr, nullptr);
     if (window == nullptr)
@@ -73,12 +74,12 @@ int32_t MainEngine::InitializeWindow(const std::string& WindowName = "MemoryLeak
     return 0;
 }
 
-void MainEngine::GLFWErrorCallback(int error, const char* description)
+void CoreEngine::GLFWErrorCallback(int error, const char* description)
 {
     SPDLOG_ERROR("GLFW error {}: {}", error, description);
 }
 
-int32_t MainEngine::MainLoop()
+int32_t CoreEngine::MainLoop()
 {
     auto startProgramTimePoint = std::chrono::high_resolution_clock::now();
     float previousFrameSeconds = 0;
@@ -115,9 +116,6 @@ int32_t MainEngine::MainLoop()
         renderer.Draw(this);
         sceneLight->DrawGizmos();
 
-        if (skybox)
-            skybox->Draw();
-
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -128,11 +126,11 @@ int32_t MainEngine::MainLoop()
     return 0;
 }
 
-MainEngine::MainEngine() : sceneRoot()
+CoreEngine::CoreEngine() : sceneRoot()
 {
 }
 
-void MainEngine::InitializeImGui(const char* glslVersion)
+void CoreEngine::InitializeImGui(const char* glslVersion)
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -148,12 +146,12 @@ void MainEngine::InitializeImGui(const char* glslVersion)
     ImGui::StyleColorsDark();
 }
 
-MainEngine::~MainEngine()
+CoreEngine::~CoreEngine()
 {
     Stop();
 }
 
-void MainEngine::Stop()
+void CoreEngine::Stop()
 {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
@@ -166,14 +164,14 @@ void MainEngine::Stop()
     glfwTerminate();
 }
 
-void MainEngine::CheckGLErrors()
+void CoreEngine::CheckGLErrors()
 {
     GLenum error;
     while ((error = glGetError()) != GL_NO_ERROR)
         SPDLOG_ERROR("OpenGL error: {}", error);
 }
 
-void MainEngine::PrepareScene()
+void CoreEngine::PrepareScene()
 {
     auto camera = std::make_shared<FreeCameraNode>(this);
     sceneRoot.AddChild(camera);
@@ -189,10 +187,6 @@ void MainEngine::PrepareScene()
     sceneLight = std::make_shared<Lights>();
 }
 
-GLFWwindow* MainEngine::GetWindow() const {
+GLFWwindow* CoreEngine::GetWindow() const {
     return window;
-}
-
-unsigned int MainEngine::GetSkyboxTextureId() {
-    return skybox->GetTextureId();
 }

@@ -4,6 +4,8 @@
 
 #include "LoggingMacros.h"
 
+using namespace mlg;
+
 Camera::Camera() : front(0.f, 0.f, 1.f), up(0.f, 1.f, 0.f), position(0.f), uboTransformMatrices(0),
                    resolution({1280, 720})
 {

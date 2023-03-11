@@ -4,27 +4,33 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-class Transform {
-private:
-    glm::vec3 position;
-    glm::vec3 scale;
-    glm::quat rotation;
+namespace mlg {
+    class Transform {
+    private:
+        glm::vec3 position;
+        glm::vec3 scale;
+        glm::quat rotation;
 
+        bool isDirty;
+    public:
+        Transform();
 
-    bool isDirty;
-public:
-    Transform();
-    Transform(Transform* originalTransform);
+        Transform(Transform *originalTransform);
 
-    [[nodiscard]] glm::vec3 GetPosition() const;
-    [[nodiscard]] glm::quat GetRotation() const;
-    [[nodiscard]] glm::vec3 GetScale() const;
+        [[nodiscard]] glm::vec3 GetPosition() const;
 
-    void SetPosition(const glm::vec3& newPosition);
-    void SetRotation(const glm::quat& newRotation);
-    void SetScale(const glm::vec3& newScale);
+        [[nodiscard]] glm::quat GetRotation() const;
 
-    [[nodiscard]] glm::mat4 GetMatrix() const;
+        [[nodiscard]] glm::vec3 GetScale() const;
 
-    friend class Node;
-};
+        void SetPosition(const glm::vec3 &newPosition);
+
+        void SetRotation(const glm::quat &newRotation);
+
+        void SetScale(const glm::vec3 &newScale);
+
+        [[nodiscard]] glm::mat4 GetMatrix() const;
+
+        friend class Node;
+    };
+}

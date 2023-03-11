@@ -1,14 +1,16 @@
 #include "Nodes/Node.h"
 #include "LoggingMacros.h"
 
+using namespace mlg;
+
 Node::Node() : localTransform(std::make_shared<Transform>()), worldTransformMatrix(1.f) {
 }
 
-Transform* Node::GetLocalTransform() {
+Transform *Node::GetLocalTransform() {
     return localTransform.get();
 }
 
-const glm::mat4* Node::GetWorldTransformMatrix() const {
+const glm::mat4 *Node::GetWorldTransformMatrix() const {
     return &worldTransformMatrix;
 }
 
@@ -22,13 +24,13 @@ void Node::CalculateWorldTransform() {
     CalculateWorldTransform(TempTransformMatrix, localTransform->isDirty);
 }
 
-void Node::Draw(glm::mat4& parentTransform, bool isDirty) {
-    for (const std::shared_ptr<Node>& Child: childrenList) {
+void Node::Draw(glm::mat4 &parentTransform, bool isDirty) {
+    for (const std::shared_ptr<Node> &Child: childrenList) {
         Child->Draw(worldTransformMatrix, isDirty);
     }
 }
 
-void Node::CalculateWorldTransform(glm::mat4& parentTransform, bool isDirty) {
+void Node::CalculateWorldTransform(glm::mat4 &parentTransform, bool isDirty) {
     isDirty |= localTransform->isDirty;
     wasDirty = isDirty;
     if (isDirty) {
@@ -37,7 +39,7 @@ void Node::CalculateWorldTransform(glm::mat4& parentTransform, bool isDirty) {
     }
 
 
-    for (const std::shared_ptr<Node>& child: childrenList) {
+    for (const std::shared_ptr<Node> &child: childrenList) {
         child->CalculateWorldTransform(worldTransformMatrix, isDirty);
     }
 }
@@ -51,7 +53,7 @@ void Node::AddChild(std::shared_ptr<Node> newChild) {
     newChild->CalculateWorldTransform(worldTransformMatrix, true);
 }
 
-void Node::Update(class MainEngine* engine, float seconds, float deltaSeconds) {
+void Node::Update(class CoreEngine *engine, float seconds, float deltaSeconds) {
     for (std::shared_ptr<Node> childNode: childrenList) {
         childNode->Update(engine, seconds, deltaSeconds);
     }
@@ -66,7 +68,7 @@ std::shared_ptr<Node> Node::Clone() const {
     result->localTransform = std::make_shared<Transform>(*this->localTransform);
     result->wasDirty = true;
 
-    for (const auto& node: childrenList) {
+    for (const auto &node: childrenList) {
         result->AddChild(node->Clone());
     }
 
@@ -108,11 +110,11 @@ glm::vec3 Node::GetUpVector() const {
     return glm::normalize(result);
 }
 
-const std::vector<std::shared_ptr<Node>>& Node::GetChildrenList() const {
+const std::vector<std::shared_ptr<Node>> &Node::GetChildrenList() const {
     return childrenList;
 }
 
-Node* Node::GetParent() const {
+Node *Node::GetParent() const {
     return parent;
 }
 

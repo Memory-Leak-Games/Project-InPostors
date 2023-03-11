@@ -2,8 +2,9 @@
 #include "Gizmos/Arrow.h"
 #include "ShaderWrapper.h"
 
-void Arrow::Draw(glm::vec3 Start, glm::vec3 End, glm::vec4 Color)
-{
+using namespace mlg;
+
+void Arrow::Draw(glm::vec3 Start, glm::vec3 End, glm::vec4 Color) {
     glm::vec3 Direction = glm::normalize(End - Start);
 
     glm::vec3 RightVector;

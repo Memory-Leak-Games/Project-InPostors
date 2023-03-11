@@ -1,4 +1,4 @@
-#include "MainEngine.h"
+#include "CoreEngine.h"
 #include "LoggingMacros.h"
 
 int main(int, char**)
@@ -7,7 +7,7 @@ int main(int, char**)
 
     std::srand(std::time(0));
 
-    MainEngine Engine = MainEngine();
+    mlg::CoreEngine Engine = mlg::CoreEngine();
     if(Engine.Init() == 0)
     {
         Engine.PrepareScene();

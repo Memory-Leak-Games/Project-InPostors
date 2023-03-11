@@ -1,6 +1,6 @@
 #include "Transform.h"
 
-#include <glm/gtc/matrix_transform.hpp>
+using namespace mlg;
 
 glm::mat4 Transform::GetMatrix() const {
     glm::mat4 translation = glm::translate(glm::mat4(1.f), position);

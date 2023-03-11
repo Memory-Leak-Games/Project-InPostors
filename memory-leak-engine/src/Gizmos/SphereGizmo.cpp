@@ -5,14 +5,14 @@
 #include <glm/glm.hpp>
 #include <glm/ext/scalar_constants.hpp>
 
-void SphereGizmo::Draw(glm::vec3 Position, float Radius, uint16_t LOD, glm::vec4 Color)
-{
+using namespace mlg;
+
+void SphereGizmo::Draw(glm::vec3 Position, float Radius, uint16_t LOD, glm::vec4 Color) {
     int i, j;
     std::vector<GLfloat> Vertices;
     std::vector<GLuint> Indices;
     int indicator = 0;
-    for(i = 0; i <= LOD; i++)
-    {
+    for (i = 0; i <= LOD; i++) {
         double lat0 = glm::pi<double>() * (-0.5 + (double) (i - 1) / LOD);
         double z0 = glm::sin(lat0);
         double zr0 = glm::cos(lat0);
@@ -21,8 +21,7 @@ void SphereGizmo::Draw(glm::vec3 Position, float Radius, uint16_t LOD, glm::vec4
         double z1 = glm::sin(lat1);
         double zr1 = glm::cos(lat1);
 
-        for (j = 0; j <= LOD; j++)
-        {
+        for (j = 0; j <= LOD; j++) {
             double lng = 2 * glm::pi<double>() * (double) (j - 1) / LOD;
             double x = glm::cos(lng);
             double y = glm::sin(lng);

@@ -1,14 +1,16 @@
 #include "Nodes/FreeCameraNode.h"
-#include "MainEngine.h"
+#include "CoreEngine.h"
 #include "MouseHandler.h"
 #include "LoggingMacros.h"
 
-FreeCameraNode::FreeCameraNode(MainEngine* engine)
-: CameraNode(engine), velocity(0.f) {
+using namespace mlg;
+
+FreeCameraNode::FreeCameraNode(CoreEngine *engine)
+        : CameraNode(engine), velocity(0.f) {
 
 }
 
-void FreeCameraNode::Update(struct MainEngine* engine, float seconds, float deltaSeconds) {
+void FreeCameraNode::Update(struct CoreEngine *engine, float seconds, float deltaSeconds) {
     CameraNode::Update(engine, seconds, deltaSeconds);
 
     HandleMovement(deltaSeconds);
@@ -18,8 +20,7 @@ void FreeCameraNode::Update(struct MainEngine* engine, float seconds, float delt
 void FreeCameraNode::HandleMovement(float deltaSeconds) {
     glm::vec3 MovementInput = GetMovementInput();
 
-    if (glfwGetMouseButton(engine->GetWindow(), GLFW_MOUSE_BUTTON_2) != GLFW_PRESS)
-    {
+    if (glfwGetMouseButton(engine->GetWindow(), GLFW_MOUSE_BUTTON_2) != GLFW_PRESS) {
         MovementInput = glm::vec3(0.f);
     }
 
@@ -36,30 +37,24 @@ void FreeCameraNode::HandleMovement(float deltaSeconds) {
 
 glm::vec3 FreeCameraNode::GetMovementInput() {
     glm::vec3 MovementInput(0.f);
-    if (glfwGetKey(engine->GetWindow(), GLFW_KEY_W) == GLFW_PRESS)
-    {
+    if (glfwGetKey(engine->GetWindow(), GLFW_KEY_W) == GLFW_PRESS) {
         MovementInput.z += 1.f;
     }
-    if (glfwGetKey(engine->GetWindow(), GLFW_KEY_S) == GLFW_PRESS)
-    {
+    if (glfwGetKey(engine->GetWindow(), GLFW_KEY_S) == GLFW_PRESS) {
         MovementInput.z -= 1.f;
     }
 
-    if (glfwGetKey(engine->GetWindow(), GLFW_KEY_A) == GLFW_PRESS)
-    {
+    if (glfwGetKey(engine->GetWindow(), GLFW_KEY_A) == GLFW_PRESS) {
         MovementInput.x += 1.f;
     }
-    if (glfwGetKey(engine->GetWindow(), GLFW_KEY_D) == GLFW_PRESS)
-    {
+    if (glfwGetKey(engine->GetWindow(), GLFW_KEY_D) == GLFW_PRESS) {
         MovementInput.x -= 1.f;
     }
 
-    if (glfwGetKey(engine->GetWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
-    {
+    if (glfwGetKey(engine->GetWindow(), GLFW_KEY_SPACE) == GLFW_PRESS) {
         MovementInput.y += 1.f;
     }
-    if (glfwGetKey(engine->GetWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-    {
+    if (glfwGetKey(engine->GetWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
         MovementInput.y -= 1.f;
     }
 
@@ -69,8 +64,7 @@ glm::vec3 FreeCameraNode::GetMovementInput() {
 void FreeCameraNode::HandleRotation() {
     MouseHandler::UpdateMouse();
 
-    if (glfwGetMouseButton(engine->GetWindow(), GLFW_MOUSE_BUTTON_2) != GLFW_PRESS)
-    {
+    if (glfwGetMouseButton(engine->GetWindow(), GLFW_MOUSE_BUTTON_2) != GLFW_PRESS) {
         glfwSetInputMode(engine->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         return;
     }

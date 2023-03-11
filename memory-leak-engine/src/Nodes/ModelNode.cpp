@@ -5,14 +5,14 @@
 #include "include/Mesh/Model.h"
 #include "include/Mesh/ModelRenderer.h"
 
-ModelNode::ModelNode(std::shared_ptr<struct Model> ModelPtr, ModelRenderer* Renderer)
-        : Node(), ModelPtr(ModelPtr), Renderer(Renderer)
-{
+using namespace mlg;
+
+ModelNode::ModelNode(std::shared_ptr<struct Model> ModelPtr, ModelRenderer *Renderer)
+        : Node(), ModelPtr(ModelPtr), Renderer(Renderer) {
     Renderer->AddNode(this);
 }
 
-void ModelNode::Draw(glm::mat4& ParentTransform, bool IsDirty)
-{
+void ModelNode::Draw(glm::mat4 &ParentTransform, bool IsDirty) {
     Node::Draw(ParentTransform, IsDirty);
 
     if (Renderer)
@@ -23,13 +23,11 @@ void ModelNode::Draw(glm::mat4& ParentTransform, bool IsDirty)
     ModelPtr->Draw();
 }
 
-Model* ModelNode::GetModel()
-{
+Model *ModelNode::GetModel() {
     return ModelPtr.get();
 }
 
-ModelNode::~ModelNode()
-{
+ModelNode::~ModelNode() {
     if (Renderer)
         Renderer->RemoveNode(this);
 }

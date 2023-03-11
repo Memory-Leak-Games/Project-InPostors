@@ -9,8 +9,7 @@
 
 #include "spdlog/spdlog.h"
 
-namespace LoggingMacros
-{
+namespace LoggingMacros {
     void InitializeSPDLog();
 }
 

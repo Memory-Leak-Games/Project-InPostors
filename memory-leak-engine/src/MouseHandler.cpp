@@ -1,6 +1,8 @@
 #include "MouseHandler.h"
 #include "LoggingMacros.h"
 
+using namespace mlg;
+
 glm::vec2 MouseHandler::deltaMousePosition;
 glm::vec2 MouseHandler::lastMousePosition;
 glm::vec2 MouseHandler::mousePosition;

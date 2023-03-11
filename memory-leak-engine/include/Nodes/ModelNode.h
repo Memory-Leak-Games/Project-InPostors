@@ -1,25 +1,24 @@
-#ifndef SOLARSYSTEM_MODELNODE_H
-#define SOLARSYSTEM_MODELNODE_H
+#pragma once
 
 #include <memory>
 
 #include "Node.h"
 
-class ModelNode: public Node
-{
-private:
-    std::shared_ptr<class Model> ModelPtr;
-    class ModelRenderer* Renderer;
+namespace mlg {
+    class ModelNode : public Node {
+    private:
+        std::shared_ptr<class Model> ModelPtr;
 
-public:
-    explicit ModelNode(std::shared_ptr<Model> ModelPtr, ModelRenderer* Renderer);
+        class ModelRenderer *Renderer;
 
-    Model* GetModel();
-    virtual ~ModelNode();
+    public:
+        explicit ModelNode(std::shared_ptr<Model> ModelPtr, ModelRenderer *Renderer);
 
-protected:
-    virtual void Draw(glm::mat4& ParentTransform, bool IsDirty) override;
-};
+        Model *GetModel();
 
+        virtual ~ModelNode();
 
-#endif //SOLARSYSTEM_MODELNODE_H
+    protected:
+        virtual void Draw(glm::mat4 &ParentTransform, bool IsDirty) override;
+    };
+}

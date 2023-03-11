@@ -8,18 +8,22 @@
 #include "VAOWrapper.h"
 #include "ShaderWrapper.h"
 
-class Mesh
-{
-private:
-    std::vector<Vertex> vertices;
-    std::vector<GLuint> indices;
-    std::vector<Texture> textures;
+namespace mlg {
+    class Mesh {
+    private:
+        std::vector<Vertex> vertices;
+        std::vector<GLuint> indices;
+        std::vector<Texture> textures;
 
-    VAOWrapper vao;
-public:
-    Mesh(const std::vector<Vertex>& Vertices, const std::vector<GLuint>& Indices, const std::vector<Texture>& Textures);
-    void Draw(ShaderWrapper& Shader) const;
+        VAOWrapper vao;
+    public:
+        Mesh(const std::vector<Vertex> &Vertices, const std::vector<GLuint> &Indices,
+             const std::vector<Texture> &Textures);
 
-    const VAOWrapper& GetVao() const;
-    void BindTextures(const ShaderWrapper& Shader) const;
-};
+        void Draw(ShaderWrapper &Shader) const;
+
+        const VAOWrapper &GetVao() const;
+
+        void BindTextures(const ShaderWrapper &Shader) const;
+    };
+}

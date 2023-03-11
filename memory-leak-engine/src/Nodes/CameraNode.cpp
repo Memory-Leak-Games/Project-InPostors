@@ -1,12 +1,14 @@
 #include "Nodes/CameraNode.h"
 #include "Camera.h"
-#include "MainEngine.h"
+#include "CoreEngine.h"
 
-CameraNode::CameraNode(MainEngine* engine): engine(engine) {
+using namespace mlg;
+
+CameraNode::CameraNode(CoreEngine *engine) : engine(engine) {
     camera = Camera::GetInstance();
 }
 
-void CameraNode::Update(struct MainEngine* engine, float seconds, float deltaSeconds) {
+void CameraNode::Update(struct CoreEngine *engine, float seconds, float deltaSeconds) {
     Node::Update(engine, seconds, deltaSeconds);
 
     if (engine->currentCamera != this)

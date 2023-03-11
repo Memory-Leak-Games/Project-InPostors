@@ -7,36 +7,37 @@
 #include "glad/glad.h"
 #include "glm/glm.hpp"
 
-struct Vertex
-{
-    glm::vec3 position;
-    glm::vec3 normal;
-    glm::vec2 texCoord;
-};
+namespace mlg {
+    struct Vertex {
+        glm::vec3 position;
+        glm::vec3 normal;
+        glm::vec2 texCoord;
+    };
 
-struct Texture
-{
-    GLuint id;
-    std::string textureType;
-    std::string texturePath;
-};
+    struct Texture {
+        GLuint id;
+        std::string textureType;
+        std::string texturePath;
+    };
 
 
-class VAOWrapper
-{
-private:
-    GLuint vao;
-    GLuint vbo;
-    GLuint ebo;
+    class VAOWrapper {
+    private:
+        GLuint vao;
+        GLuint vbo;
+        GLuint ebo;
 
-    GLsizei indicesCount;
-public:
-    VAOWrapper(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices,
-               const std::vector<Texture>& textures);
-    ~VAOWrapper();
+        GLsizei indicesCount;
+    public:
+        VAOWrapper(const std::vector<Vertex> &vertices, const std::vector<GLuint> &indices,
+                   const std::vector<Texture> &textures);
 
-    void Draw() const;
+        ~VAOWrapper();
 
-    GLuint GetVaoId() const;
-    GLsizei GetIndicesCount() const;
-};
+        void Draw() const;
+
+        GLuint GetVaoId() const;
+
+        GLsizei GetIndicesCount() const;
+    };
+}

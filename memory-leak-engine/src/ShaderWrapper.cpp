@@ -6,6 +6,8 @@
 #include <utility>
 #include <LoggingMacros.h>
 
+using namespace mlg;
+
 void ShaderWrapper::SetFloat(const std::string& name, float value) const
 {
     GLint UniformLocation = GetUniformLocation(name);
