@@ -88,6 +88,9 @@ int32_t CoreEngine::MainLoop()
     CheckGLErrors();
 #endif
 
+    // TODO: Remove this
+    sceneLight = std::make_shared<Lights>();
+
     while (!glfwWindowShouldClose(window))
     {
         // TimeCalculation
@@ -128,6 +131,7 @@ int32_t CoreEngine::MainLoop()
 
 CoreEngine::CoreEngine() : sceneRoot()
 {
+    LoggingMacros::InitializeSPDLog();
 }
 
 void CoreEngine::InitializeImGui(const char* glslVersion)
@@ -173,20 +177,16 @@ void CoreEngine::CheckGLErrors()
 
 void CoreEngine::PrepareScene()
 {
-    auto camera = std::make_shared<FreeCameraNode>(this);
-    sceneRoot.AddChild(camera);
-    camera->GetLocalTransform()->SetPosition({0, 0, -20});
-    camera->SetActive();
-
-    auto modelShader = std::make_shared<ShaderWrapper>("res/shaders/instanced.vert", "res/shaders/textured_model.frag");
-
-    auto tardisModel = std::make_shared<Model>("res/models/Tardis/tardis.obj", modelShader);
-    auto tardisNode = std::make_shared<ModelNode>(tardisModel, &renderer);
-    sceneRoot.AddChild(tardisNode);
-
-    sceneLight = std::make_shared<Lights>();
 }
 
 GLFWwindow* CoreEngine::GetWindow() const {
     return window;
+}
+
+Node* CoreEngine::GetSceneRoot() {
+    return &sceneRoot;
+}
+
+ModelRenderer* CoreEngine::GetRenderer() {
+    return &renderer;
 }

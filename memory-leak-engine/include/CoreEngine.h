@@ -34,17 +34,21 @@ namespace mlg {
 
         GLFWwindow* GetWindow() const;
 
+        Node* GetSceneRoot();
+
+        ModelRenderer* GetRenderer();
+
         friend class CameraNode;
 
     private:
         void Stop();
 
-        static void GLFWErrorCallback(int error, const char* description);
-
+        // Init helpers
         int32_t InitializeWindow(const std::string& WindowName);
-
         void InitializeImGui(const char* glslVersion);
 
         void CheckGLErrors();
+
+        static void GLFWErrorCallback(int error, const char* description);
     };
 }// namespace mlg

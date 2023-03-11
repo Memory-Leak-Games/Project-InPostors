@@ -2,7 +2,7 @@
 
 #include <map>
 #include <set>
-#include "glad/glad.h"
+#include <glad/glad.h>
 
 namespace mlg {
     class ModelRenderer {
