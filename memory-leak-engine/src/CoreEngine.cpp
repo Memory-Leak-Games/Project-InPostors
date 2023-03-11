@@ -112,7 +112,7 @@ int32_t CoreEngine::MainLoop()
         glfwGetFramebufferSize(window, &displayX, &displayY);
         glViewport(0, 0, displayX, displayY);
 
-        sceneRoot.Update(this, seconds, deltaSeconds);
+        sceneRoot.Update(seconds, deltaSeconds);
         sceneRoot.CalculateWorldTransform();
         sceneRoot.Draw();
 
@@ -189,4 +189,16 @@ Node* CoreEngine::GetSceneRoot() {
 
 ModelRenderer* CoreEngine::GetRenderer() {
     return &renderer;
+}
+
+CoreEngine* CoreEngine::instance;
+
+CoreEngine* CoreEngine::GetInstance() {
+    if (instance == nullptr)
+    {
+        instance = new CoreEngine();
+        instance->Init();
+    }
+
+    return instance;
 }

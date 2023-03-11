@@ -7,13 +7,10 @@ namespace mlg {
     private:
         std::shared_ptr<class Camera> camera;
 
-    protected:
-        class CoreEngine *engine;
-
     public:
-        CameraNode(CoreEngine *engine);
+        CameraNode();
 
-        void Update(struct CoreEngine *engine, float seconds, float deltaSeconds) override;
+        void Update(float seconds, float deltaSeconds) override;
 
         void SetActive();
     };

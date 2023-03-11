@@ -22,7 +22,7 @@ namespace mlg {
 
         void Draw();
 
-        virtual void Update(class CoreEngine *engine, float seconds, float deltaSeconds);
+        virtual void Update(float seconds, float deltaSeconds);
 
         [[nodiscard]] virtual std::shared_ptr<Node> Clone() const;
 

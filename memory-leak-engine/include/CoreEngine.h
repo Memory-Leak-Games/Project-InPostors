@@ -21,12 +21,17 @@ namespace mlg {
         Node sceneRoot;
         ModelRenderer renderer;
 
-    public:
-        explicit CoreEngine();
+        static CoreEngine* instance;
 
+        explicit CoreEngine();
         virtual ~CoreEngine();
 
-        int32_t Init();
+    public:
+        CoreEngine(CoreEngine const &) = delete;
+        void operator=(const CoreEngine &) = delete;
+
+        static CoreEngine* GetInstance();
+
 
         void PrepareScene();
 
@@ -43,7 +48,7 @@ namespace mlg {
     private:
         void Stop();
 
-        // Init helpers
+        int32_t Init();
         int32_t InitializeWindow(const std::string& WindowName);
         void InitializeImGui(const char* glslVersion);
 

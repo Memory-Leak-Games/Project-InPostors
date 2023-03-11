@@ -5,13 +5,13 @@
 
 using namespace mlg;
 
-FreeCameraNode::FreeCameraNode(CoreEngine *engine)
-        : CameraNode(engine), velocity(0.f) {
+FreeCameraNode::FreeCameraNode()
+        : CameraNode(), velocity(0.f) {
 
 }
 
-void FreeCameraNode::Update(struct CoreEngine *engine, float seconds, float deltaSeconds) {
-    CameraNode::Update(engine, seconds, deltaSeconds);
+void FreeCameraNode::Update(float seconds, float deltaSeconds) {
+    CameraNode::Update(seconds, deltaSeconds);
 
     HandleMovement(deltaSeconds);
     HandleRotation();
@@ -19,6 +19,8 @@ void FreeCameraNode::Update(struct CoreEngine *engine, float seconds, float delt
 
 void FreeCameraNode::HandleMovement(float deltaSeconds) {
     glm::vec3 MovementInput = GetMovementInput();
+
+    CoreEngine* engine = CoreEngine::GetInstance();
 
     if (glfwGetMouseButton(engine->GetWindow(), GLFW_MOUSE_BUTTON_2) != GLFW_PRESS) {
         MovementInput = glm::vec3(0.f);
@@ -36,6 +38,8 @@ void FreeCameraNode::HandleMovement(float deltaSeconds) {
 }
 
 glm::vec3 FreeCameraNode::GetMovementInput() {
+    CoreEngine* engine = CoreEngine::GetInstance();
+
     glm::vec3 MovementInput(0.f);
     if (glfwGetKey(engine->GetWindow(), GLFW_KEY_W) == GLFW_PRESS) {
         MovementInput.z += 1.f;
@@ -63,6 +67,7 @@ glm::vec3 FreeCameraNode::GetMovementInput() {
 
 void FreeCameraNode::HandleRotation() {
     MouseHandler::UpdateMouse();
+    CoreEngine* engine = CoreEngine::GetInstance();
 
     if (glfwGetMouseButton(engine->GetWindow(), GLFW_MOUSE_BUTTON_2) != GLFW_PRESS) {
         glfwSetInputMode(engine->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);

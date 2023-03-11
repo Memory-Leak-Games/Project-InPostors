@@ -53,9 +53,9 @@ void Node::AddChild(std::shared_ptr<Node> newChild) {
     newChild->CalculateWorldTransform(worldTransformMatrix, true);
 }
 
-void Node::Update(class CoreEngine *engine, float seconds, float deltaSeconds) {
+void Node::Update(float seconds, float deltaSeconds) {
     for (std::shared_ptr<Node> childNode: childrenList) {
-        childNode->Update(engine, seconds, deltaSeconds);
+        childNode->Update(seconds, deltaSeconds);
     }
 }
 

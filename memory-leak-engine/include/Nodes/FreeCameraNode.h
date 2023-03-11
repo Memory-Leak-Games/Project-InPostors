@@ -11,9 +11,9 @@ namespace mlg {
 
         glm::vec3 velocity;
     public:
-        explicit FreeCameraNode(class CoreEngine *engine);
+        explicit FreeCameraNode();
 
-        void Update(struct CoreEngine *engine, float seconds, float deltaSeconds) override;
+        void Update(float seconds, float deltaSeconds) override;
 
     private:
         void HandleMovement(float deltaSeconds);

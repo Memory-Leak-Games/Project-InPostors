@@ -4,12 +4,14 @@
 
 using namespace mlg;
 
-CameraNode::CameraNode(CoreEngine *engine) : engine(engine) {
+CameraNode::CameraNode() {
     camera = Camera::GetInstance();
 }
 
-void CameraNode::Update(struct CoreEngine *engine, float seconds, float deltaSeconds) {
-    Node::Update(engine, seconds, deltaSeconds);
+void CameraNode::Update(float seconds, float deltaSeconds) {
+    Node::Update(seconds, deltaSeconds);
+
+    CoreEngine* engine = CoreEngine::GetInstance();
 
     if (engine->currentCamera != this)
         return;
@@ -24,5 +26,6 @@ void CameraNode::Update(struct CoreEngine *engine, float seconds, float deltaSec
 }
 
 void CameraNode::SetActive() {
+    CoreEngine* engine = CoreEngine::GetInstance();
     engine->currentCamera = this;
 }
