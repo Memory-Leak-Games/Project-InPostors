@@ -1,11 +1,6 @@
 #pragma once
 
-#include <memory>
-#include <vector>
-#include <string>
-
-#include "glad/glad.h"
-#include "glm/glm.hpp"
+#include <glad/glad.h>
 
 namespace mlg {
     struct Vertex {

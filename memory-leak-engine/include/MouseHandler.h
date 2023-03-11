@@ -1,7 +1,6 @@
 #pragma once
 
-#include "glm/glm.hpp"
-#include "GLFW/glfw3.h"
+#include <GLFW/glfw3.h>
 
 namespace mlg {
     class MouseHandler {

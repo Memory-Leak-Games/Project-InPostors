@@ -1,4 +1,4 @@
-#include "include/Mesh/VAOWrapper.h"
+#include "Mesh/VAOWrapper.h"
 
 using namespace mlg;
 

@@ -1,6 +1,4 @@
-#include <vector>
 #include "Gizmos/Arrow.h"
-#include "ShaderWrapper.h"
 
 using namespace mlg;
 

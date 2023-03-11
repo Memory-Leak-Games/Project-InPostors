@@ -1,5 +1,4 @@
 #include "Camera.h"
-#include "glad/glad.h"
 #include "glm/gtc/type_ptr.hpp"
 
 #include "LoggingMacros.h"

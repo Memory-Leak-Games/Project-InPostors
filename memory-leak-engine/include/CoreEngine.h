@@ -1,14 +1,11 @@
 #pragma once
 
-#include <memory>
-
-#include <GLFW/glfw3.h>
 #include <cstdint>
+#include <GLFW/glfw3.h>
 
 #include "Mesh/ModelRenderer.h"
 #include "Nodes/Node.h"
-#include "glm/gtc/constants.hpp"
-#include "glm/vec3.hpp"
+
 
 namespace mlg {
     class CoreEngine {

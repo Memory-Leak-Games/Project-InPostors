@@ -1,4 +1,4 @@
-#include "include/Mesh/Model.h"
+#include "Mesh/Model.h"
 
 #include "assimp/Importer.hpp"
 #include <filesystem>

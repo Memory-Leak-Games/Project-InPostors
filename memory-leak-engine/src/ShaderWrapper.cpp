@@ -1,10 +1,9 @@
 #include "ShaderWrapper.h"
 
 #include <fstream>
-#include <glad/glad.h>
 #include <glm/ext.hpp>
-#include <utility>
-#include <LoggingMacros.h>
+
+#include "LoggingMacros.h"
 
 using namespace mlg;
 

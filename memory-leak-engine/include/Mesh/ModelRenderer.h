@@ -1,7 +1,5 @@
 #pragma once
 
-#include <map>
-#include <set>
 #include <glad/glad.h>
 
 namespace mlg {

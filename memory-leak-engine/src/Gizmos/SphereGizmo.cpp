@@ -1,8 +1,5 @@
 #include "Gizmos/SphereGizmo.h"
 
-#include <vector>
-
-#include <glm/glm.hpp>
 #include <glm/ext/scalar_constants.hpp>
 
 using namespace mlg;
