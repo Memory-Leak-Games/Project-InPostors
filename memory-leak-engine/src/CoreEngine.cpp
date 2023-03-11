@@ -15,8 +15,11 @@
 #include "Gizmos/Gizmo.h"
 
 #include "Nodes/FreeCameraNode.h"
+#include "Time.h"
 
 using namespace mlg;
+
+CoreEngine* CoreEngine::instance;
 
 int32_t CoreEngine::Init()
 {
@@ -81,8 +84,7 @@ void CoreEngine::GLFWErrorCallback(int error, const char* description)
 
 int32_t CoreEngine::MainLoop()
 {
-    auto startProgramTimePoint = std::chrono::high_resolution_clock::now();
-    float previousFrameSeconds = 0;
+    Time::startTimePoint = std::chrono::high_resolution_clock::now();
 
 #ifdef DEBUG
     CheckGLErrors();
@@ -93,11 +95,7 @@ int32_t CoreEngine::MainLoop()
 
     while (!glfwWindowShouldClose(window))
     {
-        // TimeCalculation
-        std::chrono::duration<float> timeFromStart = std::chrono::high_resolution_clock::now() - startProgramTimePoint;
-        float seconds = timeFromStart.count();
-        float deltaSeconds = seconds - previousFrameSeconds;
-        previousFrameSeconds = seconds;
+        Time::frameStartTimePoint = std::chrono::high_resolution_clock::now();
 
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -112,7 +110,7 @@ int32_t CoreEngine::MainLoop()
         glfwGetFramebufferSize(window, &displayX, &displayY);
         glViewport(0, 0, displayX, displayY);
 
-        sceneRoot.Update(seconds, deltaSeconds);
+        sceneRoot.Update(Time::GetSeconds(), Time::GetDeltaSeconds());
         sceneRoot.CalculateWorldTransform();
         sceneRoot.Draw();
 
@@ -124,6 +122,8 @@ int32_t CoreEngine::MainLoop()
 
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+        Time::lastFrameEndTimePoint = std::chrono::high_resolution_clock::now();
     }
 
     return 0;
@@ -150,22 +150,20 @@ void CoreEngine::InitializeImGui(const char* glslVersion)
     ImGui::StyleColorsDark();
 }
 
-CoreEngine::~CoreEngine()
-{
-    Stop();
-}
-
 void CoreEngine::Stop()
 {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    if (!window)
-        return;
+    if (CoreEngine::instance->window)
+    {
+        glfwDestroyWindow(CoreEngine::instance->window);
+        glfwTerminate();
+    }
 
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    delete CoreEngine::instance;
+    instance = nullptr;
 }
 
 void CoreEngine::CheckGLErrors()
@@ -191,14 +189,13 @@ ModelRenderer* CoreEngine::GetRenderer() {
     return &renderer;
 }
 
-CoreEngine* CoreEngine::instance;
 
 CoreEngine* CoreEngine::GetInstance() {
-    if (instance == nullptr)
+    if (CoreEngine::instance == nullptr)
     {
-        instance = new CoreEngine();
-        instance->Init();
+        CoreEngine::instance = new CoreEngine();
+        CoreEngine::instance->Init();
     }
 
-    return instance;
+    return CoreEngine::instance;
 }

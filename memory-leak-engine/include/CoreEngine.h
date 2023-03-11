@@ -24,14 +24,14 @@ namespace mlg {
         static CoreEngine* instance;
 
         explicit CoreEngine();
-        virtual ~CoreEngine();
+        ~CoreEngine(){};
 
     public:
         CoreEngine(CoreEngine const &) = delete;
         void operator=(const CoreEngine &) = delete;
 
         static CoreEngine* GetInstance();
-
+        static void Stop();
 
         void PrepareScene();
 
@@ -46,7 +46,6 @@ namespace mlg {
         friend class CameraNode;
 
     private:
-        void Stop();
 
         int32_t Init();
         int32_t InitializeWindow(const std::string& WindowName);

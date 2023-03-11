@@ -17,6 +17,7 @@ public:
 
         PrepareScene();
         int32_t ReturnCode = engine->MainLoop();
+        mlg::CoreEngine::Stop();
 
         return ReturnCode;
     }
