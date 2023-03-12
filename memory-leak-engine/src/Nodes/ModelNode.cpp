@@ -1,7 +1,7 @@
 #include "Nodes/Node.h"
 #include "Nodes/ModelNode.h"
-#include "Mesh/Model.h"
-#include "Mesh/ModelRenderer.h"
+#include "RenderingLayer/Model.h"
+#include "RenderingLayer/ModelRenderer.h"
 
 using namespace mlg;
 

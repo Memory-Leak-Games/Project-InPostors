@@ -1,7 +1,7 @@
 #include <ctime>
 
 #include "CoreEngine.h"
-#include "Mesh/Model.h"
+#include "RenderingLayer/Model.h"
 #include "Nodes/FreeCameraNode.h"
 #include "Nodes/ModelNode.h"
 #include "ShaderWrapper.h"

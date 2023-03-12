@@ -4,7 +4,7 @@
 #include <imgui_impl/imgui_impl_opengl3.h>
 
 #include "LoggingMacros.h"
-#include "include/Mesh/Model.h"
+#include "RenderingLayer/Model.h"
 #include "Camera.h"
 #include "Nodes/ModelNode.h"
 #include "MouseHandler.h"

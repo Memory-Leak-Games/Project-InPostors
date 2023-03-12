@@ -1,7 +1,7 @@
-#include "include/Mesh/ModelRenderer.h"
+#include "RenderingLayer/ModelRenderer.h"
 
 #include "Nodes/ModelNode.h"
-#include "include/Mesh/Model.h"
+#include "RenderingLayer/Model.h"
 #include "LoggingMacros.h"
 #include "CoreEngine.h"
 

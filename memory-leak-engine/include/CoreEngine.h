@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <GLFW/glfw3.h>
 
-#include "Mesh/ModelRenderer.h"
+#include "RenderingLayer/ModelRenderer.h"
 #include "Nodes/Node.h"
 
 
