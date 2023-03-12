@@ -9,15 +9,17 @@
 class ProjectInpostors {
 private:
 public:
-    ProjectInpostors() {
-    }
+    ProjectInpostors() = default;
 
     int Main(int argc, char* argv[]) {
+        mlg::Window* window = mlg::Window::CreateWindow("Memory Leak Engine", mlg::Resolution{1280, 720});
+        mlg::CoreEngine::Initialize(window);
         mlg::CoreEngine* engine = mlg::CoreEngine::GetInstance();
 
         PrepareScene();
         int32_t ReturnCode = engine->MainLoop();
         mlg::CoreEngine::Stop();
+        window->DestroyWindow();
 
         return ReturnCode;
     }

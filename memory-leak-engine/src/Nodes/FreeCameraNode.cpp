@@ -22,9 +22,9 @@ void FreeCameraNode::HandleMovement(float deltaSeconds) {
 
     CoreEngine* engine = CoreEngine::GetInstance();
 
-    if (glfwGetMouseButton(engine->GetWindow(), GLFW_MOUSE_BUTTON_2) != GLFW_PRESS) {
-        MovementInput = glm::vec3(0.f);
-    }
+//    if (glfwGetMouseButton(engine->GetWindow(), GLFW_MOUSE_BUTTON_2) != GLFW_PRESS) {
+//        MovementInput = glm::vec3(0.f);
+//    }
 
     glm::vec3 MovementVector = MovementInput.z * GetForwardVector();
     MovementVector -= MovementInput.x * GetRightVector();
@@ -41,6 +41,7 @@ glm::vec3 FreeCameraNode::GetMovementInput() {
     CoreEngine* engine = CoreEngine::GetInstance();
 
     glm::vec3 MovementInput(0.f);
+/*
     if (glfwGetKey(engine->GetWindow(), GLFW_KEY_W) == GLFW_PRESS) {
         MovementInput.z += 1.f;
     }
@@ -61,11 +62,13 @@ glm::vec3 FreeCameraNode::GetMovementInput() {
     if (glfwGetKey(engine->GetWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
         MovementInput.y -= 1.f;
     }
+*/
 
     return MovementInput;
 }
 
 void FreeCameraNode::HandleRotation() {
+/*
     MouseHandler::UpdateMouse();
     CoreEngine* engine = CoreEngine::GetInstance();
 
@@ -83,4 +86,5 @@ void FreeCameraNode::HandleRotation() {
 
     glm::quat newRotation = deltaYaw * GetLocalTransform()->GetRotation() * deltaPitch;
     GetLocalTransform()->SetRotation(newRotation);
+*/
 }

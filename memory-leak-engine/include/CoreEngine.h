@@ -3,14 +3,15 @@
 #include <cstdint>
 #include <GLFW/glfw3.h>
 
-#include "RenderingLayer/ModelRenderer.h"
 #include "Nodes/Node.h"
+#include "RenderingLayer/ModelRenderer.h"
+#include "Window.h"
 
 
 namespace mlg {
     class CoreEngine {
     private:
-        GLFWwindow* window;
+        Window* mainWindow;
 
         class CameraNode* currentCamera;
 
@@ -27,14 +28,11 @@ namespace mlg {
         CoreEngine(CoreEngine const &) = delete;
         void operator=(const CoreEngine &) = delete;
 
+        static int32_t Initialize(Window* mainWindow);
         static CoreEngine* GetInstance();
         static void Stop();
 
-        void PrepareScene();
-
         int32_t MainLoop();
-
-        GLFWwindow* GetWindow() const;
 
         Node* GetSceneRoot();
 
@@ -43,9 +41,7 @@ namespace mlg {
         friend class CameraNode;
 
     private:
-
         int32_t Init();
-        int32_t InitializeWindow(const std::string& WindowName);
         void InitializeImGui(const char* glslVersion);
 
         void CheckGLErrors();
