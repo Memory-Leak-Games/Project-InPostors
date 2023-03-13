@@ -1,9 +1,9 @@
 #include "Time.h"
 
 namespace mlg {
-    std::chrono::time_point<std::chrono::system_clock> Time::startTimePoint;
-    std::chrono::time_point<std::chrono::system_clock> Time::frameStartTimePoint;
-    std::chrono::time_point<std::chrono::system_clock> Time::lastFrameStartTimePoint;
+    std::chrono::time_point<std::chrono::high_resolution_clock> Time::startTimePoint;
+    std::chrono::time_point<std::chrono::high_resolution_clock> Time::frameStartTimePoint;
+    std::chrono::time_point<std::chrono::high_resolution_clock> Time::lastFrameStartTimePoint;
 
     float Time::GetSeconds() {
         std::chrono::duration<float> timeFromStart = std::chrono::high_resolution_clock::now() - startTimePoint;
