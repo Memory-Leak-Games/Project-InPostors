@@ -5,9 +5,9 @@ namespace mlg {
 
     class Time {
     private:
-        static std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<float>> startTimePoint;
-        static std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<float>> frameStartTimePoint;
-        static std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<float>> lastFrameEndTimePoint;
+        static std::chrono::time_point<std::chrono::system_clock> startTimePoint;
+        static std::chrono::time_point<std::chrono::system_clock> frameStartTimePoint;
+        static std::chrono::time_point<std::chrono::system_clock> lastFrameStartTimePoint;
 
     public:
         static float GetSeconds();
@@ -18,9 +18,8 @@ namespace mlg {
         friend class CoreEngine;
 
     private:
-        static void SetStartTimePoint(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<float>>& newStartTimePoint);
-        static void SetFrameStartTimePoint(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<float>>& newFrameStartTimePoint);
-        static void SetLastFrameEndTimePoint(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<float>>& newLastFrameEndTimePoint);
+        static void SetStartTimePoint(const std::chrono::time_point<std::chrono::system_clock>& newStartTimePoint);
+        static void SetFrameStartTimePoint(const std::chrono::time_point<std::chrono::system_clock>& newFrameStartTimePoint);
     };
 
 }// namespace mlg
