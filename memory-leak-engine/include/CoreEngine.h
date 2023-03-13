@@ -22,7 +22,6 @@ namespace mlg {
         static CoreEngine* instance;
 
         explicit CoreEngine();
-        ~CoreEngine(){};
 
     public:
         CoreEngine(CoreEngine const &) = delete;

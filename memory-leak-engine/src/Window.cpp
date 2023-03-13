@@ -17,6 +17,8 @@ void Window::WindowErrorCallback(int error, const char* description) {
 }
 
 Window* Window::CreateWindow(std::string title, Resolution resolution) {
+    SPDLOG_INFO("Creating GLFW Window: {} {}x{}", title, resolution.width, resolution.height);
+
     auto* result = new Window(std::move(title), resolution);
     result->SetupWindow();
     return result;
@@ -25,10 +27,7 @@ Window* Window::CreateWindow(std::string title, Resolution resolution) {
 int32_t Window::SetupWindow() {
     glfwSetErrorCallback(Window::WindowErrorCallback);
 
-    if (!glfwInit()) {
-        SPDLOG_ERROR("Window: Failsed to initialize GLFW");
-        return 1;
-    }
+    MLG_ASSERT(glfwInit(), "Failed to initialize GLFW");
 
     // TODO: Change this
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -38,10 +37,7 @@ int32_t Window::SetupWindow() {
 
     glfwWindow = glfwCreateWindow(resolution.width, resolution.height, title.c_str(), nullptr, nullptr);
 
-    if (glfwWindow == nullptr) {
-        SPDLOG_ERROR("Window: Failed to create window");
-        return 1;
-    }
+    MLG_ASSERT(glfwWindow != nullptr, "Failed to crate window");
 
     glfwMakeContextCurrent(glfwWindow);
 
@@ -53,6 +49,7 @@ int32_t Window::SetupWindow() {
 }
 
 void Window::DestroyWindow() {
+    SPDLOG_INFO("Destroying GLFW Window: {}", title);
     glfwDestroyWindow(glfwWindow);
     glfwTerminate();
 }

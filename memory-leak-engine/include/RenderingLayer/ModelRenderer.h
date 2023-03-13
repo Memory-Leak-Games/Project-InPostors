@@ -5,8 +5,8 @@
 namespace mlg {
     class ModelRenderer {
     private:
-        std::map<class Model *, std::set<class ModelNode *>> nodesMap;
-        std::map<class Model *, GLuint> bufferMap;
+        std::unordered_map<class Model *, std::set<class ModelNode *>> nodesMap;
+        std::unordered_map<class Model *, GLuint> bufferMap;
     public:
         void Draw(class CoreEngine *engine);
 

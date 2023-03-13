@@ -104,6 +104,8 @@ void CoreEngine::InitializeImGui(const char* glslVersion) {
 }
 
 void CoreEngine::Stop() {
+    SPDLOG_INFO("Stopping CoreEngine");
+
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
