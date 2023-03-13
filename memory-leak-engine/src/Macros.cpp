@@ -1,4 +1,4 @@
-#include "LoggingMacros.h"
+#include "Macros.h"
 
 void LoggingMacros::InitializeSPDLog()
 {

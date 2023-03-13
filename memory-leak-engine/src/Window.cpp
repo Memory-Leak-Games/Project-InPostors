@@ -2,12 +2,13 @@
 
 #include <utility>
 
-#include "LoggingMacros.h"
+#include "Macros.h"
 
 // TODO: ImGUI
 #include <imgui_impl/imgui_impl_glfw.h>
 
 // TODO: Remove this
+#include "Events/WindowEvent.h"
 #include "MouseHandler.h"
 
 using namespace mlg;
@@ -17,17 +18,19 @@ void Window::WindowErrorCallback(int error, const char* description) {
 }
 
 Window* Window::CreateWindow(std::string title, Resolution resolution) {
-    SPDLOG_INFO("Creating GLFW Window: {} {}x{}", title, resolution.width, resolution.height);
+    SPDLOG_INFO("Initializing GLFW");
+    glfwSetErrorCallback(Window::WindowErrorCallback);
+    MLG_ASSERT(glfwInit(), "Failed to initialize GLFW");
 
+    SPDLOG_INFO("Creating GLFW Window: {} {}x{}", title, resolution.width, resolution.height);
     auto* result = new Window(std::move(title), resolution);
     result->SetupWindow();
+
     return result;
 }
 
 int32_t Window::SetupWindow() {
-    glfwSetErrorCallback(Window::WindowErrorCallback);
 
-    MLG_ASSERT(glfwInit(), "Failed to initialize GLFW");
 
     // TODO: Change this
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -35,27 +38,59 @@ int32_t Window::SetupWindow() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
 
-    glfwWindow = glfwCreateWindow(resolution.width, resolution.height, title.c_str(), nullptr, nullptr);
-
+    glfwWindow = glfwCreateWindow(windowData.resolution.width, windowData.resolution.height, windowData.title.c_str(), nullptr, nullptr);
     MLG_ASSERT(glfwWindow != nullptr, "Failed to crate window");
 
     glfwMakeContextCurrent(glfwWindow);
+    glfwSetWindowUserPointer(glfwWindow, (void*) &windowData);
+    SetupCallbacks();
 
-    // TODO: Change this:
+    // TODO: Move this to HID classes
     glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     glfwSetCursorPosCallback(glfwWindow, MouseHandler::MouseCallback);
 
     return 0;
 }
 
+void Window::SetupCallbacks() {
+    SPDLOG_INFO("Setting window callbacks");
+
+    glfwSetWindowSizeCallback(glfwWindow, [](GLFWwindow* glfwWindow, int32_t width, int32_t height) {
+        WindowData* windowData = (WindowData*) glfwGetWindowUserPointer(glfwWindow);
+        windowData->resolution.width = width;
+        windowData->resolution.height = height;
+
+        WindowResizeEvent event(width, height);
+
+        windowData->eventDispatcher.dispatch(event);
+    });
+
+    glfwSetWindowFocusCallback(glfwWindow, [](GLFWwindow* glfwWindow, int isWindowFocused){
+      WindowData* windowData = (WindowData*) glfwGetWindowUserPointer(glfwWindow);
+      WindowFocusEvent event(isWindowFocused == GLFW_TRUE);
+
+      windowData->eventDispatcher.dispatch(event);
+    });
+
+    glfwSetWindowCloseCallback(glfwWindow, [](GLFWwindow* glfwWindow){
+      WindowData* windowData = (WindowData*) glfwGetWindowUserPointer(glfwWindow);
+      WindowCloseEvent event;
+
+      windowData->eventDispatcher.dispatch(event);
+    });
+}
+
 void Window::DestroyWindow() {
-    SPDLOG_INFO("Destroying GLFW Window: {}", title);
+    SPDLOG_INFO("Destroying GLFW Window: {}", windowData.title);
     glfwDestroyWindow(glfwWindow);
     glfwTerminate();
 }
 
 Window::Window(std::string title, Resolution resolution)
-    : title(std::move(title)), resolution(resolution), vSync(false), glfwWindow(nullptr) {
+    : glfwWindow(nullptr) {
+    windowData.title = std::move(title);
+    windowData.resolution = resolution;
+    windowData.vSync = false;
 }
 
 void Window::SetWindowHint(int hint, int value) {
@@ -64,11 +99,11 @@ void Window::SetWindowHint(int hint, int value) {
 
 void Window::SetVerticalSync(bool isEnabled) {
     glfwSwapInterval(isEnabled);
-    vSync = isEnabled;
+    windowData.vSync = isEnabled;
 }
 
 bool Window::GetVerticalSync() {
-    return vSync;
+    return windowData.vSync;
 }
 
 void Window::SwapBuffers() {
@@ -79,14 +114,14 @@ void Window::PollEvents() {
     glfwPollEvents();
 }
 
-Resolution Window::GetResolution() {
-    glfwGetFramebufferSize(glfwWindow, &resolution.width, &resolution.height);
-    return resolution;
+Window::Resolution Window::GetResolution() {
+    return windowData.resolution;
 }
 
 bool Window::ShouldClose() {
     return glfwWindowShouldClose(glfwWindow);
 }
+
 void Window::ImGuiInit() {
     ImGui_ImplGlfw_InitForOpenGL(glfwWindow, true);
 }

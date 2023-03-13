@@ -3,7 +3,7 @@
 #include "assimp/Importer.hpp"
 #include <filesystem>
 
-#include "LoggingMacros.h"
+#include "Macros.h"
 #include "stb_image.h"
 
 using namespace mlg;

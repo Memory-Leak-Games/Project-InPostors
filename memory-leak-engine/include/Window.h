@@ -1,21 +1,35 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
+#include <Events/Event.h>
 
 namespace mlg {
-    struct Resolution {
-        int32_t width;
-        int32_t height;
-    };
 
     class Window {
+    public:
+        struct Resolution {
+            int32_t width;
+            int32_t height;
+
+            [[nodiscard]] std::string ToString() const {
+                std::stringstream ss;
+                ss << width << "x" << height;
+                return ss.str();
+            }
+        };
+
     private:
         GLFWwindow* glfwWindow;
 
-        std::string title;
-        Resolution resolution;
+        struct WindowData {
+            std::string title;
+            Resolution resolution;
+            bool vSync;
 
-        bool vSync;
+            eventpp::EventDispatcher<EventType, void (const Event &), EventPolicies> eventDispatcher;
+        };
+
+        WindowData windowData;
 
     public:
         Window() = delete;
@@ -38,6 +52,8 @@ namespace mlg {
 
     private:
         Window(std::string title, Resolution resolution);
+
+        void SetupCallbacks();
 
         static void WindowErrorCallback(int error, const char* description);
     };

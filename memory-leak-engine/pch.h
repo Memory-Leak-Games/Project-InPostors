@@ -23,3 +23,6 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include <imgui.h>
+
+#include <eventpp/eventdispatcher.h>
+#include <eventpp/eventqueue.h>

@@ -1,9 +1,9 @@
 #include <ctime>
 
 #include "CoreEngine.h"
-#include "RenderingLayer/Model.h"
 #include "Nodes/FreeCameraNode.h"
 #include "Nodes/ModelNode.h"
+#include "RenderingLayer/Model.h"
 #include "ShaderWrapper.h"
 
 class ProjectInpostors {
@@ -12,12 +12,14 @@ public:
     ProjectInpostors() = default;
 
     int Main(int argc, char* argv[]) {
-        mlg::Window* window = mlg::Window::CreateWindow("Memory Leak Engine", mlg::Resolution{1280, 720});
+        mlg::Window* window = mlg::Window::CreateWindow("Memory Leak Engine", mlg::Window::Resolution{1280, 720});
         mlg::CoreEngine::Initialize(window);
         mlg::CoreEngine* engine = mlg::CoreEngine::GetInstance();
 
         PrepareScene();
+
         int32_t ReturnCode = engine->MainLoop();
+
         mlg::CoreEngine::Stop();
         window->DestroyWindow();
 

@@ -1,5 +1,5 @@
 #include "MouseHandler.h"
-#include "LoggingMacros.h"
+#include "Macros.h"
 
 using namespace mlg;
 

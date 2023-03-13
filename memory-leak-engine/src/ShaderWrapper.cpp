@@ -3,7 +3,7 @@
 #include <fstream>
 #include <glm/ext.hpp>
 
-#include "LoggingMacros.h"
+#include "Macros.h"
 
 using namespace mlg;
 

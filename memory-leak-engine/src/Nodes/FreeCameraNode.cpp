@@ -1,7 +1,7 @@
 #include "Nodes/FreeCameraNode.h"
 #include "CoreEngine.h"
+#include "Macros.h"
 #include "MouseHandler.h"
-#include "LoggingMacros.h"
 
 using namespace mlg;
 

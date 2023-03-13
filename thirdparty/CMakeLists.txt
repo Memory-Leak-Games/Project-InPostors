@@ -23,6 +23,7 @@ CPMAddPackage("gh:g-truc/glm#0.9.9.8")
 CPMAddPackage("gh:ocornut/imgui@1.88")
 CPMAddPackage("gh:gabime/spdlog@1.10.0")
 CPMAddPackage("gh:effolkronium/random@1.4.1")
+CPMAddPackage("gh:wqking/eventpp@0.1.2")
 
 set(imgui_SOURCE_DIR ${imgui_SOURCE_DIR} CACHE INTERNAL "")
 add_library(imgui STATIC ${imgui_SOURCE_DIR}/imgui.cpp
@@ -37,6 +38,7 @@ set_target_properties(glad
                       glfw 
                       glm 
                       imgui
+					  eventpp
                       spdlog PROPERTIES FOLDER "thirdparty")
 
 if (TARGET zlibstatic)

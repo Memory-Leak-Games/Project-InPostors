@@ -1,7 +1,7 @@
 #include "Camera.h"
 #include "glm/gtc/type_ptr.hpp"
 
-#include "LoggingMacros.h"
+#include "Macros.h"
 
 using namespace mlg;
 

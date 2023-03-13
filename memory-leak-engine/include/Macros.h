@@ -1,5 +1,4 @@
-#ifndef LOGGING_MACROS_H
-#define LOGGING_MACROS_H
+#pragma once
 
 #ifdef DEBUG
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
@@ -35,4 +34,5 @@ namespace LoggingMacros {
 #   define MLG_UNIMPLEMENTED do {} while (false)
 #endif
 
-#endif
+// Get x bit
+#define MLG_BIT(x) (1 << x)

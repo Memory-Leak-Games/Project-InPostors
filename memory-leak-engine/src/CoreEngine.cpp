@@ -2,11 +2,12 @@
 
 #include <imgui_impl/imgui_impl_glfw.h>
 #include <imgui_impl/imgui_impl_opengl3.h>
+#include <iostream>
 
 #include "Camera.h"
 #include "Gizmos/Gizmo.h"
 #include "Lights.h"
-#include "LoggingMacros.h"
+#include "Macros.h"
 #include "MouseHandler.h"
 #include "Nodes/ModelNode.h"
 #include "RenderingLayer/Model.h"
@@ -43,17 +44,19 @@ void CoreEngine::GLFWErrorCallback(int error, const char* description) {
 }
 
 int32_t CoreEngine::MainLoop() {
-    Time::startTimePoint = std::chrono::high_resolution_clock::now();
 
 #ifdef DEBUG
     CheckGLErrors();
 #endif
 
+    Time::SetStartTimePoint(std::chrono::high_resolution_clock::now());
+
     // TODO: Remove this
     sceneLight = std::make_shared<Lights>();
 
+    auto begin = std::chrono::high_resolution_clock::now();
     while (!mainWindow->ShouldClose()) {
-        Time::frameStartTimePoint = std::chrono::high_resolution_clock::now();
+        Time::SetFrameStartTimePoint(std::chrono::high_resolution_clock::now());
 
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -63,8 +66,10 @@ int32_t CoreEngine::MainLoop() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        Resolution resolution = mainWindow->GetResolution();
+        Window::Resolution resolution = mainWindow->GetResolution();
         glViewport(0, 0, resolution.width, resolution.height);
+
+        sceneRoot.GetLocalTransform()->SetRotation(glm::quat({0, Time::GetSeconds(), 0}));
 
         sceneRoot.Update(Time::GetSeconds(), Time::GetDeltaSeconds());
         sceneRoot.CalculateWorldTransform();
@@ -73,13 +78,17 @@ int32_t CoreEngine::MainLoop() {
         renderer.Draw(this);
         sceneLight->DrawGizmos();
 
+        ImGui::Begin("FPS");
+        ImGui::Text("Framerate: %.3f (%.1f FPS)", Time::GetTrueDeltaSeconds(), 1 / Time::GetTrueDeltaSeconds());
+        ImGui::Text("Time: %.3f", Time::GetSeconds());
+        ImGui::End();
+
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         mainWindow->SwapBuffers();
         mainWindow->PollEvents();
 
-        Time::lastFrameEndTimePoint = std::chrono::high_resolution_clock::now();
     }
 
     return 0;
