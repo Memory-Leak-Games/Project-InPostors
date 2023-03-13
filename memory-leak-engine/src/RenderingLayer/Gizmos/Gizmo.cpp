@@ -1,4 +1,4 @@
-#include "Gizmos/Gizmo.h"
+#include "include/RenderingLayer/Gizmos/Gizmo.h"
 
 using namespace mlg;
 

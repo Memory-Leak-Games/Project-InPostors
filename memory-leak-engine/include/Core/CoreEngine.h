@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <GLFW/glfw3.h>
 
-#include "Nodes/Node.h"
+#include "GameplayLayer/Nodes/Node.h"
 #include "RenderingLayer/ModelRenderer.h"
 #include "Window.h"
 

@@ -1,6 +1,6 @@
-#include "Gizmos/SphereGizmo.h"
+#include "include/RenderingLayer/Gizmos/SphereGizmo.h"
 
-#include <glm/ext/scalar_constants.hpp>
+#include "glm/ext/scalar_constants.hpp"
 
 using namespace mlg;
 

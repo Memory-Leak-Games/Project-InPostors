@@ -1,15 +1,15 @@
-#include "Window.h"
+#include "include/Core/Window.h"
 
 #include <utility>
 
 #include "Macros.h"
 
 // TODO: ImGUI
-#include <imgui_impl/imgui_impl_glfw.h>
+#include "imgui_impl/imgui_impl_glfw.h"
 
 // TODO: Remove this
 #include "Events/WindowEvent.h"
-#include "MouseHandler.h"
+#include "include/Core/MouseHandler.h"
 
 using namespace mlg;
 

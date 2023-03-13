@@ -1,6 +1,6 @@
-#include "Nodes/CameraNode.h"
-#include "Camera.h"
-#include "CoreEngine.h"
+#include "GameplayLayer/Nodes/CameraNode.h"
+#include "Core/CoreEngine.h"
+#include "RenderingLayer/Camera.h"
 
 using namespace mlg;
 

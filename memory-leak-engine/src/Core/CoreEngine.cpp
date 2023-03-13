@@ -1,20 +1,20 @@
-#include "CoreEngine.h"
+#include "Core/CoreEngine.h"
 
-#include <imgui_impl/imgui_impl_glfw.h>
-#include <imgui_impl/imgui_impl_opengl3.h>
+#include "imgui_impl/imgui_impl_glfw.h"
+#include "imgui_impl/imgui_impl_opengl3.h"
 #include <iostream>
 
-#include "Camera.h"
-#include "Gizmos/Gizmo.h"
-#include "Lights.h"
+#include "RenderingLayer/Gizmos/Gizmo.h"
 #include "Macros.h"
-#include "MouseHandler.h"
-#include "Nodes/ModelNode.h"
+#include "GameplayLayer/Nodes/ModelNode.h"
 #include "RenderingLayer/Model.h"
+#include "include/Core/MouseHandler.h"
+#include "include/RenderingLayer/Camera.h"
+#include "include/RenderingLayer/Lights.h"
 
-#include "Nodes/FreeCameraNode.h"
-#include "Time.h"
-#include "Window.h"
+#include "GameplayLayer/Nodes/FreeCameraNode.h"
+#include "include/Core/Time.h"
+#include "include/Core/Window.h"
 
 using namespace mlg;
 

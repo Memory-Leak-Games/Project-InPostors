@@ -1,10 +1,8 @@
-#include <ctime>
-
-#include "CoreEngine.h"
-#include "Nodes/FreeCameraNode.h"
-#include "Nodes/ModelNode.h"
+#include "Core/CoreEngine.h"
+#include "GameplayLayer/Nodes/FreeCameraNode.h"
+#include "GameplayLayer/Nodes/ModelNode.h"
 #include "RenderingLayer/Model.h"
-#include "ShaderWrapper.h"
+#include "RenderingLayer/ShaderWrapper.h"
 
 class ProjectInpostors {
 private:

@@ -1,6 +1,6 @@
-#include "Lights.h"
-#include "Gizmos/Arrow.h"
-#include "Gizmos/SphereGizmo.h"
+#include "RenderingLayer/Lights.h"
+#include "RenderingLayer/Gizmos/Arrow.h"
+#include "RenderingLayer/Gizmos/SphereGizmo.h"
 
 using namespace mlg;
 

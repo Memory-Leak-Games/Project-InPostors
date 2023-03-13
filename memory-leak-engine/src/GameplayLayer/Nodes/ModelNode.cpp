@@ -1,5 +1,5 @@
-#include "Nodes/Node.h"
-#include "Nodes/ModelNode.h"
+#include "GameplayLayer/Nodes/Node.h"
+#include "GameplayLayer/Nodes/ModelNode.h"
 #include "RenderingLayer/Model.h"
 #include "RenderingLayer/ModelRenderer.h"
 

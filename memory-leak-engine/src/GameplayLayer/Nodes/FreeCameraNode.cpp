@@ -1,7 +1,5 @@
-#include "Nodes/FreeCameraNode.h"
-#include "CoreEngine.h"
-#include "Macros.h"
-#include "MouseHandler.h"
+#include "GameplayLayer/Nodes/FreeCameraNode.h"
+#include "Core/CoreEngine.h"
 
 using namespace mlg;
 
