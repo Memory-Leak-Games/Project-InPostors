@@ -153,7 +153,6 @@ int32_t CoreEngine::Initialize(Window* mainWindow) {
         CoreEngine::instance = new CoreEngine();
         CoreEngine::instance->mainWindow = mainWindow;
 
-        LoggingMacros::InitializeSPDLog();
         returnCode = CoreEngine::instance->Init();
     }
 
