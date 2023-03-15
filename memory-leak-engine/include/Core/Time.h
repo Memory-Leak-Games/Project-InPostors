@@ -10,6 +10,8 @@ namespace mlg {
         static std::chrono::time_point<std::chrono::system_clock> lastFrameStartTimePoint;
 
     public:
+        static void Initialize();
+
         static float GetSeconds();
         static float GetTrueDeltaSeconds();
         static float GetDeltaSeconds();

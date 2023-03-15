@@ -1,8 +1,11 @@
-#include "Core/CoreEngine.h"
+// This is not allowed in Game layer
 #include "GameplayLayer/Nodes/FreeCameraNode.h"
 #include "GameplayLayer/Nodes/ModelNode.h"
 #include "LowLevelRenderer/Model.h"
 #include "LowLevelRenderer/ShaderWrapper.h"
+
+#include "Core/CoreEngine.h"
+#include "Core/Time.h"
 
 class ProjectInpostors {
 private:
@@ -10,9 +13,10 @@ public:
     ProjectInpostors() = default;
 
     int Main(int argc, char* argv[]) {
+        mlg::Time::Initialize();
         mlg::Window* window = mlg::Window::CreateWindow("Memory Leak Engine", mlg::Window::Resolution{1280, 720});
-
         mlg::CoreEngine::Initialize(window);
+
         mlg::CoreEngine* engine = mlg::CoreEngine::GetInstance();
 
         PrepareScene();

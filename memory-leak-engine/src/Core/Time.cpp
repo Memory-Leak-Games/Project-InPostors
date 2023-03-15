@@ -38,4 +38,8 @@ namespace mlg {
         Time::frameStartTimePoint = newFrameStartTimePoint;
     }
 
+    void Time::Initialize() {
+        Time::SetStartTimePoint(std::chrono::high_resolution_clock::now());
+    }
+
 }// namespace mlg

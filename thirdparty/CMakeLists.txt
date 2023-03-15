@@ -24,6 +24,7 @@ CPMAddPackage("gh:gabime/spdlog@1.10.0")
 CPMAddPackage("gh:effolkronium/random@1.4.1")
 CPMAddPackage("gh:wqking/eventpp@0.1.2")
 CPMAddPackage("gh:nlohmann/json@3.11.2")
+CPMAddPackage("gh:Neargye/magic_enum@0.8.2")
 
 if (${CMAKE_BUILD_TYPE} MATCHES Debug)
 	CPMAddPackage("gh:ocornut/imgui@1.88")
@@ -45,6 +46,7 @@ set_target_properties(glad
                       glm 
 					  eventpp
 					  nlohmann_json
+					  magic_enum
                       spdlog PROPERTIES FOLDER "thirdparty")
 
 if (TARGET zlibstatic)

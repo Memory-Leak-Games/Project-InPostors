@@ -1,23 +1,27 @@
 #include "Core/CoreEngine.h"
 
-#include <iostream>
-
-#include "LowLevelRenderer/Gizmos/Gizmo.h"
-#include "Macros.h"
-#include "GameplayLayer/Nodes/ModelNode.h"
-#include "LowLevelRenderer/Model.h"
-#include "include/Core/MouseHandler.h"
-#include "LowLevelRenderer/Camera.h"
-#include "LowLevelRenderer/Lights.h"
-
-#include "Core/Time.h"
-#include "GameplayLayer/Nodes/FreeCameraNode.h"
-#include "LowLevelRenderer/Window.h"
-
 #ifdef DEBUG
 #include "imgui_impl/imgui_impl_glfw.h"
 #include "imgui_impl/imgui_impl_opengl3.h"
 #endif
+
+#include <iostream>
+
+#include "GameplayLayer/Nodes/ModelNode.h"
+#include "LowLevelRenderer/Camera.h"
+#include "LowLevelRenderer/Gizmos/Gizmo.h"
+#include "LowLevelRenderer/Lights.h"
+#include "LowLevelRenderer/Model.h"
+#include "Macros.h"
+#include "include/Core/MouseHandler.h"
+
+#include "Core/Time.h"
+#include "Core/Window.h"
+#include "GameplayLayer/Nodes/FreeCameraNode.h"
+
+#include "Events/KeyEvent.h"
+#include "Events/MouseEvent.h"
+#include "magic_enum.hpp"
 
 using namespace mlg;
 
@@ -25,8 +29,7 @@ CoreEngine* CoreEngine::instance;
 
 int32_t CoreEngine::Init() {
     // TODO: Move to renderer Layer
-    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
-    {
+    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
         SPDLOG_ERROR("Failed to initialize GLAD!");
         return 1;
     }
@@ -68,10 +71,23 @@ int32_t CoreEngine::MainLoop() {
     CheckGLErrors();
 #endif
 
-    Time::SetStartTimePoint(std::chrono::high_resolution_clock::now());
 
     // TODO: Remove this
     sceneLight = std::make_shared<Lights>();
+    float mouseX, mouseY;
+
+    Key::KeyCode lastKey;
+
+    mainWindow->GetEventDispatcher()->appendListener(EventType::MouseMoved, [&mouseX, &mouseY](const Event& event) {
+        MouseMovedEvent mouseMovedEvent = (const MouseMovedEvent&) event;
+        mouseX = mouseMovedEvent.GetX();
+        mouseY = mouseMovedEvent.GetY();
+    });
+
+    mainWindow->GetEventDispatcher()->appendListener(EventType::KeyPressed, [&lastKey](const Event& event) {
+        KeyPressedEvent keyPressedEvent = (const KeyPressedEvent&) event;
+        lastKey = keyPressedEvent.GetKeyCode();
+    });
 
     auto begin = std::chrono::high_resolution_clock::now();
     while (!mainWindow->ShouldClose()) {
@@ -99,9 +115,14 @@ int32_t CoreEngine::MainLoop() {
         sceneLight->DrawGizmos();
 
 #ifdef DEBUG
+
         ImGui::Begin("FPS");
         ImGui::Text("Framerate: %.3f (%.1f FPS)", Time::GetTrueDeltaSeconds(), 1 / Time::GetTrueDeltaSeconds());
         ImGui::Text("Time: %.3f", Time::GetSeconds());
+
+        ImGui::Text("Mouse Position: (%f,%f)", mouseX / resolution.width, mouseY / resolution.height);
+        ImGui::Text("Last Key: %i", lastKey);
+
         ImGui::End();
 
         ImGui::Render();
@@ -110,7 +131,6 @@ int32_t CoreEngine::MainLoop() {
 
         mainWindow->SwapBuffers();
         mainWindow->PollEvents();
-
     }
 
     return 0;
@@ -158,7 +178,6 @@ int32_t CoreEngine::Initialize(Window* mainWindow) {
 
     return returnCode;
 }
-
 
 CoreEngine* CoreEngine::GetInstance() {
     return CoreEngine::instance;

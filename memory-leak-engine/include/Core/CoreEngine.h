@@ -5,7 +5,7 @@
 
 #include "GameplayLayer/Nodes/Node.h"
 #include "LowLevelRenderer/ModelRenderer.h"
-#include "LowLevelRenderer/Window.h"
+#include "Window.h"
 
 
 namespace mlg {

@@ -45,6 +45,8 @@ namespace mlg {
         virtual bool GetVerticalSync();
         virtual Resolution GetResolution();
 
+        virtual eventpp::EventDispatcher<EventType, void (const Event &), EventPolicies>* GetEventDispatcher();
+
         virtual void SwapBuffers();
         virtual void PollEvents();
 
