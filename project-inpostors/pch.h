@@ -21,7 +21,9 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include <imgui.h>
-
 #include <eventpp/eventdispatcher.h>
 #include <eventpp/eventqueue.h>
+
+#ifdef DEBUG
+#include <imgui.h>
+#endif

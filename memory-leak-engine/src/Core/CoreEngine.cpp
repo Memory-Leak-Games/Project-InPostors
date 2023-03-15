@@ -1,7 +1,5 @@
 #include "Core/CoreEngine.h"
 
-#include "imgui_impl/imgui_impl_glfw.h"
-#include "imgui_impl/imgui_impl_opengl3.h"
 #include <iostream>
 
 #include "RenderingLayer/Gizmos/Gizmo.h"
@@ -13,8 +11,13 @@
 #include "include/RenderingLayer/Lights.h"
 
 #include "GameplayLayer/Nodes/FreeCameraNode.h"
-#include "include/Core/Time.h"
-#include "include/Core/Window.h"
+#include "Core/Time.h"
+#include "Core/Window.h"
+
+#ifdef DEBUG
+#include "imgui_impl/imgui_impl_glfw.h"
+#include "imgui_impl/imgui_impl_opengl3.h"
+#endif
 
 using namespace mlg;
 
@@ -32,7 +35,23 @@ int32_t CoreEngine::Init() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
-    InitializeImGui("#version 460");
+#ifdef DEBUG
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    (void) io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;// Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
+
+#ifdef DEBUG
+    mainWindow->ImGuiInit();
+#endif
+
+    ImGui_ImplOpenGL3_Init("#version 460");
+
+    // Setup style
+    ImGui::StyleColorsDark();
+#endif
 
     Gizmo::Initialize();
 
@@ -61,10 +80,11 @@ int32_t CoreEngine::MainLoop() {
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Start the Dear ImGui frame
+#ifdef DEBUG
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+#endif
 
         Window::Resolution resolution = mainWindow->GetResolution();
         glViewport(0, 0, resolution.width, resolution.height);
@@ -78,6 +98,7 @@ int32_t CoreEngine::MainLoop() {
         renderer.Draw(this);
         sceneLight->DrawGizmos();
 
+#ifdef DEBUG
         ImGui::Begin("FPS");
         ImGui::Text("Framerate: %.3f (%.1f FPS)", Time::GetTrueDeltaSeconds(), 1 / Time::GetTrueDeltaSeconds());
         ImGui::Text("Time: %.3f", Time::GetSeconds());
@@ -85,6 +106,7 @@ int32_t CoreEngine::MainLoop() {
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+#endif
 
         mainWindow->SwapBuffers();
         mainWindow->PollEvents();
@@ -97,27 +119,14 @@ int32_t CoreEngine::MainLoop() {
 CoreEngine::CoreEngine() : sceneRoot() {
 }
 
-void CoreEngine::InitializeImGui(const char* glslVersion) {
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    (void) io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;// Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
-
-    mainWindow->ImGuiInit();
-    ImGui_ImplOpenGL3_Init(glslVersion);
-
-    // Setup style
-    ImGui::StyleColorsDark();
-}
-
 void CoreEngine::Stop() {
     SPDLOG_INFO("Stopping CoreEngine");
 
+#ifdef DEBUG
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+#endif
 
     delete CoreEngine::instance;
     instance = nullptr;

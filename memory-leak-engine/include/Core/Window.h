@@ -45,10 +45,12 @@ namespace mlg {
         virtual bool GetVerticalSync();
         virtual Resolution GetResolution();
 
-        virtual void ImGuiInit();
-
         virtual void SwapBuffers();
         virtual void PollEvents();
+
+#ifdef DEBUG
+        virtual void ImGuiInit();
+#endif
 
     private:
         Window(std::string title, Resolution resolution);

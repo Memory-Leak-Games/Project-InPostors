@@ -41,7 +41,6 @@ namespace mlg {
 
     private:
         int32_t Init();
-        void InitializeImGui(const char* glslVersion);
 
         void CheckGLErrors();
 

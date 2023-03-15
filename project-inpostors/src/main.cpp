@@ -11,6 +11,7 @@ public:
 
     int Main(int argc, char* argv[]) {
         mlg::Window* window = mlg::Window::CreateWindow("Memory Leak Engine", mlg::Window::Resolution{1280, 720});
+
         mlg::CoreEngine::Initialize(window);
         mlg::CoreEngine* engine = mlg::CoreEngine::GetInstance();
 

@@ -4,8 +4,9 @@
 
 #include "Macros.h"
 
-// TODO: ImGUI
+#ifdef DEBUG
 #include "imgui_impl/imgui_impl_glfw.h"
+#endif
 
 // TODO: Remove this
 #include "Events/WindowEvent.h"
@@ -20,6 +21,7 @@ void Window::WindowErrorCallback(int error, const char* description) {
 Window* Window::CreateWindow(std::string title, Resolution resolution) {
     SPDLOG_INFO("Initializing GLFW");
     glfwSetErrorCallback(Window::WindowErrorCallback);
+
     MLG_ASSERT(glfwInit(), "Failed to initialize GLFW");
 
     SPDLOG_INFO("Creating GLFW Window: {} {}x{}", title, resolution.width, resolution.height);
@@ -122,6 +124,8 @@ bool Window::ShouldClose() {
     return glfwWindowShouldClose(glfwWindow);
 }
 
+#ifdef DEBUG
 void Window::ImGuiInit() {
     ImGui_ImplGlfw_InitForOpenGL(glfwWindow, true);
 }
+#endif
