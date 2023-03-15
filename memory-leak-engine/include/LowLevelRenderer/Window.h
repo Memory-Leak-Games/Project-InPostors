@@ -1,7 +1,7 @@
 #pragma once
 
-#include <GLFW/glfw3.h>
-#include <Events/Event.h>
+#include "Events/Event.h"
+#include "GLFW/glfw3.h"
 
 namespace mlg {
 

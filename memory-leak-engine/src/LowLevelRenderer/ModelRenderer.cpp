@@ -1,8 +1,8 @@
-#include "RenderingLayer/ModelRenderer.h"
+#include "LowLevelRenderer/ModelRenderer.h"
 
 #include "Macros.h"
 #include "GameplayLayer/Nodes/ModelNode.h"
-#include "RenderingLayer/Model.h"
+#include "LowLevelRenderer/Model.h"
 #include "Core/CoreEngine.h"
 
 using namespace mlg;

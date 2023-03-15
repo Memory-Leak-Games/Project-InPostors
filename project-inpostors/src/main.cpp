@@ -1,8 +1,8 @@
 #include "Core/CoreEngine.h"
 #include "GameplayLayer/Nodes/FreeCameraNode.h"
 #include "GameplayLayer/Nodes/ModelNode.h"
-#include "RenderingLayer/Model.h"
-#include "RenderingLayer/ShaderWrapper.h"
+#include "LowLevelRenderer/Model.h"
+#include "LowLevelRenderer/ShaderWrapper.h"
 
 class ProjectInpostors {
 private:

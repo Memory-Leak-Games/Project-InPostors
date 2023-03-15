@@ -4,8 +4,8 @@
 #include <GLFW/glfw3.h>
 
 #include "GameplayLayer/Nodes/Node.h"
-#include "RenderingLayer/ModelRenderer.h"
-#include "Window.h"
+#include "LowLevelRenderer/ModelRenderer.h"
+#include "LowLevelRenderer/Window.h"
 
 
 namespace mlg {

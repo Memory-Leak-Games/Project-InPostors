@@ -2,17 +2,17 @@
 
 #include <iostream>
 
-#include "RenderingLayer/Gizmos/Gizmo.h"
+#include "LowLevelRenderer/Gizmos/Gizmo.h"
 #include "Macros.h"
 #include "GameplayLayer/Nodes/ModelNode.h"
-#include "RenderingLayer/Model.h"
+#include "LowLevelRenderer/Model.h"
 #include "include/Core/MouseHandler.h"
-#include "include/RenderingLayer/Camera.h"
-#include "include/RenderingLayer/Lights.h"
+#include "LowLevelRenderer/Camera.h"
+#include "LowLevelRenderer/Lights.h"
 
-#include "GameplayLayer/Nodes/FreeCameraNode.h"
 #include "Core/Time.h"
-#include "Core/Window.h"
+#include "GameplayLayer/Nodes/FreeCameraNode.h"
+#include "LowLevelRenderer/Window.h"
 
 #ifdef DEBUG
 #include "imgui_impl/imgui_impl_glfw.h"

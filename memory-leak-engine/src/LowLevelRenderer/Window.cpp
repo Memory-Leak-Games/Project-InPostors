@@ -1,4 +1,4 @@
-#include "include/Core/Window.h"
+#include "LowLevelRenderer/Window.h"
 
 #include <utility>
 
@@ -10,7 +10,7 @@
 
 // TODO: Remove this
 #include "Events/WindowEvent.h"
-#include "include/Core/MouseHandler.h"
+#include "Core/MouseHandler.h"
 
 using namespace mlg;
 
