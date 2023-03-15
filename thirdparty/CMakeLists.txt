@@ -24,6 +24,7 @@ CPMAddPackage("gh:ocornut/imgui@1.88")
 CPMAddPackage("gh:gabime/spdlog@1.10.0")
 CPMAddPackage("gh:effolkronium/random@1.4.1")
 CPMAddPackage("gh:wqking/eventpp@0.1.2")
+CPMAddPackage("gh:nlohmann/json@3.11.2")
 
 set(imgui_SOURCE_DIR ${imgui_SOURCE_DIR} CACHE INTERNAL "")
 add_library(imgui STATIC ${imgui_SOURCE_DIR}/imgui.cpp
@@ -39,6 +40,7 @@ set_target_properties(glad
                       glm 
                       imgui
 					  eventpp
+					  nlohmann_json
                       spdlog PROPERTIES FOLDER "thirdparty")
 
 if (TARGET zlibstatic)
