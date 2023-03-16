@@ -20,23 +20,33 @@ target_include_directories(stb_image PRIVATE ${STB_IMAGE_DIR})
 CPMAddPackage("gh:assimp/assimp@5.2.5")
 CPMAddPackage("gh:glfw/glfw#3.3.8")
 CPMAddPackage("gh:g-truc/glm#0.9.9.8")
-CPMAddPackage("gh:ocornut/imgui@1.88")
 CPMAddPackage("gh:gabime/spdlog@1.10.0")
 CPMAddPackage("gh:effolkronium/random@1.4.1")
+CPMAddPackage("gh:wqking/eventpp@0.1.2")
+CPMAddPackage("gh:nlohmann/json@3.11.2")
+CPMAddPackage("gh:Neargye/magic_enum@0.8.2")
 
-set(imgui_SOURCE_DIR ${imgui_SOURCE_DIR} CACHE INTERNAL "")
-add_library(imgui STATIC ${imgui_SOURCE_DIR}/imgui.cpp
-					     ${imgui_SOURCE_DIR}/imgui_demo.cpp
-					     ${imgui_SOURCE_DIR}/imgui_draw.cpp
-						 ${imgui_SOURCE_DIR}/imgui_tables.cpp
-					     ${imgui_SOURCE_DIR}/imgui_widgets.cpp)
-						 
+if (${CMAKE_BUILD_TYPE} MATCHES Debug)
+	CPMAddPackage("gh:ocornut/imgui@1.88")
+
+	set(imgui_SOURCE_DIR ${imgui_SOURCE_DIR} CACHE INTERNAL "")
+	add_library(imgui STATIC ${imgui_SOURCE_DIR}/imgui.cpp
+							 ${imgui_SOURCE_DIR}/imgui_demo.cpp
+							 ${imgui_SOURCE_DIR}/imgui_draw.cpp
+							 ${imgui_SOURCE_DIR}/imgui_tables.cpp
+							 ${imgui_SOURCE_DIR}/imgui_widgets.cpp)
+
+	set_target_properties(imgui PROPERTIES FOLDER "thirdparty")
+endif()
+
 set_target_properties(glad
                       stb_image 
                       assimp 
                       glfw 
                       glm 
-                      imgui
+					  eventpp
+					  nlohmann_json
+					  magic_enum
                       spdlog PROPERTIES FOLDER "thirdparty")
 
 if (TARGET zlibstatic)
