@@ -62,5 +62,5 @@ if (TARGET zlibstatic)
 endif()
 
 if(NOT ${Assimp_FOUND})
-	set_target_properties(assimp)
+	set_target_properties(assimp PROPERTIES FOLDER "thirdparty")
 endif()
