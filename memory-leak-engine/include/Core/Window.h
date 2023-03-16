@@ -28,7 +28,7 @@ namespace mlg {
     public:
         Window() = delete;
 
-        static void CreateWindow(std::string title, Resolution resolution);
+        static void InitWindow(std::string title, Resolution resolution);
         static void DestroyWindow();
 
         static Window* GetInstance();

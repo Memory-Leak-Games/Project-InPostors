@@ -30,7 +30,7 @@ void Window::WindowErrorCallback(int error, const char* description) {
     SPDLOG_ERROR("GLFW: {}: {}", error, description);
 }
 
-void Window::CreateWindow(std::string title, Resolution resolution) {
+void Window::InitWindow(std::string title, Resolution resolution) {
     SPDLOG_INFO("Initializing GLFW");
     glfwSetErrorCallback(Window::WindowErrorCallback);
 

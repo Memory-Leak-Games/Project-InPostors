@@ -5,9 +5,9 @@ namespace mlg {
 
     class Time {
     private:
-        static std::chrono::time_point<std::chrono::system_clock> startTimePoint;
-        static std::chrono::time_point<std::chrono::system_clock> frameStartTimePoint;
-        static std::chrono::time_point<std::chrono::system_clock> lastFrameStartTimePoint;
+//        static std::chrono::time_point<std::chrono::system_clock> startTimePoint;
+//        static std::chrono::time_point<std::chrono::system_clock> frameStartTimePoint;
+//        static std::chrono::time_point<std::chrono::system_clock> lastFrameStartTimePoint;
 
     public:
         static void Initialize();
@@ -20,8 +20,8 @@ namespace mlg {
         friend class CoreEngine;
 
     private:
-        static void SetStartTimePoint(const std::chrono::time_point<std::chrono::system_clock>& newStartTimePoint);
-        static void SetFrameStartTimePoint(const std::chrono::time_point<std::chrono::system_clock>& newFrameStartTimePoint);
+//        static void SetStartTimePoint(const std::chrono::time_point<std::chrono::system_clock>& newStartTimePoint);
+//        static void SetFrameStartTimePoint(const std::chrono::time_point<std::chrono::system_clock>& newFrameStartTimePoint);
     };
 
 }// namespace mlg
