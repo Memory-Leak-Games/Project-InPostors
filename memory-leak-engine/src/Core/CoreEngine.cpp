@@ -61,10 +61,6 @@ int32_t CoreEngine::Init() {
     return 0;
 }
 
-void CoreEngine::GLFWErrorCallback(int error, const char* description) {
-    SPDLOG_ERROR("GLFW error {}: {}", error, description);
-}
-
 int32_t CoreEngine::MainLoop() {
 
 #ifdef DEBUG
@@ -91,8 +87,7 @@ int32_t CoreEngine::MainLoop() {
 
     auto begin = std::chrono::high_resolution_clock::now();
     while (!Window::GetInstance()->ShouldClose()) {
-        //FIXME: Windows debil
-        //Time::SetFrameStartTimePoint(std::chrono::high_resolution_clock::now());
+        Time::UpdateStartFrameTime();
 
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -103,8 +98,7 @@ int32_t CoreEngine::MainLoop() {
         ImGui::NewFrame();
 #endif
 
-        Window::Resolution resolution = Window::GetInstance()->GetResolution();
-        glViewport(0, 0, resolution.width, resolution.height);
+        glViewport(0, 0, Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
 
         sceneRoot.GetLocalTransform()->SetRotation(glm::quat({0, Time::GetSeconds(), 0}));
 
@@ -121,7 +115,7 @@ int32_t CoreEngine::MainLoop() {
         ImGui::Text("Framerate: %.3f (%.1f FPS)", Time::GetTrueDeltaSeconds(), 1 / Time::GetTrueDeltaSeconds());
         ImGui::Text("Time: %.3f", Time::GetSeconds());
 
-        ImGui::Text("Mouse Position: (%f,%f)", mouseX / resolution.width, mouseY / resolution.height);
+        ImGui::Text("Mouse Position: (%f,%f)", mouseX, mouseY);
         ImGui::Text("Last Key: %i", lastKey);
 
         ImGui::End();

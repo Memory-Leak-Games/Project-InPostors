@@ -13,8 +13,8 @@ public:
     ProjectInpostors() = default;
 
     int Main(int argc, char* argv[]) {
-        //mlg::Time::Initialize();
-        mlg::Window::InitWindow("Memory Leak Engine", mlg::Window::Resolution{1280, 720});
+        mlg::Time::Initialize();
+        mlg::Window::InitWindow("Memory Leak Engine", 1280, 720);
         mlg::CoreEngine::Initialize();
 
         mlg::CoreEngine* engine = mlg::CoreEngine::GetInstance();

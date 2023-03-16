@@ -16,8 +16,8 @@ void CameraNode::Update(float seconds, float deltaSeconds) {
     if (engine->currentCamera != this)
         return;
 
-    Window::Resolution resolution = Window::GetInstance()->GetResolution();
-    glm::vec<2, int> currentResolution{resolution.width, resolution. height};
+    //TODO: Resolution updating problem
+    glm::vec<2, int> currentResolution{Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight()};
 
     camera->SetResolution(currentResolution);
 
