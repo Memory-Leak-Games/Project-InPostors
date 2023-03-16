@@ -14,8 +14,8 @@ public:
 
     int Main(int argc, char* argv[]) {
         mlg::Time::Initialize();
-        mlg::Window* window = mlg::Window::CreateWindow("Memory Leak Engine", mlg::Window::Resolution{1280, 720});
-        mlg::CoreEngine::Initialize(window);
+        mlg::Window::CreateWindow("Memory Leak Engine", mlg::Window::Resolution{1280, 720});
+        mlg::CoreEngine::Initialize();
 
         mlg::CoreEngine* engine = mlg::CoreEngine::GetInstance();
 
@@ -24,7 +24,7 @@ public:
         int32_t ReturnCode = engine->MainLoop();
 
         mlg::CoreEngine::Stop();
-        window->DestroyWindow();
+        mlg::Window::DestroyWindow();
 
         return ReturnCode;
     }

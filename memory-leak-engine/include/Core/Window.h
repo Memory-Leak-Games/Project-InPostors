@@ -10,15 +10,10 @@ namespace mlg {
         struct Resolution {
             int32_t width;
             int32_t height;
-
-            [[nodiscard]] std::string ToString() const {
-                std::stringstream ss;
-                ss << width << "x" << height;
-                return ss.str();
-            }
         };
 
     private:
+        static Window* instance;
         GLFWwindow* glfwWindow;
 
         struct WindowData {
@@ -30,13 +25,13 @@ namespace mlg {
         };
 
         WindowData windowData;
-
     public:
         Window() = delete;
 
-        static Window* CreateWindow(std::string title, Resolution resolution);
-        virtual int32_t SetupWindow();
-        virtual void DestroyWindow();
+        static void CreateWindow(std::string title, Resolution resolution);
+        static void DestroyWindow();
+
+        static Window* GetInstance();
 
         virtual bool ShouldClose();
 
@@ -57,6 +52,7 @@ namespace mlg {
     private:
         Window(std::string title, Resolution resolution);
 
+        virtual int32_t SetupWindow();
         void SetupCallbacks();
 
         static void WindowErrorCallback(int error, const char* description);

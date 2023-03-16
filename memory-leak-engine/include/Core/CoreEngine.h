@@ -11,8 +11,6 @@
 namespace mlg {
     class CoreEngine {
     private:
-        Window* mainWindow;
-
         class CameraNode* currentCamera;
 
         std::shared_ptr<class Lights> sceneLight;
@@ -27,7 +25,7 @@ namespace mlg {
         CoreEngine(CoreEngine const &) = delete;
         void operator=(const CoreEngine &) = delete;
 
-        static int32_t Initialize(Window* mainWindow);
+        static int32_t Initialize();
         static CoreEngine* GetInstance();
         static void Stop();
 

@@ -6,7 +6,7 @@ namespace mlg {
     namespace Key {
         using KeyCode = int;
 
-        enum uint16_t {
+        enum : KeyCode {
             Space = 32,
             Apostrophe = 39, /* ' */
             Comma = 44,      /* , */
@@ -144,7 +144,7 @@ namespace mlg {
     namespace Mouse {
         using MouseCode = int;
 
-        enum : uint16_t {
+        enum : MouseCode {
             Button = 0,
             Button0 = 1,
             Button1 = 2,
@@ -160,4 +160,52 @@ namespace mlg {
             ButtonMiddle = Button2
         };
     }// namespace Mouse
+
+    namespace Gamepad {
+        using GamepadIndex = int;
+
+        enum : GamepadIndex {
+            Gamepad1 = 0,
+            Gamepad2 = 1,
+            Gamepad3 = 2,
+            Gamepad4 = 3
+        };
+
+        using GamepadCode = int;
+
+        enum : GamepadCode {
+            A = 0,
+            B = 1,
+            X = 2,
+            Y = 3,
+            LB = 4,
+            RB = 5,
+            Back = 6,
+            Start = 7,
+            Guide = 8,
+            ButtonLT = 9,
+            ButtonRT = 10,
+
+            //DPAD
+            Up = 11,
+            Right = 12,
+            Down = 13,
+            Left = 14,
+
+            Last = Left
+        };
+
+        using GamepadAxis = int;
+
+        enum : GamepadAxis {
+            LeftX = 0,
+            LeftY = 1,
+            RightX = 2,
+            RightY = 3,
+            AxisLT = 4,
+            AxisRT = 5,
+
+            AxisLast = AxisRT
+        };
+    }// namespace Gamepad
 }// namespace mlg

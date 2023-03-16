@@ -22,23 +22,23 @@ using namespace mlg;
 void Window::ImGuiInit() {
     ImGui_ImplGlfw_InitForOpenGL(glfwWindow, true);
 }
-
 #endif
+
+Window* Window::instance;
+
 void Window::WindowErrorCallback(int error, const char* description) {
     SPDLOG_ERROR("GLFW: {}: {}", error, description);
 }
 
-Window* Window::CreateWindow(std::string title, Resolution resolution) {
+void Window::CreateWindow(std::string title, Resolution resolution) {
     SPDLOG_INFO("Initializing GLFW");
     glfwSetErrorCallback(Window::WindowErrorCallback);
 
     MLG_ASSERT(glfwInit(), "Failed to initialize GLFW");
 
     SPDLOG_INFO("Creating GLFW Window: {} {}x{}", title, resolution.width, resolution.height);
-    auto* result = new Window(std::move(title), resolution);
-    result->SetupWindow();
-
-    return result;
+    instance = new Window(std::move(title), resolution);
+    instance->SetupWindow();
 }
 
 int32_t Window::SetupWindow() {
@@ -143,9 +143,13 @@ void Window::SetupCallbacks() {
 }
 
 void Window::DestroyWindow() {
-    SPDLOG_INFO("Destroying GLFW Window: {}", windowData.title);
-    glfwDestroyWindow(glfwWindow);
+    SPDLOG_INFO("Destroying GLFW Window: {}", instance->windowData.title);
+    glfwDestroyWindow(instance->glfwWindow);
     glfwTerminate();
+}
+
+Window* Window::GetInstance() {
+    return instance;
 }
 
 Window::Window(std::string title, Resolution resolution)
@@ -188,3 +192,4 @@ bool Window::ShouldClose() {
 eventpp::EventDispatcher<EventType, void(const Event&), EventPolicies>* Window::GetEventDispatcher() {
     return &windowData.eventDispatcher;
 }
+

@@ -47,7 +47,7 @@ int32_t CoreEngine::Init() {
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
 
 #ifdef DEBUG
-    mainWindow->ImGuiInit();
+    Window::GetInstance()->ImGuiInit();
 #endif
 
     ImGui_ImplOpenGL3_Init("#version 460");
@@ -78,19 +78,19 @@ int32_t CoreEngine::MainLoop() {
 
     Key::KeyCode lastKey;
 
-    mainWindow->GetEventDispatcher()->appendListener(EventType::MouseMoved, [&mouseX, &mouseY](const Event& event) {
+    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::MouseMoved, [&mouseX, &mouseY](const Event& event) {
         MouseMovedEvent mouseMovedEvent = (const MouseMovedEvent&) event;
         mouseX = mouseMovedEvent.GetX();
         mouseY = mouseMovedEvent.GetY();
     });
 
-    mainWindow->GetEventDispatcher()->appendListener(EventType::KeyPressed, [&lastKey](const Event& event) {
+    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::KeyPressed, [&lastKey](const Event& event) {
         KeyPressedEvent keyPressedEvent = (const KeyPressedEvent&) event;
         lastKey = keyPressedEvent.GetKeyCode();
     });
 
     auto begin = std::chrono::high_resolution_clock::now();
-    while (!mainWindow->ShouldClose()) {
+    while (!Window::GetInstance()->ShouldClose()) {
         Time::SetFrameStartTimePoint(std::chrono::high_resolution_clock::now());
 
         glClearDepth(1.0f);
@@ -102,7 +102,7 @@ int32_t CoreEngine::MainLoop() {
         ImGui::NewFrame();
 #endif
 
-        Window::Resolution resolution = mainWindow->GetResolution();
+        Window::Resolution resolution = Window::GetInstance()->GetResolution();
         glViewport(0, 0, resolution.width, resolution.height);
 
         sceneRoot.GetLocalTransform()->SetRotation(glm::quat({0, Time::GetSeconds(), 0}));
@@ -129,8 +129,8 @@ int32_t CoreEngine::MainLoop() {
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 #endif
 
-        mainWindow->SwapBuffers();
-        mainWindow->PollEvents();
+        Window::GetInstance()->SwapBuffers();
+        Window::GetInstance()->PollEvents();
     }
 
     return 0;
@@ -166,12 +166,11 @@ ModelRenderer* CoreEngine::GetRenderer() {
     return &renderer;
 }
 
-int32_t CoreEngine::Initialize(Window* mainWindow) {
+int32_t CoreEngine::Initialize() {
 
     int32_t returnCode = 0;
     if (CoreEngine::instance == nullptr) {
         CoreEngine::instance = new CoreEngine();
-        CoreEngine::instance->mainWindow = mainWindow;
 
         returnCode = CoreEngine::instance->Init();
     }
