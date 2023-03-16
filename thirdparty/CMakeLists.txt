@@ -17,7 +17,16 @@ add_library(stb_image STATIC ${STB_IMAGE_DIR}/stb_image.cpp)
 target_include_directories(stb_image PRIVATE ${STB_IMAGE_DIR})
 
 # other
-CPMAddPackage("gh:assimp/assimp@5.2.5")
+
+#assimp caching
+find_package(Assimp)
+message(${Assimp_FOUND})
+if(${Assimp_FOUND})
+
+else()
+	CPMAddPackage("gh:assimp/assimp@5.2.5")
+endif()
+
 CPMAddPackage("gh:glfw/glfw#3.3.8")
 CPMAddPackage("gh:g-truc/glm#0.9.9.8")
 CPMAddPackage("gh:gabime/spdlog@1.10.0")
@@ -41,8 +50,7 @@ endif()
 
 set_target_properties(glad
                       stb_image 
-                      assimp 
-                      glfw 
+                      glfw
                       glm 
 					  eventpp
 					  nlohmann_json
@@ -51,4 +59,8 @@ set_target_properties(glad
 
 if (TARGET zlibstatic)
     set_target_properties(zlibstatic PROPERTIES FOLDER "thirdparty")
+endif()
+
+if(NOT ${Assimp_FOUND})
+	set_target_properties(assimp)
 endif()
