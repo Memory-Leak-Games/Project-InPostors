@@ -1,20 +1,15 @@
 #include "include/Core/Time.h"
+#include "GLFW/glfw3.h"
 
 namespace mlg {
-    //std::chrono::time_point<std::chrono::high_resolution_clock> Time::startTimePoint;
-//    std::chrono::time_point<std::chrono::high_resolution_clock> Time::frameStartTimePoint;
-//    std::chrono::time_point<std::chrono::high_resolution_clock> Time::lastFrameStartTimePoint;
+    Time* Time::instance;
 
     float Time::GetSeconds() {
-//        std::chrono::duration<float> timeFromStart = std::chrono::high_resolution_clock::now() - startTimePoint;
-//        return timeFromStart.count();
-        return 0;
+        return (float) glfwGetTime();
     }
 
     float Time::GetTrueDeltaSeconds() {
-//        std::chrono::duration<float> deltaSeconds = frameStartTimePoint - lastFrameStartTimePoint;
-//        return deltaSeconds.count();
-        return 0;
+        return instance->frameStart - instance->lastFrameStart;
     }
 
     float Time::GetDeltaSeconds() {
@@ -31,17 +26,17 @@ namespace mlg {
         return 1. / 30.;
     }
 
-/*    void Time::SetStartTimePoint(const std::chrono::time_point<std::chrono::system_clock>& newStartTimePoint) {
-        Time::startTimePoint = newStartTimePoint;
+    void Time::Initialize() {
+        instance = new Time;
+        glfwSetTime(0.);
     }
 
-    void Time::SetFrameStartTimePoint(const std::chrono::time_point<std::chrono::system_clock>& newFrameStartTimePoint) {
-        Time::lastFrameStartTimePoint = frameStartTimePoint;
-        Time::frameStartTimePoint = newFrameStartTimePoint;
-    }*/
+    void Time::Stop() {
+    }
 
-    void Time::Initialize() {
-        //Time::SetStartTimePoint(std::chrono::high_resolution_clock::now());
+    void Time::UpdateStartFrameTime() {
+        instance->lastFrameStart = instance->frameStart;
+        instance->frameStart = (float) glfwGetTime();
     }
 
 }// namespace mlg

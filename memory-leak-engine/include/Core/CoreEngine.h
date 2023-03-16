@@ -1,12 +1,11 @@
 #pragma once
 
-#include <cstdint>
 #include <GLFW/glfw3.h>
+#include <cstdint>
 
 #include "GameplayLayer/Nodes/Node.h"
 #include "LowLevelRenderer/ModelRenderer.h"
 #include "Window.h"
-
 
 namespace mlg {
     class CoreEngine {
@@ -22,8 +21,8 @@ namespace mlg {
         explicit CoreEngine();
 
     public:
-        CoreEngine(CoreEngine const &) = delete;
-        void operator=(const CoreEngine &) = delete;
+        CoreEngine(CoreEngine const&) = delete;
+        void operator=(const CoreEngine&) = delete;
 
         static int32_t Initialize();
         static CoreEngine* GetInstance();
@@ -41,7 +40,5 @@ namespace mlg {
         int32_t Init();
 
         void CheckGLErrors();
-
-        static void GLFWErrorCallback(int error, const char* description);
     };
 }// namespace mlg

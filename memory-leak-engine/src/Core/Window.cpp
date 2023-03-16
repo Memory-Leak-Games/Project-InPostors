@@ -30,14 +30,14 @@ void Window::WindowErrorCallback(int error, const char* description) {
     SPDLOG_ERROR("GLFW: {}: {}", error, description);
 }
 
-void Window::InitWindow(std::string title, Resolution resolution) {
+void Window::InitWindow(std::string title, int32_t width, int32_t height) {
     SPDLOG_INFO("Initializing GLFW");
     glfwSetErrorCallback(Window::WindowErrorCallback);
 
     MLG_ASSERT(glfwInit(), "Failed to initialize GLFW");
 
-    SPDLOG_INFO("Creating GLFW Window: {} {}x{}", title, resolution.width, resolution.height);
-    instance = new Window(std::move(title), resolution);
+    SPDLOG_INFO("Creating GLFW Window: {} {}x{}", title, width, height);
+    instance = new Window(std::move(title), width, height);
     instance->SetupWindow();
 }
 
@@ -50,7 +50,7 @@ int32_t Window::SetupWindow() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
 
-    glfwWindow = glfwCreateWindow(windowData.resolution.width, windowData.resolution.height, windowData.title.c_str(), nullptr, nullptr);
+    glfwWindow = glfwCreateWindow(windowData.width, windowData.height, windowData.title.c_str(), nullptr, nullptr);
     MLG_ASSERT(glfwWindow != nullptr, "Failed to crate window");
 
     glfwMakeContextCurrent(glfwWindow);
@@ -68,8 +68,8 @@ void Window::SetupCallbacks() {
 
     glfwSetWindowSizeCallback(glfwWindow, [](GLFWwindow* window, int32_t width, int32_t height) {
         WindowData* windowData = (WindowData*) glfwGetWindowUserPointer(window);
-        windowData->resolution.width = width;
-        windowData->resolution.height = height;
+        windowData->width = width;
+        windowData->height = height;
 
         WindowResizeEvent event(width, height);
 
@@ -152,10 +152,12 @@ Window* Window::GetInstance() {
     return instance;
 }
 
-Window::Window(std::string title, Resolution resolution)
+Window::Window(std::string title, int32_t width, int32_t height)
     : glfwWindow(nullptr) {
     windowData.title = std::move(title);
-    windowData.resolution = resolution;
+    windowData.width = width;
+    windowData.height = height;
+
     windowData.vSync = false;
 }
 
@@ -180,16 +182,18 @@ void Window::PollEvents() {
     glfwPollEvents();
 }
 
-Window::Resolution Window::GetResolution() {
-    return windowData.resolution;
-}
-
 bool Window::ShouldClose() {
     return glfwWindowShouldClose(glfwWindow);
 }
-
 
 eventpp::EventDispatcher<EventType, void(const Event&), EventPolicies>* Window::GetEventDispatcher() {
     return &windowData.eventDispatcher;
 }
 
+int32_t Window::GetWidth() {
+    return windowData.width;
+}
+
+int32_t Window::GetHeight() {
+    return windowData.height;
+}

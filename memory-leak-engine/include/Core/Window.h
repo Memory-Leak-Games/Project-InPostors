@@ -6,19 +6,14 @@
 namespace mlg {
 
     class Window {
-    public:
-        struct Resolution {
-            int32_t width;
-            int32_t height;
-        };
-
     private:
         static Window* instance;
         GLFWwindow* glfwWindow;
 
         struct WindowData {
             std::string title;
-            Resolution resolution;
+            int32_t width;
+            int32_t height;
             bool vSync;
 
             eventpp::EventDispatcher<EventType, void (const Event &), EventPolicies> eventDispatcher;
@@ -28,7 +23,7 @@ namespace mlg {
     public:
         Window() = delete;
 
-        static void InitWindow(std::string title, Resolution resolution);
+        static void InitWindow(std::string title, int32_t width, int32_t height);
         static void DestroyWindow();
 
         static Window* GetInstance();
@@ -38,7 +33,9 @@ namespace mlg {
         virtual void SetWindowHint(int hint, int value);
         virtual void SetVerticalSync(bool isEnabled);
         virtual bool GetVerticalSync();
-        virtual Resolution GetResolution();
+
+        virtual int32_t GetWidth();
+        virtual int32_t GetHeight();
 
         virtual eventpp::EventDispatcher<EventType, void (const Event &), EventPolicies>* GetEventDispatcher();
 
@@ -50,7 +47,7 @@ namespace mlg {
 #endif
 
     private:
-        Window(std::string title, Resolution resolution);
+        Window(std::string title, int32_t width, int32_t height);
 
         virtual int32_t SetupWindow();
         void SetupCallbacks();
