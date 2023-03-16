@@ -91,7 +91,8 @@ int32_t CoreEngine::MainLoop() {
 
     auto begin = std::chrono::high_resolution_clock::now();
     while (!Window::GetInstance()->ShouldClose()) {
-        Time::SetFrameStartTimePoint(std::chrono::high_resolution_clock::now());
+        //FIXME: Windows debil
+        //Time::SetFrameStartTimePoint(std::chrono::high_resolution_clock::now());
 
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
