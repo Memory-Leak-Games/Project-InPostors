@@ -8,7 +8,7 @@
 #include "Window.h"
 
 namespace mlg {
-    class CoreEngine {
+    class Core {
     private:
         class CameraNode* currentCamera;
 
@@ -16,16 +16,16 @@ namespace mlg {
         Node sceneRoot;
         ModelRenderer renderer;
 
-        static CoreEngine* instance;
+        static Core* instance;
 
-        explicit CoreEngine();
+        explicit Core();
 
     public:
-        CoreEngine(CoreEngine const&) = delete;
-        void operator=(const CoreEngine&) = delete;
+        Core(Core const&) = delete;
+        void operator=(const Core&) = delete;
 
         static int32_t Initialize();
-        static CoreEngine* GetInstance();
+        static Core* GetInstance();
         static void Stop();
 
         int32_t MainLoop();

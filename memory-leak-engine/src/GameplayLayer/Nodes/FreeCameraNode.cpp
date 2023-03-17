@@ -1,5 +1,5 @@
 #include "GameplayLayer/Nodes/FreeCameraNode.h"
-#include "Core/CoreEngine.h"
+#include "Core/Core.h"
 
 using namespace mlg;
 
@@ -18,7 +18,7 @@ void FreeCameraNode::Update(float seconds, float deltaSeconds) {
 void FreeCameraNode::HandleMovement(float deltaSeconds) {
     glm::vec3 MovementInput = GetMovementInput();
 
-    CoreEngine* engine = CoreEngine::GetInstance();
+    Core* engine = Core::GetInstance();
 
 //    if (glfwGetMouseButton(engine->GetWindow(), GLFW_MOUSE_BUTTON_2) != GLFW_PRESS) {
 //        MovementInput = glm::vec3(0.f);
@@ -36,7 +36,7 @@ void FreeCameraNode::HandleMovement(float deltaSeconds) {
 }
 
 glm::vec3 FreeCameraNode::GetMovementInput() {
-    CoreEngine* engine = CoreEngine::GetInstance();
+    Core* engine = Core::GetInstance();
 
     glm::vec3 MovementInput(0.f);
 /*

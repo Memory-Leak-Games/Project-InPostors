@@ -1,4 +1,4 @@
-#include "Core/CoreEngine.h"
+#include "Core/Core.h"
 
 #ifdef DEBUG
 #include "imgui_impl/imgui_impl_glfw.h"
@@ -25,9 +25,9 @@
 
 using namespace mlg;
 
-CoreEngine* CoreEngine::instance;
+Core* Core::instance;
 
-int32_t CoreEngine::Init() {
+int32_t Core::Init() {
     // TODO: Move to renderer Layer
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
         SPDLOG_ERROR("Failed to initialize GLAD!");
@@ -61,7 +61,7 @@ int32_t CoreEngine::Init() {
     return 0;
 }
 
-int32_t CoreEngine::MainLoop() {
+int32_t Core::MainLoop() {
 
 #ifdef DEBUG
     CheckGLErrors();
@@ -131,10 +131,10 @@ int32_t CoreEngine::MainLoop() {
     return 0;
 }
 
-CoreEngine::CoreEngine() : sceneRoot() {
+Core::Core() : sceneRoot() {
 }
 
-void CoreEngine::Stop() {
+void Core::Stop() {
     SPDLOG_INFO("Stopping CoreEngine");
 
 #ifdef DEBUG
@@ -143,36 +143,36 @@ void CoreEngine::Stop() {
     ImGui::DestroyContext();
 #endif
 
-    delete CoreEngine::instance;
+    delete Core::instance;
     instance = nullptr;
 }
 
-void CoreEngine::CheckGLErrors() {
+void Core::CheckGLErrors() {
     GLenum error;
     while ((error = glGetError()) != GL_NO_ERROR)
         SPDLOG_ERROR("OpenGL error: {}", error);
 }
 
-Node* CoreEngine::GetSceneRoot() {
+Node* Core::GetSceneRoot() {
     return &sceneRoot;
 }
 
-ModelRenderer* CoreEngine::GetRenderer() {
+ModelRenderer* Core::GetRenderer() {
     return &renderer;
 }
 
-int32_t CoreEngine::Initialize() {
+int32_t Core::Initialize() {
 
     int32_t returnCode = 0;
-    if (CoreEngine::instance == nullptr) {
-        CoreEngine::instance = new CoreEngine();
+    if (Core::instance == nullptr) {
+        Core::instance = new Core();
 
-        returnCode = CoreEngine::instance->Init();
+        returnCode = Core::instance->Init();
     }
 
     return returnCode;
 }
 
-CoreEngine* CoreEngine::GetInstance() {
-    return CoreEngine::instance;
+Core* Core::GetInstance() {
+    return Core::instance;
 }

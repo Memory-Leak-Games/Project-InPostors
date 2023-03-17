@@ -28,6 +28,8 @@ namespace mlg {
 
         static Window* GetInstance();
 
+        virtual void* GetNativeWindowHandle();
+
         virtual bool ShouldClose();
 
         virtual void SetWindowHint(int hint, int value);

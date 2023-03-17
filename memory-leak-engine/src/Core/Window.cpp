@@ -197,3 +197,7 @@ int32_t Window::GetWidth() {
 int32_t Window::GetHeight() {
     return windowData.height;
 }
+
+void* Window::GetNativeWindowHandle() {
+    return glfwWindow;
+}

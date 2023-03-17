@@ -4,7 +4,7 @@
 #include "LowLevelRenderer/Model.h"
 #include "LowLevelRenderer/ShaderWrapper.h"
 
-#include "Core/CoreEngine.h"
+#include "Core/Core.h"
 #include "Core/Time.h"
 
 class ProjectInpostors {
@@ -15,22 +15,22 @@ public:
     int Main(int argc, char* argv[]) {
         mlg::Time::Initialize();
         mlg::Window::InitWindow("Memory Leak Engine", 1280, 720);
-        mlg::CoreEngine::Initialize();
+        mlg::Core::Initialize();
 
-        mlg::CoreEngine* engine = mlg::CoreEngine::GetInstance();
+        mlg::Core* engine = mlg::Core::GetInstance();
 
         PrepareScene();
 
         int32_t ReturnCode = engine->MainLoop();
 
-        mlg::CoreEngine::Stop();
+        mlg::Core::Stop();
         mlg::Window::DestroyWindow();
 
         return ReturnCode;
     }
 
     void PrepareScene() {
-        mlg::CoreEngine* engine = mlg::CoreEngine::GetInstance();
+        mlg::Core* engine = mlg::Core::GetInstance();
 
         auto camera = std::make_shared<mlg::FreeCameraNode>();
         engine->GetSceneRoot()->AddChild(camera);
