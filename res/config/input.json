@@ -1,5 +1,6 @@
-{
-  "test_action" : {
+[
+  {
+    "name": "test_button",
     "mappings": [
       {
         "deviceType" : "Keyboard",
@@ -14,7 +15,8 @@
     ]
   },
 
-  "test_axis" : {
+  {
+    "name": "test_axis",
     "mappings": [
       {
         "deviceType" : "Keyboard",
@@ -30,4 +32,4 @@
       }
     ]
   }
-}
+]

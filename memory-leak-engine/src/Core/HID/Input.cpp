@@ -5,7 +5,22 @@
 namespace mlg {
     Input* Input::instance;
 
-    void Input::Init() {
+    void Input::Initialize() {
+        if (instance != nullptr)
+            return;
+
+        instance = new Input;
+    }
+
+    void Input::Stop() {
+        delete instance;
+        instance = nullptr;
+    }
+
+    void Input::Update() {
+        for (auto& [key, value] : instance->inputActionsMap) {
+            value.Update();
+        }
     }
 
     bool Input::IsActionPressed(const std::string& actionName) {

@@ -23,8 +23,8 @@ namespace mlg {
     public:
         Window() = delete;
 
-        static void InitWindow(std::string title, int32_t width, int32_t height);
-        static void DestroyWindow();
+        static void Initialize(std::string title, int32_t width, int32_t height);
+        static void Stop();
 
         static Window* GetInstance();
 

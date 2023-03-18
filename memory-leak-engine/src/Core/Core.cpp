@@ -5,8 +5,6 @@
 #include "imgui_impl/imgui_impl_opengl3.h"
 #endif
 
-#include <iostream>
-
 #include "GameplayLayer/Nodes/ModelNode.h"
 #include "LowLevelRenderer/Camera.h"
 #include "LowLevelRenderer/Gizmos/Gizmo.h"
@@ -17,11 +15,12 @@
 
 #include "Core/Time.h"
 #include "Core/Window.h"
+#include "Core/HID/Input.h"
+
 #include "GameplayLayer/Nodes/FreeCameraNode.h"
 
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
-#include "magic_enum.hpp"
 
 using namespace mlg;
 
@@ -97,6 +96,7 @@ int32_t Core::MainLoop() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 #endif
+        Input::Update();
 
         glViewport(0, 0, Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
 

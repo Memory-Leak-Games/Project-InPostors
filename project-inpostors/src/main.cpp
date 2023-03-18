@@ -3,6 +3,7 @@
 #include "GameplayLayer/Nodes/ModelNode.h"
 #include "LowLevelRenderer/Model.h"
 #include "LowLevelRenderer/ShaderWrapper.h"
+#include <Core/HID/Input.h>
 
 #include "Core/Core.h"
 #include "Core/Time.h"
@@ -14,19 +15,19 @@ public:
 
     int Main(int argc, char* argv[]) {
         mlg::Time::Initialize();
-        mlg::Window::InitWindow("Memory Leak Engine", 1280, 720);
+        mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
         mlg::Core::Initialize();
+        mlg::Input::Initialize();
 
         mlg::Core* engine = mlg::Core::GetInstance();
-
         PrepareScene();
-
-        int32_t ReturnCode = engine->MainLoop();
+        int32_t returnCode = engine->MainLoop();
 
         mlg::Core::Stop();
-        mlg::Window::DestroyWindow();
+        mlg::Window::Stop();
+        mlg::Input::Stop();
 
-        return ReturnCode;
+        return returnCode;
     }
 
     void PrepareScene() {

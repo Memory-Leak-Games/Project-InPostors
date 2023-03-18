@@ -12,7 +12,7 @@ namespace mlg {
         std::unordered_map<std::string, InputAction> inputActionsMap;
 
     public:
-        static void Init();
+        static void Initialize();
         static void Stop();
 
         static bool IsActionPressed(const std::string& actionName);
