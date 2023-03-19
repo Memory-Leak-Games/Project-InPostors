@@ -125,7 +125,7 @@ int32_t Core::MainLoop() {
         {
             float testFloat = Input::GetActionStrength(action);
             bool isTestPressed = Input::IsActionPressed(action);
-            bool isTestJustPressed = Input::IsActionPressed(action);
+            bool isTestJustPressed = Input::IsActionJustPressed(action);
             bool isTestJustReleased = Input::IsActionJustReleased(action);
 
             ImGui::Text("%s", action.c_str());
