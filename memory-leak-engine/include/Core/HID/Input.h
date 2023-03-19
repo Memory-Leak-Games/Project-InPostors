@@ -2,14 +2,16 @@
 
 #include "InputAction.h"
 
+#define MLG_INPUT_CONFIG_PATH "res/config/input.json"
+
 namespace mlg {
 
     class Input {
     private:
         static Input* instance;
 
-        // Action Name, Action
-        std::unordered_map<std::string, InputAction> inputActionsMap;
+        // Action Name, ActionPtr
+        std::unique_ptr<std::unordered_map<std::string, std::unique_ptr<InputAction>>> inputActionsMap;
 
     public:
         static void Initialize();
@@ -26,7 +28,7 @@ namespace mlg {
     private:
         static void Update();
 
-        void LoadMappings();
+        void LoadActions();
     };
 
 }// namespace mlg

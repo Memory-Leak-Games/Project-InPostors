@@ -17,6 +17,8 @@ namespace mlg {
         Device::Type deviceType;
 
     public:
+        ActionMapping() = delete;
+
         explicit ActionMapping(Device::Type deviceType)
             : deviceType(deviceType) {}
 
@@ -30,6 +32,8 @@ namespace mlg {
         Key::KeyCode keyCode;
 
     public:
+        KeyboardActionMapping() = delete;
+
         explicit KeyboardActionMapping(Key::KeyCode keyCode)
             : ActionMapping(Device::Type::Keyboard), keyCode(keyCode) {}
 
@@ -42,16 +46,19 @@ namespace mlg {
     private:
         Gamepad::GamepadIndex deviceIndex;
         bool isAxis;
+        bool isPositive = false;
         float deadZone = 0.f;
         float triggerZone = 0.f;
         Gamepad::GamepadCode buttonCode;
 
     public:
+        GamepadActionMapping() = delete;
+
         explicit GamepadActionMapping(Gamepad::GamepadIndex deviceIndex, Gamepad::GamepadCode buttonCode)
             : ActionMapping(Device::Type::Gamepad), deviceIndex(deviceIndex), isAxis(false), buttonCode(buttonCode) {}
 
-        explicit GamepadActionMapping(Gamepad::GamepadIndex deviceIndex, bool isAxis, float deadZone, float triggerZone, Gamepad::GamepadCode buttonCode)
-            : ActionMapping(Device::Type::Gamepad), deviceIndex(deviceIndex), isAxis(isAxis), deadZone(deadZone),
+        explicit GamepadActionMapping(Gamepad::GamepadIndex deviceIndex, float deadZone, float triggerZone, bool isPositive, Gamepad::GamepadCode buttonCode)
+            : ActionMapping(Device::Type::Gamepad), deviceIndex(deviceIndex), isAxis(true), isPositive(isPositive), deadZone(deadZone),
               triggerZone(triggerZone), buttonCode(buttonCode) {}
 
         [[nodiscard]] Gamepad::GamepadIndex GetDeviceIndex() const {
@@ -64,6 +71,10 @@ namespace mlg {
 
         [[nodiscard]] float GetDeadZone() const {
             return deadZone;
+        }
+
+        [[nodiscard]] bool IsPositive() const {
+            return isPositive;
         }
 
         [[nodiscard]] float GetTriggerZone() const {

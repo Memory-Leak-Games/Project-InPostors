@@ -1,8 +1,10 @@
 #include "Core/Core.h"
 
 #ifdef DEBUG
+
 #include "imgui_impl/imgui_impl_glfw.h"
 #include "imgui_impl/imgui_impl_opengl3.h"
+
 #endif
 
 #include "GameplayLayer/Nodes/ModelNode.h"
@@ -73,11 +75,12 @@ int32_t Core::MainLoop() {
 
     Key::KeyCode lastKey;
 
-    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::MouseMoved, [&mouseX, &mouseY](const Event& event) {
-        MouseMovedEvent mouseMovedEvent = (const MouseMovedEvent&) event;
-        mouseX = mouseMovedEvent.GetX();
-        mouseY = mouseMovedEvent.GetY();
-    });
+    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::MouseMoved,
+                                                                [&mouseX, &mouseY](const Event& event) {
+                                                                    MouseMovedEvent mouseMovedEvent = (const MouseMovedEvent&) event;
+                                                                    mouseX = mouseMovedEvent.GetX();
+                                                                    mouseY = mouseMovedEvent.GetY();
+                                                                });
 
     Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::KeyPressed, [&lastKey](const Event& event) {
         KeyPressedEvent keyPressedEvent = (const KeyPressedEvent&) event;
@@ -96,6 +99,7 @@ int32_t Core::MainLoop() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 #endif
+
         Input::Update();
 
         glViewport(0, 0, Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
@@ -115,8 +119,20 @@ int32_t Core::MainLoop() {
         ImGui::Text("Framerate: %.3f (%.1f FPS)", Time::GetTrueDeltaSeconds(), 1 / Time::GetTrueDeltaSeconds());
         ImGui::Text("Time: %.3f", Time::GetSeconds());
 
-        ImGui::Text("Mouse Position: (%f,%f)", mouseX, mouseY);
-        ImGui::Text("Last Key: %i", lastKey);
+        ImGui::Separator();
+
+        for (const std::string& action : {"test_button", "test_axis"})
+        {
+            float testFloat = Input::GetActionStrength(action);
+            bool isTestPressed = Input::IsActionPressed(action);
+            bool isTestJustPressed = Input::IsActionPressed(action);
+            bool isTestJustReleased = Input::IsActionJustReleased(action);
+
+            ImGui::Text("%s", action.c_str());
+            ImGui::Text("Strength: %f", testFloat);
+            ImGui::Text("State: %b, JustPressed: %b, JustReleased: %b", isTestPressed,
+                        isTestJustPressed, isTestJustReleased);
+        }
 
         ImGui::End();
 
