@@ -1,5 +1,5 @@
 #include "GameplayLayer/Nodes/CameraNode.h"
-#include "Core/CoreEngine.h"
+#include "Core/Core.h"
 #include "LowLevelRenderer/Camera.h"
 
 using namespace mlg;
@@ -11,7 +11,7 @@ CameraNode::CameraNode() {
 void CameraNode::Update(float seconds, float deltaSeconds) {
     Node::Update(seconds, deltaSeconds);
 
-    CoreEngine* engine = CoreEngine::GetInstance();
+    Core* engine = Core::GetInstance();
 
     if (engine->currentCamera != this)
         return;
@@ -26,6 +26,6 @@ void CameraNode::Update(float seconds, float deltaSeconds) {
 }
 
 void CameraNode::SetActive() {
-    CoreEngine* engine = CoreEngine::GetInstance();
+    Core* engine = Core::GetInstance();
     engine->currentCamera = this;
 }

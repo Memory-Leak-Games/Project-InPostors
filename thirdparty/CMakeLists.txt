@@ -16,14 +16,14 @@ set(stb_image_SOURCE_DIR ${STB_IMAGE_DIR} CACHE INTERNAL "")
 add_library(stb_image STATIC ${STB_IMAGE_DIR}/stb_image.cpp)
 target_include_directories(stb_image PRIVATE ${STB_IMAGE_DIR})
 
-# other
+CMAKE_POLICY(SET CMP0012 NEW)
 
 #assimp caching
-find_package(Assimp)
-message(${Assimp_FOUND})
+find_package(Assimp QUIET)
 if(${Assimp_FOUND})
-
+	message("Using System Assimp")
 else()
+	message("Downloading Assimp")
 	CPMAddPackage("gh:assimp/assimp@5.2.5")
 endif()
 

@@ -30,7 +30,7 @@ void Window::WindowErrorCallback(int error, const char* description) {
     SPDLOG_ERROR("GLFW: {}: {}", error, description);
 }
 
-void Window::InitWindow(std::string title, int32_t width, int32_t height) {
+void Window::Initialize(std::string title, int32_t width, int32_t height) {
     SPDLOG_INFO("Initializing GLFW");
     glfwSetErrorCallback(Window::WindowErrorCallback);
 
@@ -142,7 +142,7 @@ void Window::SetupCallbacks() {
     });
 }
 
-void Window::DestroyWindow() {
+void Window::Stop() {
     SPDLOG_INFO("Destroying GLFW Window: {}", instance->windowData.title);
     glfwDestroyWindow(instance->glfwWindow);
     glfwTerminate();
@@ -196,4 +196,8 @@ int32_t Window::GetWidth() {
 
 int32_t Window::GetHeight() {
     return windowData.height;
+}
+
+void* Window::GetNativeWindowHandle() {
+    return glfwWindow;
 }

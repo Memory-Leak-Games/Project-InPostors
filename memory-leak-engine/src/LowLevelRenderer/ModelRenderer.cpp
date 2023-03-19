@@ -1,19 +1,19 @@
 #include "LowLevelRenderer/ModelRenderer.h"
 
-#include "Macros.h"
+#include "Core/Core.h"
 #include "GameplayLayer/Nodes/ModelNode.h"
 #include "LowLevelRenderer/Model.h"
-#include "Core/CoreEngine.h"
+#include "Macros.h"
 
 using namespace mlg;
 
-void ModelRenderer::Draw(CoreEngine *engine) {
+void ModelRenderer::Draw(Core*engine) {
     for (auto &[Model, NodeArray]: nodesMap) {
         DrawModel(Model, NodeArray, engine);
     }
 }
 
-void ModelRenderer::DrawModel(Model *model, std::set<struct ModelNode *> &nodeArray, CoreEngine *engine) {
+void ModelRenderer::DrawModel(Model *model, std::set<struct ModelNode *> &nodeArray, Core*engine) {
     for (auto &Node: nodeArray) {
         if (Node->WasDirtyThisFrame()) {
             UpdateMatrixBuffer(model, nodeArray);

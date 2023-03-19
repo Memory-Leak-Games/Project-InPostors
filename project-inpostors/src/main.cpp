@@ -3,8 +3,9 @@
 #include "GameplayLayer/Nodes/ModelNode.h"
 #include "LowLevelRenderer/Model.h"
 #include "LowLevelRenderer/ShaderWrapper.h"
+#include <Core/HID/Input.h>
 
-#include "Core/CoreEngine.h"
+#include "Core/Core.h"
 #include "Core/Time.h"
 
 class ProjectInpostors {
@@ -14,23 +15,23 @@ public:
 
     int Main(int argc, char* argv[]) {
         mlg::Time::Initialize();
-        mlg::Window::InitWindow("Memory Leak Engine", 1280, 720);
-        mlg::CoreEngine::Initialize();
+        mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
+        mlg::Core::Initialize();
+        mlg::Input::Initialize();
 
-        mlg::CoreEngine* engine = mlg::CoreEngine::GetInstance();
-
+        mlg::Core* engine = mlg::Core::GetInstance();
         PrepareScene();
+        int32_t returnCode = engine->MainLoop();
 
-        int32_t ReturnCode = engine->MainLoop();
+        mlg::Core::Stop();
+        mlg::Window::Stop();
+        mlg::Input::Stop();
 
-        mlg::CoreEngine::Stop();
-        mlg::Window::DestroyWindow();
-
-        return ReturnCode;
+        return returnCode;
     }
 
     void PrepareScene() {
-        mlg::CoreEngine* engine = mlg::CoreEngine::GetInstance();
+        mlg::Core* engine = mlg::Core::GetInstance();
 
         auto camera = std::make_shared<mlg::FreeCameraNode>();
         engine->GetSceneRoot()->AddChild(camera);

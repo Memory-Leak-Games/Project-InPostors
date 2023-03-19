@@ -19,7 +19,7 @@ namespace mlg {
         static float GetDeltaSeconds();
         [[deprecated("Unimplemented")]]static float GetFixedDeltaSeconds();
 
-        friend class CoreEngine;
+        friend class Core;
 
     private:
         Time() = default;

@@ -192,7 +192,8 @@ namespace mlg {
             Down = 13,
             Left = 14,
 
-            Last = Left
+            Last = Left,
+            ButtonsCount = 15
         };
 
         using GamepadAxis = int;
@@ -205,7 +206,8 @@ namespace mlg {
             AxisLT = 4,
             AxisRT = 5,
 
-            AxisLast = AxisRT
+            AxisLast = AxisRT,
+            AxesCount = 6
         };
     }// namespace Gamepad
 }// namespace mlg

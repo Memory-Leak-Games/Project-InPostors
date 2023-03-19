@@ -1,11 +1,11 @@
-#include "Core/CoreEngine.h"
+#include "Core/Core.h"
 
 #ifdef DEBUG
+
 #include "imgui_impl/imgui_impl_glfw.h"
 #include "imgui_impl/imgui_impl_opengl3.h"
-#endif
 
-#include <iostream>
+#endif
 
 #include "GameplayLayer/Nodes/ModelNode.h"
 #include "LowLevelRenderer/Camera.h"
@@ -17,17 +17,18 @@
 
 #include "Core/Time.h"
 #include "Core/Window.h"
+#include "Core/HID/Input.h"
+
 #include "GameplayLayer/Nodes/FreeCameraNode.h"
 
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
-#include "magic_enum.hpp"
 
 using namespace mlg;
 
-CoreEngine* CoreEngine::instance;
+Core* Core::instance;
 
-int32_t CoreEngine::Init() {
+int32_t Core::Init() {
     // TODO: Move to renderer Layer
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
         SPDLOG_ERROR("Failed to initialize GLAD!");
@@ -61,7 +62,7 @@ int32_t CoreEngine::Init() {
     return 0;
 }
 
-int32_t CoreEngine::MainLoop() {
+int32_t Core::MainLoop() {
 
 #ifdef DEBUG
     CheckGLErrors();
@@ -74,11 +75,12 @@ int32_t CoreEngine::MainLoop() {
 
     Key::KeyCode lastKey;
 
-    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::MouseMoved, [&mouseX, &mouseY](const Event& event) {
-        MouseMovedEvent mouseMovedEvent = (const MouseMovedEvent&) event;
-        mouseX = mouseMovedEvent.GetX();
-        mouseY = mouseMovedEvent.GetY();
-    });
+    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::MouseMoved,
+                                                                [&mouseX, &mouseY](const Event& event) {
+                                                                    MouseMovedEvent mouseMovedEvent = (const MouseMovedEvent&) event;
+                                                                    mouseX = mouseMovedEvent.GetX();
+                                                                    mouseY = mouseMovedEvent.GetY();
+                                                                });
 
     Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::KeyPressed, [&lastKey](const Event& event) {
         KeyPressedEvent keyPressedEvent = (const KeyPressedEvent&) event;
@@ -98,6 +100,8 @@ int32_t CoreEngine::MainLoop() {
         ImGui::NewFrame();
 #endif
 
+        Input::Update();
+
         glViewport(0, 0, Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
 
         sceneRoot.GetLocalTransform()->SetRotation(glm::quat({0, Time::GetSeconds(), 0}));
@@ -115,8 +119,20 @@ int32_t CoreEngine::MainLoop() {
         ImGui::Text("Framerate: %.3f (%.1f FPS)", Time::GetTrueDeltaSeconds(), 1 / Time::GetTrueDeltaSeconds());
         ImGui::Text("Time: %.3f", Time::GetSeconds());
 
-        ImGui::Text("Mouse Position: (%f,%f)", mouseX, mouseY);
-        ImGui::Text("Last Key: %i", lastKey);
+        ImGui::Separator();
+
+        for (const std::string& action : {"test_button", "test_axis"})
+        {
+            float testFloat = Input::GetActionStrength(action);
+            bool isTestPressed = Input::IsActionPressed(action);
+            bool isTestJustPressed = Input::IsActionJustPressed(action);
+            bool isTestJustReleased = Input::IsActionJustReleased(action);
+
+            ImGui::Text("%s", action.c_str());
+            ImGui::Text("Strength: %f", testFloat);
+            ImGui::Text("State: %b, JustPressed: %b, JustReleased: %b", isTestPressed,
+                        isTestJustPressed, isTestJustReleased);
+        }
 
         ImGui::End();
 
@@ -131,10 +147,10 @@ int32_t CoreEngine::MainLoop() {
     return 0;
 }
 
-CoreEngine::CoreEngine() : sceneRoot() {
+Core::Core() : sceneRoot() {
 }
 
-void CoreEngine::Stop() {
+void Core::Stop() {
     SPDLOG_INFO("Stopping CoreEngine");
 
 #ifdef DEBUG
@@ -143,36 +159,36 @@ void CoreEngine::Stop() {
     ImGui::DestroyContext();
 #endif
 
-    delete CoreEngine::instance;
+    delete Core::instance;
     instance = nullptr;
 }
 
-void CoreEngine::CheckGLErrors() {
+void Core::CheckGLErrors() {
     GLenum error;
     while ((error = glGetError()) != GL_NO_ERROR)
         SPDLOG_ERROR("OpenGL error: {}", error);
 }
 
-Node* CoreEngine::GetSceneRoot() {
+Node* Core::GetSceneRoot() {
     return &sceneRoot;
 }
 
-ModelRenderer* CoreEngine::GetRenderer() {
+ModelRenderer* Core::GetRenderer() {
     return &renderer;
 }
 
-int32_t CoreEngine::Initialize() {
+int32_t Core::Initialize() {
 
     int32_t returnCode = 0;
-    if (CoreEngine::instance == nullptr) {
-        CoreEngine::instance = new CoreEngine();
+    if (Core::instance == nullptr) {
+        Core::instance = new Core();
 
-        returnCode = CoreEngine::instance->Init();
+        returnCode = Core::instance->Init();
     }
 
     return returnCode;
 }
 
-CoreEngine* CoreEngine::GetInstance() {
-    return CoreEngine::instance;
+Core* Core::GetInstance() {
+    return Core::instance;
 }
