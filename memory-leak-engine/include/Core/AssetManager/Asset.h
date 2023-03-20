@@ -1,13 +1,15 @@
 #pragma once
 
+#include <memory>
+
 namespace mlg {
 
     class Asset {
         std::string path;
     public:
-        Asset(std::string path)
-                : path(path) {};
+        explicit Asset(std::string path) : path(std::move(path)) {};
 
+        virtual void Load() = 0;
         virtual ~Asset() = 0;
     };
 

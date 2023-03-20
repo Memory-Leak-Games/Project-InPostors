@@ -51,17 +51,21 @@ namespace mlg {
 
     InputAction::MappingValue InputAction::ProcessGamepadMapping(const ActionMapping* actionMapping) {
         auto gamepadActionMapping = (GamepadActionMapping*) actionMapping;
-        MappingValue result{};
+        MappingValue result{false, 0.f};
 
         Gamepad::GamepadIndex gamepadIndex = gamepadActionMapping->GetDeviceIndex();
 
-        if (!glfwJoystickPresent(gamepadActionMapping->GetDeviceIndex()))
+        if (!glfwJoystickPresent(gamepadIndex))
             return result;
 
         int axesCount = Gamepad::AxesCount;
         const float* axes = glfwGetJoystickAxes(gamepadIndex, &axesCount);
         int buttonsCount = Gamepad::ButtonsCount;
         const uint8_t* buttons = glfwGetJoystickButtons(gamepadIndex, &buttonsCount);
+
+        // skip gaming mouses hack
+        if (buttonsCount > 32)
+            return result;
 
         if (gamepadActionMapping->IsAxis()) {
             float value = axes[gamepadActionMapping->GetButtonCode()];
