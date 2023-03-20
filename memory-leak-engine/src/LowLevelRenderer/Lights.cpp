@@ -121,7 +121,7 @@ Lights::~Lights()
 
 void Lights::DrawGizmos()
 {
-    SphereGizmo::Draw(bulb.position, 1.0f, 24, bulb.color);
+    //SphereGizmo::Draw(bulb.position, 1.0f, 24, bulb.color);
 }
 
 glm::vec3 Lights::DirectionVector(float pitch, float yaw) {
