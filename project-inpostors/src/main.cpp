@@ -43,10 +43,10 @@ public:
         camera->GetLocalTransform()->SetPosition({0, 0, -20});
         camera->SetActive();
 
-        auto modelShader = std::make_shared<mlg::ShaderWrapper>("res/shaders/instanced.vert", "res/shaders/textured_model.frag");
+        auto modelShader = std::make_shared<mlg::ShaderWrapper>("res/shaders/model.vert", "res/shaders/textured_model.frag");
 
         auto tardisModel = std::make_shared<mlg::Model>("res/models/Tardis/tardis.obj", modelShader);
-        auto tardisNode = std::make_shared<mlg::ModelNode>(tardisModel, engine->GetRenderer());
+        auto tardisNode = std::make_shared<mlg::ModelNode>(tardisModel);
         engine->GetSceneRoot()->AddChild(tardisNode);
     }
 

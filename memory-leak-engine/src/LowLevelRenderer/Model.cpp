@@ -12,7 +12,7 @@
 using namespace mlg;
 
 void Model::Draw() {
-    for (std::shared_ptr<Mesh> Item: meshes) {
+    for (const std::shared_ptr<Mesh>& Item: meshes) {
         Item->Draw(*GetShader());
     }
 }
@@ -115,7 +115,6 @@ Model::LoadMaterialTextures(aiMaterial *Material, aiTextureType Type, const std:
         std::filesystem::path pathFromExecutable = std::filesystem::path{modelPath}.parent_path() / path.C_Str();
         Texture.textureAsset = AssetManager::GetAsset<TextureAsset>(pathFromExecutable.string());
         Texture.textureType = TypeName;
-        Texture.texturePath = path.C_Str();
         Textures.push_back(Texture);
     }
     return Textures;

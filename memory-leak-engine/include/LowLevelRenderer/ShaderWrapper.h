@@ -5,7 +5,7 @@
 namespace mlg {
     class ShaderWrapper {
     private:
-        GLuint shaderProgramId = -1;
+        GLuint shaderProgramId = 0;
 
     public:
         ShaderWrapper(std::string vertexShaderPath, std::string fragmentShaderPath);

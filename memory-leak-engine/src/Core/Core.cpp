@@ -104,13 +104,10 @@ int32_t Core::MainLoop() {
 
         glViewport(0, 0, Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
 
-        sceneRoot.GetLocalTransform()->SetRotation(glm::quat({0, Time::GetSeconds(), 0}));
-
         sceneRoot.Update(Time::GetSeconds(), Time::GetDeltaSeconds());
         sceneRoot.CalculateWorldTransform();
         sceneRoot.Draw();
 
-        renderer.Draw(this);
         sceneLight->DrawGizmos();
 
 #ifdef DEBUG
@@ -171,10 +168,6 @@ void Core::CheckGLErrors() {
 
 Node* Core::GetSceneRoot() {
     return &sceneRoot;
-}
-
-ModelRenderer* Core::GetRenderer() {
-    return &renderer;
 }
 
 int32_t Core::Initialize() {
