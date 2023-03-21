@@ -4,6 +4,7 @@
 #include "LowLevelRenderer/Model.h"
 #include "LowLevelRenderer/ShaderWrapper.h"
 #include <Core/HID/Input.h>
+#include <Core/AssetManager/AssetManager.h>
 
 #include "Core/Core.h"
 #include "Core/Time.h"
@@ -18,6 +19,7 @@ public:
         mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
         mlg::Window::GetInstance()->SetVerticalSync(false);
 
+        mlg::AssetManager::Initialize();
         mlg::Core::Initialize();
         mlg::Input::Initialize();
 
@@ -28,6 +30,7 @@ public:
         mlg::Core::Stop();
         mlg::Window::Stop();
         mlg::Input::Stop();
+        mlg::AssetManager::Stop();
 
         return returnCode;
     }

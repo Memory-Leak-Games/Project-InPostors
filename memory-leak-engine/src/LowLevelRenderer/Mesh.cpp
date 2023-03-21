@@ -1,5 +1,7 @@
 #include "LowLevelRenderer/Mesh.h"
 
+#include "Core/AssetManager/TextureAsset.h"
+
 using namespace mlg;
 
 Mesh::Mesh(const std::vector<Vertex> &Vertices, const std::vector<GLuint> &Indices,
@@ -30,7 +32,7 @@ void Mesh::BindTextures(const ShaderWrapper &Shader) const {
             Number = std::to_string(0);
 
         Shader.SetFloat(Item.textureType + Number, TextureIndex);
-        glBindTexture(GL_TEXTURE_2D, Item.id);
+        Item.textureAsset->Bind();
         TextureIndex++;
     }
     glActiveTexture(GL_TEXTURE0);

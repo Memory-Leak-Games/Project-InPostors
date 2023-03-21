@@ -3,6 +3,9 @@
 #include "assimp/Importer.hpp"
 #include <filesystem>
 
+#include "Core/AssetManager/AssetManager.h"
+#include "Core/AssetManager/TextureAsset.h"
+
 #include "Macros.h"
 #include "stb_image.h"
 
@@ -105,12 +108,14 @@ std::vector<Texture>
 Model::LoadMaterialTextures(aiMaterial *Material, aiTextureType Type, const std::string &TypeName) {
     std::vector<Texture> Textures;
     for (uint32_t i = 0; i < Material->GetTextureCount(Type); i++) {
-        aiString Path;
-        Material->GetTexture(Type, i, &Path);
+        aiString path;
+        Material->GetTexture(Type, i, &path);
         Texture Texture;
-        Texture.id = TextureFromFile(Path.C_Str());
+
+        std::filesystem::path pathFromExecutable = std::filesystem::path{modelPath}.parent_path() / path.C_Str();
+        Texture.textureAsset = AssetManager::GetAsset<TextureAsset>(pathFromExecutable.string());
         Texture.textureType = TypeName;
-        Texture.texturePath = Path.C_Str();
+        Texture.texturePath = path.C_Str();
         Textures.push_back(Texture);
     }
     return Textures;
