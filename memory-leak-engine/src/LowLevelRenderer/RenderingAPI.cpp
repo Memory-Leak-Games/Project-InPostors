@@ -21,6 +21,11 @@ namespace mlg {
 
         MLG_ASSERT(gladLoadGLLoader((GLADloadproc) glfwGetProcAddress), "Failed to initialize GLAD");
 
+        SPDLOG_INFO("OpenGL Info:");
+        SPDLOG_INFO("  Vendor: {}", glGetString(GL_VENDOR));
+        SPDLOG_INFO("  Renderer: {}", glGetString(GL_RENDERER));
+        SPDLOG_INFO("  Version: {}", glGetString(GL_VERSION));
+
 #ifdef DEBUG
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
