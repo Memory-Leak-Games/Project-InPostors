@@ -13,6 +13,8 @@ namespace mlg {
         if (instance != nullptr)
             return;
 
+        SPDLOG_INFO("Initializing Rendering Api");
+
         instance = new RenderingAPI();
 
         MLG_ASSERT(gladLoadGLLoader((GLADloadproc) glfwGetProcAddress), "Failed to initialize GLAD");
@@ -53,6 +55,8 @@ namespace mlg {
     }
 
     void RenderingAPI::Stop() {
+        SPDLOG_INFO("Stopping Rendering Api");
+
         delete instance;
         instance = nullptr;
     }

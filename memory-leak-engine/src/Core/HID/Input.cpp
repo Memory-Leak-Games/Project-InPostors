@@ -18,6 +18,8 @@ namespace mlg {
     }
 
     void Input::Stop() {
+        SPDLOG_INFO("Stopping Input");
+
         delete instance;
         instance = nullptr;
     }
