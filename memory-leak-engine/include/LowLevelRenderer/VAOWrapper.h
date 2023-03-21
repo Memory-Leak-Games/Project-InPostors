@@ -10,11 +10,10 @@ namespace mlg {
     };
 
     struct Texture {
-        GLuint id;
+        std::shared_ptr<class TextureAsset> textureAsset;
         std::string textureType;
         std::string texturePath;
     };
-
 
     class VAOWrapper {
     private:

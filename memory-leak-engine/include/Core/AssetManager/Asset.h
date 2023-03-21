@@ -10,7 +10,11 @@ namespace mlg {
         explicit Asset(std::string path) : path(std::move(path)) {};
 
         virtual void Load() = 0;
-        virtual ~Asset() = 0;
+        virtual ~Asset() = default;
+
+        [[nodiscard]] const std::string& GetPath() const {
+            return path;
+        }
     };
 
 }// namespace mlg
