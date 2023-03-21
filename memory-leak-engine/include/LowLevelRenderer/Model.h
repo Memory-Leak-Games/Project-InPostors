@@ -29,7 +29,5 @@ namespace mlg {
         LoadMaterialTextures(aiMaterial *Material, aiTextureType Type, const std::string &TypeName);
 
         static Vertex GetVertexFromAIMesh(const aiMesh *MeshPtr, unsigned int i);
-
-        GLuint TextureFromFile(const std::string &Path);
     };
 }
