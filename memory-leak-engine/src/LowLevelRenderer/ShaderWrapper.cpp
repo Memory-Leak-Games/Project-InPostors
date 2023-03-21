@@ -74,6 +74,10 @@ void ShaderWrapper::Activate() const
     glUseProgram(shaderProgramId);
 }
 
+void ShaderWrapper::DeActivate() const {
+    glUseProgram(0);
+}
+
 void ShaderWrapper::LoadShader(std::string& shaderPath, std::string& shaderCodeOut)
 {
     std::ifstream ShaderFile;
@@ -207,6 +211,7 @@ GLint ShaderWrapper::TrySetVec4f(const std::string& name, glm::vec4 value) const
     glUniformMatrix4fv(UniformLocation, 1, GL_FALSE, glm::value_ptr(value));
     return UniformLocation;
 }
+
 
 
 

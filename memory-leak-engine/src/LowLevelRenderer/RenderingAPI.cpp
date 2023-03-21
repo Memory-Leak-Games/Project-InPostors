@@ -38,16 +38,17 @@ namespace mlg {
 
         Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize,
                                                                     [](const Event& event) {
-            WindowResizeEvent resizeWindowEvent = (const WindowResizeEvent&) event;
-            RenderingAPI::GetInstance()->SetViewport(0, 0, resizeWindowEvent.GetWidth(), resizeWindowEvent.GetHeight());
-        });
+                                                                        WindowResizeEvent resizeWindowEvent = (const WindowResizeEvent&) event;
+                                                                        RenderingAPI::GetInstance()->SetViewport(0, 0,
+                                                                                                                 resizeWindowEvent.GetWidth(),
+                                                                                                                 resizeWindowEvent.GetHeight());
+                                                                    });
     }
 
     void RenderingAPI::OpenGlMessageCallback(unsigned int source, unsigned int type, unsigned int id,
                                              unsigned int severity, int length, const char* message,
                                              const void* userParam) {
-        switch (severity)
-        {
+        switch (severity) {
             case GL_DEBUG_SEVERITY_HIGH:
                 SPDLOG_CRITICAL("OpenGL error: {}", message);
                 return;
@@ -58,6 +59,9 @@ namespace mlg {
                 SPDLOG_WARN("OpenGL error: {}", message);
             case GL_DEBUG_SEVERITY_NOTIFICATION:
                 SPDLOG_INFO("OpenGL: {}", message);
+                return;
+            default:
+                SPDLOG_ERROR("OpenGL: {}", message);
                 return;
         }
     }
@@ -78,6 +82,7 @@ namespace mlg {
     }
 
     void RenderingAPI::Clear() {
+        glUseProgram(0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 

@@ -4,7 +4,6 @@
 #include <cstdint>
 
 #include "GameplayLayer/Nodes/Node.h"
-#include "LowLevelRenderer/ModelRenderer.h"
 #include "Window.h"
 
 namespace mlg {
@@ -14,7 +13,6 @@ namespace mlg {
 
         std::shared_ptr<class Lights> sceneLight;
         Node sceneRoot;
-        ModelRenderer renderer;
 
         static Core* instance;
 
@@ -31,8 +29,6 @@ namespace mlg {
         int32_t MainLoop();
 
         Node* GetSceneRoot();
-
-        ModelRenderer* GetRenderer();
 
         friend class CameraNode;
 

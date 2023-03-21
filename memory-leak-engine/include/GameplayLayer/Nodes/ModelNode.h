@@ -7,10 +7,8 @@ namespace mlg {
     private:
         std::shared_ptr<class Model> ModelPtr;
 
-        class ModelRenderer *Renderer;
-
     public:
-        explicit ModelNode(std::shared_ptr<Model> ModelPtr, ModelRenderer *Renderer);
+        explicit ModelNode(std::shared_ptr<Model> ModelPtr);
 
         Model *GetModel();
 

@@ -12,8 +12,10 @@
 #include "LowLevelRenderer/Gizmos/Gizmo.h"
 #include "LowLevelRenderer/Lights.h"
 #include "LowLevelRenderer/Model.h"
+#include "LowLevelRenderer/RenderingAPI.h"
+
 #include "Macros.h"
-#include "include/Core/MouseHandler.h"
+#include "Core/MouseHandler.h"
 
 #include "Core/Time.h"
 #include "Core/Window.h"
@@ -76,9 +78,7 @@ int32_t Core::MainLoop() {
     while (!Window::GetInstance()->ShouldClose()) {
         Time::UpdateStartFrameTime();
 
-        glClearDepth(1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        RenderingAPI::GetInstance()->Clear();
 #ifdef DEBUG
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -87,13 +87,10 @@ int32_t Core::MainLoop() {
 
         Input::Update();
 
-        sceneRoot.GetLocalTransform()->SetRotation(glm::quat({0, Time::GetSeconds(), 0}));
-
         sceneRoot.Update(Time::GetSeconds(), Time::GetDeltaSeconds());
         sceneRoot.CalculateWorldTransform();
         sceneRoot.Draw();
 
-        renderer.Draw(this);
         sceneLight->DrawGizmos();
 
 #ifdef DEBUG
@@ -154,10 +151,6 @@ void Core::CheckGLErrors() {
 
 Node* Core::GetSceneRoot() {
     return &sceneRoot;
-}
-
-ModelRenderer* Core::GetRenderer() {
-    return &renderer;
 }
 
 int32_t Core::Initialize() {
