@@ -87,8 +87,6 @@ int32_t Core::MainLoop() {
 
         Input::Update();
 
-        glViewport(0, 0, Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
-
         sceneRoot.GetLocalTransform()->SetRotation(glm::quat({0, Time::GetSeconds(), 0}));
 
         sceneRoot.Update(Time::GetSeconds(), Time::GetDeltaSeconds());

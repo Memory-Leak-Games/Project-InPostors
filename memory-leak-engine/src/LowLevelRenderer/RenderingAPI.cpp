@@ -4,6 +4,8 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
+#include "Core/Window.h"
+#include "Events/WindowEvent.h"
 #include "Macros.h"
 
 namespace mlg {
@@ -33,6 +35,12 @@ namespace mlg {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glEnable(GL_LINE_SMOOTH);
+
+        Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize,
+                                                                    [](const Event& event) {
+            WindowResizeEvent resizeWindowEvent = (const WindowResizeEvent&) event;
+            RenderingAPI::GetInstance()->SetViewport(0, 0, resizeWindowEvent.GetWidth(), resizeWindowEvent.GetHeight());
+        });
     }
 
     void RenderingAPI::OpenGlMessageCallback(unsigned int source, unsigned int type, unsigned int id,
@@ -60,4 +68,21 @@ namespace mlg {
         delete instance;
         instance = nullptr;
     }
+
+    void RenderingAPI::SetViewport(int32_t x, int32_t y, int32_t width, int32_t height) {
+        glViewport(x, y, width, height);
+    }
+
+    void RenderingAPI::SetClearColor(const glm::vec4& color) {
+        glClearColor(color.r, color.g, color.b, color.a);
+    }
+
+    void RenderingAPI::Clear() {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    RenderingAPI* RenderingAPI::GetInstance() {
+        return instance;
+    }
+
 }// namespace mlg

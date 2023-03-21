@@ -9,10 +9,14 @@ namespace mlg {
         static void Initialize();
         static void Stop();
 
+        static RenderingAPI* GetInstance();
+
         void SetClearColor(const glm::vec4& color);
+        void Clear();
+
 
     private:
-        void SetViewport(uint32_t x, uint32_t y, uint32_t widith, uint32_t height);
+        void SetViewport(int32_t x, int32_t y, int32_t width, int32_t height);
 
         static void OpenGlMessageCallback(unsigned source, unsigned type, unsigned id,
                                    unsigned severity, int length, const char* message,

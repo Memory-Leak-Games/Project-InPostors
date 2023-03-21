@@ -1,13 +1,13 @@
 #include "Events/WindowEvent.h"
 
 namespace mlg {
-    WindowResizeEvent::WindowResizeEvent(uint32_t width, uint32_t height) : width(width), height(height) {}
+    WindowResizeEvent::WindowResizeEvent(int32_t width, int32_t height) : width(width), height(height) {}
 
-    uint32_t WindowResizeEvent::GetWidth() const {
+    int32_t WindowResizeEvent::GetWidth() const {
         return width;
     }
 
-    uint32_t WindowResizeEvent::GetHeight() const {
+    int32_t WindowResizeEvent::GetHeight() const {
         return height;
     }
 
