@@ -31,7 +31,8 @@ void Mesh::BindTextures(const ShaderWrapper &Shader) const {
         else if (Item.textureType == "texture_normalmap")
             Number = std::to_string(0);
 
-        Shader.SetFloat(Item.textureType + Number, TextureIndex);
+        // TODO:
+        Shader.SetInt(Item.textureType + Number, TextureIndex);
         Item.textureAsset->Bind();
         TextureIndex++;
     }

@@ -24,6 +24,7 @@ namespace mlg {
 
         void SetMat4F(const std::string &name, glm::mat4 value) const;
 
+
         [[nodiscard]] GLint GetUniformLocation(const std::string &name) const;
 
         GLint TrySetVec4f(const std::string &name, glm::vec4 value) const;

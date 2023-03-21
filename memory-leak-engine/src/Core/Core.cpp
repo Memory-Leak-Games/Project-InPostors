@@ -29,16 +29,6 @@ using namespace mlg;
 Core* Core::instance;
 
 int32_t Core::Init() {
-    // TODO: Move to renderer Layer
-    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-        SPDLOG_ERROR("Failed to initialize GLAD!");
-        return 1;
-    }
-    SPDLOG_DEBUG("Successfully initialized OpenGL loader!");
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-
 #ifdef DEBUG
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -47,18 +37,13 @@ int32_t Core::Init() {
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;// Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
 
-#ifdef DEBUG
     Window::GetInstance()->ImGuiInit();
-#endif
 
     ImGui_ImplOpenGL3_Init("#version 460");
 
     // Setup style
     ImGui::StyleColorsDark();
 #endif
-
-    Gizmo::Initialize();
-
     return 0;
 }
 
