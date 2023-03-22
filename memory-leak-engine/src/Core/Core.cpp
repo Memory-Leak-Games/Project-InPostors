@@ -8,11 +8,11 @@
 #endif
 
 #include "GameplayLayer/Nodes/ModelNode.h"
-#include "LowLevelRenderer/Camera.h"
-#include "LowLevelRenderer/Gizmos/Gizmo.h"
-#include "LowLevelRenderer/Lights.h"
-#include "LowLevelRenderer/Model.h"
-#include "LowLevelRenderer/RenderingAPI.h"
+#include "Rendering/Camera.h"
+#include "Rendering/Gizmos/Gizmo.h"
+#include "Rendering/Lights.h"
+#include "Rendering/Model.h"
+#include "Rendering/RenderingAPI.h"
 
 #include "Macros.h"
 #include "Core/MouseHandler.h"

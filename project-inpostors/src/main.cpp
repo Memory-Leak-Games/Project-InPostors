@@ -1,11 +1,11 @@
 // This is not allowed in Game layer
 #include "GameplayLayer/Nodes/FreeCameraNode.h"
 #include "GameplayLayer/Nodes/ModelNode.h"
-#include "LowLevelRenderer/Model.h"
-#include "LowLevelRenderer/ShaderWrapper.h"
+#include "Rendering/Model.h"
+#include "Rendering/ShaderWrapper.h"
 #include <Core/HID/Input.h>
 #include <Core/AssetManager/AssetManager.h>
-#include <LowLevelRenderer/RenderingAPI.h>
+#include <Rendering/RenderingAPI.h>
 
 #include "Core/Core.h"
 #include "Core/Time.h"

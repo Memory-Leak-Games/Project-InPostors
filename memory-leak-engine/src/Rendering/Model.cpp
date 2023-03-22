@@ -1,4 +1,4 @@
-#include "LowLevelRenderer/Model.h"
+#include "Rendering/Model.h"
 
 #include "assimp/Importer.hpp"
 #include <filesystem>

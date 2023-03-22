@@ -1,6 +1,6 @@
 #include "GameplayLayer/Nodes/Node.h"
 #include "GameplayLayer/Nodes/ModelNode.h"
-#include "LowLevelRenderer/Model.h"
+#include "Rendering/Model.h"
 
 using namespace mlg;
 

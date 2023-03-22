@@ -1,4 +1,4 @@
-#include "LowLevelRenderer/ShaderWrapper.h"
+#include "Rendering/ShaderWrapper.h"
 
 #include "glm/ext.hpp"
 #include <fstream>
