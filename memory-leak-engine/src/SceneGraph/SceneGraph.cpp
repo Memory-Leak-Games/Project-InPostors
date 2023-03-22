@@ -1,7 +1,7 @@
 #include "SceneGraph/SceneGraph.h"
 
 #include "Macros.h"
-#include "Core/Transform.h"
+#include "include/SceneGraph/Transform.h"
 
 namespace mlg {
     SceneGraph* SceneGraph::instance;

@@ -10,7 +10,7 @@
 
 #include "Core/Core.h"
 #include "Core/Time.h"
-#include "Core/Transform.h"
+#include "SceneGraph/Transform.h"
 
 class RenderableTest : public mlg::Renderable {
 public:
