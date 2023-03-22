@@ -18,6 +18,7 @@
 
 // TODO: delete this
 #include "Rendering/Lights.h"
+#include "Events/WindowEvent.h"
 
 using namespace mlg;
 
@@ -29,7 +30,12 @@ int32_t Core::MainLoop() {
     sceneLight = std::make_shared<Lights>();
     auto begin = std::chrono::high_resolution_clock::now();
 
-    while (!Window::GetInstance()->ShouldClose()) {
+    bool shouldClose = false;
+    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowClose, [&shouldClose](const Event& event) {
+        shouldClose = true;
+    });
+
+    while (!shouldClose) {
         Time::UpdateStartFrameTime();
 
         RenderingAPI::GetInstance()->Clear();
