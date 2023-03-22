@@ -3,6 +3,7 @@
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
+#include <iostream>
 
 #include "Core/Window.h"
 #include "Events/WindowEvent.h"
@@ -21,10 +22,11 @@ namespace mlg {
 
         MLG_ASSERT(gladLoadGLLoader((GLADloadproc) glfwGetProcAddress), "Failed to initialize GLAD");
 
-        SPDLOG_INFO("OpenGL Info:");
-        SPDLOG_INFO("  Vendor: {}", glGetString(GL_VENDOR));
-        SPDLOG_INFO("  Renderer: {}", glGetString(GL_RENDERER));
-        SPDLOG_INFO("  Version: {}", glGetString(GL_VERSION));
+        std::cout << "\nOpenGL Info:\n"
+        << "   Vendor: " << glGetString(GL_VENDOR) << "\n"
+        << "   Renderer: " << glad_glGetString(GL_RENDERER) << "\n"
+        << "   Version: " << glad_glGetString(GL_VERSION) << "\n\n";
+
 
 #ifdef DEBUG
         glEnable(GL_DEBUG_OUTPUT);

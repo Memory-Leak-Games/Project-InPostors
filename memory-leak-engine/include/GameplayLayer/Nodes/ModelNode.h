@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Node.h"
+#include "Rendering/Renderable.h"
 
 namespace mlg {
-    class ModelNode : public Node {
+    class ModelNode : public Node, public Renderable{
     private:
         std::shared_ptr<class Model> ModelPtr;
 

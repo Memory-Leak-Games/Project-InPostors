@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Core/Transform.h"
+#include "Core/OldTransform.h"
 
 namespace mlg {
     class Node {
     private:
-        std::shared_ptr<Transform> localTransform;
+        std::shared_ptr<OldTransform> localTransform;
         glm::mat4 worldTransformMatrix;
 
         Node *parent{};
@@ -27,20 +27,16 @@ namespace mlg {
 
         const std::vector<std::shared_ptr<Node>> &GetChildrenList() const;
 
-        Transform *GetLocalTransform();
+        OldTransform *GetLocalTransform();
 
         glm::vec3 GetWorldPosition() const;
-
         glm::vec3 GetForwardVector() const;
-
         glm::vec3 GetRightVector() const;
-
         glm::vec3 GetUpVector() const;
 
         const glm::mat4 *GetWorldTransformMatrix() const;
 
         [[nodiscard]] bool WasDirtyThisFrame() const;
-
 
         template<typename Predicate>
         void GetAllNodes(std::vector<Node *> &foundArray, Predicate predicate);
@@ -52,7 +48,6 @@ namespace mlg {
 
     protected:
         virtual void Draw(glm::mat4 &parentTransform, bool isDirty);
-
         void CalculateWorldTransform(glm::mat4 &parentTransform, bool isDirty);
     };
 

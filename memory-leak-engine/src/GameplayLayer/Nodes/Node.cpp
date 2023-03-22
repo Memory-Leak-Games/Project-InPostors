@@ -3,10 +3,10 @@
 
 using namespace mlg;
 
-Node::Node() : localTransform(std::make_shared<Transform>()), worldTransformMatrix(1.f) {
+Node::Node() : localTransform(std::make_shared<OldTransform>()), worldTransformMatrix(1.f) {
 }
 
-Transform *Node::GetLocalTransform() {
+OldTransform *Node::GetLocalTransform() {
     return localTransform.get();
 }
 
@@ -65,7 +65,7 @@ bool Node::WasDirtyThisFrame() const {
 
 std::shared_ptr<Node> Node::Clone() const {
     auto result = std::make_shared<Node>();
-    result->localTransform = std::make_shared<Transform>(*this->localTransform);
+    result->localTransform = std::make_shared<OldTransform>(*this->localTransform);
     result->wasDirty = true;
 
     for (const auto &node: childrenList) {
