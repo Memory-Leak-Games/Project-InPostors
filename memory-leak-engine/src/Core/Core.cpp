@@ -7,78 +7,33 @@
 
 #endif
 
-#include "GameplayLayer/Nodes/ModelNode.h"
-#include "Rendering/Camera.h"
-#include "Rendering/Gizmos/Gizmo.h"
-#include "Rendering/Lights.h"
-#include "Rendering/Model.h"
-#include "Rendering/RenderingAPI.h"
-
 #include "Macros.h"
-#include "Core/MouseHandler.h"
 
 #include "Core/Time.h"
 #include "Core/Window.h"
 #include "Core/HID/Input.h"
 
-#include "GameplayLayer/Nodes/FreeCameraNode.h"
+#include "Rendering/RenderingAPI.h"
+#include "Rendering/Renderer.h"
 
-#include "Events/KeyEvent.h"
-#include "Events/MouseEvent.h"
+// TODO: delete this
+#include "Rendering/Lights.h"
 
 using namespace mlg;
 
 Core* Core::instance;
 
-int32_t Core::Init() {
-#ifdef DEBUG
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    (void) io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;// Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
-
-    Window::GetInstance()->ImGuiInit();
-
-    ImGui_ImplOpenGL3_Init("#version 460");
-
-    // Setup style
-    ImGui::StyleColorsDark();
-#endif
-    return 0;
-}
-
 int32_t Core::MainLoop() {
-
-#ifdef DEBUG
-    CheckGLErrors();
-#endif
-
 
     // TODO: Remove this
     sceneLight = std::make_shared<Lights>();
-    float mouseX, mouseY;
-
-    Key::KeyCode lastKey;
-
-    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::MouseMoved,
-                                                                [&mouseX, &mouseY](const Event& event) {
-                                                                    MouseMovedEvent mouseMovedEvent = (const MouseMovedEvent&) event;
-                                                                    mouseX = mouseMovedEvent.GetX();
-                                                                    mouseY = mouseMovedEvent.GetY();
-                                                                });
-
-    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::KeyPressed, [&lastKey](const Event& event) {
-        KeyPressedEvent keyPressedEvent = (const KeyPressedEvent&) event;
-        lastKey = keyPressedEvent.GetKeyCode();
-    });
-
     auto begin = std::chrono::high_resolution_clock::now();
+
     while (!Window::GetInstance()->ShouldClose()) {
         Time::UpdateStartFrameTime();
 
         RenderingAPI::GetInstance()->Clear();
+
 #ifdef DEBUG
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -87,11 +42,8 @@ int32_t Core::MainLoop() {
 
         Input::Update();
 
-        sceneRoot.Update(Time::GetSeconds(), Time::GetDeltaSeconds());
-        sceneRoot.CalculateWorldTransform();
-        sceneRoot.Draw();
-
-        sceneLight->DrawGizmos();
+        Renderer::GetInstance()->Draw();
+        Renderer::GetInstance()->LateDraw();
 
 #ifdef DEBUG
 
@@ -127,7 +79,7 @@ int32_t Core::MainLoop() {
     return 0;
 }
 
-Core::Core() : sceneRoot() {
+Core::Core() {
 }
 
 void Core::Stop() {
@@ -143,26 +95,26 @@ void Core::Stop() {
     instance = nullptr;
 }
 
-void Core::CheckGLErrors() {
-    GLenum error;
-    while ((error = glGetError()) != GL_NO_ERROR)
-        SPDLOG_ERROR("OpenGL error: {}", error);
-}
-
-Node* Core::GetSceneRoot() {
-    return &sceneRoot;
-}
-
-int32_t Core::Initialize() {
-
-    int32_t returnCode = 0;
+void Core::Initialize() {
     if (Core::instance == nullptr) {
         Core::instance = new Core();
-
-        returnCode = Core::instance->Init();
     }
 
-    return returnCode;
+#ifdef DEBUG
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    (void) io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;// Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
+
+    Window::GetInstance()->ImGuiInit();
+
+    ImGui_ImplOpenGL3_Init("#version 460");
+
+    // Setup style
+    ImGui::StyleColorsDark();
+#endif
 }
 
 Core* Core::GetInstance() {

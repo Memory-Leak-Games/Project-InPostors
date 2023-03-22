@@ -1,20 +1,24 @@
 #pragma once
 
-#include "Renderable.h"
-
 namespace mlg {
 
     class Renderer {
     private:
         static Renderer* instance;
 
-        //TODO: Add camera
+        std::vector<std::weak_ptr<class Renderable>> renderables;
+        std::vector<std::weak_ptr<class LateRenderable>> lateRenderables;
     public:
         static void Initialize();
         static void Stop();
 
-        static void Draw(Renderable* renderable);
-        static void LateDraw(Renderable* renderable);
+        static Renderer* GetInstance();
+
+        void Draw();
+        void LateDraw();
+
+        void AddRenderable(const std::shared_ptr<Renderable>& renderable);
+        void RemoveRenderable(std::shared_ptr<Renderable> renderable);
     };
 
 } // mlg

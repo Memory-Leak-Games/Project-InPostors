@@ -60,8 +60,11 @@ namespace mlg {
     }
 
     const glm::mat4& Transform::GetLocalMatrix() {
-        if (isDirty)
-            ReCalculateParentRecursive();
+        if (isDirty) {
+            glm::mat4 translation = glm::translate(glm::mat4(1.f), position);
+            glm::mat4 scaleMat = glm::scale(glm::mat4(1.f), scale);
+            localMatrix = translation * glm::toMat4(rotation) * scaleMat;
+        }
 
         return localMatrix;
     }
@@ -131,8 +134,7 @@ namespace mlg {
     }
 
     void Transform::Calculate() {
-        glm::mat4 tempMatrix = glm::mat4(1.f);
-        Calculate(tempMatrix, isDirty);
+        Calculate(GetLocalMatrix(), isDirty);
     }
 
     void Transform::Calculate(const glm::mat4& parentMatrix, bool isDirtyLocal) {
@@ -156,12 +158,18 @@ namespace mlg {
     }
 
     void Transform::ReCalculateParentRecursive() {
+        if (parent.expired() || parent.lock() == nullptr)
+        {
+            Calculate();
+            return;
+        }
+
         auto sharedParent = parent.lock();
         if (sharedParent->isDirty) {
             ReCalculateParentRecursive();
             return;
         }
 
-        Calculate();
+        Calculate(sharedParent->worldMatrix, true);
     }
 } // mlg

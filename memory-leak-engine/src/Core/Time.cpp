@@ -1,6 +1,8 @@
 #include "include/Core/Time.h"
 #include "GLFW/glfw3.h"
 
+#include "Macros.h"
+
 namespace mlg {
     Time* Time::instance;
 
@@ -29,9 +31,15 @@ namespace mlg {
     void Time::Initialize() {
         instance = new Time;
         glfwSetTime(0.);
+
+        SPDLOG_INFO("Initializing Time");
     }
 
     void Time::Stop() {
+        delete instance;
+        instance = nullptr;
+
+        SPDLOG_INFO("Stopping Time");
     }
 
     void Time::UpdateStartFrameTime() {
