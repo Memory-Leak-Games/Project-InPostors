@@ -1,4 +1,4 @@
-#include "LowLevelRenderer/Camera.h"
+#include "Rendering/Camera.h"
 #include "glm/gtc/type_ptr.hpp"
 
 #include "Macros.h"
@@ -13,11 +13,13 @@ Camera::Camera() : front(0.f, 0.f, 1.f), up(0.f, 1.f, 0.f), position(0.f), uboTr
     glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4) + sizeof(glm::vec4), nullptr, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, uboTransformMatrices);
     UpdateView();
+    UpdateProjection();
 }
 
 Camera::~Camera()
 {
-    glDeleteBuffers(1, &uboTransformMatrices);
+    // TODO: segmentation fault ??? <-- needs to repair
+    //glDeleteBuffers(1, &uboTransformMatrices);
 }
 
 glm::mat4 Camera::GetCameraProjectionMatrix(int resolutionX, int resolutionY) const
@@ -124,10 +126,6 @@ glm::vec3 Camera::GetRight() const
 {
     glm::vec3 Result = glm::cross(front, up);
     return Result;
-}
-
-void Camera::Update(float deltaSeconds)
-{
 }
 
 std::shared_ptr<Camera> Camera::instance;

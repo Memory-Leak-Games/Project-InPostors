@@ -1,4 +1,4 @@
-#include "LowLevelRenderer/Gizmos/SphereGizmo.h"
+#include "Rendering/Gizmos/SphereGizmo.h"
 
 #include "glm/ext/scalar_constants.hpp"
 

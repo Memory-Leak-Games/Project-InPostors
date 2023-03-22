@@ -1,8 +1,8 @@
 #pragma once
 
 namespace mlg {
+
     class RenderingAPI {
-    private:
         static RenderingAPI* instance;
 
         RenderingAPI() = default;
@@ -16,9 +16,11 @@ namespace mlg {
 
         static RenderingAPI* GetInstance();
     private:
-        static void OpenGlMessageCallback(unsigned int source, unsigned int type, unsigned int id,
-                                   unsigned int severity, int length, const char* message,
-                                   const void* userParam);
         void SetViewport(int32_t x, int32_t y, int32_t width, int32_t height);
+
+        static void OpenGlMessageCallback(unsigned source, unsigned type, unsigned id,
+                                          unsigned severity, int length, const char* message,
+                                          const void* userParam);
     };
-}
+
+}// namespace mlg

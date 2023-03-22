@@ -98,4 +98,5 @@ void main() {
 
     vec4 Light = CalculateBulb() + CalculateDirectionalLight() + CalculatedSpotLights;
     FragColor = texture(texture_diffuse0, fs_in.TexCoord) * Light;
+    FragColor.w = 1.f;
 }

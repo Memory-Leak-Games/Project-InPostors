@@ -1,7 +1,7 @@
 #pragma once
 
 #include "glad/glad.h"
-#include "LowLevelRenderer/ShaderWrapper.h"
+#include "Rendering/ShaderWrapper.h"
 
 namespace mlg {
     class Gizmo

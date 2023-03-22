@@ -13,16 +13,14 @@ namespace mlg {
         ShaderWrapper(std::string vertexShaderPath, std::string fragmentShaderPath, std::string geometryShaderPath);
 
         void Activate() const;
+        void DeActivate() const;
 
         void SetBool(const std::string &name, bool value) const;
-
         void SetInt(const std::string &name, int value) const;
-
         void SetFloat(const std::string &name, float value) const;
-
         void SetVec4F(const std::string &name, glm::vec4 value) const;
-
         void SetMat4F(const std::string &name, glm::mat4 value) const;
+
 
         [[nodiscard]] GLint GetUniformLocation(const std::string &name) const;
 

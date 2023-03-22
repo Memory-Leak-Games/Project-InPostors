@@ -7,92 +7,39 @@
 
 #endif
 
-#include "GameplayLayer/Nodes/ModelNode.h"
-#include "LowLevelRenderer/Camera.h"
-#include "LowLevelRenderer/Gizmos/Gizmo.h"
-#include "LowLevelRenderer/Lights.h"
-#include "LowLevelRenderer/Model.h"
 #include "Macros.h"
-#include "include/Core/MouseHandler.h"
 
 #include "Core/Time.h"
 #include "Core/Window.h"
 #include "Core/HID/Input.h"
 
-#include "GameplayLayer/Nodes/FreeCameraNode.h"
+#include "Rendering/RenderingAPI.h"
+#include "Rendering/Renderer.h"
 
-#include "Events/KeyEvent.h"
-#include "Events/MouseEvent.h"
+#include "Events/WindowEvent.h"
+
+// TODO: delete this
+#include "Rendering/Lights.h"
 
 using namespace mlg;
 
 Core* Core::instance;
 
-int32_t Core::Init() {
-    // TODO: Move to renderer Layer
-    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-        SPDLOG_ERROR("Failed to initialize GLAD!");
-        return 1;
-    }
-    SPDLOG_DEBUG("Successfully initialized OpenGL loader!");
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-
-#ifdef DEBUG
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    (void) io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;// Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
-
-#ifdef DEBUG
-    Window::GetInstance()->ImGuiInit();
-#endif
-
-    ImGui_ImplOpenGL3_Init("#version 460");
-
-    // Setup style
-    ImGui::StyleColorsDark();
-#endif
-
-    Gizmo::Initialize();
-
-    return 0;
-}
-
-int32_t Core::MainLoop() {
-
-#ifdef DEBUG
-    CheckGLErrors();
-#endif
-
+void Core::MainLoop() {
 
     // TODO: Remove this
     sceneLight = std::make_shared<Lights>();
-    float mouseX, mouseY;
+    auto begin = std::chrono::high_resolution_clock::now();
 
-    Key::KeyCode lastKey;
-
-    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::MouseMoved,
-                                                                [&mouseX, &mouseY](const Event& event) {
-                                                                    MouseMovedEvent mouseMovedEvent = (const MouseMovedEvent&) event;
-                                                                    mouseX = mouseMovedEvent.GetX();
-                                                                    mouseY = mouseMovedEvent.GetY();
-                                                                });
-
-    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::KeyPressed, [&lastKey](const Event& event) {
-        KeyPressedEvent keyPressedEvent = (const KeyPressedEvent&) event;
-        lastKey = keyPressedEvent.GetKeyCode();
+    bool shouldClose = false;
+    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowClose, [&shouldClose](const Event& event) {
+        shouldClose = true;
     });
 
-    auto begin = std::chrono::high_resolution_clock::now();
-    while (!Window::GetInstance()->ShouldClose()) {
+    while (!shouldClose) {
         Time::UpdateStartFrameTime();
 
-        glClearDepth(1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        RenderingAPI::GetInstance()->Clear();
 
 #ifdef DEBUG
         ImGui_ImplOpenGL3_NewFrame();
@@ -102,16 +49,10 @@ int32_t Core::MainLoop() {
 
         Input::Update();
 
-        glViewport(0, 0, Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
-
-        sceneRoot.Update(Time::GetSeconds(), Time::GetDeltaSeconds());
-        sceneRoot.CalculateWorldTransform();
-        sceneRoot.Draw();
-
-        sceneLight->DrawGizmos();
+        Renderer::GetInstance()->Draw();
+        Renderer::GetInstance()->LateDraw();
 
 #ifdef DEBUG
-
         ImGui::Begin("FPS");
         ImGui::Text("Framerate: %.3f (%.1f FPS)", Time::GetTrueDeltaSeconds(), 1 / Time::GetTrueDeltaSeconds());
         ImGui::Text("Time: %.3f", Time::GetSeconds());
@@ -141,10 +82,6 @@ int32_t Core::MainLoop() {
         Window::GetInstance()->PollEvents();
     }
 
-    return 0;
-}
-
-Core::Core() : sceneRoot() {
 }
 
 void Core::Stop() {
@@ -160,26 +97,25 @@ void Core::Stop() {
     instance = nullptr;
 }
 
-void Core::CheckGLErrors() {
-    GLenum error;
-    while ((error = glGetError()) != GL_NO_ERROR)
-        SPDLOG_ERROR("OpenGL error: {}", error);
-}
-
-Node* Core::GetSceneRoot() {
-    return &sceneRoot;
-}
-
-int32_t Core::Initialize() {
-
-    int32_t returnCode = 0;
+void Core::Initialize() {
     if (Core::instance == nullptr) {
         Core::instance = new Core();
-
-        returnCode = Core::instance->Init();
     }
 
-    return returnCode;
+#ifdef DEBUG
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    (void) io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;// Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
+
+    Window::GetInstance()->ImGuiInit();
+
+    ImGui_ImplOpenGL3_Init("#version 460");
+
+    ImGui::StyleColorsDark();
+#endif
 }
 
 Core* Core::GetInstance() {

@@ -1,8 +1,9 @@
 
-#include "LowLevelRenderer/RenderingAPI.h"
+#include "Rendering/RenderingAPI.h"
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
+#include <iostream>
 
 #include "Core/Window.h"
 #include "Events/WindowEvent.h"
@@ -20,6 +21,12 @@ namespace mlg {
         instance = new RenderingAPI();
 
         MLG_ASSERT(gladLoadGLLoader((GLADloadproc) glfwGetProcAddress), "Failed to initialize GLAD");
+
+        std::cout << "\nOpenGL Info:\n"
+        << "   Vendor: " << glGetString(GL_VENDOR) << "\n"
+        << "   Renderer: " << glad_glGetString(GL_RENDERER) << "\n"
+        << "   Version: " << glad_glGetString(GL_VERSION) << "\n\n";
+
 
 #ifdef DEBUG
         glEnable(GL_DEBUG_OUTPUT);
@@ -60,6 +67,9 @@ namespace mlg {
             case GL_DEBUG_SEVERITY_NOTIFICATION:
                 SPDLOG_INFO("OpenGL: {}", message);
                 return;
+            default:
+                SPDLOG_ERROR("OpenGL: {}", message);
+                return;
         }
     }
 
@@ -79,6 +89,7 @@ namespace mlg {
     }
 
     void RenderingAPI::Clear() {
+        glUseProgram(0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 

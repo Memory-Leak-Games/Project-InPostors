@@ -6,18 +6,18 @@ namespace mlg {
 
     class WindowResizeEvent : public Event {
     private:
-        uint32_t width;
-        uint32_t height;
+        int32_t width;
+        int32_t height;
 
     public:
-        WindowResizeEvent(uint32_t width, uint32_t height);
+        WindowResizeEvent(int32_t width, int32_t height);
 
         EVENT_CLASS_TYPE(WindowResize)
 
         [[nodiscard]] std::string ToString() const override;
 
-        [[nodiscard]] uint32_t GetWidth() const;
-        [[nodiscard]] uint32_t GetHeight() const;
+        [[nodiscard]] int32_t GetWidth() const;
+        [[nodiscard]] int32_t GetHeight() const;
     };
 
     class WindowCloseEvent : public Event {
