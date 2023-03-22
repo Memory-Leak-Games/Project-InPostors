@@ -4,7 +4,7 @@
 #include "Rendering/Renderable.h"
 
 namespace mlg {
-    class ModelNode : public Node, public Renderable{
+    class ModelNode : public Node {
     private:
         std::shared_ptr<class Model> ModelPtr;
 

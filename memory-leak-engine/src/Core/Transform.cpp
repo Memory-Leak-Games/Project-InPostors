@@ -1,44 +1,167 @@
-#include "Core/Transform.h"
+#include "include/Core/Transform.h"
 
-using namespace mlg;
+namespace mlg {
+    Transform::Transform()
+            : position(0.f), rotation(glm::vec3(0.f)), scale(1.f),
+              isDirty(true), worldMatrix(1.f), localMatrix(1.f) {
+    }
 
-glm::mat4 Transform::GetMatrix() const {
-    glm::mat4 translation = glm::translate(glm::mat4(1.f), position);
-    glm::mat4 scaleMat = glm::scale(glm::mat4(1.f), scale);
-    return translation * glm::toMat4(rotation) * scaleMat;
-}
+    Transform::Transform(const Transform& original)
+            : position(0.f), rotation(glm::vec3(0.f)), scale(1.f),
+              isDirty(true), worldMatrix(1.f), localMatrix(1.f) {
 
-glm::vec3 Transform::GetPosition() const {
-    return position;
-}
+    }
 
-glm::quat Transform::GetRotation() const {
-    return rotation;
-}
+    void Transform::operator=(const Transform& another) {
+        if (this == &another)
+            return;
 
-glm::vec3 Transform::GetScale() const {
-    return scale;
-}
+        this->position = another.position;
+        this->rotation = another.rotation;
+        this->scale = another.scale;
 
-void Transform::SetPosition(const glm::vec3& newPosition) {
-    position = newPosition;
-    isDirty = true;
-}
+        this->localMatrix = another.localMatrix;
 
-void Transform::SetScale(const glm::vec3& newScale) {
-    scale = newScale;
-    isDirty = true;
-}
+        isDirty = true;
+    }
 
-Transform::Transform() : position(glm::vec3(0.f)), rotation(glm::mat4(1.f)), scale(glm::vec3(1.f)), isDirty(true) {}
+    const glm::vec3& Transform::GetPosition() const {
+        return position;
+    }
 
-Transform::Transform(Transform* originalTransform) :
-        position(originalTransform->position),
-        rotation(originalTransform->rotation),
-        scale(originalTransform->scale) {
-}
+    void Transform::SetPosition(const glm::vec3& position) {
+        SetDirtyRecursive();
+        Transform::position = position;
+    }
 
-void Transform::SetRotation(const glm::quat &newRotation) {
-    rotation = newRotation;
-    isDirty = true;
-}
+    const glm::vec3& Transform::GetScale() const {
+        return scale;
+    }
+
+    void Transform::SetScale(const glm::vec3& scale) {
+        SetDirtyRecursive();
+        Transform::scale = scale;
+    }
+
+    const glm::quat& Transform::GetRotation() const {
+        return rotation;
+    }
+
+    void Transform::SetRotation(const glm::quat& rotation) {
+        SetDirtyRecursive();
+        Transform::rotation = rotation;
+    }
+
+    const glm::mat4& Transform::GetWorldMatrix() {
+        if (isDirty)
+            ReCalculateParentRecursive();
+
+        return worldMatrix;
+    }
+
+    const glm::mat4& Transform::GetLocalMatrix() {
+        if (isDirty)
+            ReCalculateParentRecursive();
+
+        return localMatrix;
+    }
+
+    glm::vec3 Transform::GetWorldPosition() {
+        if (isDirty)
+            ReCalculateParentRecursive();
+
+        float x = worldMatrix[3][0];
+        float y = worldMatrix[3][1];
+        float z = worldMatrix[3][2];
+
+        return {x, y, z};
+    }
+
+    glm::vec3 Transform::GetForwardVector() {
+        if (isDirty)
+            ReCalculateParentRecursive();
+
+        glm::vec3 result;
+        result.x = worldMatrix[2][0];
+        result.y = worldMatrix[2][1];
+        result.z = worldMatrix[2][2];
+
+        return glm::normalize(result);
+    }
+
+    glm::vec3 Transform::GetRightVector() {
+        if (isDirty)
+            ReCalculateParentRecursive();
+
+        glm::vec3 result;
+        result.x = -worldMatrix[0][0];
+        result.y = -worldMatrix[0][1];
+        result.z = -worldMatrix[0][2];
+
+        return glm::normalize(result);
+    }
+
+    glm::vec3 Transform::GetUpVector() {
+        if (isDirty)
+            ReCalculateParentRecursive();
+
+        glm::vec3 result;
+        result.x = worldMatrix[1][0];
+        result.y = worldMatrix[1][1];
+        result.z = worldMatrix[1][2];
+
+        return glm::normalize(result);
+    }
+
+    const std::vector<std::shared_ptr<Transform>>& Transform::GetChildren() {
+        return children;
+    }
+
+    const std::weak_ptr<Transform>& Transform::GetParent() {
+        return parent;
+    }
+
+    void Transform::AddChild(const std::shared_ptr<Transform>& newChild) {
+        if (newChild.get() == this || newChild.get() == parent.lock().get())
+            return;
+
+        newChild->parent = shared_from_this();
+        children.push_back(newChild);
+        newChild->isDirty = true;
+    }
+
+    void Transform::Calculate() {
+        glm::mat4 tempMatrix = glm::mat4(1.f);
+        Calculate(tempMatrix, isDirty);
+    }
+
+    void Transform::Calculate(const glm::mat4& parentMatrix, bool isDirtyLocal) {
+        isDirtyLocal |= isDirty;
+        if (isDirty) {
+            worldMatrix = parentMatrix * localMatrix;
+            isDirty = false;
+        }
+
+        for (const std::shared_ptr<Transform>& child : children) {
+            child->Calculate(worldMatrix, isDirtyLocal);
+        }
+    }
+
+    void Transform::SetDirtyRecursive() {
+        isDirty = true;
+
+        for (const std::shared_ptr<Transform>& child : children) {
+            child->SetDirtyRecursive();
+        }
+    }
+
+    void Transform::ReCalculateParentRecursive() {
+        auto sharedParent = parent.lock();
+        if (sharedParent->isDirty) {
+            ReCalculateParentRecursive();
+            return;
+        }
+
+        Calculate();
+    }
+} // mlg
