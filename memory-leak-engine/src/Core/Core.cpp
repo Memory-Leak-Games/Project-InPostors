@@ -16,15 +16,16 @@
 #include "Rendering/RenderingAPI.h"
 #include "Rendering/Renderer.h"
 
+#include "Events/WindowEvent.h"
+
 // TODO: delete this
 #include "Rendering/Lights.h"
-#include "Events/WindowEvent.h"
 
 using namespace mlg;
 
 Core* Core::instance;
 
-int32_t Core::MainLoop() {
+void Core::MainLoop() {
 
     // TODO: Remove this
     sceneLight = std::make_shared<Lights>();
@@ -52,7 +53,6 @@ int32_t Core::MainLoop() {
         Renderer::GetInstance()->LateDraw();
 
 #ifdef DEBUG
-
         ImGui::Begin("FPS");
         ImGui::Text("Framerate: %.3f (%.1f FPS)", Time::GetTrueDeltaSeconds(), 1 / Time::GetTrueDeltaSeconds());
         ImGui::Text("Time: %.3f", Time::GetSeconds());
@@ -82,10 +82,6 @@ int32_t Core::MainLoop() {
         Window::GetInstance()->PollEvents();
     }
 
-    return 0;
-}
-
-Core::Core() {
 }
 
 void Core::Stop() {
@@ -118,7 +114,6 @@ void Core::Initialize() {
 
     ImGui_ImplOpenGL3_Init("#version 460");
 
-    // Setup style
     ImGui::StyleColorsDark();
 #endif
 }

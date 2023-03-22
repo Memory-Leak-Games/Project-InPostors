@@ -1,6 +1,5 @@
 #pragma once
 
-#include <GLFW/glfw3.h>
 #include <cstdint>
 
 #include "Window.h"
@@ -8,13 +7,11 @@
 namespace mlg {
     class Core {
     private:
-        class CameraNode* currentCamera;
-
         std::shared_ptr<class Lights> sceneLight;
 
         static Core* instance;
 
-        explicit Core();
+        Core() = default;
 
     public:
         static void Initialize();
@@ -22,9 +19,6 @@ namespace mlg {
 
         static Core* GetInstance();
 
-        int32_t MainLoop();
-    private:
-
-        void CheckGLErrors();
+        void MainLoop();
     };
 }// namespace mlg

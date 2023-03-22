@@ -50,7 +50,7 @@ public:
 
         mlg::Core* engine = mlg::Core::GetInstance();
         PrepareScene();
-        int32_t returnCode = engine->MainLoop();
+        engine->MainLoop();
 
         mlg::Input::Stop();
         mlg::Core::Stop();
@@ -60,7 +60,7 @@ public:
         mlg::Window::Stop();
         mlg::Time::Stop();
 
-        return returnCode;
+        return 0;
     }
 
     void PrepareScene() {
@@ -80,8 +80,8 @@ public:
 
 int main(int argc, char* argv[]) {
     LoggingMacros::InitializeSPDLog();
-
     std::srand(std::time(0));
+
     ProjectInpostors game;
     return game.Main(argc, argv);
 }
