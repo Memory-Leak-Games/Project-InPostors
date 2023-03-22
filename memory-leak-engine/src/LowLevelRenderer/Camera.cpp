@@ -13,6 +13,7 @@ Camera::Camera() : front(0.f, 0.f, 1.f), up(0.f, 1.f, 0.f), position(0.f), uboTr
     glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4) + sizeof(glm::vec4), nullptr, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, uboTransformMatrices);
     UpdateView();
+    UpdateProjection();
 }
 
 Camera::~Camera()
