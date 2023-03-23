@@ -27,6 +27,16 @@ void ShaderWrapper::SetInt(const std::string& name, int value) const
     glUniform1i(UniformLocation, value);
 }
 
+void ShaderWrapper::SetIntArray(const std::string& name, int* values, uint32_t count) const
+{
+    GLint UniformLocation = GetUniformLocation(name);
+    if (UniformLocation == -1)
+    {
+        SPDLOG_WARN(name + " not found");
+    }
+    glUniform1iv(UniformLocation, count, values);
+}
+
 void ShaderWrapper::SetBool(const std::string& name, bool value) const
 {
     GLint UniformLocation = GetUniformLocation(name);
@@ -35,6 +45,26 @@ void ShaderWrapper::SetBool(const std::string& name, bool value) const
         SPDLOG_WARN(name + " not found");
     }
     glUniform1i(UniformLocation, static_cast<GLint>(value));
+}
+
+void ShaderWrapper::SetVec2F(const std::string& name, glm::vec2 value) const
+{
+    GLint UniformLocation = GetUniformLocation(name);
+    if (UniformLocation == -1)
+    {
+        SPDLOG_WARN(name + " not found");
+    }
+    glUniform2f(UniformLocation, value.x, value.y);
+}
+
+void ShaderWrapper::SetVec3F(const std::string& name, glm::vec3 value) const
+{
+    GLint UniformLocation = GetUniformLocation(name);
+    if (UniformLocation == -1)
+    {
+        SPDLOG_WARN(name + " not found");
+    }
+    glUniform3f(UniformLocation, value.x, value.y, value.z);
 }
 
 void ShaderWrapper::SetVec4F(const std::string& name, glm::vec4 value) const
@@ -211,8 +241,4 @@ GLint ShaderWrapper::TrySetVec4f(const std::string& name, glm::vec4 value) const
     glUniformMatrix4fv(UniformLocation, 1, GL_FALSE, glm::value_ptr(value));
     return UniformLocation;
 }
-
-
-
-
 
