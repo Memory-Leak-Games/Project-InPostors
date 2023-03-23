@@ -7,6 +7,7 @@
 #include <Core/AssetManager/AssetManager.h>
 #include <Rendering/RenderingAPI.h>
 #include <Rendering/Renderable.h>
+#include <Gameplay/EntityManager.h>
 
 #include "Core/Core.h"
 #include "Core/Time.h"
@@ -34,6 +35,7 @@ private:
     std::shared_ptr<mlg::Camera> camera;
     std::shared_ptr<RenderableTest> tardis;
     std::shared_ptr<RenderableTest> tardis2;
+    std::shared_ptr<RenderableTest> tardis3;
 public:
     ProjectInpostors() = default;
 
@@ -70,8 +72,16 @@ public:
         mlg::Renderer::GetInstance()->AddRenderable(tardis);
 
         tardis2 = std::make_shared<RenderableTest>("res/models/Tardis/tardis.obj", "res/shaders/model.vert", "res/shaders/textured_model.frag");
-        tardis2->transform.SetPosition({5, 0, 0});
+        tardis2->transform.SetPosition({0, 0, 0});
         mlg::Renderer::GetInstance()->AddRenderable(tardis2);
+
+        tardis3 = std::make_shared<RenderableTest>("res/models/Tardis/tardis.obj", "res/shaders/model.vert", "res/shaders/textured_model.frag");
+        tardis3->transform.SetPosition({5, 0, 0});
+        mlg::Renderer::GetInstance()->AddRenderable(tardis3);
+
+        tardis->transform.Calculate();
+        tardis2->transform.Calculate();
+        tardis3->transform.Calculate();
     }
 
     virtual ~ProjectInpostors() {
