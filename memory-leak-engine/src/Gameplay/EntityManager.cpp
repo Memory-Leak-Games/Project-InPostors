@@ -26,6 +26,12 @@ namespace mlg {
         return instance;
     }
 
+    void EntityManager::Start() {
+        for (const auto& entity : instance->entities) {
+            entity->Start();
+        }
+    }
+
     void EntityManager::PhysicsUpdate() {
         for (const auto& entity : instance->entities) {
             if (entity->IsStatic())

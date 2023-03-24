@@ -40,6 +40,7 @@ namespace mlg {
         static std::weak_ptr<Entity> FindByName(const std::string& name);
         static std::vector<std::weak_ptr<Entity>> FindAllByTag(const std::string& tag);
 
+        static void Start();
         static void PhysicsUpdate();
         static void Update();
         static void LateUpdate();

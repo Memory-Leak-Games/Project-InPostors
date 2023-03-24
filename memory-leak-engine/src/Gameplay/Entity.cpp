@@ -9,10 +9,9 @@ namespace mlg {
         parent->AddChild(transform);
     }
 
+    void Entity::Start() {}
     void Entity::PhysicsUpdate() {}
-
     void Entity::Update() {}
-
     void Entity::LateUpdate() {}
 
     bool Entity::IsQueuedForDeletion() const {
@@ -63,4 +62,5 @@ namespace mlg {
     std::shared_ptr<Entity> Entity::Create(const std::string& name, bool isStatic, Transform* parent) {
         return std::shared_ptr<Entity>(new Entity(name, isStatic, parent));
     }
+
 } // mlg

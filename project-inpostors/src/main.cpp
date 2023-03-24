@@ -24,6 +24,10 @@ public:
 
     void Update() override {
         GetOwner().lock()->GetTransform().SetRotation({{0.f, mlg::Time::GetSeconds(), 0.f}});
+
+        if (mlg::Input::IsActionPressed("test_button")) {
+            QueueForDeletion();
+        }
     }
 
     ~ComponentTest() override {

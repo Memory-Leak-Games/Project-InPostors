@@ -40,6 +40,7 @@ void Core::MainLoop() {
     });
 
     ComponentManager::Start();
+    EntityManager::Start();
 
     while (!shouldClose) {
         Time::UpdateStartFrameTime();
