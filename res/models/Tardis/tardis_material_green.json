@@ -1,0 +1,23 @@
+{
+  "vertexShader": "res/shaders/model.vert",
+  "fragmentShader": "res/shaders/textured_model.frag",
+  "uniforms": [
+    {
+      "type": "float",
+      "name": "brightness",
+      "value": 1.0
+    },
+    {
+      "type": "vec4",
+      "name": "tint",
+      "value": [0.8, 1.0, 0.8, 1.0]
+    }
+  ],
+  "textures": [
+    {
+      "name": "texture_diffuse0",
+      "index": 0,
+      "path": "res/models/Tardis/tardis.png"
+    }
+  ]
+}

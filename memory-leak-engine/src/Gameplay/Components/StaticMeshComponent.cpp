@@ -11,7 +11,7 @@
 
 namespace mlg {
     StaticMeshComponent::StaticMeshComponent(const std::weak_ptr<Entity>& owner, const std::string& name,
-                                             const std::shared_ptr<Model>& model,
+                                             const std::shared_ptr<ModelAsset>& model,
                                              const std::shared_ptr<MaterialAsset>& material)
             : SceneComponent(owner, name), model(model), material(material) {
     }

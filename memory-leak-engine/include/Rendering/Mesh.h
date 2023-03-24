@@ -9,11 +9,6 @@ namespace mlg {
         glm::vec2 texCoord;
     };
 
-    struct Texture {
-        std::shared_ptr<class TextureAsset> textureAsset;
-        std::string textureType;
-    };
-
     class Mesh {
     private:
         std::vector<Vertex> vertices;
@@ -25,6 +20,7 @@ namespace mlg {
         uint32_t ebo;
     public:
         Mesh(const std::vector<Vertex> &Vertices, const std::vector<GLuint> &Indices);
+        ~Mesh();
 
         void Draw() const;
 
