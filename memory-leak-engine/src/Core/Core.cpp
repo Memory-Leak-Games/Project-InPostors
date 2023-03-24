@@ -19,8 +19,8 @@
 #include "Events/WindowEvent.h"
 
 // TODO: delete this
+#include "Rendering/Gizmos/Gizmos.h"
 #include "Rendering/Lights.h"
-#include "Rendering/Gizmos/Gizmo.h"
 
 using namespace mlg;
 
@@ -53,10 +53,16 @@ void Core::MainLoop() {
         Renderer::GetInstance()->Draw();
         Renderer::GetInstance()->LateDraw();
 
-        // Gizmo test
+        // Gizmos test
         {
-            Gizmo::Line({-10, 0, 0}, {10, 0, 0}, {0, 1, 0, 1});
-            Gizmo::Line({3, -5, -20}, {3, -5, 20}, {1, 0, 0, 1});
+            Gizmos::DrawLine({-10, 0, 0}, {10, sin(Time::GetSeconds() * 4) * 7, 0}, {0, 1, 0, 1});
+            Gizmos::DrawLine({3, -5, -20}, {cos(Time::GetSeconds()) * 5, sin(Time::GetSeconds()) * 5, 20}, {1, 0, 0, 1});
+            Gizmos::DrawBox({1, -3, -1}, {6, 2, 10}, glm::angleAxis(Time::GetSeconds(), glm::vec3(1, 0, 0)), {0, 0, 1, 1});
+            Transform transform = Transform();
+            transform.SetPosition({-10, 5, -5});
+            transform.SetScale(glm::vec3(3, 1, 2) * (sin(Time::GetSeconds()) + 1.1f));
+            transform.SetRotation(glm::quat({Time::GetSeconds() * 5, 2, 3}));
+            Gizmos::DrawBox(transform, {1, 1, 0, 1});
         }
 
 #ifdef DEBUG

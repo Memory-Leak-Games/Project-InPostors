@@ -1,13 +1,13 @@
 // This is not allowed in Game layer
 #include "Rendering/Camera.h"
 #include "Rendering/Model.h"
-#include "Rendering/ShaderWrapper.h"
 #include "Rendering/Renderer.h"
-#include <Core/HID/Input.h>
+#include "Rendering/ShaderWrapper.h"
 #include <Core/AssetManager/AssetManager.h>
-#include <Rendering/RenderingAPI.h>
+#include <Core/HID/Input.h>
+#include <Rendering/Gizmos/Gizmos.h>
 #include <Rendering/Renderable.h>
-#include <Rendering/Gizmos/Gizmo.h>
+#include <Rendering/RenderingAPI.h>
 
 #include "Core/Core.h"
 #include "Core/Time.h"
@@ -44,7 +44,7 @@ public:
         mlg::Window::GetInstance()->SetVerticalSync(false);
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
-        mlg::Gizmo::Initialize();
+        mlg::Gizmos::Initialize();
         mlg::AssetManager::Initialize();
 
         mlg::Core::Initialize();
@@ -57,7 +57,7 @@ public:
         mlg::Input::Stop();
         mlg::Core::Stop();
         mlg::AssetManager::Stop();
-        //mlg::Gizmo::Stop();
+        //mlg::Gizmos::Stop();
         mlg::Renderer::Stop();
         mlg::RenderingAPI::Stop();
         mlg::Window::Stop();
