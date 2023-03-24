@@ -7,6 +7,7 @@
 #include <Core/AssetManager/AssetManager.h>
 #include <Rendering/RenderingAPI.h>
 #include <Rendering/Renderable.h>
+#include <Rendering/Gizmos/Gizmo.h>
 
 #include "Core/Core.h"
 #include "Core/Time.h"
@@ -43,6 +44,7 @@ public:
         mlg::Window::GetInstance()->SetVerticalSync(false);
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
+        mlg::Gizmo::Initialize();
         mlg::AssetManager::Initialize();
 
         mlg::Core::Initialize();
@@ -55,6 +57,7 @@ public:
         mlg::Input::Stop();
         mlg::Core::Stop();
         mlg::AssetManager::Stop();
+        //mlg::Gizmo::Stop();
         mlg::Renderer::Stop();
         mlg::RenderingAPI::Stop();
         mlg::Window::Stop();

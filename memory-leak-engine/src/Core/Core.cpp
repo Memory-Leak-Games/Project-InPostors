@@ -20,6 +20,7 @@
 
 // TODO: delete this
 #include "Rendering/Lights.h"
+#include "Rendering/Gizmos/Gizmo.h"
 
 using namespace mlg;
 
@@ -51,6 +52,12 @@ void Core::MainLoop() {
 
         Renderer::GetInstance()->Draw();
         Renderer::GetInstance()->LateDraw();
+
+        // Gizmo test
+        {
+            Gizmo::Line({-10, 0, 0}, {10, 0, 0}, {0, 1, 0, 1});
+            Gizmo::Line({3, -5, -20}, {3, -5, 20}, {1, 0, 0, 1});
+        }
 
 #ifdef DEBUG
         ImGui::Begin("FPS");
