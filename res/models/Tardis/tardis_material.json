@@ -1,0 +1,21 @@
+{
+  "uniforms": [
+    {
+      "type": "float",
+      "name": "test",
+      "value": 0.9
+    },
+    {
+      "type": "vec4",
+      "name": "test",
+      "value": [0.1, 0.2, 0.3, 0.4]
+    }
+  ],
+  "textures": [
+    {
+      "name": "texture_diffuse0",
+      "index": 0,
+      "path": "res/models/Tardis/tardis.png"
+    }
+  ]
+}

@@ -17,7 +17,7 @@ void Model::Draw() {
     }
 }
 
-Model::Model(const std::string& Path, std::shared_ptr<ShaderWrapper> Shader)
+Model::Model(const std::string& Path, std::shared_ptr<ShaderProgram> Shader)
         : modelPath(Path), shader(Shader) {
     Assimp::Importer AssimpImporter;
     uint32_t AssimpProcessFlags = aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_OptimizeMeshes;
@@ -118,7 +118,7 @@ Model::LoadMaterialTextures(aiMaterial* Material, aiTextureType Type, const std:
     return Textures;
 }
 
-const std::shared_ptr<ShaderWrapper>& Model::GetShader() const {
+const std::shared_ptr<ShaderProgram>& Model::GetShader() const {
     return shader;
 }
 

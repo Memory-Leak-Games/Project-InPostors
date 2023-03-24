@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ShaderWrapper.h"
+#include "ShaderProgram.h"
 
 namespace mlg {
     struct Vertex {
@@ -28,9 +28,9 @@ namespace mlg {
         Mesh(const std::vector<Vertex> &Vertices, const std::vector<GLuint> &Indices,
              const std::vector<Texture> &Textures);
 
-        void Draw(ShaderWrapper &Shader) const;
+        void Draw(ShaderProgram &Shader) const;
 
-        void BindTextures(const ShaderWrapper &Shader) const;
+        void BindTextures(const ShaderProgram &Shader) const;
     private:
         void SetupBuffers();
     };

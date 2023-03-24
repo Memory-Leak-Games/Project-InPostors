@@ -1,7 +1,7 @@
 // This is not allowed in Game layer
 #include "Rendering/Camera.h"
 #include "Rendering/Model.h"
-#include "Rendering/ShaderWrapper.h"
+#include "Rendering/ShaderProgram.h"
 #include "Rendering/Renderer.h"
 #include <Rendering/RenderingAPI.h>
 #include <Rendering/Renderable.h>
@@ -43,7 +43,7 @@ public:
     int Main(int argc, char* argv[]) {
         mlg::Time::Initialize();
         mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
-        mlg::Window::GetInstance()->SetVerticalSync(true);
+        mlg::Window::GetInstance()->SetVerticalSync(false);
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
         mlg::AssetManager::Initialize();
@@ -74,7 +74,7 @@ public:
 
     void PrepareScene() {
         mlg::Camera::GetInstance()->SetPosition({0, 0, -20});
-        auto tardisShader = std::make_shared<mlg::ShaderWrapper>("res/shaders/model.vert", "res/shaders/textured_model.frag");
+        auto tardisShader = std::make_shared<mlg::ShaderProgram>("res/shaders/model.vert", "res/shaders/textured_model.frag");
         auto tardisModel = std::make_shared<mlg::Model>("res/models/Tardis/tardis.obj", tardisShader);
 
         auto tardisEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisOne", true, mlg::SceneGraph::GetRoot());

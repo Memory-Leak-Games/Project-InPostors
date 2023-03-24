@@ -35,14 +35,14 @@ void Mesh::SetupBuffers() {
     glBindVertexArray(0);
 }
 
-void Mesh::Draw(ShaderWrapper& Shader) const {
+void Mesh::Draw(ShaderProgram& Shader) const {
     BindTextures(Shader);
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, (int32_t) indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 
-void Mesh::BindTextures(const ShaderWrapper& Shader) const {
+void Mesh::BindTextures(const ShaderProgram& Shader) const {
     uint16_t TextureIndex = 0;
     uint16_t DiffuseIndex = 0;
     uint16_t SpecularIndex = 0;

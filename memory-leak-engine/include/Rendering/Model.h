@@ -7,16 +7,16 @@
 namespace mlg {
     class Model {
     private:
-        std::shared_ptr<ShaderWrapper> shader;
+        std::shared_ptr<ShaderProgram> shader;
         std::vector<std::shared_ptr<Mesh>> meshes;
         std::string modelPath;
 
     public:
-        explicit Model(const std::string &Path, std::shared_ptr<ShaderWrapper> Shared);
+        explicit Model(const std::string &Path, std::shared_ptr<ShaderProgram> Shared);
 
         void Draw();
 
-        [[nodiscard]] const std::shared_ptr<ShaderWrapper> &GetShader() const;
+        [[nodiscard]] const std::shared_ptr<ShaderProgram> &GetShader() const;
 
         [[nodiscard]] const std::vector<std::shared_ptr<Mesh>> &GetMeshes() const;
 
