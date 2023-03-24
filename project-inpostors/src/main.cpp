@@ -1,13 +1,39 @@
 // This is not allowed in Game layer
-#include "GameplayLayer/Nodes/FreeCameraNode.h"
-#include "GameplayLayer/Nodes/ModelNode.h"
-#include "LowLevelRenderer/Model.h"
-#include "LowLevelRenderer/ShaderWrapper.h"
+#include "Rendering/Camera.h"
+#include "Rendering/Model.h"
+#include "Rendering/ShaderWrapper.h"
+#include "Rendering/Renderer.h"
+#include <Rendering/RenderingAPI.h>
+#include <Rendering/Renderable.h>
+
 #include <Core/HID/Input.h>
 #include <Core/AssetManager/AssetManager.h>
-
 #include "Core/Core.h"
 #include "Core/Time.h"
+
+#include "SceneGraph/Transform.h"
+#include "SceneGraph/SceneGraph.h"
+
+#include <Gameplay/EntityManager.h>
+#include <Gameplay/ComponentManager.h>
+#include <Gameplay/Components/StaticMeshComponent.h>
+
+class ComponentTest: public mlg::Component {
+public:
+    ComponentTest(const std::weak_ptr<mlg::Entity>& owner, const std::string& name) : Component(owner, name) {}
+
+    void Update() override {
+        GetOwner().lock()->GetTransform().SetRotation({{0.f, mlg::Time::GetSeconds(), 0.f}});
+
+        if (mlg::Input::IsActionPressed("test_button")) {
+            QueueForDeletion();
+        }
+    }
+
+    ~ComponentTest() override {
+
+    }
+};
 
 class ProjectInpostors {
 private:
@@ -18,36 +44,42 @@ public:
         mlg::Time::Initialize();
         mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
         mlg::Window::GetInstance()->SetVerticalSync(false);
-
+        mlg::RenderingAPI::Initialize();
+        mlg::Renderer::Initialize();
         mlg::AssetManager::Initialize();
+        mlg::SceneGraph::Initialize();
+        mlg::ComponentManager::Initialize();
+        mlg::EntityManager::Initialize();
+
         mlg::Core::Initialize();
         mlg::Input::Initialize();
 
         mlg::Core* engine = mlg::Core::GetInstance();
         PrepareScene();
-        int32_t returnCode = engine->MainLoop();
+        engine->MainLoop();
 
-        mlg::Core::Stop();
-        mlg::Window::Stop();
+        mlg::EntityManager::Stop();
+        mlg::ComponentManager::Stop();
+        mlg::SceneGraph::Stop();
         mlg::Input::Stop();
+        mlg::Core::Stop();
         mlg::AssetManager::Stop();
+        mlg::Renderer::Stop();
+        mlg::RenderingAPI::Stop();
+        mlg::Window::Stop();
+        mlg::Time::Stop();
 
-        return returnCode;
+        return 0;
     }
 
     void PrepareScene() {
-        mlg::Core* engine = mlg::Core::GetInstance();
+        mlg::Camera::GetInstance()->SetPosition({0, 0, -20});
+        auto tardisShader = std::make_shared<mlg::ShaderWrapper>("res/shaders/model.vert", "res/shaders/textured_model.frag");
+        auto tardisModel = std::make_shared<mlg::Model>("res/models/Tardis/tardis.obj", tardisShader);
 
-        auto camera = std::make_shared<mlg::FreeCameraNode>();
-        engine->GetSceneRoot()->AddChild(camera);
-        camera->GetLocalTransform()->SetPosition({0, 0, -20});
-        camera->SetActive();
-
-        auto modelShader = std::make_shared<mlg::ShaderWrapper>("res/shaders/instanced.vert", "res/shaders/textured_model.frag");
-
-        auto tardisModel = std::make_shared<mlg::Model>("res/models/Tardis/tardis.obj", modelShader);
-        auto tardisNode = std::make_shared<mlg::ModelNode>(tardisModel, engine->GetRenderer());
-        engine->GetSceneRoot()->AddChild(tardisNode);
+        auto tardisEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisOne", true, mlg::SceneGraph::GetRoot());
+        tardisEntity.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel);
+        tardisEntity.lock()->AddComponent<ComponentTest>("RotationComponent");
     }
 
     virtual ~ProjectInpostors() {
@@ -56,8 +88,8 @@ public:
 
 int main(int argc, char* argv[]) {
     LoggingMacros::InitializeSPDLog();
-
     std::srand(std::time(0));
+
     ProjectInpostors game;
     return game.Main(argc, argv);
 }

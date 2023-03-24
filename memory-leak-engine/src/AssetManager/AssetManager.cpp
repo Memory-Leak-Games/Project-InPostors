@@ -8,10 +8,14 @@ namespace mlg {
         if (instance != nullptr)
             return;
 
+        SPDLOG_INFO("Initializing AssetManager");
+
         instance = new AssetManager;
     }
 
     void AssetManager::Stop() {
+        SPDLOG_INFO("Stopping AssetManager");
+
         delete instance;
         instance = nullptr;
     }
