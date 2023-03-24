@@ -18,10 +18,12 @@ namespace mlg {
         virtual void Update();
         virtual void LateUpdate();
 
-        const std::string& GetName() const;
+        [[nodiscard]] bool IsQueuedForDeletion() const;
+        [[nodiscard]] const std::string& GetName() const;
+
         void SetName(const std::string& name);
 
-        [[nodiscard]] bool IsQueuedForDeletion() const;
+        void QueueForDeletion();
 
         virtual ~Component() = 0;
     };

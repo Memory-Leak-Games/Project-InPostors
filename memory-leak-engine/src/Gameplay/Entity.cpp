@@ -40,4 +40,21 @@ namespace mlg {
     Transform& Entity::GetTransform() {
         return transform;
     }
+
+    void Entity::QueueForDeletion() {
+        isQueuedForDeletion = true;
+        for (auto& component : components) {
+            component.lock()->QueueForDeletion();
+        }
+    }
+
+    void Entity::RemoveComponent(Component* component) {
+        auto foundIterator = std::find_if(components.begin(), components.end(),
+                                          [component](const std::weak_ptr<Component>& entry) {
+                                              return entry.lock().get() == component;
+                                          });
+
+        components.erase(foundIterator);
+        component->QueueForDeletion();
+    }
 } // mlg

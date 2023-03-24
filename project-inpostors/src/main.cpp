@@ -8,6 +8,7 @@
 #include <Rendering/RenderingAPI.h>
 #include <Rendering/Renderable.h>
 #include <Gameplay/EntityManager.h>
+#include <Gameplay/ComponentManager.h>
 
 #include "Core/Core.h"
 #include "Core/Time.h"
@@ -30,6 +31,11 @@ public:
 
 };
 
+class ECSTest {
+
+
+};
+
 class ProjectInpostors {
 private:
     std::shared_ptr<mlg::Camera> camera;
@@ -46,6 +52,8 @@ public:
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
         mlg::AssetManager::Initialize();
+        mlg::ComponentManager::Initialize();
+        mlg::EntityManager::Initialize();
 
         mlg::Core::Initialize();
         mlg::Input::Initialize();
@@ -54,6 +62,8 @@ public:
         PrepareScene();
         engine->MainLoop();
 
+        mlg::EntityManager::Stop();
+        mlg::ComponentManager::Stop();
         mlg::Input::Stop();
         mlg::Core::Stop();
         mlg::AssetManager::Stop();

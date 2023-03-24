@@ -1,6 +1,7 @@
 #pragma once
 
 #include <queue>
+#include <Gameplay/Entity.h>
 
 namespace mlg {
     class Entity;
@@ -23,6 +24,21 @@ namespace mlg {
             instance->entities.push_back(std::move(newEntity));
             return newEntity;
         }
+
+        template<typename T>
+        static std::vector<std::weak_ptr<Entity>> FindAllByPredicate(T predicate) {
+            std::vector<std::weak_ptr<Entity>> foundElements;
+            for (const auto& entity : instance->entities) {
+                if (predicate(entity) == false)
+                    continue;
+
+                foundElements.push_back(entity);
+            }
+            return foundElements;
+        }
+
+        static std::weak_ptr<Entity> FindByName(const std::string& name);
+        static std::vector<std::weak_ptr<Entity>> FindAllByTag(const std::string& tag);
 
         static void PhysicsUpdate();
         static void Update();

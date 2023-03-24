@@ -60,4 +60,27 @@ namespace mlg {
                                          }), instance->entities.end());
     }
 
+    std::weak_ptr<Entity> EntityManager::FindByName(const std::string& name) {
+        auto foundIterator = std::find_if(instance->entities.begin(), instance->entities.end(),
+                                          [name](const std::weak_ptr<Entity>& entry) {
+                                              return entry.lock()->GetName() == name;
+                                          });
+        if (foundIterator == instance->entities.end())
+            return {};
+
+        return *foundIterator;
+    }
+
+    std::vector<std::weak_ptr<Entity>> EntityManager::FindAllByTag(const std::string& tag) {
+        std::vector<std::weak_ptr<Entity>> foundElements;
+        for (auto& entity : instance->entities) {
+            if (entity->GetTag() != tag)
+                continue;
+
+            foundElements.push_back(entity);
+        }
+
+        return foundElements;
+    }
+
 } // mlg

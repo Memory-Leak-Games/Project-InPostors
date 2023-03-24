@@ -23,4 +23,8 @@ namespace mlg {
     void Component::SetName(const std::string& name) {
         Component::name = name;
     }
+
+    void Component::QueueForDeletion() {
+        isQueuedForDeletion = true;
+    }
 } // mlg
