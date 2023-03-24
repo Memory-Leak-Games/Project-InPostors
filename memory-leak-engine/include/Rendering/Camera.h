@@ -18,6 +18,13 @@ namespace mlg {
         glm::vec3 front;
         glm::vec3 up;
 
+        float pitch = 75.0f;
+        float yaw = 180.0f;
+        float roll;
+        float speed = 20.0f;
+        float sensitivity = 0.1f;
+        float zoom = 45.0f;
+
         GLuint uboTransformMatrices;
 
         glm::vec<2, int> resolution{};
@@ -32,7 +39,7 @@ namespace mlg {
 
         void SetPosition(glm::vec3 newPosition);
 
-        void SetRotation(float x, float y);
+        void SetRotation(float pitch, float yaw);
         void SetRotation(glm::vec3 frontVector, glm::vec3 upVector);
 
         void LookAt(glm::vec3 lookAtPosition);
@@ -46,10 +53,10 @@ namespace mlg {
         [[nodiscard]] const glm::vec3 &GetPosition() const;
         [[nodiscard]] const glm::vec3 &GetFront() const;
         [[nodiscard]] const glm::vec3 &GetUp() const;
-        [[nodiscard]] inline glm::vec3 GetRight() const;
+        [[nodiscard]] glm::vec3 GetRight() const;
 
         void ProcessMovement(CameraMovement movement, float deltaTime);
-        void ProcessRotation(const float xOffset, const float yOffset, bool pitchConstrain = true);
+        void ProcessRotation(float xOffset, float yOffset, bool pitchConstrain = true);
         void ProcessZoom(float offset);
 
     private:

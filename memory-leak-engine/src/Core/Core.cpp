@@ -53,6 +53,12 @@ void Core::MainLoop() {
         if (Input::IsActionPressed("debug_cam_right")) {
             Camera::GetInstance()->ProcessMovement(RIGHT, Time::GetDeltaSeconds());
         }
+        if (Input::IsActionPressed("debug_rotate_left")) {
+            Camera::GetInstance()->ProcessRotation(0.0f, -0.01f, false);
+        }
+        if (Input::IsActionPressed("debug_rotate_right")) {
+            Camera::GetInstance()->ProcessRotation(0.0f, 0.01f, false);
+        }
 
 
 #ifdef DEBUG

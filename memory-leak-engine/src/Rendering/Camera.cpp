@@ -14,6 +14,7 @@ Camera::Camera() : front(0.f, 0.f, 1.f), up(0.f, 1.f, 0.f), position(0.f), uboTr
     glBindBuffer(GL_UNIFORM_BUFFER, uboTransformMatrices);
     glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4) + sizeof(glm::vec4), nullptr, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, uboTransformMatrices);
+    SetRotation(pitch, yaw);
     UpdateView();
     UpdateProjection();
 }
@@ -71,11 +72,11 @@ void Camera::SetPosition(glm::vec3 newPosition)
     UpdateView();
 }
 
-void Camera::SetRotation(float x, float y)
+void Camera::SetRotation(float pitch, float yaw)
 {
-    front.x = glm::cos(x) * glm::cos(y - glm::half_pi<float>());
-    front.y = glm::sin(x);
-    front.z = glm::cos(x) * glm::sin(y - glm::half_pi<float>());
+    front.x = glm::cos(pitch) * glm::cos(yaw - glm::half_pi<float>());
+    front.y = glm::sin(pitch);
+    front.z = glm::cos(pitch) * glm::sin(yaw - glm::half_pi<float>());
     front = glm::normalize(front);
 
     glm::vec3 Right = glm::normalize(glm::cross(glm::vec3(0.f, 1.f, 0.f), front));
@@ -125,7 +126,7 @@ const glm::vec3 &Camera::GetUp() const
     return up;
 }
 
-inline glm::vec3 Camera::GetRight() const
+glm::vec3 Camera::GetRight() const
 {
     return glm::cross(front, up);
 }
@@ -140,27 +141,27 @@ std::shared_ptr<Camera> Camera::GetInstance() {
 }
 
 void Camera::ProcessMovement(CameraMovement movement, float deltaTime) {
-    float velocity = 20.0f * deltaTime; //HARDCODED for testing purposes
+    float velocity = speed * deltaTime;
     switch(movement)
     {
         case FORWARD:
         {
-            position += up * velocity;
+            position += front * velocity;
             break;
         }
         case BACKWARD:
         {
-            position -= up * velocity;
+            position -= front * velocity;
             break;
         }
         case LEFT:
         {
-            position -= GetRight() * velocity;
+            position -= glm::cross(front, up) * velocity;
             break;
         }
         case RIGHT:
         {
-            position += GetRight() * velocity;
+            position +=  glm::cross(front, up) * velocity;
             break;
         }
         default: break;
@@ -168,8 +169,18 @@ void Camera::ProcessMovement(CameraMovement movement, float deltaTime) {
     UpdateView();
 }
 
-void Camera::ProcessRotation(const float xOffset, const float yOffset, bool pitchConstrain) {
-    //SetRotation(xOffset, yOffset);
-    UpdateView();
+void Camera::ProcessRotation(float xOffset, float yOffset, bool pitchConstrain) {
+    xOffset *= sensitivity;
+    yOffset *= sensitivity;
+    pitch += xOffset;
+    yaw += yOffset;
+
+    if (pitchConstrain)
+    {
+        pitch = pitch > 89.0f ? 89.0f : pitch;
+        pitch = pitch < -89.0f ? -89.0f : pitch;
+    }
+
+    SetRotation(pitch, yaw);
 }
 

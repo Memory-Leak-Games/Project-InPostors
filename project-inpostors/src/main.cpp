@@ -67,7 +67,6 @@ public:
 
     void PrepareScene() {
         mlg::Camera::GetInstance()->SetPosition({0, 20, -20});
-        mlg::Camera::GetInstance()->SetRotation(80.0f, 0.0f);
 
         tardis = std::make_shared<RenderableTest>("res/models/Tardis/tardis.obj", "res/shaders/model.vert", "res/shaders/textured_model.frag");
         tardis->transform.SetPosition({-5, 0, 0});
