@@ -1,19 +1,17 @@
 // This is not allowed in Game layer
 #include "Rendering/Camera.h"
 #include "Rendering/Model.h"
-#include "Rendering/ShaderProgram.h"
 #include "Rendering/Renderer.h"
 #include <Rendering/RenderingAPI.h>
-#include <Rendering/Renderable.h>
 
 #include <Rendering/Assets/MaterialAsset.h>
+#include <Rendering/Assets/ModelAsset.h>
 
 #include <Core/HID/Input.h>
 #include <Core/AssetManager/AssetManager.h>
 #include "Core/Core.h"
 #include "Core/Time.h"
 
-#include "SceneGraph/Transform.h"
 #include "SceneGraph/SceneGraph.h"
 
 #include <Gameplay/EntityManager.h>
@@ -77,11 +75,29 @@ public:
     void PrepareScene() {
         mlg::Camera::GetInstance()->SetPosition({0, 0, -20});
         auto tardisMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Tardis/tardis_material.json");
-        auto tardisModel = std::make_shared<mlg::Model>("res/models/Tardis/tardis.obj");
+        auto tardisModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Tardis/tardis.obj");
 
         auto tardisEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisOne", true, mlg::SceneGraph::GetRoot());
         tardisEntity.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel, tardisMaterial);
         tardisEntity.lock()->AddComponent<ComponentTest>("RotationComponent");
+
+        auto tardisMaterial1 = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Tardis/tardis_material_green.json");
+        auto tardisModel1 = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Tardis/tardis.obj");
+
+        auto tardisEntity1 = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisRight", true, mlg::SceneGraph::GetRoot());
+        tardisEntity1.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel1, tardisMaterial1);
+        tardisEntity1.lock()->AddComponent<ComponentTest>("RotationComponent");
+
+        tardisEntity1.lock()->GetTransform().SetPosition({-7.f, 0.f, 0.f});
+
+        auto tardisMaterial2 = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Tardis/tardis_material_another.json");
+        auto tardisModel2 = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Tardis/tardis.obj");
+
+        auto tardisEntity2 = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisLeft", true, mlg::SceneGraph::GetRoot());
+        tardisEntity2.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel2, tardisMaterial2);
+        tardisEntity2.lock()->AddComponent<ComponentTest>("RotationComponent");
+
+        tardisEntity2.lock()->GetTransform().SetPosition({7.f, 0.f, 0.f});
     }
 
     virtual ~ProjectInpostors() {

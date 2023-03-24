@@ -43,13 +43,14 @@ namespace mlg {
 
     void MaterialAsset::Load() {
         std::string path = GetPath();
+        SPDLOG_DEBUG("Loading Material at path: {}", path);
+
         std::ifstream materialFile{path};
 
         json materialJson = json::parse(materialFile);
 
         shaderProgram = std::make_shared<ShaderProgram>(materialJson["vertexShader"],
                                                         materialJson["fragmentShader"]);
-
         ParseUniforms(materialJson);
         ParseTextures(materialJson);
     }

@@ -10,7 +10,7 @@
 #include "Macros.h"
 
 #include "Rendering/Assets/MaterialAsset.h"
-#include "Rendering/Model.h"
+#include "Rendering/Assets/ModelAsset.h"
 
 namespace mlg {
     RenderingAPI* RenderingAPI::instance;
@@ -101,7 +101,7 @@ namespace mlg {
     }
 
 
-    void RenderingAPI::DrawModel(Model* model) {
+    void RenderingAPI::DrawModel(ModelAsset* model) {
         model->Draw();
     }
 

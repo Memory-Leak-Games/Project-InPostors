@@ -40,3 +40,9 @@ void Mesh::Draw() const {
     glDrawElements(GL_TRIANGLES, (int32_t) indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
+
+Mesh::~Mesh() {
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ebo);
+    glDeleteVertexArrays(1, &vao);
+}
