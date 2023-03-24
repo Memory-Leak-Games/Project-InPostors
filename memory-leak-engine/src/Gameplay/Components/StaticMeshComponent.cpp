@@ -1,14 +1,19 @@
 #include "Gameplay/Components/StaticMeshComponent.h"
 #include "Gameplay/ComponentManager.h"
 
+#include "Rendering/RenderingAPI.h"
 #include "Rendering/Renderer.h"
+
+#include "Rendering/Assets/MaterialAsset.h"
+#include "Rendering/ShaderProgram.h"
 
 #include "Macros.h"
 
 namespace mlg {
     StaticMeshComponent::StaticMeshComponent(const std::weak_ptr<Entity>& owner, const std::string& name,
-                                             const std::shared_ptr<Model>& model) : SceneComponent(owner, name),
-                                                                                    model(model) {
+                                             const std::shared_ptr<Model>& model,
+                                             const std::shared_ptr<MaterialAsset>& material)
+            : SceneComponent(owner, name), model(model), material(material) {
     }
 
     void StaticMeshComponent::Start() {
@@ -19,9 +24,9 @@ namespace mlg {
     }
 
     void StaticMeshComponent::Draw(struct Renderer* renderer) {
-        model->GetShader()->Activate();
-        model->GetShader()->SetMat4F("World", GetTransform().GetWorldMatrix());
-        model->Draw();
+        material->Activate();
+        material->GetShaderProgram()->SetMat4F("World", GetTransform().GetWorldMatrix());
+        RenderingAPI::GetInstance()->DrawModel(model.get());
     }
 
     void StaticMeshComponent::Stop() {

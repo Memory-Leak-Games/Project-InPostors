@@ -44,6 +44,8 @@ namespace mlg {
 
         void ParseUniforms(const nlohmann::basic_json<>& materialJson);
         void ParseTextures(const nlohmann::basic_json<>& materialJson);
+
+        [[nodiscard]] const std::shared_ptr<struct ShaderProgram>& GetShaderProgram() const;
     };
 
 } // mlg

@@ -42,19 +42,13 @@ namespace mlg {
         void DrawGizmos();
 
         [[nodiscard]] const DirectionalLight &GetSun() const;
-
         [[nodiscard]] const PointLight &GetBulb() const;
-
         [[nodiscard]] const SpotLight &GetSpotLightOne() const;
-
         [[nodiscard]] const SpotLight &GetSpotLightTwo() const;
 
         void SetSun(const DirectionalLight &sun);
-
         void SetBulb(const PointLight &bulb);
-
         void SetSpotLightOne(const SpotLight &spotLightOne);
-
         void SetSpotLightTwo(const SpotLight &spotLightTwo);
 
         static glm::vec3 DirectionVector(float pitch, float yaw);
@@ -63,11 +57,8 @@ namespace mlg {
         void InitializeLights();
 
         void UpdateSun();
-
         void UpdateBulb();
-
         void UpdateSpotLights();
-
         void UpdateSpotLightTwo();
     };
 }

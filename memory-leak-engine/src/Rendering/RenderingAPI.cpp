@@ -101,8 +101,8 @@ namespace mlg {
     }
 
 
-    void RenderingAPI::DrawModel(Model* model, MaterialAsset material) {
-
+    void RenderingAPI::DrawModel(Model* model) {
+        model->Draw();
     }
 
 }// namespace mlg

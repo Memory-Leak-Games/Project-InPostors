@@ -1,14 +1,16 @@
 {
+  "vertexShader": "res/shaders/model.vert",
+  "fragmentShader": "res/shaders/textured_model.frag",
   "uniforms": [
     {
       "type": "float",
-      "name": "test",
-      "value": 0.9
+      "name": "brightness",
+      "value": 1.0
     },
     {
       "type": "vec4",
-      "name": "test",
-      "value": [0.1, 0.2, 0.3, 0.4]
+      "name": "tint",
+      "value": [1.0, 0.5, 0.5, 1.0]
     }
   ],
   "textures": [

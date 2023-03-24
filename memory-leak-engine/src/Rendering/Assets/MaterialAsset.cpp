@@ -47,6 +47,9 @@ namespace mlg {
 
         json materialJson = json::parse(materialFile);
 
+        shaderProgram = std::make_shared<ShaderProgram>(materialJson["vertexShader"],
+                                                        materialJson["fragmentShader"]);
+
         ParseUniforms(materialJson);
         ParseTextures(materialJson);
     }
@@ -77,12 +80,19 @@ namespace mlg {
     }
 
     void MaterialAsset::ParseTextures(const json& materialJson) {
-        for (const auto& jsonUniform : materialJson["textures"]) {
+        for (const auto& jsonTexture : materialJson["textures"]) {
+            std::string path = jsonTexture["path"].get<std::string>();
+
             auto newUniform = std::make_unique<Texture>();
-            newUniform->textureAsset = AssetManager::GetAsset<TextureAsset>(materialJson["path"].get<std::string>());
-            newUniform->index = materialJson["index"].get<int>();
+            newUniform->name = jsonTexture["name"];
+            newUniform->textureAsset = AssetManager::GetAsset<TextureAsset>(path);
+            newUniform->index = jsonTexture["index"].get<int>();
             uniforms.push_back(std::move(newUniform));
         }
+    }
+
+    const std::shared_ptr<ShaderProgram>& MaterialAsset::GetShaderProgram() const {
+        return shaderProgram;
     }
 
 } // mlg

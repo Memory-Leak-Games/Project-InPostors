@@ -20,10 +20,10 @@ Lights::Lights()
 
 void Lights::InitializeLights()
 {
-    sun.color = glm::vec4(0.f);
-    sun.direction = glm::normalize(glm::vec3(-0.5f, -0.5f, -0.5f));
+    sun.color = glm::vec4(1.f);
+    sun.direction = glm::normalize(glm::vec3(-0.5f, -0.5f, 0.5f));
 
-    bulb.color = glm::vec4(1.f);
+    bulb.color = glm::vec4(0.f);
     bulb.position = glm::vec3(-2.f, 2.f, -5.f);
     bulb.linear = 0.07f;
     bulb.quadratic = 0.017f;

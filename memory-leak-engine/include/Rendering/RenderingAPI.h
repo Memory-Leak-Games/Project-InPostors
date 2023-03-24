@@ -11,7 +11,7 @@ namespace mlg {
         static void Initialize();
         static void Stop();
 
-        void DrawModel(class Model* model, class MaterialAsset material);
+        void DrawModel(class Model* model);
         void SetClearColor(const glm::vec4& color);
         void Clear();
 
