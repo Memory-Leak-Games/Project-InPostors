@@ -4,6 +4,8 @@
 #include "ComponentManager.h"
 #include "Component.h"
 
+#include "Macros.h"
+
 namespace mlg {
     class Component;
 
@@ -63,6 +65,7 @@ namespace mlg {
         virtual void PhysicsUpdate();
         virtual void Update();
         virtual void LateUpdate();
+        virtual void Stop();
 
         void QueueForDeletion();
 

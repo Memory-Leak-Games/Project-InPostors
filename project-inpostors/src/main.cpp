@@ -26,7 +26,7 @@ public:
         GetOwner().lock()->GetTransform().SetRotation({{0.f, mlg::Time::GetSeconds(), 0.f}});
 
         if (mlg::Input::IsActionPressed("test_button")) {
-            QueueForDeletion();
+            GetOwner().lock()->QueueForDeletion();
         }
     }
 
@@ -43,7 +43,7 @@ public:
     int Main(int argc, char* argv[]) {
         mlg::Time::Initialize();
         mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
-        mlg::Window::GetInstance()->SetVerticalSync(false);
+        mlg::Window::GetInstance()->SetVerticalSync(true);
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
         mlg::AssetManager::Initialize();
