@@ -1,6 +1,6 @@
 #include "Rendering/Mesh.h"
 
-#include "Core/AssetManager/TextureAsset.h"
+#include "include/Rendering/Assets/TextureAsset.h"
 
 using namespace mlg;
 

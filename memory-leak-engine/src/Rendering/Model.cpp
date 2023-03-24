@@ -4,7 +4,7 @@
 #include <filesystem>
 
 #include "Core/AssetManager/AssetManager.h"
-#include "Core/AssetManager/TextureAsset.h"
+#include "include/Rendering/Assets/TextureAsset.h"
 
 #include "Macros.h"
 #include "stb_image.h"
