@@ -19,6 +19,8 @@ namespace mlg {
     void ComponentManager::Stop() {
         SPDLOG_INFO("Stopping Components Manager");
 
+        StopComponents();
+
         delete instance;
         instance = nullptr;
     }
@@ -51,10 +53,21 @@ namespace mlg {
         }
     }
 
+    void ComponentManager::StopComponents() {
+        for (const auto& component : instance->components) {
+            component->Stop();
+        }
+    }
+
     void ComponentManager::ProcessComponents() {
         instance->components.erase(std::remove_if(instance->components.begin(), instance->components.end(),
-                                                  [](const std::weak_ptr<Component>& entry) {
-                                                      return entry.lock()->IsQueuedForDeletion();
+                                                  [](const std::shared_ptr<Component>& entry) {
+                                                      if (entry->IsQueuedForDeletion()) {
+                                                          entry->Stop();
+                                                          return true;
+                                                      }
+
+                                                      return false;
                                                   }), instance->components.end());
 
     }
@@ -70,5 +83,4 @@ namespace mlg {
 
         return *foundIterator;
     }
-
 } // mlg

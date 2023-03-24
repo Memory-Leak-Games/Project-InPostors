@@ -4,8 +4,9 @@ in vec3 NormalVector;
 in vec2 TexCoordFragment;
 
 uniform sampler2D texture_diffuse0;
-uniform sampler2D texture_specular0;
-uniform sampler2D texture_normalmap0;
+
+uniform float brightness;
+uniform vec4 tint;
 
 out vec4 FragColor;
 
@@ -97,6 +98,6 @@ void main() {
     }
 
     vec4 Light = CalculateBulb() + CalculateDirectionalLight() + CalculatedSpotLights;
-    FragColor = texture(texture_diffuse0, fs_in.TexCoord) * Light;
+    FragColor = texture(texture_diffuse0, fs_in.TexCoord) * Light * brightness * tint;
     FragColor.w = 1.f;
 }

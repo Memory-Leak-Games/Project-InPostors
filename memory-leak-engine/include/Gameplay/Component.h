@@ -19,6 +19,7 @@ namespace mlg {
         virtual void PhysicsUpdate();
         virtual void Update();
         virtual void LateUpdate();
+        virtual void Stop();
 
         [[nodiscard]] bool IsQueuedForDeletion() const;
         [[nodiscard]] const std::string& GetName() const;

@@ -44,6 +44,7 @@ namespace mlg {
         static void PhysicsUpdate();
         static void Update();
         static void LateUpdate();
+        static void StopEntities();
 
         // For now is used to delete entities when every update is done
         static void ProcessEntities();

@@ -13,6 +13,7 @@ namespace mlg {
     void Entity::PhysicsUpdate() {}
     void Entity::Update() {}
     void Entity::LateUpdate() {}
+    void Entity::Stop() {}
 
     bool Entity::IsQueuedForDeletion() const {
         return isQueuedForDeletion;

@@ -1,11 +1,11 @@
 #include "Rendering/Mesh.h"
 
-#include "Core/AssetManager/TextureAsset.h"
+#include "include/Rendering/Assets/TextureAsset.h"
 
 using namespace mlg;
 
-Mesh::Mesh(const std::vector<Vertex>& Vertices, const std::vector<GLuint>& Indices, const std::vector<Texture>& Textures)
-: vertices(Vertices), indices(Indices), textures(Textures), vao(0), vbo(0), ebo(0) {
+Mesh::Mesh(const std::vector<Vertex>& Vertices, const std::vector<GLuint>& Indices)
+: vertices(Vertices), indices(Indices), vao(0), vbo(0), ebo(0) {
     SetupBuffers();
 }
 
@@ -35,32 +35,8 @@ void Mesh::SetupBuffers() {
     glBindVertexArray(0);
 }
 
-void Mesh::Draw(ShaderWrapper& Shader) const {
-    BindTextures(Shader);
+void Mesh::Draw() const {
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, (int32_t) indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
-}
-
-void Mesh::BindTextures(const ShaderWrapper& Shader) const {
-    uint16_t TextureIndex = 0;
-    uint16_t DiffuseIndex = 0;
-    uint16_t SpecularIndex = 0;
-
-    for (const Texture& Item : textures) {
-        glActiveTexture(GL_TEXTURE0 + TextureIndex);
-
-        std::string Number;
-        if (Item.textureType == "texture_diffuse")
-            Number = std::to_string(DiffuseIndex++);
-        else if (Item.textureType == "texture_specular")
-            Number = std::to_string(SpecularIndex++);
-        else if (Item.textureType == "texture_normalmap")
-            Number = std::to_string(0);
-
-        Shader.SetInt(Item.textureType + Number, TextureIndex);
-        Item.textureAsset->Bind();
-        TextureIndex++;
-    }
-    glActiveTexture(GL_TEXTURE0);
 }

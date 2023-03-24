@@ -1,10 +1,12 @@
 // This is not allowed in Game layer
 #include "Rendering/Camera.h"
 #include "Rendering/Model.h"
-#include "Rendering/ShaderWrapper.h"
+#include "Rendering/ShaderProgram.h"
 #include "Rendering/Renderer.h"
 #include <Rendering/RenderingAPI.h>
 #include <Rendering/Renderable.h>
+
+#include <Rendering/Assets/MaterialAsset.h>
 
 #include <Core/HID/Input.h>
 #include <Core/AssetManager/AssetManager.h>
@@ -18,7 +20,7 @@
 #include <Gameplay/ComponentManager.h>
 #include <Gameplay/Components/StaticMeshComponent.h>
 
-class ComponentTest: public mlg::Component {
+class ComponentTest : public mlg::Component {
 public:
     ComponentTest(const std::weak_ptr<mlg::Entity>& owner, const std::string& name) : Component(owner, name) {}
 
@@ -26,7 +28,7 @@ public:
         GetOwner().lock()->GetTransform().SetRotation({{0.f, mlg::Time::GetSeconds(), 0.f}});
 
         if (mlg::Input::IsActionPressed("test_button")) {
-            QueueForDeletion();
+            GetOwner().lock()->QueueForDeletion();
         }
     }
 
@@ -74,11 +76,11 @@ public:
 
     void PrepareScene() {
         mlg::Camera::GetInstance()->SetPosition({0, 0, -20});
-        auto tardisShader = std::make_shared<mlg::ShaderWrapper>("res/shaders/model.vert", "res/shaders/textured_model.frag");
-        auto tardisModel = std::make_shared<mlg::Model>("res/models/Tardis/tardis.obj", tardisShader);
+        auto tardisMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Tardis/tardis_material.json");
+        auto tardisModel = std::make_shared<mlg::Model>("res/models/Tardis/tardis.obj");
 
         auto tardisEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisOne", true, mlg::SceneGraph::GetRoot());
-        tardisEntity.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel);
+        tardisEntity.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel, tardisMaterial);
         tardisEntity.lock()->AddComponent<ComponentTest>("RotationComponent");
     }
 
