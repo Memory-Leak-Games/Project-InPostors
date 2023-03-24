@@ -3,6 +3,13 @@
 #include "glad/glad.h"
 
 namespace mlg {
+    enum CameraMovement {
+        FORWARD,
+        BACKWARD,
+        LEFT,
+        RIGHT
+    };
+
     class Camera {
     private:
         static std::shared_ptr<Camera> instance;
@@ -22,6 +29,7 @@ namespace mlg {
         static std::shared_ptr<Camera> GetInstance();
         ~Camera();
 
+
         void SetPosition(glm::vec3 newPosition);
 
         void SetRotation(float x, float y);
@@ -38,7 +46,11 @@ namespace mlg {
         [[nodiscard]] const glm::vec3 &GetPosition() const;
         [[nodiscard]] const glm::vec3 &GetFront() const;
         [[nodiscard]] const glm::vec3 &GetUp() const;
-        [[nodiscard]] glm::vec3 GetRight() const;
+        [[nodiscard]] inline glm::vec3 GetRight() const;
+
+        void ProcessMovement(CameraMovement movement, float deltaTime);
+        void ProcessRotation(const float xOffset, const float yOffset, bool pitchConstrain = true);
+        void ProcessZoom(float offset);
 
     private:
         void UpdateProjection();

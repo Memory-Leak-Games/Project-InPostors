@@ -172,4 +172,6 @@ namespace mlg {
 
         Calculate(sharedParent->worldMatrix, true);
     }
+
+
 } // mlg

@@ -20,6 +20,7 @@
 
 // TODO: delete this
 #include "Rendering/Lights.h"
+#include "Rendering/Camera.h"
 
 using namespace mlg;
 
@@ -38,8 +39,21 @@ void Core::MainLoop() {
 
     while (!shouldClose) {
         Time::UpdateStartFrameTime();
-
         RenderingAPI::GetInstance()->Clear();
+
+        if (Input::IsActionPressed("debug_cam_forward")) {
+            Camera::GetInstance()->ProcessMovement(FORWARD, Time::GetDeltaSeconds());
+        }
+        if (Input::IsActionPressed("debug_cam_back")) {
+            Camera::GetInstance()->ProcessMovement(BACKWARD, Time::GetDeltaSeconds());
+        }
+        if (Input::IsActionPressed("debug_cam_left")) {
+            Camera::GetInstance()->ProcessMovement(LEFT, Time::GetDeltaSeconds());
+        }
+        if (Input::IsActionPressed("debug_cam_right")) {
+            Camera::GetInstance()->ProcessMovement(RIGHT, Time::GetDeltaSeconds());
+        }
+
 
 #ifdef DEBUG
         ImGui_ImplOpenGL3_NewFrame();
@@ -81,7 +95,6 @@ void Core::MainLoop() {
         Window::GetInstance()->SwapBuffers();
         Window::GetInstance()->PollEvents();
     }
-
 }
 
 void Core::Stop() {

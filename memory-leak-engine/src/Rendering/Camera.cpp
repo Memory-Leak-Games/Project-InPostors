@@ -1,4 +1,5 @@
 #include "Rendering/Camera.h"
+#include "Core/HID/Input.h"
 #include "glm/gtc/type_ptr.hpp"
 
 #include "Macros.h"
@@ -8,6 +9,7 @@ using namespace mlg;
 Camera::Camera() : front(0.f, 0.f, 1.f), up(0.f, 1.f, 0.f), position(0.f), uboTransformMatrices(0),
                    resolution({1280, 720})
 {
+    SPDLOG_INFO("Initializing Camera");
     glGenBuffers(1, &uboTransformMatrices);
     glBindBuffer(GL_UNIFORM_BUFFER, uboTransformMatrices);
     glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4) + sizeof(glm::vec4), nullptr, GL_DYNAMIC_DRAW);
@@ -18,6 +20,7 @@ Camera::Camera() : front(0.f, 0.f, 1.f), up(0.f, 1.f, 0.f), position(0.f), uboTr
 
 Camera::~Camera()
 {
+    SPDLOG_INFO("Stopping Camera");
     // TODO: segmentation fault ??? <-- needs to repair
     //glDeleteBuffers(1, &uboTransformMatrices);
 }
@@ -122,10 +125,9 @@ const glm::vec3 &Camera::GetUp() const
     return up;
 }
 
-glm::vec3 Camera::GetRight() const
+inline glm::vec3 Camera::GetRight() const
 {
-    glm::vec3 Result = glm::cross(front, up);
-    return Result;
+    return glm::cross(front, up);
 }
 
 std::shared_ptr<Camera> Camera::instance;
@@ -136,3 +138,38 @@ std::shared_ptr<Camera> Camera::GetInstance() {
 
     return instance;
 }
+
+void Camera::ProcessMovement(CameraMovement movement, float deltaTime) {
+    float velocity = 20.0f * deltaTime; //HARDCODED for testing purposes
+    switch(movement)
+    {
+        case FORWARD:
+        {
+            position += up * velocity;
+            break;
+        }
+        case BACKWARD:
+        {
+            position -= up * velocity;
+            break;
+        }
+        case LEFT:
+        {
+            position -= GetRight() * velocity;
+            break;
+        }
+        case RIGHT:
+        {
+            position += GetRight() * velocity;
+            break;
+        }
+        default: break;
+    }
+    UpdateView();
+}
+
+void Camera::ProcessRotation(const float xOffset, const float yOffset, bool pitchConstrain) {
+    //SetRotation(xOffset, yOffset);
+    UpdateView();
+}
+

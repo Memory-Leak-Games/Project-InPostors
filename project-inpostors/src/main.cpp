@@ -34,6 +34,8 @@ private:
     std::shared_ptr<mlg::Camera> camera;
     std::shared_ptr<RenderableTest> tardis;
     std::shared_ptr<RenderableTest> tardis2;
+    std::shared_ptr<RenderableTest> ground;
+
 public:
     ProjectInpostors() = default;
 
@@ -64,7 +66,9 @@ public:
     }
 
     void PrepareScene() {
-        mlg::Camera::GetInstance()->SetPosition({0, 0, -20});
+        mlg::Camera::GetInstance()->SetPosition({0, 20, -20});
+        mlg::Camera::GetInstance()->SetRotation(80.0f, 0.0f);
+
         tardis = std::make_shared<RenderableTest>("res/models/Tardis/tardis.obj", "res/shaders/model.vert", "res/shaders/textured_model.frag");
         tardis->transform.SetPosition({-5, 0, 0});
         mlg::Renderer::GetInstance()->AddRenderable(tardis);
@@ -72,6 +76,11 @@ public:
         tardis2 = std::make_shared<RenderableTest>("res/models/Tardis/tardis.obj", "res/shaders/model.vert", "res/shaders/textured_model.frag");
         tardis2->transform.SetPosition({5, 0, 0});
         mlg::Renderer::GetInstance()->AddRenderable(tardis2);
+
+        ground = std::make_shared<RenderableTest>("res/models/Ground/Ground.obj", "res/shaders/model.vert", "res/shaders/textured_model.frag");
+        ground->transform.SetPosition({0, -10, 0});
+        ground->transform.SetScale(glm::vec3(10.0f));
+        mlg::Renderer::GetInstance()->AddRenderable(ground);
     }
 
     virtual ~ProjectInpostors() {

@@ -36,6 +36,7 @@ namespace mlg {
         void SetPosition(const glm::vec3& position);
         void SetRotation(const glm::quat& rotation);
         void SetScale(const glm::vec3& scale);
+        void SetUniformScale(const float uniformScale);
 
         const std::vector<std::shared_ptr<Transform>>& GetChildren();
         const std::weak_ptr<Transform>& GetParent();
