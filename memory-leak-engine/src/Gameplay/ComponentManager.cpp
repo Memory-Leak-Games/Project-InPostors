@@ -33,6 +33,12 @@ namespace mlg {
         }
     }
 
+    void ComponentManager::Start() {
+        for (const auto& component : instance->components) {
+            component->Start();
+        }
+    }
+
     void ComponentManager::Update() {
         for (const auto& component : instance->components) {
             component->Update();
@@ -47,9 +53,22 @@ namespace mlg {
 
     void ComponentManager::ProcessComponents() {
         instance->components.erase(std::remove_if(instance->components.begin(), instance->components.end(),
-                                                [](const std::weak_ptr<Component>& entry) {
-                                                    return entry.lock()->IsQueuedForDeletion();
-                                                }), instance->components.end());
+                                                  [](const std::weak_ptr<Component>& entry) {
+                                                      return entry.lock()->IsQueuedForDeletion();
+                                                  }), instance->components.end());
 
     }
+
+    std::weak_ptr<Component> ComponentManager::GetByRawPointer(Component* component) {
+        auto foundIterator = std::find_if(instance->components.begin(), instance->components.end(),
+                                          [component](const std::weak_ptr<Component>& entry) {
+                                              return entry.lock().get() == component;
+                                          });
+
+        if (foundIterator == instance->components.end())
+            return {};
+
+        return *foundIterator;
+    }
+
 } // mlg

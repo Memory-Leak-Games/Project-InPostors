@@ -2,12 +2,15 @@
 
 #include <utility>
 
+#include "Macros.h"
+
 namespace mlg {
     Component::Component(std::weak_ptr<Entity> owner, std::string name)
-    : owner(std::move(owner)), name(std::move(name)) {
-
+    : owner(owner), name(std::move(name)) {
+        MLG_ASSERT(owner.expired() == false, "Owner is not valid");
     }
 
+    void Component::Start() {}
     void Component::PhysicsUpdate() {}
     void Component::Update() {}
     void Component::LateUpdate() {}
@@ -27,4 +30,11 @@ namespace mlg {
     void Component::QueueForDeletion() {
         isQueuedForDeletion = true;
     }
+
+    Component::~Component() {}
+
+    const std::weak_ptr<Entity>& Component::GetOwner() const {
+        return owner;
+    }
+
 } // mlg

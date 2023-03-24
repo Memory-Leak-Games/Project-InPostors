@@ -10,9 +10,11 @@ namespace mlg {
 
         std::weak_ptr<Entity> owner;
 
-        explicit Component(std::weak_ptr<Entity> owner, std::string name);
-    public:
         Component() = delete;
+    public:
+        explicit Component(std::weak_ptr<Entity> owner, std::string name);
+
+        virtual void Start();
 
         virtual void PhysicsUpdate();
         virtual void Update();
@@ -20,6 +22,7 @@ namespace mlg {
 
         [[nodiscard]] bool IsQueuedForDeletion() const;
         [[nodiscard]] const std::string& GetName() const;
+        [[nodiscard]] const std::weak_ptr<Entity>& GetOwner() const;
 
         void SetName(const std::string& name);
 

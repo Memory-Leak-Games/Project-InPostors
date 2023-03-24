@@ -20,8 +20,8 @@ namespace mlg {
 
         template<typename T, typename ... Args>
         static std::weak_ptr<T> SpawnEntity(Args&& ... args) {
-            auto newEntity = std::make_shared<T>(std::forward<Args>(args) ...);
-            instance->entities.push_back(std::move(newEntity));
+            auto newEntity = T::Create(std::forward<Args>(args) ...);
+            instance->entities.push_back(newEntity);
             return newEntity;
         }
 

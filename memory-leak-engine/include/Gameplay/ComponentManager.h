@@ -16,11 +16,15 @@ namespace mlg {
         static ComponentManager* GetInstance();
 
         template<typename T, typename ... Args>
-        static std::weak_ptr<T> SpawnComponent(Args&& ... args) {
-            auto newComponent = std::make_shared<T>(std::forward<Args>(args) ...);
-            instance->components.push_back(std::move(newComponent));
+        static std::weak_ptr<Component> SpawnComponent(std::shared_ptr<class Entity> owner, Args&& ... args) {
+            auto newComponent = std::make_shared<T>(owner, std::forward<Args>(args) ...);
+            instance->components.push_back(newComponent);
             return newComponent;
         }
+
+        static std::weak_ptr<Component> GetByRawPointer(Component* component);
+
+        static void Start();
 
         static void PhysicsUpdate();
         static void Update();

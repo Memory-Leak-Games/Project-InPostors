@@ -11,22 +11,23 @@ namespace mlg {
     private:
         std::string name;
         std::string tag;
-        Transform transform;
+        std::shared_ptr<Transform> transform;
 
         bool isStatic = false;
         bool isQueuedForDeletion = false;
 
         std::vector<std::weak_ptr<class Component>> components;
 
-    public:
         Entity() = delete;
-        explicit Entity(const std::string& name, bool isStatic, Transform* parent);
+        explicit Entity(std::string name, bool isStatic, Transform* parent);
+    public:
+        static std::shared_ptr<Entity> Create(const std::string& name, bool isStatic, Transform* parent);
 
         template<typename T, typename ... Args>
         std::weak_ptr<T> AddComponent(Args&& ... args) {
             auto newComponent = ComponentManager::SpawnComponent<T>(shared_from_this(), std::forward<Args>(args)...);
             components.push_back(newComponent);
-            return newComponent;
+            return std::dynamic_pointer_cast<T>(newComponent.lock());
         }
 
         template<typename T>
@@ -72,8 +73,6 @@ namespace mlg {
 
         void SetName(const std::string& name);
         void SetTag(const std::string& tag);
-
-        virtual ~Entity() = 0;
     };
 
 } // mlg

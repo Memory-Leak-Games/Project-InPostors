@@ -120,15 +120,15 @@ namespace mlg {
         return children;
     }
 
-    const std::weak_ptr<Transform>& Transform::GetParent() {
+    Transform* Transform::GetParent() {
         return parent;
     }
 
     void Transform::AddChild(const std::shared_ptr<Transform>& newChild) {
-        if (newChild.get() == this || newChild.get() == parent.lock().get())
+        if (newChild.get() == this || newChild.get() == parent)
             return;
 
-        newChild->parent = shared_from_this();
+        newChild->parent = this;
         children.push_back(newChild);
         newChild->isDirty = true;
     }
@@ -139,8 +139,9 @@ namespace mlg {
 
     void Transform::Calculate(const glm::mat4& parentMatrix, bool isDirtyLocal) {
         isDirtyLocal |= isDirty;
-        if (isDirty) {
-            worldMatrix = parentMatrix * localMatrix;
+
+        if (isDirtyLocal) {
+            worldMatrix = parentMatrix * GetLocalMatrix();
             isDirty = false;
         }
 
@@ -158,18 +159,23 @@ namespace mlg {
     }
 
     void Transform::ReCalculateParentRecursive() {
-        if (parent.expired() || parent.lock() == nullptr)
+        if (parent == nullptr)
         {
             Calculate();
             return;
         }
 
-        auto sharedParent = parent.lock();
-        if (sharedParent->isDirty) {
+        if (parent->isDirty) {
             ReCalculateParentRecursive();
             return;
         }
 
-        Calculate(sharedParent->worldMatrix, true);
+        Calculate(parent->worldMatrix, true);
+    }
+
+    Transform::~Transform() {
+        for (auto& child : children) {
+            child->parent = this->parent;
+        }
     }
 } // mlg

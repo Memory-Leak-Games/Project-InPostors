@@ -20,6 +20,9 @@
 
 // TODO: delete this
 #include "Rendering/Lights.h"
+#include "Gameplay/ComponentManager.h"
+#include "Gameplay/EntityManager.h"
+#include "SceneGraph/SceneGraph.h"
 
 using namespace mlg;
 
@@ -36,6 +39,8 @@ void Core::MainLoop() {
         shouldClose = true;
     });
 
+    ComponentManager::Start();
+
     while (!shouldClose) {
         Time::UpdateStartFrameTime();
 
@@ -46,8 +51,18 @@ void Core::MainLoop() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 #endif
+        ComponentManager::ProcessComponents();
+        EntityManager::ProcessEntities();
 
         Input::Update();
+
+        ComponentManager::Update();
+        EntityManager::Update();
+
+        ComponentManager::LateUpdate();
+        EntityManager::LateUpdate();
+
+        SceneGraph::CalculateGlobalTransforms();
 
         Renderer::GetInstance()->Draw();
         Renderer::GetInstance()->LateDraw();
