@@ -17,8 +17,8 @@ namespace mlg {
         void Draw();
         void LateDraw();
 
-        void AddRenderable(const std::shared_ptr<Renderable>& renderable);
-        void RemoveRenderable(std::shared_ptr<Renderable> renderable);
+        void AddRenderable(const std::weak_ptr<Renderable>& renderable);
+        void RemoveRenderable(std::weak_ptr<Renderable> renderable);
     };
 
 } // mlg
