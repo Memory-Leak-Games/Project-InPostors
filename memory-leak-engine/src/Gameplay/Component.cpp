@@ -6,14 +6,21 @@
 
 namespace mlg {
     Component::Component(std::weak_ptr<Entity> owner, std::string name)
-    : owner(owner), name(std::move(name)) {
+            : owner(owner), name(std::move(name)) {
         MLG_ASSERT(owner.expired() == false, "Owner is not valid");
     }
 
     void Component::Start() {}
+
     void Component::PhysicsUpdate() {}
+
     void Component::Update() {}
+
     void Component::LateUpdate() {}
+
+    void Component::Stop() {}
+
+    Component::~Component() {}
 
     bool Component::IsQueuedForDeletion() const {
         return isQueuedForDeletion;
@@ -31,10 +38,10 @@ namespace mlg {
         isQueuedForDeletion = true;
     }
 
-    Component::~Component() {}
 
     const std::weak_ptr<Entity>& Component::GetOwner() const {
         return owner;
     }
+
 
 } // mlg

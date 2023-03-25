@@ -59,17 +59,28 @@ namespace mlg {
         }
     }
 
+    void EntityManager::StopEntities() {
+        for (const auto& entity : instance->entities) {
+            entity->Stop();
+        }
+    }
+
     void EntityManager::ProcessEntities() {
         instance->entities.erase(std::remove_if(instance->entities.begin(), instance->entities.end(),
-                                         [](const std::weak_ptr<Entity>& entry) {
-                                             return entry.lock()->IsQueuedForDeletion();
+                                         [](const std::shared_ptr<Entity>& entry) {
+                                             if (entry->IsQueuedForDeletion()) {
+                                                 entry->Stop();
+                                                 return true;
+                                             }
+
+                                             return false;
                                          }), instance->entities.end());
     }
 
     std::weak_ptr<Entity> EntityManager::FindByName(const std::string& name) {
         auto foundIterator = std::find_if(instance->entities.begin(), instance->entities.end(),
-                                          [name](const std::weak_ptr<Entity>& entry) {
-                                              return entry.lock()->GetName() == name;
+                                          [name](const std::shared_ptr<Entity>& entry) {
+                                              return entry->GetName() == name;
                                           });
         if (foundIterator == instance->entities.end())
             return {};

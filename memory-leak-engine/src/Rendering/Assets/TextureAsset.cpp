@@ -1,6 +1,6 @@
-#include "Core/AssetManager/TextureAsset.h"
+#include "Rendering/Assets/TextureAsset.h"
 
-#include <stb_image.h>
+#include "stb_image.h"
 
 #include "Macros.h"
 #include "glad/glad.h"

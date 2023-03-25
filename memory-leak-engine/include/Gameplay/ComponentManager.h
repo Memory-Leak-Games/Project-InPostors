@@ -29,6 +29,7 @@ namespace mlg {
         static void PhysicsUpdate();
         static void Update();
         static void LateUpdate();
+        static void StopComponents();
 
         // For now is used to delete components when every update is done
         static void ProcessComponents();

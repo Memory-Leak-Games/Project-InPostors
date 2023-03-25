@@ -9,6 +9,9 @@
 #include "Events/WindowEvent.h"
 #include "Macros.h"
 
+#include "Rendering/Assets/MaterialAsset.h"
+#include "Rendering/Assets/ModelAsset.h"
+
 namespace mlg {
     RenderingAPI* RenderingAPI::instance;
 
@@ -95,6 +98,11 @@ namespace mlg {
 
     RenderingAPI* RenderingAPI::GetInstance() {
         return instance;
+    }
+
+
+    void RenderingAPI::DrawModel(ModelAsset* model) {
+        model->Draw();
     }
 
 }// namespace mlg
