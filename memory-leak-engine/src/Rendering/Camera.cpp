@@ -24,7 +24,7 @@ Camera::~Camera()
 
 glm::mat4 Camera::GetCameraProjectionMatrix(int resolutionX, int resolutionY) const
 {
-    return glm::perspective(glm::radians(fow), static_cast<float>(resolutionX) / static_cast<float>(resolutionY), 0.1f, 1000.f);
+    return glm::perspective(glm::radians(fow), static_cast<float>(resolutionX) / static_cast<float>(resolutionY), 0.1f, 100.f);
 }
 
 void Camera::SetResolution(const glm::vec<2, int> &newResolution)

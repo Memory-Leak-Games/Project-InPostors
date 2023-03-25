@@ -82,7 +82,7 @@ namespace mlg {
     void FrameBuffer::Clear(glm::vec4 color) {
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
         glClearColor(color.r, color.g, color.b, color.a);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
     void FrameBuffer::DeActivate() {
@@ -97,11 +97,9 @@ namespace mlg {
         glBindVertexArray(vao);
 
         glActiveTexture(GL_TEXTURE0);
-        material->GetShaderProgram()->SetInt("ColorTexture", 0);
-        glBindTexture(GL_TEXTURE_2D, colorTexture);
+        glBindTexture (GL_TEXTURE_2D, colorTexture);
 
         glActiveTexture(GL_TEXTURE1);
-        material->GetShaderProgram()->SetInt("DepthStencilTexture", 1);
         glBindTexture(GL_TEXTURE_2D, depthStencilTexture);
 
         glDrawArrays(GL_TRIANGLES, 0, 6);

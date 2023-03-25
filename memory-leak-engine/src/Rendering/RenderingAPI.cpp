@@ -44,6 +44,7 @@ namespace mlg {
 
         glEnable(GL_CULL_FACE);
         glEnable(GL_LINE_SMOOTH);
+        glEnable(GL_STENCIL_TEST);
 
         Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize,
                                                                     [](const Event& event) {
