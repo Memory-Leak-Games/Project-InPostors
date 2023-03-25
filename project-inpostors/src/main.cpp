@@ -23,7 +23,11 @@ public:
     ComponentTest(const std::weak_ptr<mlg::Entity>& owner, const std::string& name) : Component(owner, name) {}
 
     void Update() override {
+        glm::vec3 position = GetOwner().lock()->GetTransform().GetPosition();
+        position.z = glm::sin(mlg::Time::GetSeconds() * 2.f) * 8.f;
+
         GetOwner().lock()->GetTransform().SetRotation({{0.f, mlg::Time::GetSeconds(), 0.f}});
+        GetOwner().lock()->GetTransform().SetPosition(position);
 
         if (mlg::Input::IsActionPressed("test_button")) {
             GetOwner().lock()->QueueForDeletion();

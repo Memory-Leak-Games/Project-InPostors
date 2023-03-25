@@ -34,7 +34,7 @@ void Window::Initialize(std::string title, int32_t width, int32_t height) {
     SPDLOG_INFO("Initializing GLFW");
     glfwSetErrorCallback(Window::WindowErrorCallback);
 
-    MLG_ASSERT(glfwInit(), "Failed to initialize GLFW");
+    MLG_ASSERT_MSG(glfwInit(), "Failed to initialize GLFW");
 
     SPDLOG_INFO("Creating GLFW Window: {} {}x{}", title, width, height);
     instance = new Window(std::move(title), width, height);
@@ -48,10 +48,10 @@ int32_t Window::SetupWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, false);
 
     glfwWindow = glfwCreateWindow(windowData.width, windowData.height, windowData.title.c_str(), nullptr, nullptr);
-    MLG_ASSERT(glfwWindow != nullptr, "Failed to crate window");
+    MLG_ASSERT_MSG(glfwWindow != nullptr, "Failed to crate window");
 
     glfwMakeContextCurrent(glfwWindow);
     glfwSetWindowUserPointer(glfwWindow, (void*) &windowData);

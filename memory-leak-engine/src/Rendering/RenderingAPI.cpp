@@ -23,7 +23,7 @@ namespace mlg {
 
         instance = new RenderingAPI();
 
-        MLG_ASSERT(gladLoadGLLoader((GLADloadproc) glfwGetProcAddress), "Failed to initialize GLAD");
+        MLG_ASSERT_MSG(gladLoadGLLoader((GLADloadproc) glfwGetProcAddress), "Failed to initialize GLAD");
 
         std::cout << "\nOpenGL Info:\n"
         << "   Vendor: " << glGetString(GL_VENDOR) << "\n"
@@ -42,9 +42,9 @@ namespace mlg {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glEnable(GL_LINE_SMOOTH);
+        glEnable(GL_STENCIL_TEST);
 
         Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize,
                                                                     [](const Event& event) {

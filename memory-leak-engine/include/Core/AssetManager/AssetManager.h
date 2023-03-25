@@ -18,7 +18,7 @@ namespace mlg {
 
         template<typename T>
         static std::shared_ptr<T> GetAsset(const std::string& path) {
-            MLG_ASSERT((std::is_base_of<Asset, T>::value), "Assets must be derived from Asset class");
+            MLG_ASSERT_MSG((std::is_base_of<Asset, T>::value), "Assets must be derived from Asset class");
 
             auto iterator = instance->cacheAssetMap.find(path);
 
