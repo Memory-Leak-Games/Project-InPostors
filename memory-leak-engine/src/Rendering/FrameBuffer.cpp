@@ -48,6 +48,20 @@ namespace mlg {
         glGenFramebuffers(1, &frameBuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 
+        GenerateAndBindTextures(resolutionX, resolutionY);
+
+        MLG_ASSERT_MSG(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE,
+                       "Frame buffer is not complete");
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    void FrameBuffer::GenerateAndBindTextures(int32_t resolutionX, int32_t resolutionY) {
+        glDeleteTextures(1, &colorTexture);
+        glDeleteTextures(1, &depthStencilTexture);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+
         glGenTextures(1, &colorTexture);
         glBindTexture(GL_TEXTURE_2D, colorTexture);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, resolutionX, resolutionY, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
@@ -63,15 +77,11 @@ namespace mlg {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depthStencilTexture, 0);
 
-        MLG_ASSERT_MSG(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE,
-                       "Frame buffer is not complete");
-
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     void FrameBuffer::Resize(int32_t x, int32_t y) {
-        //TODO: Resize Implementation
-        MLG_UNIMPLEMENTED;
+        GenerateAndBindTextures(x, y);
     }
 
     void FrameBuffer::Activate() {
