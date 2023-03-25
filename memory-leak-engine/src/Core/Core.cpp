@@ -23,6 +23,7 @@
 #include "Gameplay/ComponentManager.h"
 #include "Gameplay/EntityManager.h"
 #include "SceneGraph/SceneGraph.h"
+#include "Rendering/FrameBuffer.h"
 
 using namespace mlg;
 
@@ -33,6 +34,8 @@ void Core::MainLoop() {
     // TODO: Remove this
     sceneLight = std::make_shared<Lights>();
     auto begin = std::chrono::high_resolution_clock::now();
+
+    FrameBuffer postProcessingFrameBuffer(Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
 
     bool shouldClose = false;
     Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowClose, [&shouldClose](const Event& event) {
@@ -65,8 +68,14 @@ void Core::MainLoop() {
 
         SceneGraph::CalculateGlobalTransforms();
 
+        postProcessingFrameBuffer.Activate();
+        postProcessingFrameBuffer.Clear({0.f, 0.f, 0.f, 1.f});
+
         Renderer::GetInstance()->Draw();
         Renderer::GetInstance()->LateDraw();
+
+        postProcessingFrameBuffer.DeActivate();
+        postProcessingFrameBuffer.Draw();
 
 #ifdef DEBUG
         ImGui::Begin("FPS");

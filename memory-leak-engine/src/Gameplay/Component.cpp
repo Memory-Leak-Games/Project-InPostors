@@ -7,7 +7,7 @@
 namespace mlg {
     Component::Component(std::weak_ptr<Entity> owner, std::string name)
             : owner(owner), name(std::move(name)) {
-        MLG_ASSERT(owner.expired() == false, "Owner is not valid");
+        MLG_ASSERT_MSG(owner.expired() == false, "Owner is not valid");
     }
 
     void Component::Start() {}

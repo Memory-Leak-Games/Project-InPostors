@@ -140,6 +140,7 @@ void ShaderProgram::LinkProgram(GLuint vertexShader, GLuint fragmentShader, GLui
         char Log[512];
         glGetProgramInfoLog(shaderProgramId, 512, nullptr, Log);
         SPDLOG_ERROR("Program linking failed: " + std::string(Log));
+        MLG_ASSERT(ProgramLinkingResult);
     }
 }
 

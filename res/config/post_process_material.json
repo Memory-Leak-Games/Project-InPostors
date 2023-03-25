@@ -1,0 +1,6 @@
+{
+  "vertexShader": "res/shaders/PostProcess/post_process.vert",
+  "fragmentShader": "res/shaders/PostProcess/post_process.frag",
+  "uniforms": [],
+  "textures": []
+}

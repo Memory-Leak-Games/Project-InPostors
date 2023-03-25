@@ -28,7 +28,7 @@ namespace mlg {
                     colorFormat = GL_RGBA;
                     break;
                 default:
-                    MLG_ASSERT(false, "Texture format not implemented");
+                    MLG_ASSERT_MSG(false, "Texture format not implemented");
             }
 
             glGenTextures(1, &textureID);
