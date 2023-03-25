@@ -24,6 +24,7 @@
 #include "Gameplay/EntityManager.h"
 #include "SceneGraph/SceneGraph.h"
 #include "Rendering/FrameBuffer.h"
+#include "Rendering/Camera.h"
 
 using namespace mlg;
 
@@ -36,6 +37,12 @@ void Core::MainLoop() {
     auto begin = std::chrono::high_resolution_clock::now();
 
     FrameBuffer postProcessingFrameBuffer(Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
+    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, [&postProcessingFrameBuffer](const Event& event) {
+        auto& windowResizeEvent = (WindowResizeEvent&) event;
+        RenderingAPI::GetInstance()->SetViewport(0, 0, windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+        postProcessingFrameBuffer.Resize(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+        Camera::GetInstance()->SetResolution({windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight()});
+    });
 
     bool shouldClose = false;
     Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowClose, [&shouldClose](const Event& event) {

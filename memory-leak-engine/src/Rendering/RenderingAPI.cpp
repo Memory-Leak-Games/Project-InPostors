@@ -45,14 +45,6 @@ namespace mlg {
         glEnable(GL_CULL_FACE);
         glEnable(GL_LINE_SMOOTH);
         glEnable(GL_STENCIL_TEST);
-
-        Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize,
-                                                                    [](const Event& event) {
-                                                                        WindowResizeEvent resizeWindowEvent = (const WindowResizeEvent&) event;
-                                                                        RenderingAPI::GetInstance()->SetViewport(0, 0,
-                                                                                                                 resizeWindowEvent.GetWidth(),
-                                                                                                                 resizeWindowEvent.GetHeight());
-                                                                    });
     }
 
     void RenderingAPI::OpenGlMessageCallback(unsigned int source, unsigned int type, unsigned int id,

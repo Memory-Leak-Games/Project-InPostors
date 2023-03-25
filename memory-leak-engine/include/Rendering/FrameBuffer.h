@@ -32,6 +32,8 @@ namespace mlg {
     private:
         void InitializeVao();
         void InitializeFbo(int32_t resolutionX, int32_t resolutionY);
+
+        void GenerateAndBindTextures(int32_t resolutionX, int32_t resolutionY) ;
     };
 
 } // mlg
