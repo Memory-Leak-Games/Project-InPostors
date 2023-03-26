@@ -1,4 +1,5 @@
 #include "Rendering//Gizmos/Gizmo.h"
+#include "Core/AssetManager/AssetManager.h"
 
 using namespace mlg;
 
@@ -24,5 +25,6 @@ void Gizmo::Initialize() {
 
     glBindVertexArray(0);
 
-    Shader = std::make_shared<ShaderProgram>("res/shaders/gizmos.vert", "res/shaders/gizmos.frag");
+    Shader = std::make_shared<ShaderProgram>(AssetManager::GetAsset<ShaderAsset>("res/shaders/gizmos.vert"),
+            AssetManager::GetAsset<ShaderAsset>("res/shaders/gizmos.frag"));
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glad/glad.h"
+#include "Rendering/Assets/ShaderAsset.h"
 #include "Rendering/ShaderProgram.h"
 
 namespace mlg {
