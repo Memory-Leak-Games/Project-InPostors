@@ -1,7 +1,8 @@
 #version 440 core
 
-layout (binding=0) uniform sampler2D  ColorTexture;
-layout (binding=1) uniform sampler2D  DepthStencilTexture;
+layout (binding=0) uniform sampler2D colorTexture;
+layout (binding=1) uniform sampler2D depthStencilTexture;
+uniform sampler2D whiteNoise;
 
 out vec4 fragColor;
 
@@ -51,7 +52,7 @@ mat4 SaturationMatrix(float saturation)
 }
 
 in VS_OUT {
-    vec2 texCoord;
+    vec2 uv;
 } fs_in;
 
 vec4 GammaCorection(vec4 color) {
@@ -59,11 +60,20 @@ vec4 GammaCorection(vec4 color) {
     return color;
 }
 
+float GetDepth(vec2 uv) {
+    return (texture(depthStencilTexture, fs_in.uv).x - 0.99) * 100.f;
+}
+
+vec4 SSAOPass() {
+    //unimplemented
+    return vec4(1.f);
+}
+
 void main() {
-    vec4 textureColor = texture(ColorTexture, fs_in.texCoord);
+    vec4 textureColor = texture(colorTexture, fs_in.uv);
 
     fragColor = BrightnessMatrix(Brightness) *
-                ContrastMatrix(Contrast) *
-                SaturationMatrix(Saturation) *
-                GammaCorection(textureColor);
+    ContrastMatrix(Contrast) *
+    SaturationMatrix(Saturation) *
+    GammaCorection(textureColor * SSAOPass());
 }
