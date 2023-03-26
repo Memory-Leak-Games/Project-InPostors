@@ -3,45 +3,41 @@
 
 using namespace mlg;
 
-Lights::Lights()
-{
+Lights::Lights() {
     InitializeLights();
 
     glGenBuffers(1, &uboLightData);
     glBindBuffer(GL_UNIFORM_BUFFER, uboLightData);
-    glBufferData(GL_UNIFORM_BUFFER, 32, nullptr, GL_DYNAMIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER, 64, nullptr, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, uboLightData);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     UpdateSun();
 }
 
-void Lights::InitializeLights()
-{
-    sun.color = glm::vec4(1.f);
-    sun.direction = glm::normalize(glm::vec3(-0.5f, -0.5f, 0.5f));
+void Lights::InitializeLights() {
+    sun.direction = glm::normalize(glm::vec3(0.5f, -0.5f, -0.5f));
+    sun.diffuse = glm::vec3(1.f);
+    sun.ambient = glm::vec3(0.1f);
+    sun.specular = glm::vec3(0.1f);
 }
 
-void Lights::UpdateSun()
-{
+void Lights::UpdateSun() {
     glBindBuffer(GL_UNIFORM_BUFFER, uboLightData);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, 32, &sun);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, 64, &sun);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-const DirectionalLight &Lights::GetSun() const
-{
+const DirectionalLight& Lights::GetSun() const {
     return sun;
 }
 
-void Lights::SetSun(const DirectionalLight &sun)
-{
+void Lights::SetSun(const DirectionalLight& sun) {
     Lights::sun = sun;
     UpdateSun();
 }
 
-Lights::~Lights()
-{
+Lights::~Lights() {
     glDeleteBuffers(1, &uboLightData);
 }
 

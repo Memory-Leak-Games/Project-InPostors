@@ -77,7 +77,9 @@ public:
     }
 
     void PrepareScene() {
-        mlg::Camera::GetInstance()->SetPosition({0, 0, -20});
+        mlg::Camera::GetInstance()->SetPosition({-8.f, 15.f, 8.f});
+        mlg::Camera::GetInstance()->SetRotation(glm::radians(-60.f), glm::radians(45.f));
+
         auto tardisMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Tardis/tardis_material.json");
         auto tardisModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Tardis/tardis.obj");
 

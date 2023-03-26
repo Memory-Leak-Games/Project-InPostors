@@ -25,7 +25,7 @@ namespace mlg {
 
     void StaticMeshComponent::Draw(struct Renderer* renderer) {
         material->Activate();
-        material->GetShaderProgram()->SetMat4F("World", GetTransform().GetWorldMatrix());
+        material->GetShaderProgram()->SetMat4F("world", GetTransform().GetWorldMatrix());
         RenderingAPI::GetInstance()->DrawModel(model.get());
     }
 

@@ -102,7 +102,14 @@ void Core::MainLoop() {
             ImGui::Text("Strength: %f", testFloat);
             ImGui::Text("State: %b, JustPressed: %b, JustReleased: %b", isTestPressed,
                         isTestJustPressed, isTestJustReleased);
+
         }
+
+        ImGui::Separator();
+        ImGui::Text("Camera");
+        glm::vec3 position = Camera::GetInstance()->GetPosition();
+        ImGui::DragFloat3("Camera Position", (float*) &position);
+        Camera::GetInstance()->SetPosition(position);
 
         ImGui::End();
 

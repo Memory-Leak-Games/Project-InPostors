@@ -4,8 +4,13 @@
 
 namespace mlg {
     struct DirectionalLight {
-        glm::vec4 color;
         glm::vec3 direction;
+        float offeset1;
+        glm::vec3 ambient;
+        float offeset2;
+        glm::vec3 diffuse;
+        float offeset3;
+        glm::vec3 specular;
     };
 
     class Lights {
