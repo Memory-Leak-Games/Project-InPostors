@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "Rendering/ShaderProgram.h"
+#include "Rendering/Assets/ShaderAsset.h"
 #include "Core/AssetManager/AssetManager.h"
 
 #include "Macros.h"
@@ -49,8 +50,8 @@ namespace mlg {
 
         json materialJson = json::parse(materialFile);
 
-        shaderProgram = std::make_shared<ShaderProgram>(materialJson["vertexShader"],
-                                                        materialJson["fragmentShader"]);
+        shaderProgram = std::make_shared<ShaderProgram>(AssetManager::GetAsset<ShaderAsset>(materialJson["vertexShader"]),
+                                                        AssetManager::GetAsset<ShaderAsset>(materialJson["fragmentShader"]));
         ParseUniforms(materialJson);
         ParseTextures(materialJson);
     }

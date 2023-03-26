@@ -6,10 +6,16 @@ namespace mlg {
     class ShaderProgram {
     private:
         uint32_t shaderProgramId = 0;
+        std::shared_ptr<class ShaderAsset> vertexShader;
+        std::shared_ptr<class ShaderAsset> fragmentShader;
+        std::shared_ptr<class ShaderAsset> geometryShader;
 
     public:
-        ShaderProgram(std::string vertexShaderPath, std::string fragmentShaderPath);
-        ShaderProgram(std::string vertexShaderPath, std::string fragmentShaderPath, std::string geometryShaderPath);
+        ShaderProgram(const std::shared_ptr<ShaderAsset>& vertexShader,
+                      const std::shared_ptr<ShaderAsset>& fragmentShader);
+        ShaderProgram(const std::shared_ptr<ShaderAsset>& vertexShader,
+                      const std::shared_ptr<ShaderAsset>& fragmentShader,
+                      const std::shared_ptr<ShaderAsset>& geometryShader);
 
         void Activate() const;
         void DeActivate() const;
@@ -28,17 +34,7 @@ namespace mlg {
         [[nodiscard]] int32_t GetUniformLocation(const std::string& name) const;
 
     private:
-        static std::string LoadShader(const std::string& shaderPath);
-
-        static void CompileShader(const std::string& shaderPath, uint32_t shader);
-
-        static uint32_t CompileVertexShader(const std::string& vertexShaderPath);
-        static uint32_t CompileFragmentShader(const std::string& fragmentShaderPath);
-        static uint32_t CompileGeometryShader(const std::string& geometryShaderPath);
-
-        void LinkProgram(uint32_t vertexShader, uint32_t fragmentShader, uint32_t geometryShader);
-
-        static void LogShaderError(uint32_t geometryShader, const std::string& message);
+        void LinkProgram(uint32_t vShader, uint32_t fShader, uint32_t gShader);
     };
 
 }

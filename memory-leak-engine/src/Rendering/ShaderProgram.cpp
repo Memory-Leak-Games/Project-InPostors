@@ -4,6 +4,8 @@
 #include "glm/ext.hpp"
 #include <fstream>
 
+#include "Rendering/Assets/ShaderAsset.h"
+
 #include "Macros.h"
 
 using namespace mlg;
@@ -86,50 +88,28 @@ void ShaderProgram::DeActivate() const {
     glUseProgram(0);
 }
 
-std::string ShaderProgram::LoadShader(const std::string& shaderPath) {
-    std::ifstream shaderFile;
-
-    shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
-    shaderFile.open(shaderPath);
-    std::stringstream ShaderStream;
-
-    ShaderStream << shaderFile.rdbuf();
-    shaderFile.close();
-
-    return ShaderStream.str();
+ShaderProgram::ShaderProgram(const std::shared_ptr<ShaderAsset> &vertexShader,
+                             const std::shared_ptr<ShaderAsset> &fragmentShader) :
+                             vertexShader(vertexShader), fragmentShader(fragmentShader) {
+    LinkProgram(vertexShader->GetShaderID(), fragmentShader->GetShaderID(), 0);
 }
 
-ShaderProgram::ShaderProgram(std::string vertexShaderPath, std::string fragmentShaderPath) : ShaderProgram(
-        std::move(vertexShaderPath), std::move(fragmentShaderPath), "") {
-
+ShaderProgram::ShaderProgram(const std::shared_ptr<ShaderAsset> &vertexShader,
+                             const std::shared_ptr<ShaderAsset> &fragmentShader,
+                             const std::shared_ptr<ShaderAsset> &geometryShader) :
+                             vertexShader(vertexShader),
+                             fragmentShader(fragmentShader),
+                             geometryShader(geometryShader) {
+    LinkProgram(vertexShader->GetShaderID(), fragmentShader->GetShaderID(), geometryShader->GetShaderID());
 }
 
-ShaderProgram::ShaderProgram(std::string vertexShaderPath, std::string fragmentShaderPath,
-                             std::string geometryShaderPath) {
-    GLuint VertexShader, FragmentShader;
-
-    VertexShader = CompileVertexShader(vertexShaderPath);
-    FragmentShader = CompileFragmentShader(fragmentShaderPath);
-    if (!geometryShaderPath.empty()) {
-        GLuint GeometryShader = CompileGeometryShader(geometryShaderPath);
-        LinkProgram(VertexShader, FragmentShader, GeometryShader);
-    } else {
-        LinkProgram(VertexShader, FragmentShader, 0);
-    }
-
-    glDeleteShader(VertexShader);
-    glDeleteShader(FragmentShader);
-}
-
-
-void ShaderProgram::LinkProgram(GLuint vertexShader, GLuint fragmentShader, GLuint geometryShader = 0) {
+void ShaderProgram::LinkProgram(GLuint vShader, GLuint fShader, GLuint gShader = 0) {
     shaderProgramId = glCreateProgram();
-    glAttachShader(shaderProgramId, vertexShader);
-    glAttachShader(shaderProgramId, fragmentShader);
+    glAttachShader(shaderProgramId, vShader);
+    glAttachShader(shaderProgramId, fShader);
 
     if (geometryShader != 0) {
-        glAttachShader(shaderProgramId, geometryShader);
+        glAttachShader(shaderProgramId, gShader);
     }
 
     glLinkProgram(shaderProgramId);
@@ -141,53 +121,6 @@ void ShaderProgram::LinkProgram(GLuint vertexShader, GLuint fragmentShader, GLui
         glGetProgramInfoLog(shaderProgramId, 512, nullptr, Log);
         SPDLOG_ERROR("Program linking failed: " + std::string(Log));
     }
-}
-
-GLuint ShaderProgram::CompileFragmentShader(const std::string& fragmentShaderPath) {
-    GLuint FragmentShader;
-    FragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-    CompileShader(fragmentShaderPath, FragmentShader);
-    LogShaderError(FragmentShader, "Fragment Shader compilation failed: ");
-
-    return FragmentShader;
-}
-
-GLuint ShaderProgram::CompileVertexShader(const std::string& vertexShaderPath) {
-    GLuint VertexShader;
-    VertexShader = glCreateShader(GL_VERTEX_SHADER);
-
-    CompileShader(vertexShaderPath, VertexShader);
-    LogShaderError(VertexShader, "Vertex Shader compilation failed: ");
-
-    return VertexShader;
-}
-
-GLuint ShaderProgram::CompileGeometryShader(const std::string& geometryShaderPath) {
-    GLuint GeometryShader;
-    GeometryShader = glCreateShader(GL_GEOMETRY_SHADER);
-
-    CompileShader(geometryShaderPath, GeometryShader);
-    LogShaderError(GeometryShader, "Geometry Shader compilation failed: ");
-
-    return GeometryShader;
-}
-
-void ShaderProgram::LogShaderError(GLuint geometryShader, const std::string& message) {
-    GLint ShaderCompilationResult;
-    glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &ShaderCompilationResult);
-    if (!ShaderCompilationResult) {
-        char Log[512] = "Error";
-        glGetShaderInfoLog(geometryShader, 512, nullptr, Log);
-        SPDLOG_ERROR(message + std::string(Log));
-    }
-}
-
-void ShaderProgram::CompileShader(const std::string& shaderPath, GLuint shader) {
-    std::string ShaderCode = LoadShader(shaderPath);
-    const GLchar* ConstCharPtrShaderCode = ShaderCode.c_str();
-    glShaderSource(shader, 1, &ConstCharPtrShaderCode, nullptr);
-    glCompileShader(shader);
 }
 
 GLint ShaderProgram::TrySetVec4f(const std::string& name, glm::vec4 value) const {
