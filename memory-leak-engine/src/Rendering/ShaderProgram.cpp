@@ -103,7 +103,7 @@ ShaderProgram::ShaderProgram(const std::shared_ptr<ShaderAsset> &vertexShader,
     LinkProgram(vertexShader->GetShaderID(), fragmentShader->GetShaderID(), geometryShader->GetShaderID());
 }
 
-void ShaderProgram::LinkProgram(GLuint vShader, GLuint fShader, GLuint gShader = 0) {
+void ShaderProgram::LinkProgram(uint32_t vShader, uint32_t fShader, uint32_t gShader = 0) {
     shaderProgramId = glCreateProgram();
     glAttachShader(shaderProgramId, vShader);
     glAttachShader(shaderProgramId, fShader);

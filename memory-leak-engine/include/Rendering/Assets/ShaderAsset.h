@@ -6,7 +6,7 @@
 namespace mlg {
 
     class ShaderAsset : public Asset {
-        GLuint shaderID = 0;
+        uint32_t shaderID = 0;
     public:
         explicit ShaderAsset(const std::string& path);
 

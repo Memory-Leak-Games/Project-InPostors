@@ -35,8 +35,8 @@ namespace mlg {
         }
     }
 
-    GLuint ShaderAsset::CompileFragmentShader(const std::string& fragmentShaderPath) {
-        GLuint FragmentShader;
+    uint32_t ShaderAsset::CompileFragmentShader(const std::string& fragmentShaderPath) {
+        uint32_t FragmentShader;
         FragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
         CompileShader(fragmentShaderPath, FragmentShader);
@@ -45,8 +45,8 @@ namespace mlg {
         return FragmentShader;
     }
 
-    GLuint ShaderAsset::CompileVertexShader(const std::string& vertexShaderPath) {
-        GLuint VertexShader;
+    uint32_t ShaderAsset::CompileVertexShader(const std::string& vertexShaderPath) {
+        uint32_t VertexShader;
         VertexShader = glCreateShader(GL_VERTEX_SHADER);
 
         CompileShader(vertexShaderPath, VertexShader);
@@ -55,8 +55,8 @@ namespace mlg {
         return VertexShader;
     }
 
-    GLuint ShaderAsset::CompileGeometryShader(const std::string& geometryShaderPath) {
-        GLuint GeometryShader;
+    uint32_t ShaderAsset::CompileGeometryShader(const std::string& geometryShaderPath) {
+        uint32_t GeometryShader;
         GeometryShader = glCreateShader(GL_GEOMETRY_SHADER);
 
         CompileShader(geometryShaderPath, GeometryShader);
@@ -65,14 +65,14 @@ namespace mlg {
         return GeometryShader;
     }
 
-    void ShaderAsset::CompileShader(const std::string& shaderCode, GLuint shader) {
+    void ShaderAsset::CompileShader(const std::string& shaderCode, uint32_t shader) {
         std::string ShaderCode = shaderCode;
         const GLchar* ConstCharPtrShaderCode = ShaderCode.c_str();
         glShaderSource(shader, 1, &ConstCharPtrShaderCode, nullptr);
         glCompileShader(shader);
     }
 
-    void ShaderAsset::LogShaderError(GLuint shader, const std::string& message) {
+    void ShaderAsset::LogShaderError(uint32_t shader, const std::string& message) {
         GLint ShaderCompilationResult;
         glGetShaderiv(shader, GL_COMPILE_STATUS, &ShaderCompilationResult);
         if (!ShaderCompilationResult) {
