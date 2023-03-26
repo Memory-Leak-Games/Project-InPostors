@@ -31,7 +31,7 @@ namespace mlg {
         } else if (type == "geom") {
             shaderID = CompileGeometryShader(ShaderStream.str());
         } else {
-            MLG_ASSERT(false, "Wrong shader type");
+            MLG_ASSERT_MSG(false, "Wrong shader type");
         }
     }
 
