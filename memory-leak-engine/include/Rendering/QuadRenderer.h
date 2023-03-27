@@ -9,9 +9,7 @@ namespace mlg {
         QuadRenderer();
         ~QuadRenderer();
 
-        void Activate();
         void Draw();
-        void DeActivate();
     };
 
 } // mlg

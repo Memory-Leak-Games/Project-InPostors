@@ -72,13 +72,11 @@ namespace mlg {
 
         material->Activate();
 
-        screenSpacePlane.Activate();
-
         glActiveTexture(GL_TEXTURE0);
         glBindTexture (GL_TEXTURE_2D, colorTexture);
 
         screenSpacePlane.Draw();
-        screenSpacePlane.DeActivate();
+
         material->DeActivate();
 
         glEnable(GL_DEPTH_TEST);

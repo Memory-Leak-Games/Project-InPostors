@@ -6,6 +6,8 @@ layout (binding=0) uniform sampler2D gPosition;
 layout (binding=1) uniform sampler2D gNormal;
 layout (binding=2) uniform sampler2D gAlbedoSpecular;
 
+layout (binding=3) uniform sampler2D ssao;
+
 in VS_OUT {
     vec2 uv;
 } fs_in;
@@ -41,7 +43,7 @@ vec3 CalculateDirectionalLight() {
     vec3 reflectDirection = reflect(-lightDirection, normal);
     float calculated_specular = pow(max(dot(viewDirection, reflectDirection), 0.0), specular);
 
-    vec3 ambientColor = light_ambient * albedo;
+    vec3 ambientColor = light_ambient * albedo * texture(ssao, fs_in.uv).r;
     vec3 diffuseColor = light_diffuse * diffuse * albedo;
     vec3 specularColor = light_specular * calculated_specular;
     return ambientColor + diffuseColor + specularColor;
@@ -50,4 +52,5 @@ vec3 CalculateDirectionalLight() {
 void main()
 {
     fragColor = vec4(CalculateDirectionalLight(), 1.0);
+//    fragColor = vec4(vec3(texture(ssao, fs_in.uv).x), 1.0);
 }
