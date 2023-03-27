@@ -32,5 +32,105 @@
         "code" : 0
       }
     ]
+  },
+
+  {
+    "name": "debug_cam_forward",
+    "mappings": [
+      {
+        "deviceType" : "Keyboard",
+        "code" : 73
+      }
+    ]
+  },
+
+  {
+    "name": "debug_cam_back",
+    "mappings": [
+      {
+        "deviceType" : "Keyboard",
+        "code" : 75
+      }
+    ]
+  },
+
+  {
+    "name": "debug_cam_left",
+    "mappings": [
+      {
+        "deviceType" : "Keyboard",
+        "code" : 74
+      }
+    ]
+  },
+
+  {
+    "name": "debug_cam_right",
+    "mappings": [
+      {
+        "deviceType" : "Keyboard",
+        "code" : 76
+      }
+    ]
+  },
+
+  {
+    "name": "debug_rotate_left",
+    "mappings": [
+      {
+        "deviceType" : "Keyboard",
+        "code" : 85
+      }
+    ]
+  },
+
+  {
+    "name": "debug_rotate_right",
+    "mappings": [
+      {
+        "deviceType" : "Keyboard",
+        "code" : 79
+      }
+    ]
+  },
+
+  {
+    "name": "debug_cam_up",
+    "mappings": [
+      {
+        "deviceType" : "Keyboard",
+        "code" : 80
+      }
+    ]
+  },
+
+  {
+    "name": "debug_cam_down",
+    "mappings": [
+      {
+        "deviceType" : "Keyboard",
+        "code" : 59
+      }
+    ]
+  },
+
+  {
+    "name": "debug_rotate_up",
+    "mappings": [
+      {
+        "deviceType" : "Keyboard",
+        "code" : 89
+      }
+    ]
+  },
+
+  {
+    "name": "debug_rotate_down",
+    "mappings": [
+      {
+        "deviceType" : "Keyboard",
+        "code" : 72
+      }
+    ]
   }
 ]

@@ -40,7 +40,6 @@ public:
 };
 
 class ProjectInpostors {
-private:
 public:
     ProjectInpostors() = default;
 

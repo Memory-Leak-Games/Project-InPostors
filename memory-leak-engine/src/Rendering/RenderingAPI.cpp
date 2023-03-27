@@ -26,9 +26,9 @@ namespace mlg {
         MLG_ASSERT_MSG(gladLoadGLLoader((GLADloadproc) glfwGetProcAddress), "Failed to initialize GLAD");
 
         std::cout << "\nOpenGL Info:\n"
-        << "   Vendor: " << glGetString(GL_VENDOR) << "\n"
-        << "   Renderer: " << glad_glGetString(GL_RENDERER) << "\n"
-        << "   Version: " << glad_glGetString(GL_VERSION) << "\n\n";
+        << "\tVendor: " << glGetString(GL_VENDOR) << "\n"
+        << "\tRenderer: " << glad_glGetString(GL_RENDERER) << "\n"
+        << "\tVersion: " << glad_glGetString(GL_VERSION) << "\n\n";
 
 
 #ifdef DEBUG

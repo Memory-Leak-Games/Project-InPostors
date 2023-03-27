@@ -20,6 +20,7 @@
 
 // TODO: delete this
 #include "Rendering/Lights.h"
+#include "Rendering/Camera.h"
 #include "Gameplay/ComponentManager.h"
 #include "Gameplay/EntityManager.h"
 #include "SceneGraph/SceneGraph.h"
@@ -35,7 +36,6 @@ void Core::MainLoop() {
 
     // TODO: Remove this
     sceneLight = std::make_shared<Lights>();
-    auto begin = std::chrono::high_resolution_clock::now();
 
     PostProcess postProcessingFrameBuffer(Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
     GBuffer gBuffer(Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
@@ -60,8 +60,44 @@ void Core::MainLoop() {
 
     while (!shouldClose) {
         Time::UpdateStartFrameTime();
-
         RenderingAPI::GetInstance()->Clear();
+
+        // TODO: To camera component
+        // I hate this
+        if (Input::IsActionPressed("debug_cam_forward")) {
+            Camera::GetInstance()->ProcessMovement(FORWARD);
+        }
+        if (Input::IsActionPressed("debug_cam_back")) {
+            Camera::GetInstance()->ProcessMovement(BACKWARD);
+        }
+        if (Input::IsActionPressed("debug_cam_left")) {
+            Camera::GetInstance()->ProcessMovement(LEFT);
+        }
+        if (Input::IsActionPressed("debug_cam_right")) {
+            Camera::GetInstance()->ProcessMovement(RIGHT);
+        }
+        if (Input::IsActionPressed("debug_cam_up"))
+        {
+            Camera::GetInstance()->ProcessMovement(UP);
+        }
+        if (Input::IsActionPressed("debug_cam_down"))
+        {
+            Camera::GetInstance()->ProcessMovement(DOWN);
+        }
+        if (Input::IsActionPressed("debug_rotate_left")) {
+            Camera::GetInstance()->ProcessRotation(0.0f, -0.01f);
+        }
+        if (Input::IsActionPressed("debug_rotate_right")) {
+            Camera::GetInstance()->ProcessRotation(0.0f, 0.01f);
+        }
+        if (Input::IsActionPressed("debug_rotate_up")) {
+            Camera::GetInstance()->ProcessRotation(0.01f, 0.0f);
+        }
+        if (Input::IsActionPressed("debug_rotate_down")) {
+            Camera::GetInstance()->ProcessRotation(-0.01f, 0.0f);
+        }
+
+
 
 #ifdef DEBUG
         ImGui_ImplOpenGL3_NewFrame();
@@ -144,7 +180,6 @@ void Core::MainLoop() {
         Window::GetInstance()->SwapBuffers();
         Window::GetInstance()->PollEvents();
     }
-
 }
 
 void Core::Stop() {
