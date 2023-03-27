@@ -92,5 +92,45 @@
         "code" : 79
       }
     ]
+  },
+
+  {
+    "name": "debug_cam_up",
+    "mappings": [
+      {
+        "deviceType" : "Keyboard",
+        "code" : 80
+      }
+    ]
+  },
+
+  {
+    "name": "debug_cam_down",
+    "mappings": [
+      {
+        "deviceType" : "Keyboard",
+        "code" : 59
+      }
+    ]
+  },
+
+  {
+    "name": "debug_rotate_up",
+    "mappings": [
+      {
+        "deviceType" : "Keyboard",
+        "code" : 89
+      }
+    ]
+  },
+
+  {
+    "name": "debug_rotate_down",
+    "mappings": [
+      {
+        "deviceType" : "Keyboard",
+        "code" : 72
+      }
+    ]
   }
 ]

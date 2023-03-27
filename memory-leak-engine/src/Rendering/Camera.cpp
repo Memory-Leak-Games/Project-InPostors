@@ -140,6 +140,11 @@ std::shared_ptr<Camera> Camera::GetInstance() {
     return instance;
 }
 
+/**
+ * Processes movement of this camera
+ * @param movement CameraMovement enum value corresponding to movement direction
+ * @param deltaTime Time elapsed since last frame
+ */
 void Camera::ProcessMovement(CameraMovement movement, float deltaTime) {
     float velocity = speed * deltaTime;
     switch(movement)
@@ -156,6 +161,7 @@ void Camera::ProcessMovement(CameraMovement movement, float deltaTime) {
         }
         case LEFT:
         {
+            //glm::cross(front, up) = right vector
             position -= glm::cross(front, up) * velocity;
             break;
         }
@@ -164,23 +170,52 @@ void Camera::ProcessMovement(CameraMovement movement, float deltaTime) {
             position +=  glm::cross(front, up) * velocity;
             break;
         }
+        case UP:
+        {
+            position += up * velocity;
+            height = position.y;
+            break;
+        }
+        case DOWN:
+        {
+            position -= up * velocity;
+            height = position.y;
+            break;
+        }
         default: break;
     }
+    // Height correction (#itjustworks)
+    if (isFixedHeight)
+        position.y = height;
+
     UpdateView();
 }
 
+/**
+ * Processes rotation of this camera
+ * @param xOffset Pitch offset
+ * @param yOffset Yaw offset
+ * @param pitchConstrain Should pitch be capped between (-89; 89)
+ */
 void Camera::ProcessRotation(float xOffset, float yOffset, bool pitchConstrain) {
     xOffset *= sensitivity;
     yOffset *= sensitivity;
     pitch += xOffset;
     yaw += yOffset;
 
-    if (pitchConstrain)
-    {
+    if (pitchConstrain) {
+        // I love oneliners
         pitch = pitch > 89.0f ? 89.0f : pitch;
         pitch = pitch < -89.0f ? -89.0f : pitch;
     }
+    SPDLOG_DEBUG(pitch);
 
-    SetRotation(pitch, yaw);
+    SetRotation(pitch, yaw); //no need to call UpdateView as it is called by SetRotation()
 }
 
+
+void Camera::ProcessZoom(float offset) {
+    zoom -= static_cast<float>(offset);
+    zoom = zoom < 1.0f ? 1.0f : zoom;
+    zoom = zoom > MAX_ZOOM ? MAX_ZOOM : zoom;
+}
