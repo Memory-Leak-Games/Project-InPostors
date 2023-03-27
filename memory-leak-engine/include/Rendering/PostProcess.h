@@ -9,7 +9,7 @@ namespace mlg {
     private:
         uint32_t frameBuffer;
         uint32_t colorTexture;
-        uint32_t depthStencilTexture;
+        uint32_t rboDepth;
 
         std::shared_ptr<class MaterialAsset> material;
 

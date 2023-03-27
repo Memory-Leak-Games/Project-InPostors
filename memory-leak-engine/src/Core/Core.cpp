@@ -25,6 +25,7 @@
 #include "SceneGraph/SceneGraph.h"
 #include "Rendering/PostProcess.h"
 #include "Rendering/Camera.h"
+#include "Rendering/GBuffer.h"
 
 using namespace mlg;
 
@@ -37,6 +38,8 @@ void Core::MainLoop() {
     auto begin = std::chrono::high_resolution_clock::now();
 
     PostProcess postProcessingFrameBuffer(Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
+    GBuffer gBuffer(Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
+
     Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, [&postProcessingFrameBuffer](const Event& event) {
         auto& windowResizeEvent = (WindowResizeEvent&) event;
         RenderingAPI::GetInstance()->SetViewport(0, 0, windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
@@ -75,11 +78,18 @@ void Core::MainLoop() {
 
         SceneGraph::CalculateGlobalTransforms();
 
-        postProcessingFrameBuffer.Activate();
-        postProcessingFrameBuffer.Clear({0.f, 0.f, 0.f, 1.f});
+        gBuffer.Activate();
 
         Renderer::GetInstance()->Draw();
         Renderer::GetInstance()->LateDraw();
+
+        gBuffer.DeActivate();
+        gBuffer.CopyDepthBuffer();
+
+        postProcessingFrameBuffer.Activate();
+        postProcessingFrameBuffer.Clear({0.f, 0.f, 0.f, 1.f});
+
+        gBuffer.Draw();
 
         postProcessingFrameBuffer.DeActivate();
         postProcessingFrameBuffer.Draw();

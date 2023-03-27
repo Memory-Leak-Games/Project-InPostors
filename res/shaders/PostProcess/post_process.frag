@@ -1,7 +1,6 @@
 #version 440 core
 
 layout (binding=0) uniform sampler2D colorTexture;
-layout (binding=1) uniform sampler2D depthStencilTexture;
 uniform sampler2D whiteNoise;
 
 out vec4 fragColor;

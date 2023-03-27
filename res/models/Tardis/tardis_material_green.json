@@ -16,7 +16,7 @@
   "textures": [
     {
       "name": "textureDiffuse",
-      "index": 0,
+      "index": 15,
       "path": "res/models/Tardis/tardis.png"
     }
   ]

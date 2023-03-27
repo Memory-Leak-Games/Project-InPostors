@@ -9,7 +9,7 @@ namespace mlg {
 
 
     PostProcess::PostProcess(int32_t resolutionX, int32_t resolutionY)
-            : frameBuffer(0), colorTexture(0), depthStencilTexture(0) {
+            : frameBuffer(0), colorTexture(0), rboDepth(0) {
         SPDLOG_DEBUG("Initializing FrameBuffer");
 
         InitializeFbo(resolutionX, resolutionY);
@@ -31,7 +31,6 @@ namespace mlg {
 
     void PostProcess::GenerateAndBindTextures(int32_t resolutionX, int32_t resolutionY) {
         glDeleteTextures(1, &colorTexture);
-        glDeleteTextures(1, &depthStencilTexture);
 
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 
@@ -42,13 +41,10 @@ namespace mlg {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture, 0);
 
-        glGenTextures(1, &depthStencilTexture);
-        glBindTexture(GL_TEXTURE_2D, depthStencilTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, resolutionX, resolutionY, 0, GL_DEPTH_STENCIL,
-                     GL_UNSIGNED_INT_24_8, nullptr);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depthStencilTexture, 0);
+        glGenRenderbuffers(1, &rboDepth);
+        glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, resolutionX, resolutionY);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
@@ -59,13 +55,12 @@ namespace mlg {
 
     void PostProcess::Activate() {
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-        glEnable(GL_DEPTH_TEST);
     }
 
     void PostProcess::Clear(glm::vec4 color) {
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-        glClearColor(color.r, color.g, color.b, color.a);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+//        glClearColor(color.r, color.g, color.b, color.a);
+//        glClear(GL_COLOR_BUFFER_BIT);
     }
 
     void PostProcess::DeActivate() {
@@ -82,17 +77,16 @@ namespace mlg {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture (GL_TEXTURE_2D, colorTexture);
 
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, depthStencilTexture);
-
         screenSpacePlane.Draw();
         screenSpacePlane.DeActivate();
         material->DeActivate();
+
+        glEnable(GL_DEPTH_TEST);
     }
 
     PostProcess::~PostProcess() {
+        glDeleteRenderbuffers(1, &rboDepth);
         glDeleteTextures(1, &colorTexture);
-        glDeleteTextures(1, &depthStencilTexture);
         glDeleteFramebuffers(1, &frameBuffer);
     }
 } // mlg

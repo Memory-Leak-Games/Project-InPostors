@@ -35,7 +35,7 @@ void Mesh::SetupBuffers() {
 
 void Mesh::Draw() const {
     glBindVertexArray(vao);
-    glDrawElements(GL_TRIANGLES, (int32_t) indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, (uint32_t) indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 
