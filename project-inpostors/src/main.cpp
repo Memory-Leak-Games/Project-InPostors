@@ -47,7 +47,7 @@ public:
     int Main(int argc, char* argv[]) {
         mlg::Time::Initialize();
         mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
-        mlg::Window::GetInstance()->SetVerticalSync(false);
+        mlg::Window::GetInstance()->SetVerticalSync(true);
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
         mlg::AssetManager::Initialize();
@@ -77,18 +77,23 @@ public:
     }
 
     void PrepareScene() {
-        mlg::Camera::GetInstance()->SetPosition({0, 0, -20});
+        mlg::Camera::GetInstance()->SetPosition({-8.f, 15.f, 8.f});
+        mlg::Camera::GetInstance()->SetRotation(glm::radians(-60.f), glm::radians(45.f));
+
         auto tardisMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Tardis/tardis_material.json");
         auto tardisModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Tardis/tardis.obj");
 
-        auto tardisEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisOne", true, mlg::SceneGraph::GetRoot());
+        auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
+        auto planeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/plane.obj");
+
+        auto tardisEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisOne", false, mlg::SceneGraph::GetRoot());
         tardisEntity.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel, tardisMaterial);
         tardisEntity.lock()->AddComponent<ComponentTest>("RotationComponent");
 
         auto tardisMaterial1 = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Tardis/tardis_material_green.json");
         auto tardisModel1 = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Tardis/tardis.obj");
 
-        auto tardisEntity1 = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisRight", true, mlg::SceneGraph::GetRoot());
+        auto tardisEntity1 = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisRight", false, mlg::SceneGraph::GetRoot());
         tardisEntity1.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel1, tardisMaterial1);
         tardisEntity1.lock()->AddComponent<ComponentTest>("RotationComponent");
 
@@ -97,11 +102,16 @@ public:
         auto tardisMaterial2 = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Tardis/tardis_material_another.json");
         auto tardisModel2 = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Tardis/tardis.obj");
 
-        auto tardisEntity2 = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisLeft", true, mlg::SceneGraph::GetRoot());
+        auto tardisEntity2 = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisLeft", false, mlg::SceneGraph::GetRoot());
         tardisEntity2.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel2, tardisMaterial2);
         tardisEntity2.lock()->AddComponent<ComponentTest>("RotationComponent");
 
         tardisEntity2.lock()->GetTransform().SetPosition({7.f, 0.f, 0.f});
+
+        auto ground = mlg::EntityManager::SpawnEntity<mlg::Entity>("Ground", true, mlg::SceneGraph::GetRoot());
+        ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, whiteMaterial);
+        ground.lock()->GetTransform().SetPosition({0.f, -4.f, 0.f});
+        ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
     }
 
     virtual ~ProjectInpostors() {

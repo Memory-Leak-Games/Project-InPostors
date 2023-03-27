@@ -23,8 +23,9 @@
 #include "Gameplay/ComponentManager.h"
 #include "Gameplay/EntityManager.h"
 #include "SceneGraph/SceneGraph.h"
-#include "Rendering/FrameBuffer.h"
+#include "Rendering/PostProcess.h"
 #include "Rendering/Camera.h"
+#include "Rendering/GBuffer.h"
 
 using namespace mlg;
 
@@ -36,11 +37,16 @@ void Core::MainLoop() {
     sceneLight = std::make_shared<Lights>();
     auto begin = std::chrono::high_resolution_clock::now();
 
-    FrameBuffer postProcessingFrameBuffer(Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
-    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, [&postProcessingFrameBuffer](const Event& event) {
+    PostProcess postProcessingFrameBuffer(Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
+    GBuffer gBuffer(Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
+
+    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, [&postProcessingFrameBuffer, &gBuffer](const Event& event) {
         auto& windowResizeEvent = (WindowResizeEvent&) event;
         RenderingAPI::GetInstance()->SetViewport(0, 0, windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+
         postProcessingFrameBuffer.Resize(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+        gBuffer.Resize(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+
         Camera::GetInstance()->SetResolution({windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight()});
     });
 
@@ -75,11 +81,19 @@ void Core::MainLoop() {
 
         SceneGraph::CalculateGlobalTransforms();
 
+        gBuffer.Activate();
+
+        Renderer::GetInstance()->Draw();
+
+        gBuffer.DeActivate();
+        gBuffer.CopyDepthBuffer();
+
+        Renderer::GetInstance()->LateDraw();
+
         postProcessingFrameBuffer.Activate();
         postProcessingFrameBuffer.Clear({0.f, 0.f, 0.f, 1.f});
 
-        Renderer::GetInstance()->Draw();
-        Renderer::GetInstance()->LateDraw();
+        gBuffer.Draw();
 
         postProcessingFrameBuffer.DeActivate();
         postProcessingFrameBuffer.Draw();
@@ -102,7 +116,19 @@ void Core::MainLoop() {
             ImGui::Text("Strength: %f", testFloat);
             ImGui::Text("State: %b, JustPressed: %b, JustReleased: %b", isTestPressed,
                         isTestJustPressed, isTestJustReleased);
+
         }
+
+        ImGui::Separator();
+        bool vSync = Window::GetInstance()->GetVerticalSync();
+        ImGui::Checkbox("VSync ", &vSync);
+        Window::GetInstance()->SetVerticalSync(vSync);
+
+        ImGui::Separator();
+        ImGui::Text("Camera");
+        glm::vec3 position = Camera::GetInstance()->GetPosition();
+        ImGui::DragFloat3("Camera Position", (float*) &position);
+        Camera::GetInstance()->SetPosition(position);
 
         ImGui::End();
 

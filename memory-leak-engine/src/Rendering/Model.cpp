@@ -12,8 +12,8 @@
 using namespace mlg;
 
 void Model::Draw() {
-    for (const std::shared_ptr<Mesh>& Item : meshes) {
-        Item->Draw();
+    for (const std::shared_ptr<Mesh>& item : meshes) {
+        item->Draw();
     }
 }
 

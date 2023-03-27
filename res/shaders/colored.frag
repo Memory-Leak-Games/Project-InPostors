@@ -4,7 +4,7 @@ layout (location = 0) out vec3 gPosition;
 layout (location = 1) out vec3 gNormal;
 layout (location = 2) out vec4 gAlbedoSpec;
 
-uniform sampler2D textureDiffuse;
+uniform vec4 color = vec4(1., 1., 1., 1.);
 
 uniform float shininess = 0.5;
 uniform float brightness = 1.0;
@@ -20,7 +20,8 @@ in VS_OUT {
 
 void main() {
     gPosition = fs_in.position;
-    gNormal = normalize(fs_in.normal);
-    gAlbedoSpec.rgb = texture(textureDiffuse, fs_in.uv).rgb * brightness * tint.rgb;
+    gNormal = fs_in.normal;
+    gAlbedoSpec.rgb = color.rgb * brightness * tint.rgb;
     gAlbedoSpec.a = shininess;
 }
+
