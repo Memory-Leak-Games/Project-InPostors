@@ -9,6 +9,9 @@
 #include "Events/WindowEvent.h"
 #include "Macros.h"
 
+#include "Rendering/Assets/MaterialAsset.h"
+#include "Rendering/Assets/ModelAsset.h"
+
 namespace mlg {
     RenderingAPI* RenderingAPI::instance;
 
@@ -20,7 +23,7 @@ namespace mlg {
 
         instance = new RenderingAPI();
 
-        MLG_ASSERT(gladLoadGLLoader((GLADloadproc) glfwGetProcAddress), "Failed to initialize GLAD");
+        MLG_ASSERT_MSG(gladLoadGLLoader((GLADloadproc) glfwGetProcAddress), "Failed to initialize GLAD");
 
         std::cout << "\nOpenGL Info:\n"
         << "\tVendor: " << glGetString(GL_VENDOR) << "\n"
@@ -39,17 +42,9 @@ namespace mlg {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glEnable(GL_LINE_SMOOTH);
-
-        Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize,
-                                                                    [](const Event& event) {
-                                                                        WindowResizeEvent resizeWindowEvent = (const WindowResizeEvent&) event;
-                                                                        RenderingAPI::GetInstance()->SetViewport(0, 0,
-                                                                                                                 resizeWindowEvent.GetWidth(),
-                                                                                                                 resizeWindowEvent.GetHeight());
-                                                                    });
+        glEnable(GL_STENCIL_TEST);
     }
 
     void RenderingAPI::OpenGlMessageCallback(unsigned int source, unsigned int type, unsigned int id,
@@ -95,6 +90,11 @@ namespace mlg {
 
     RenderingAPI* RenderingAPI::GetInstance() {
         return instance;
+    }
+
+
+    void RenderingAPI::DrawModel(ModelAsset* model) {
+        model->Draw();
     }
 
 }// namespace mlg

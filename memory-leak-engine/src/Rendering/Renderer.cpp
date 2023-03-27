@@ -36,15 +36,14 @@ namespace mlg {
         }
     }
 
-    void Renderer::AddRenderable(const std::shared_ptr<Renderable>& renderable) {
-        std::weak_ptr<Renderable> newRenderable = renderable;
-        renderables.push_back(newRenderable);
+    void Renderer::AddRenderable(const std::weak_ptr<Renderable>& renderable) {
+        renderables.push_back(renderable);
     }
 
-    void Renderer::RemoveRenderable(std::shared_ptr<Renderable> renderable) {
+    void Renderer::RemoveRenderable(std::weak_ptr<Renderable> renderable) {
         renderables.erase(std::remove_if(renderables.begin(), renderables.end(),
                                          [&renderable](const std::weak_ptr<Renderable>& entry) {
-                                             return renderable.get() == entry.lock().get();
+                                             return renderable.lock().get() == entry.lock().get();
                                          }), renderables.end());
     }
 

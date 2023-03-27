@@ -21,6 +21,12 @@
 // TODO: delete this
 #include "Rendering/Lights.h"
 #include "Rendering/Camera.h"
+#include "Gameplay/ComponentManager.h"
+#include "Gameplay/EntityManager.h"
+#include "SceneGraph/SceneGraph.h"
+#include "Rendering/PostProcess.h"
+#include "Rendering/Camera.h"
+#include "Rendering/GBuffer.h"
 
 using namespace mlg;
 
@@ -30,17 +36,33 @@ void Core::MainLoop() {
 
     // TODO: Remove this
     sceneLight = std::make_shared<Lights>();
-    auto begin = std::chrono::high_resolution_clock::now();
+
+    PostProcess postProcessingFrameBuffer(Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
+    GBuffer gBuffer(Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
+
+    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, [&postProcessingFrameBuffer, &gBuffer](const Event& event) {
+        auto& windowResizeEvent = (WindowResizeEvent&) event;
+        RenderingAPI::GetInstance()->SetViewport(0, 0, windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+
+        postProcessingFrameBuffer.Resize(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+        gBuffer.Resize(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+
+        Camera::GetInstance()->SetResolution({windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight()});
+    });
 
     bool shouldClose = false;
     Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowClose, [&shouldClose](const Event& event) {
         shouldClose = true;
     });
 
+    ComponentManager::Start();
+    EntityManager::Start();
+
     while (!shouldClose) {
         Time::UpdateStartFrameTime();
         RenderingAPI::GetInstance()->Clear();
 
+        // TODO: To camera component
         // I hate this
         if (Input::IsActionPressed("debug_cam_forward")) {
             Camera::GetInstance()->ProcessMovement(FORWARD);
@@ -82,11 +104,40 @@ void Core::MainLoop() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 #endif
+        ComponentManager::ProcessComponents();
+        EntityManager::ProcessEntities();
 
         Input::Update();
 
+        ComponentManager::Update();
+        EntityManager::Update();
+
+        ComponentManager::LateUpdate();
+        EntityManager::LateUpdate();
+
+        SceneGraph::CalculateGlobalTransforms();
+
+        gBuffer.Activate();
+
         Renderer::GetInstance()->Draw();
+
+        gBuffer.DeActivate();
+        gBuffer.CopyDepthBuffer();
+
         Renderer::GetInstance()->LateDraw();
+
+        glDisable(GL_DEPTH_TEST);
+        gBuffer.DrawSSAOTexture();
+        gBuffer.DrawSSAOBlurTexture();
+
+        postProcessingFrameBuffer.Activate();
+        postProcessingFrameBuffer.Clear({0.f, 0.f, 0.f, 1.f});
+
+        gBuffer.DrawLightPass();
+
+        postProcessingFrameBuffer.DeActivate();
+        postProcessingFrameBuffer.Draw();
+        glEnable(GL_DEPTH_TEST);
 
 #ifdef DEBUG
         ImGui::Begin("FPS");
@@ -106,7 +157,19 @@ void Core::MainLoop() {
             ImGui::Text("Strength: %f", testFloat);
             ImGui::Text("State: %b, JustPressed: %b, JustReleased: %b", isTestPressed,
                         isTestJustPressed, isTestJustReleased);
+
         }
+
+        ImGui::Separator();
+        bool vSync = Window::GetInstance()->GetVerticalSync();
+        ImGui::Checkbox("VSync ", &vSync);
+        Window::GetInstance()->SetVerticalSync(vSync);
+
+        ImGui::Separator();
+        ImGui::Text("Camera");
+        glm::vec3 position = Camera::GetInstance()->GetPosition();
+        ImGui::DragFloat3("Camera Position", (float*) &position);
+        Camera::GetInstance()->SetPosition(position);
 
         ImGui::End();
 

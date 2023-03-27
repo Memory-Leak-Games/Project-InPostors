@@ -1,11 +1,12 @@
 #include "Rendering//Gizmos/Gizmo.h"
+#include "Core/AssetManager/AssetManager.h"
 
 using namespace mlg;
 
 GLuint Gizmo::VAO;
 GLuint Gizmo::VBO;
 GLuint Gizmo::EBO;
-std::shared_ptr<ShaderWrapper> Gizmo::Shader;
+std::shared_ptr<ShaderProgram> Gizmo::Shader;
 
 void Gizmo::Initialize() {
     if (VAO != 0)
@@ -24,5 +25,6 @@ void Gizmo::Initialize() {
 
     glBindVertexArray(0);
 
-    Shader = std::make_shared<ShaderWrapper>("res/shaders/gizmos.vert", "res/shaders/gizmos.frag");
+    Shader = std::make_shared<ShaderProgram>(AssetManager::GetAsset<ShaderAsset>("res/shaders/gizmos.vert"),
+            AssetManager::GetAsset<ShaderAsset>("res/shaders/gizmos.frag"));
 }

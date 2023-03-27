@@ -1,102 +1,26 @@
 #version 430 core
 
-in vec3 NormalVector;
-in vec2 TexCoordFragment;
+layout (location = 0) out vec3 gPosition;
+layout (location = 1) out vec3 gNormal;
+layout (location = 2) out vec4 gAlbedoSpec;
 
-uniform sampler2D texture_diffuse0;
-uniform sampler2D texture_specular0;
-uniform sampler2D texture_normalmap0;
+uniform sampler2D textureDiffuse;
 
-out vec4 FragColor;
-
-struct DirectionalLight {
-    vec4 Color;
-    vec3 Direction;
-};
-
-struct PointLight {
-    vec4 Color;
-    vec3 Position;
-    float Linear;
-    float Quadratic;
-};
-
-struct SpotLight {
-    vec4 Color;
-    vec3 Position;
-    vec3 Direction;
-    float Linear;
-    float Quadratic;
-    float CutOff;
-    float OuterCutOff;
-};
-
-layout(std140, binding = 1) uniform Lights {
-    DirectionalLight Sun;   // 32   // 0
-    PointLight Bulb;        // 48   // 32
-    SpotLight SpotLights[2]; // 48   // 80
-};
+uniform float shininess = 0.5;
+uniform float brightness = 1.0;
+uniform vec4 tint = vec4(1., 1., 1., 1.);
 
 in VS_OUT {
-    vec3 Position;
-    vec3 Normal;
-    vec2 TexCoord;
+    vec3 position;
+    vec3 normal;
+    vec2 uv;
 
-    vec3 ViewPosition;
+    vec3 viewPosition;
 } fs_in;
 
-vec4 CalculatePointLight(PointLight);
-
-float LightAttenuation(float Distance, float Linear, float Quadratic) {
-    return 1.f / (1.f + Linear * Distance + Quadratic * Distance * Distance);
-}
-
-float CalculateSpecular(vec3 LightDirection) {
-    vec3 ViewDir = normalize(fs_in.ViewPosition - fs_in.Position);
-    vec3 HalfwayDir = normalize(LightDirection + ViewDir);
-    float Spec = pow(max(dot(fs_in.Normal, HalfwayDir), 0.0), 32);
-    return Spec;
-}
-
-vec4 CalculatePointLight(PointLight _PointLight) {
-    vec3 LightDir = normalize(_PointLight.Position - fs_in.Position);
-    float Diff = max(dot(fs_in.Normal, LightDir), 0.f);
-    vec3 Diffuse = Diff * _PointLight.Color.xyz;
-    float Distance = length(_PointLight.Position - fs_in.Position);
-    return vec4(Diffuse + CalculateSpecular(LightDir), 1) * _PointLight.Color.w * LightAttenuation(Distance, _PointLight.Linear, _PointLight.Quadratic);
-}
-
-vec4 CalculateBulb() {
-    return CalculatePointLight(Bulb);
-}
-
-vec4 CalculateDirectionalLight() {
-    float AngleDifference = max(dot(fs_in.Normal, normalize(-Sun.Direction)), 0.f);
-    return (AngleDifference + CalculateSpecular(-Sun.Direction)) * vec4(vec3(Sun.Color), 1.f) * Sun.Color.w;
-}
-
-vec4 CalculateSpotLight(SpotLight Light) {
-    vec3 LightDir = normalize(Light.Position - fs_in.Position);
-    float Epsilon =  cos(Light.CutOff) - cos(Light.OuterCutOff);
-    float Theta = dot(LightDir, normalize(-Light.Direction));
-
-    PointLight PseudoPointLight;
-    PseudoPointLight.Position = Light.Position;
-    PseudoPointLight.Color = Light.Color;
-    PseudoPointLight.Linear = Light.Linear;
-    PseudoPointLight.Quadratic = Light.Quadratic;
-
-    float Intensity = clamp((Theta - cos(Light.OuterCutOff)) / Epsilon, 0.f, 1.f);
-    return CalculatePointLight(PseudoPointLight) * Intensity;
-}
-
 void main() {
-    vec4 CalculatedSpotLights = vec4(0.f);
-    for (int i = 0; i < 2; ++i) {
-        CalculatedSpotLights += CalculateSpotLight(SpotLights[i]);
-    }
-
-    vec4 Light = CalculateBulb() + CalculateDirectionalLight() + CalculatedSpotLights;
-    FragColor = texture(texture_diffuse0, fs_in.TexCoord) * Light;
-    FragColor.w = 1.f;
+    gPosition = fs_in.position;
+    gNormal = normalize(fs_in.normal);
+    gAlbedoSpec.rgb = texture(textureDiffuse, fs_in.uv).rgb * brightness * tint.rgb;
+    gAlbedoSpec.a = shininess;
 }

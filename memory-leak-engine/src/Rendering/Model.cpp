@@ -4,7 +4,7 @@
 #include <filesystem>
 
 #include "Core/AssetManager/AssetManager.h"
-#include "Core/AssetManager/TextureAsset.h"
+#include "include/Rendering/Assets/TextureAsset.h"
 
 #include "Macros.h"
 #include "stb_image.h"
@@ -12,13 +12,13 @@
 using namespace mlg;
 
 void Model::Draw() {
-    for (const std::shared_ptr<Mesh>& Item : meshes) {
-        Item->Draw(*GetShader());
+    for (const std::shared_ptr<Mesh>& item : meshes) {
+        item->Draw();
     }
 }
 
-Model::Model(const std::string& Path, std::shared_ptr<ShaderWrapper> Shader)
-        : modelPath(Path), shader(Shader) {
+Model::Model(const std::string& Path)
+        : modelPath(Path) {
     Assimp::Importer AssimpImporter;
     uint32_t AssimpProcessFlags = aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_OptimizeMeshes;
     const aiScene* AssimpScene = AssimpImporter.ReadFile(Path, AssimpProcessFlags);
@@ -45,7 +45,6 @@ void Model::ProcessNode(aiNode* NodePtr, const aiScene* ScenePtr) {
 std::shared_ptr<Mesh> Model::ProcessMesh(aiMesh* MeshPtr, const aiScene* ScenePtr) {
     std::vector<Vertex> Vertices;
     std::vector<GLuint> Indices;
-    std::vector<Texture> Textures;
 
     for (uint32_t i = 0; i < MeshPtr->mNumVertices; i++) {
         Vertices.push_back(GetVertexFromAIMesh(MeshPtr, i));
@@ -58,20 +57,7 @@ std::shared_ptr<Mesh> Model::ProcessMesh(aiMesh* MeshPtr, const aiScene* ScenePt
         }
     }
 
-    if (MeshPtr->mMaterialIndex >= 0) {
-        aiMaterial* Material = ScenePtr->mMaterials[MeshPtr->mMaterialIndex];
-
-        std::vector<Texture> DiffuseMaps = LoadMaterialTextures(Material, aiTextureType_DIFFUSE, "texture_diffuse");
-        Textures.insert(Textures.end(), DiffuseMaps.begin(), DiffuseMaps.end());
-
-        std::vector<Texture> SpecularMaps = LoadMaterialTextures(Material, aiTextureType_SPECULAR, "texture_specular");
-        Textures.insert(Textures.end(), SpecularMaps.begin(), SpecularMaps.end());
-
-        std::vector<Texture> NormalMaps = LoadMaterialTextures(Material, aiTextureType_HEIGHT, "texture_normalmap");
-        Textures.insert(Textures.end(), NormalMaps.begin(), NormalMaps.end());
-    }
-
-    return std::make_shared<Mesh>(Vertices, Indices, Textures);
+    return std::make_shared<Mesh>(Vertices, Indices);
 }
 
 Vertex Model::GetVertexFromAIMesh(const aiMesh* MeshPtr, unsigned int i) {
@@ -100,26 +86,6 @@ Vertex Model::GetVertexFromAIMesh(const aiMesh* MeshPtr, unsigned int i) {
     NewVertex.texCoord = TextureCoords;
 
     return NewVertex;
-}
-
-std::vector<Texture>
-Model::LoadMaterialTextures(aiMaterial* Material, aiTextureType Type, const std::string& TypeName) {
-    std::vector<Texture> Textures;
-    for (uint32_t i = 0; i < Material->GetTextureCount(Type); i++) {
-        aiString path;
-        Material->GetTexture(Type, i, &path);
-        Texture Texture;
-
-        std::filesystem::path pathFromExecutable = std::filesystem::path{modelPath}.parent_path() / path.C_Str();
-        Texture.textureAsset = AssetManager::GetAsset<TextureAsset>(pathFromExecutable.string());
-        Texture.textureType = TypeName;
-        Textures.push_back(Texture);
-    }
-    return Textures;
-}
-
-const std::shared_ptr<ShaderWrapper>& Model::GetShader() const {
-    return shader;
 }
 
 const std::vector<std::shared_ptr<Mesh>>& Model::GetMeshes() const {

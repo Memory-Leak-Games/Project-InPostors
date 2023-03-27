@@ -15,7 +15,7 @@ namespace LoggingMacros {
 // Assertions
 
 #ifdef DEBUG
-#define MLG_ASSERT(condition, message)                                     \
+#define MLG_ASSERT_MSG(condition, message)                                     \
     do {                                                                   \
         if (!(condition)) {                                                \
             SPDLOG_ERROR("Assertion `" #condition "` failed {}", message); \
@@ -23,14 +23,26 @@ namespace LoggingMacros {
         }                                                                  \
     } while (false)
 
-#define MLG_UNIMPLEMENTED()                      \
+#define MLG_ASSERT(condition)                                     \
+    do {                                                                   \
+        if (!(condition)) {                                                \
+            SPDLOG_ERROR("Assertion `" #condition "` failed"); \
+            std::terminate();                                              \
+        }                                                                  \
+    } while (false)
+
+#define MLG_UNIMPLEMENTED                      \
     do {                                         \
         SPDLOG_ERROR("Unimplemented Assertion"); \
         std::terminate();                        \
     } while (false)
 
 #else
-#define MLG_ASSERT(condition, message) \
+#define MLG_ASSERT_MSG(condition, message) \
+    do {                               \
+        condition;                     \
+    } while (false)
+#define MLG_ASSERT(condition) \
     do {                               \
         condition;                     \
     } while (false)

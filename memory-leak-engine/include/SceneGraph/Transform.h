@@ -2,7 +2,7 @@
 
 namespace mlg {
 
-    class Transform : public std::enable_shared_from_this<Transform> {
+    class Transform {
     private:
         glm::vec3 position;
         glm::vec3 scale;
@@ -14,11 +14,13 @@ namespace mlg {
         bool isDirty;
 
         std::vector<std::shared_ptr<Transform>> children;
-        std::weak_ptr<Transform> parent;
+        Transform* parent;
     public:
         Transform();
         Transform(const Transform& original);
         void operator= (const Transform& another);
+
+        ~Transform();
 
         [[nodiscard]] const glm::vec3& GetPosition() const;
         [[nodiscard]] const glm::quat& GetRotation() const;
@@ -39,7 +41,7 @@ namespace mlg {
         void SetUniformScale(const float uniformScale);
 
         const std::vector<std::shared_ptr<Transform>>& GetChildren();
-        const std::weak_ptr<Transform>& GetParent();
+        Transform* GetParent();
 
         void AddChild(const std::shared_ptr<Transform>& newChild);
 

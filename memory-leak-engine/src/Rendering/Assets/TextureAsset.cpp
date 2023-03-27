@@ -1,6 +1,6 @@
-#include "Core/AssetManager/TextureAsset.h"
+#include "Rendering/Assets/TextureAsset.h"
 
-#include <stb_image.h>
+#include "stb_image.h"
 
 #include "Macros.h"
 #include "glad/glad.h"
@@ -28,7 +28,7 @@ namespace mlg {
                     colorFormat = GL_RGBA;
                     break;
                 default:
-                    MLG_ASSERT(false, "Texture format not implemented");
+                    MLG_ASSERT_MSG(false, "Texture format not implemented");
             }
 
             glGenTextures(1, &textureID);

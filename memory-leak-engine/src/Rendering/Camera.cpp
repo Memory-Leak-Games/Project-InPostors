@@ -23,12 +23,12 @@ Camera::~Camera()
 {
     SPDLOG_INFO("Stopping Camera");
     // TODO: segmentation fault ??? <-- needs to repair
-    //glDeleteBuffers(1, &uboTransformMatrices);
+//    glDeleteBuffers(1, &uboTransformMatrices);
 }
 
 glm::mat4 Camera::GetCameraProjectionMatrix(int resolutionX, int resolutionY) const
 {
-    return glm::perspective(glm::radians(fow), static_cast<float>(resolutionX) / static_cast<float>(resolutionY), 0.1f, 1000.f);
+    return glm::perspective(glm::radians(fow), static_cast<float>(resolutionX) / static_cast<float>(resolutionY), 0.1f, 100.f);
 }
 
 void Camera::SetResolution(const glm::vec<2, int> &newResolution)
@@ -140,6 +140,7 @@ std::shared_ptr<Camera> Camera::GetInstance() {
     return instance;
 }
 
+// TODO: Transfer this to camera component
 /**
  * Processes movement of this camera
  * @param movement CameraMovement enum value corresponding to movement direction
@@ -191,6 +192,7 @@ void Camera::ProcessMovement(CameraMovement movement, float deltaTime) {
     UpdateView();
 }
 
+// TODO: Transfer this to camera component
 /**
  * Processes rotation of this camera
  * @param xOffset Pitch offset
@@ -214,6 +216,7 @@ void Camera::ProcessRotation(float xOffset, float yOffset, bool pitchConstrain) 
 }
 
 
+// TODO: Transfer this to camera component
 void Camera::ProcessZoom(float offset) {
     zoom -= static_cast<float>(offset);
     zoom = zoom < 1.0f ? 1.0f : zoom;
