@@ -7,7 +7,12 @@ GLuint Gizmos::LineVBO;
 GLuint Gizmos::BoxVAO;
 GLuint Gizmos::BoxVBO;
 GLuint Gizmos::BoxEBO;
+GLuint Gizmos::SphereVAO;
+GLuint Gizmos::SphereVBO;
+GLuint Gizmos::SphereEBO;
+
 std::shared_ptr<ShaderWrapper> Gizmos::Shader;
+glm::vec4 Gizmos::DefaultColor = {0, 1, 0 ,1};
 
 GLfloat LineVertices[]
 {
@@ -64,6 +69,24 @@ void mlg::Gizmos::Initialize()
         glEnableVertexAttribArray(0);
     }
 
+    // Generate sphere gizmo
+    {
+        std::vector<GLfloat> SphereVertices;
+        std::vector<GLuint> SphereIndices;
+        GenerateSphere(SphereVertices, SphereIndices, 30);
+
+        glGenBuffers(1, &SphereVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, SphereVBO);
+        glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(glm::vec3), &SphereVertices[0], GL_STATIC_DRAW);
+        glGenBuffers(1, &SphereEBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, SphereEBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, 24 * sizeof(GLuint), &SphereIndices[0], GL_STATIC_DRAW);
+        glGenVertexArrays(1, &SphereVAO);
+        glBindVertexArray(SphereVAO);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLuint), (void*) nullptr);
+        glEnableVertexAttribArray(0);
+    }
+
     // Unbind
     {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -77,7 +100,7 @@ void mlg::Gizmos::Stop()
 
 }
 
-void mlg::Gizmos::DrawLine(glm::vec3 Start, glm::vec3 End, glm::vec4 Color)
+void mlg::Gizmos::DrawLine(glm::vec3 Start, glm::vec3 End, glm::vec4 Color, bool AlwaysFront)
 {
     glm::mat4 World = glm::mat4(1.0f);
     World = glm::translate(World, Start);
@@ -86,19 +109,21 @@ void mlg::Gizmos::DrawLine(glm::vec3 Start, glm::vec3 End, glm::vec4 Color)
     Shader->Activate();
     Shader->SetMat4F("World", World);
     Shader->SetVec4F("Color", Color);
+    Shader->SetBool("AlwaysFront", AlwaysFront);
 
     glBindVertexArray(LineVAO);
     glDrawArrays(GL_LINES, 0, 2);
     glBindVertexArray(0);
 }
 
-void Gizmos::DrawBox(Transform& Transform, glm::vec4 Color)
+void Gizmos::DrawBox(Transform& Transform, glm::vec4 Color, bool AlwaysFront)
 {
     const glm::mat4 World = Transform.GetLocalMatrix();
 
     Shader->Activate();
     Shader->SetMat4F("World", World);
     Shader->SetVec4F("Color", Color);
+    Shader->SetBool("AlwaysFront", AlwaysFront);
 
     glBindVertexArray(BoxVAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, BoxEBO);
@@ -106,7 +131,7 @@ void Gizmos::DrawBox(Transform& Transform, glm::vec4 Color)
     glBindVertexArray(0);
 }
 
-void Gizmos::DrawBox(glm::vec3 Position, glm::vec3 Size, glm::quat Rotation, glm::vec4 Color)
+void Gizmos::DrawBox(glm::vec3 Position, glm::vec3 Size, glm::quat Rotation, glm::vec4 Color, bool AlwaysFront)
 {
     glm::mat4 World = glm::mat4(1.0f);
     World = glm::translate(World, Position);
@@ -116,9 +141,61 @@ void Gizmos::DrawBox(glm::vec3 Position, glm::vec3 Size, glm::quat Rotation, glm
     Shader->Activate();
     Shader->SetMat4F("World", World);
     Shader->SetVec4F("Color", Color);
+    Shader->SetBool("AlwaysFront", AlwaysFront);
 
     glBindVertexArray(BoxVAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, BoxEBO);
     glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
+}
+
+void Gizmos::DrawSphere(glm::vec3 Position, float Radius, glm::vec4 Color, bool AlwaysFront)
+{
+    glm::mat4 World = glm::mat4(1.0f);
+    World = glm::translate(World, Position);
+    World = glm::scale(World, glm::vec3(Radius * 2)); // Default radius is 1
+
+    Shader->Activate();
+    Shader->SetMat4F("World", World);
+    Shader->SetVec4F("Color", Color);
+    Shader->SetBool("AlwaysFront", AlwaysFront);
+
+    glBindVertexArray(SphereVAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, SphereEBO);
+    glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, nullptr);
+    glBindVertexArray(0);
+}
+
+// FIXME: It's not a sphere :/
+void Gizmos::GenerateSphere(std::vector<GLfloat>& Vertices, std::vector<GLuint>& Indices, int LOD)
+{
+    int i, j;
+    int indicator = 0;
+    for (i = 0; i <= LOD; i++) {
+        double lat0 = glm::pi<double>() * (-0.5 + (double) (i - 1) / LOD);
+        double z0 = glm::sin(lat0);
+        double zr0 = glm::cos(lat0);
+
+        double lat1 = glm::pi<double>() * (-0.5 + (double) i / LOD);
+        double z1 = glm::sin(lat1);
+        double zr1 = glm::cos(lat1);
+
+        for (j = 0; j <= LOD; j++) {
+            double lng = 2 * glm::pi<double>() * (double) (j - 1) / LOD;
+            double x = glm::cos(lng);
+            double y = glm::sin(lng);
+
+            Vertices.push_back(x * zr0 * 0.5);
+            Vertices.push_back(y * zr0 * 0.5);
+            Vertices.push_back(z0 * 0.5);
+            Indices.push_back(indicator);
+            indicator++;
+
+            Vertices.push_back(x * zr1 * 0.5);
+            Vertices.push_back(y * zr1 * 0.5);
+            Vertices.push_back(z1 * 0.5);
+            Indices.push_back(indicator);
+            indicator++;
+        }
+    }
 }
