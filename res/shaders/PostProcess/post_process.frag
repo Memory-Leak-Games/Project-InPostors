@@ -60,20 +60,11 @@ vec4 GammaCorection(vec4 color) {
     return color;
 }
 
-float GetDepth(vec2 uv) {
-    return (texture(depthStencilTexture, fs_in.uv).x - 0.99) * 100.f;
-}
-
-vec4 SSAOPass() {
-    //unimplemented
-    return vec4(1.f);
-}
-
 void main() {
     vec4 textureColor = texture(colorTexture, fs_in.uv);
 
     fragColor = BrightnessMatrix(Brightness) *
     ContrastMatrix(Contrast) *
     SaturationMatrix(Saturation) *
-    GammaCorection(textureColor * SSAOPass());
+    GammaCorection(textureColor);
 }
