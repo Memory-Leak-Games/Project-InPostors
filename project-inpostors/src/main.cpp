@@ -104,13 +104,13 @@ public:
 
         auto tardisEntity2 = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisLeft", false, mlg::SceneGraph::GetRoot());
         tardisEntity2.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel2, tardisMaterial2);
-        tardisEntity2.lock()->AddComponent<ComponentTest>("RotationComponent");
+//        tardisEntity2.lock()->AddComponent<ComponentTest>("RotationComponent");
 
         tardisEntity2.lock()->GetTransform().SetPosition({7.f, 0.f, 0.f});
 
         auto ground = mlg::EntityManager::SpawnEntity<mlg::Entity>("Ground", true, mlg::SceneGraph::GetRoot());
         ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, whiteMaterial);
-        ground.lock()->GetTransform().SetPosition({0.f, -4.f, 0.f});
+        ground.lock()->GetTransform().SetPosition({0.f, -3.9f, 0.f});
         ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
     }
 

@@ -96,7 +96,7 @@ void Core::MainLoop() {
         gBuffer.Draw();
 
         postProcessingFrameBuffer.DeActivate();
-        postProcessingFrameBuffer.Draw();
+//        postProcessingFrameBuffer.Draw();
 
 #ifdef DEBUG
         ImGui::Begin("FPS");

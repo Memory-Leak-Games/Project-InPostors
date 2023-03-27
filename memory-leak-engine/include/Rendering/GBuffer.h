@@ -6,15 +6,23 @@ namespace mlg {
 
     class GBuffer {
     private:
-        uint32_t gBuffer;
+        uint32_t gBuffer = 0;
+        uint32_t ssaoBuffer = 0;
+        uint32_t ssaoBlurBuffer = 0;
 
-        uint32_t gPositionTexture;
-        uint32_t gNormalTexture;
-        uint32_t gAlbedoSpecularTexture;
+        uint32_t gPositionTexture = 0;
+        uint32_t gNormalTexture = 0;
+        uint32_t gAlbedoSpecularTexture = 0;
 
-        uint32_t rboDepth;
+        uint32_t ssaoTexture = 0;
+        uint32_t ssaoBlurTexture = 0;
 
-        std::shared_ptr<class MaterialAsset> material;
+        uint32_t rboDepth = 0;
+
+        std::shared_ptr<class MaterialAsset> lightPassMaterial;
+        std::shared_ptr<MaterialAsset> ssaoPassMaterial;
+        std::shared_ptr<MaterialAsset> ssaoBlurPassMaterial;
+
         QuadRenderer screenSpacePlane;
 
         int32_t screenWidth;
@@ -34,9 +42,17 @@ namespace mlg {
         virtual void Resize(int32_t screenWidth, int32_t screenHeight);
 
     private:
-        void InitializeFbo();
-        void GenerateAndBindTextures() ;
+        void InitializeGBuffer();
+        void GenerateAndBindGTextures();
 
+        void InitializeSSAOBuffer();
+        void GenerateAndBindSSAOTextures();
+        void GenerateAndBindSSAOBlurTextures();
+
+        void RenderSSAOTexture();
+        void RenderSSAOBlurTexture();
+
+        void RenderLightPass();
     };
 
 } // mlg

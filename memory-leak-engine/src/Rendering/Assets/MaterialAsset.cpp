@@ -16,6 +16,10 @@ namespace mlg {
         shaderProgram->SetFloat(name, value);
     }
 
+    void MaterialAsset::IntUniform::ApplyValue(struct ShaderProgram* shaderProgram) {
+        shaderProgram->SetInt(name, value);
+    }
+
     void MaterialAsset::Vec4Uniform::ApplyValue(struct ShaderProgram* shaderProgram) {
         shaderProgram->SetVec4F(name, value);
     }
@@ -50,8 +54,9 @@ namespace mlg {
 
         json materialJson = json::parse(materialFile);
 
-        shaderProgram = std::make_shared<ShaderProgram>(AssetManager::GetAsset<ShaderAsset>(materialJson["vertexShader"]),
-                                                        AssetManager::GetAsset<ShaderAsset>(materialJson["fragmentShader"]));
+        shaderProgram = std::make_shared<ShaderProgram>(
+                AssetManager::GetAsset<ShaderAsset>(materialJson["vertexShader"]),
+                AssetManager::GetAsset<ShaderAsset>(materialJson["fragmentShader"]));
         ParseUniforms(materialJson);
         ParseTextures(materialJson);
     }
@@ -64,6 +69,11 @@ namespace mlg {
                 auto newUniform = std::make_unique<FloatUniform>();
                 newUniform->name = jsonUniform["name"].get<std::string>();
                 newUniform->value = jsonUniform["value"].get<float>();
+                uniforms.push_back(std::move(newUniform));
+            } else if (type == "int") {
+                auto newUniform = std::make_unique<IntUniform>();
+                newUniform->name = jsonUniform["name"].get<std::string>();
+                newUniform->value = jsonUniform["value"].get<int>();
                 uniforms.push_back(std::move(newUniform));
             } else if (type == "vec4") {
                 auto newUniform = std::make_unique<Vec4Uniform>();
@@ -96,5 +106,4 @@ namespace mlg {
     const std::shared_ptr<ShaderProgram>& MaterialAsset::GetShaderProgram() const {
         return shaderProgram;
     }
-
 } // mlg

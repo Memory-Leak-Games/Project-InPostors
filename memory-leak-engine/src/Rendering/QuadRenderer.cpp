@@ -36,15 +36,9 @@ namespace mlg {
         glDeleteVertexArrays(1, &vao);
     }
 
-    void QuadRenderer::Activate() {
-        glBindVertexArray(vao);
-    }
-
     void QuadRenderer::Draw() {
+        glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
-    }
-
-    void QuadRenderer::DeActivate() {
         glBindVertexArray(0);
     }
 

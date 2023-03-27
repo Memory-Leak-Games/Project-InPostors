@@ -20,6 +20,11 @@ namespace mlg {
             void ApplyValue(class ShaderProgram* shaderProgram) override;
         };
 
+        struct IntUniform : public Uniform {
+            int value{};
+            void ApplyValue(class ShaderProgram* shaderProgram) override;
+        };
+
         struct Vec4Uniform : public Uniform {
             glm::vec4 value{};
             void ApplyValue(class ShaderProgram* shaderProgram) override;
