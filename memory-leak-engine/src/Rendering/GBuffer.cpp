@@ -127,18 +127,8 @@ namespace mlg {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void GBuffer::Draw() {
-        glDisable(GL_DEPTH_TEST);
 
-        RenderSSAOTexture();
-        RenderSSAOBlurTexture();
-
-        RenderLightPass();
-
-        glEnable(GL_DEPTH_TEST);
-    }
-
-    void GBuffer::RenderLightPass() {
+    void GBuffer::DrawLightPass() {
         lightPassMaterial->Activate();
 
         glActiveTexture(GL_TEXTURE0);
@@ -155,7 +145,8 @@ namespace mlg {
         lightPassMaterial->DeActivate();
     }
 
-    void GBuffer::RenderSSAOTexture() {
+    void GBuffer::DrawSSAOTexture() {
+
         glBindFramebuffer(GL_FRAMEBUFFER, ssaoBuffer);
 
         ssaoPassMaterial->Activate();
@@ -172,7 +163,7 @@ namespace mlg {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void GBuffer::RenderSSAOBlurTexture() {
+    void GBuffer::DrawSSAOBlurTexture() {
         glBindFramebuffer(GL_FRAMEBUFFER, ssaoBlurBuffer);
 
         ssaoBlurPassMaterial->Activate();

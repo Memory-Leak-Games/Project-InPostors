@@ -90,13 +90,18 @@ void Core::MainLoop() {
 
         Renderer::GetInstance()->LateDraw();
 
+        glDisable(GL_DEPTH_TEST);
+        gBuffer.DrawSSAOTexture();
+        gBuffer.DrawSSAOBlurTexture();
+
         postProcessingFrameBuffer.Activate();
         postProcessingFrameBuffer.Clear({0.f, 0.f, 0.f, 1.f});
 
-        gBuffer.Draw();
+        gBuffer.DrawLightPass();
 
         postProcessingFrameBuffer.DeActivate();
-//        postProcessingFrameBuffer.Draw();
+        postProcessingFrameBuffer.Draw();
+        glEnable(GL_DEPTH_TEST);
 
 #ifdef DEBUG
         ImGui::Begin("FPS");

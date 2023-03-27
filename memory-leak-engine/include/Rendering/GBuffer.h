@@ -36,7 +36,10 @@ namespace mlg {
         virtual void Activate();
         virtual void DeActivate();
 
-        virtual void Draw();
+        virtual void DrawSSAOTexture();
+        virtual void DrawSSAOBlurTexture();
+        virtual void DrawLightPass();
+
         virtual void CopyDepthBuffer();
 
         virtual void Resize(int32_t screenWidth, int32_t screenHeight);
@@ -49,10 +52,7 @@ namespace mlg {
         void GenerateAndBindSSAOTextures();
         void GenerateAndBindSSAOBlurTextures();
 
-        void RenderSSAOTexture();
-        void RenderSSAOBlurTexture();
 
-        void RenderLightPass();
     };
 
 } // mlg
