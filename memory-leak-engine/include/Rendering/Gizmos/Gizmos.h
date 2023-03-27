@@ -16,6 +16,9 @@ namespace mlg {
         static GLuint SphereVBO;
         static GLuint SphereVAO;
         static GLuint SphereEBO;
+        static GLuint SphereIndiciesCount;
+        static GLuint PointVBO;
+        static GLuint PointVAO;
 
         static std::shared_ptr<ShaderWrapper> Shader;
         static glm::vec4 DefaultColor;
@@ -30,6 +33,8 @@ namespace mlg {
         static void DrawBox(glm::vec3 Position, glm::vec3 Size={1, 1, 1}, glm::quat Rotation=glm::quat(), glm::vec4 Color=DefaultColor, bool AlwaysFront=false);
         static void DrawBox(Transform& Transform, glm::vec4 Color=DefaultColor, bool AlwaysFront=false);
         static void DrawSphere(glm::vec3 Position, float Radius=1, glm::vec4 Color=DefaultColor, bool AlwaysFront=false);
+        static void DrawPoint(glm::vec3 Position, glm::vec4 Color=DefaultColor, bool AlwaysFront=false);
+        static void DrawPoint(glm::vec3 Position, float Size=2, glm::vec4 Color=DefaultColor, bool AlwaysFront=false);
     };
 
 }

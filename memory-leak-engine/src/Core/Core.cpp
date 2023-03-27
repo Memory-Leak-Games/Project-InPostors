@@ -63,7 +63,9 @@ void Core::MainLoop() {
             transform.SetScale(glm::vec3(3, 1, 2) * (sin(Time::GetSeconds()) + 1.1f));
             transform.SetRotation(glm::quat({Time::GetSeconds() * 5, 2, 3}));
             Gizmos::DrawBox(transform, {1, 1, 0, 1});
-            Gizmos::DrawSphere({cos(Time::GetSeconds()) * 5, 0, sin(Time::GetSeconds()) * 5}, 10, {1, 0, 1, 1});
+            Gizmos::DrawSphere({cos(Time::GetSeconds()) * 5, -2, sin(Time::GetSeconds()) * 5}, 10, {1, 0, 1, 1});
+            for(int i = 1; i < 10; i++)
+                Gizmos::DrawPoint({cos(Time::GetSeconds() + i) * 4, cos(Time::GetSeconds() + i) * sin(Time::GetSeconds() + i) * 4, sin(Time::GetSeconds() + i) * 4}, i, {0, 1, 1, 1}, false);
         }
 
 #ifdef DEBUG

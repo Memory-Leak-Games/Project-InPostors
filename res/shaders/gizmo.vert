@@ -10,6 +10,7 @@ layout(std140, binding = 0) uniform TransformationMatrices {
 
 uniform mat4 World;
 uniform bool AlwaysFront;
+uniform float PointSize;
 
 void main() {
     gl_Position = Projection * View * World * vec4(Position, 1.0f);
@@ -17,4 +18,7 @@ void main() {
     {
         gl_Position.z = -gl_Position.w;
     }
+
+    // Only used by point gizmo
+    gl_PointSize = PointSize;
 }

@@ -10,6 +10,9 @@ GLuint Gizmos::BoxEBO;
 GLuint Gizmos::SphereVAO;
 GLuint Gizmos::SphereVBO;
 GLuint Gizmos::SphereEBO;
+GLuint Gizmos::SphereIndiciesCount;
+GLuint Gizmos::PointVBO;
+GLuint Gizmos::PointVAO;
 
 std::shared_ptr<ShaderWrapper> Gizmos::Shader;
 glm::vec4 Gizmos::DefaultColor = {0, 1, 0 ,1};
@@ -22,14 +25,14 @@ GLfloat LineVertices[]
 
 GLfloat BoxVertices[]
 {
-    0.5, 0.5, 0.5,
-    0.5, 0.5, -0.5,
-    -0.5, 0.5, -0.5,
-    -0.5, 0.5, 0.5,
-    0.5, -0.5, 0.5,
-    0.5, -0.5, -0.5,
-    -0.5, -0.5, -0.5,
-    -0.5, -0.5, 0.5,
+    0.5f, 0.5f, 0.5f,
+    0.5f, 0.5f, -0.5f,
+    -0.5f, 0.5f, -0.5f,
+    -0.5f, 0.5f, 0.5f,
+    0.5f, -0.5f, 0.5f,
+    0.5f, -0.5f, -0.5f,
+    -0.5f, -0.5f, -0.5f,
+    -0.5f, -0.5f, 0.5f,
 };
 
 GLuint BoxIndices[]
@@ -37,6 +40,12 @@ GLuint BoxIndices[]
     0, 1, 1, 2, 2, 3, 3, 0,
     4, 5, 5, 6, 6, 7, 7, 4,
     0, 4, 1, 5, 2, 6, 3, 7
+};
+
+// Yes, I also find this silly
+GLfloat PointVertex[]
+{
+    0.0f, 0.0f, 0.0f
 };
 
 void mlg::Gizmos::Initialize()
@@ -84,6 +93,17 @@ void mlg::Gizmos::Initialize()
         glGenVertexArrays(1, &SphereVAO);
         glBindVertexArray(SphereVAO);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLuint), (void*) nullptr);
+        glEnableVertexAttribArray(0);
+    }
+
+    // Generate point gizmo
+    {
+        glGenBuffers(1, &PointVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, PointVBO);
+        glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(glm::vec3), PointVertex, GL_STATIC_DRAW);
+        glGenVertexArrays(1, &PointVAO);
+        glBindVertexArray(PointVAO);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*) nullptr);
         glEnableVertexAttribArray(0);
     }
 
@@ -162,8 +182,31 @@ void Gizmos::DrawSphere(glm::vec3 Position, float Radius, glm::vec4 Color, bool 
 
     glBindVertexArray(SphereVAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, SphereEBO);
-    glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_LINES, SphereIndiciesCount, GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
+}
+
+void Gizmos::DrawPoint(glm::vec3 Position, glm::vec4 Color, bool AlwaysFront)
+{
+    DrawPoint(Position, 2, Color, AlwaysFront);
+}
+
+void Gizmos::DrawPoint(glm::vec3 Position, float Size, glm::vec4 Color, bool AlwaysFront)
+{
+    glm::mat4 World = glm::mat4(1.0f);
+    World = glm::translate(World, Position);
+
+    Shader->Activate();
+    Shader->SetMat4F("World", World);
+    Shader->SetVec4F("Color", Color);
+    Shader->SetBool("AlwaysFront", AlwaysFront);
+    Shader->SetFloat("PointSize", Size);
+
+    glEnable(GL_PROGRAM_POINT_SIZE);
+    glBindVertexArray(PointVAO);
+    glDrawArrays(GL_POINTS, 0, 1);
+    glBindVertexArray(0);
+    glDisable(GL_PROGRAM_POINT_SIZE);
 }
 
 // FIXME: It's not a sphere :/
@@ -198,4 +241,6 @@ void Gizmos::GenerateSphere(std::vector<GLfloat>& Vertices, std::vector<GLuint>&
             indicator++;
         }
     }
+
+    SphereIndiciesCount = Indices.size();
 }
