@@ -1,50 +1,23 @@
-#include "Rendering/FrameBuffer.h"
+#include "Rendering/PostProcess.h"
 
 #include "Core/AssetManager/AssetManager.h"
+#include "Rendering/Assets/MaterialAsset.h"
+
 #include "Macros.h"
 
 namespace mlg {
 
 
-    FrameBuffer::FrameBuffer(int32_t resolutionX, int32_t resolutionY)
-            : vao(0), vbo(0), frameBuffer(0), colorTexture(0), depthStencilTexture(0) {
+    PostProcess::PostProcess(int32_t resolutionX, int32_t resolutionY)
+            : frameBuffer(0), colorTexture(0), depthStencilTexture(0) {
         SPDLOG_DEBUG("Initializing FrameBuffer");
 
-        InitializeVao();
         InitializeFbo(resolutionX, resolutionY);
 
         material = AssetManager::GetAsset<MaterialAsset>("res/config/post_process_material.json");
     }
 
-    void FrameBuffer::InitializeVao() {
-        // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
-        static const std::vector<float> quadVertices({
-                                                             // positions   // texCoords
-                                                             -1.0f, 1.0f, 0.0f, 1.0f,
-                                                             -1.0f, -1.0f, 0.0f, 0.0f,
-                                                             1.0f, -1.0f, 1.0f, 0.0f,
-
-                                                             -1.0f, 1.0f, 0.0f, 1.0f,
-                                                             1.0f, -1.0f, 1.0f, 0.0f,
-                                                             1.0f, 1.0f, 1.0f, 1.0f
-                                                     });
-
-        glGenVertexArrays(1, &vao);
-        glGenBuffers(1, &vbo);
-        glBindVertexArray(vao);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, (int32_t) (quadVertices.size() * sizeof(float)), &quadVertices[0], GL_STATIC_DRAW);
-
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*) 0);
-
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*) (2 * sizeof(float)));
-
-        glBindVertexArray(0);
-    }
-
-    void FrameBuffer::InitializeFbo(int32_t resolutionX, int32_t resolutionY) {
+    void PostProcess::InitializeFbo(int32_t resolutionX, int32_t resolutionY) {
         glGenFramebuffers(1, &frameBuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 
@@ -56,7 +29,7 @@ namespace mlg {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void FrameBuffer::GenerateAndBindTextures(int32_t resolutionX, int32_t resolutionY) {
+    void PostProcess::GenerateAndBindTextures(int32_t resolutionX, int32_t resolutionY) {
         glDeleteTextures(1, &colorTexture);
         glDeleteTextures(1, &depthStencilTexture);
 
@@ -80,31 +53,31 @@ namespace mlg {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void FrameBuffer::Resize(int32_t x, int32_t y) {
+    void PostProcess::Resize(int32_t x, int32_t y) {
         GenerateAndBindTextures(x, y);
     }
 
-    void FrameBuffer::Activate() {
+    void PostProcess::Activate() {
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
         glEnable(GL_DEPTH_TEST);
     }
 
-    void FrameBuffer::Clear(glm::vec4 color) {
+    void PostProcess::Clear(glm::vec4 color) {
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
         glClearColor(color.r, color.g, color.b, color.a);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
-    void FrameBuffer::DeActivate() {
+    void PostProcess::DeActivate() {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void FrameBuffer::Draw() {
+    void PostProcess::Draw() {
         glDisable(GL_DEPTH_TEST);
 
         material->Activate();
 
-        glBindVertexArray(vao);
+        screenSpacePlane.Activate();
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture (GL_TEXTURE_2D, colorTexture);
@@ -112,14 +85,12 @@ namespace mlg {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, depthStencilTexture);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glBindVertexArray(0);
+        screenSpacePlane.Draw();
+        screenSpacePlane.DeActivate();
         material->DeActivate();
     }
 
-    FrameBuffer::~FrameBuffer() {
-        glDeleteBuffers(1, &vbo);
-        glDeleteVertexArrays(1, &vao);
+    PostProcess::~PostProcess() {
         glDeleteTextures(1, &colorTexture);
         glDeleteTextures(1, &depthStencilTexture);
         glDeleteFramebuffers(1, &frameBuffer);
