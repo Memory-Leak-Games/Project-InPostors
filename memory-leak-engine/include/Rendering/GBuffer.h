@@ -31,7 +31,7 @@ namespace mlg {
         virtual void Draw();
         virtual void CopyDepthBuffer();
 
-        virtual void Resize(int32_t x, int32_t y);
+        virtual void Resize(int32_t screenWidth, int32_t screenHeight);
 
     private:
         void InitializeFbo();

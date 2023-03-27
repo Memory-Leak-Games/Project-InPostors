@@ -40,10 +40,13 @@ void Core::MainLoop() {
     PostProcess postProcessingFrameBuffer(Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
     GBuffer gBuffer(Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
 
-    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, [&postProcessingFrameBuffer](const Event& event) {
+    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, [&postProcessingFrameBuffer, &gBuffer](const Event& event) {
         auto& windowResizeEvent = (WindowResizeEvent&) event;
         RenderingAPI::GetInstance()->SetViewport(0, 0, windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+
         postProcessingFrameBuffer.Resize(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+        gBuffer.Resize(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+
         Camera::GetInstance()->SetResolution({windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight()});
     });
 
@@ -81,10 +84,11 @@ void Core::MainLoop() {
         gBuffer.Activate();
 
         Renderer::GetInstance()->Draw();
-        Renderer::GetInstance()->LateDraw();
 
         gBuffer.DeActivate();
         gBuffer.CopyDepthBuffer();
+
+        Renderer::GetInstance()->LateDraw();
 
         postProcessingFrameBuffer.Activate();
         postProcessingFrameBuffer.Clear({0.f, 0.f, 0.f, 1.f});
@@ -114,6 +118,11 @@ void Core::MainLoop() {
                         isTestJustPressed, isTestJustReleased);
 
         }
+
+        ImGui::Separator();
+        bool vSync = Window::GetInstance()->GetVerticalSync();
+        ImGui::Checkbox("VSync ", &vSync);
+        Window::GetInstance()->SetVerticalSync(vSync);
 
         ImGui::Separator();
         ImGui::Text("Camera");

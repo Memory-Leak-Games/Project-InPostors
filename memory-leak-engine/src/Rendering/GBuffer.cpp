@@ -30,21 +30,21 @@ namespace mlg {
 
         glGenTextures(1, &gPositionTexture);
         glBindTexture(GL_TEXTURE_2D, gPositionTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, screenWidth, screenHeight, 0, GL_RGBA, GL_FLOAT, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, screenWidth, screenHeight, 0, GL_RGB, GL_FLOAT, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPositionTexture, 0);
 
         glGenTextures(1, &gNormalTexture);
         glBindTexture(GL_TEXTURE_2D, gNormalTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, screenWidth, screenHeight, 0, GL_RGBA, GL_FLOAT, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, screenWidth, screenHeight, 0, GL_RGB, GL_FLOAT, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormalTexture, 0);
 
         glGenTextures(1, &gAlbedoSpecularTexture);
         glBindTexture(GL_TEXTURE_2D, gAlbedoSpecularTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, screenWidth, screenHeight, 0, GL_RGBA, GL_FLOAT, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, screenWidth, screenHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpecularTexture, 0);
@@ -71,6 +71,7 @@ namespace mlg {
         glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
+        glDisable(GL_BLEND);
     }
 
     void GBuffer::DeActivate() {
@@ -107,9 +108,10 @@ namespace mlg {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void GBuffer::Resize(int32_t x, int32_t y) {
-        //TODO: implementation
-        MLG_UNIMPLEMENTED;
+    void GBuffer::Resize(int32_t screenWidth, int32_t screenHeight) {
+        this->screenWidth = screenWidth;
+        this->screenHeight = screenHeight;
+        GenerateAndBindTextures();
     }
 
 } // mlg

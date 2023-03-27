@@ -17,13 +17,11 @@ layout(std140, binding = 0) uniform TransformationMatrices {
 };
 
 layout(std140, binding = 1) uniform light {
-    struct {
-        vec3 direction;// 16
+    vec3 light_direction;// 16
 
-        vec3 ambient;// 16
-        vec3 diffuse;// 16
-        vec3 specular;// 16
-    } directionalLight;
+    vec3 light_ambient;// 16
+    vec3 light_diffuse;// 16
+    vec3 light_specular;// 16
 };
 
 
@@ -33,7 +31,7 @@ vec3 CalculateDirectionalLight() {
     vec3 albedo = texture(gAlbedoSpecular, fs_in.uv).rgb;
     float specular = texture(gAlbedoSpecular, fs_in.uv).a;
 
-    vec3 lightDirection = normalize(-directionalLight.direction);
+    vec3 lightDirection = normalize(-light_direction);
     vec3 viewDirection = normalize(viewPosition - fragPos);
 
     // diffuse light
@@ -43,9 +41,9 @@ vec3 CalculateDirectionalLight() {
     vec3 reflectDirection = reflect(-lightDirection, normal);
     float calculated_specular = pow(max(dot(viewDirection, reflectDirection), 0.0), specular);
 
-    vec3 ambientColor = directionalLight.ambient * albedo;
-    vec3 diffuseColor = directionalLight.diffuse * diffuse * albedo;
-    vec3 specularColor = directionalLight.specular * calculated_specular;
+    vec3 ambientColor = light_ambient * albedo;
+    vec3 diffuseColor = light_diffuse * diffuse * albedo;
+    vec3 specularColor = light_specular * calculated_specular;
     return ambientColor + diffuseColor + specularColor;
 }
 
