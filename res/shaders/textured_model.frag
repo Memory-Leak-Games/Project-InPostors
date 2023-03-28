@@ -14,13 +14,11 @@ in VS_OUT {
     vec3 position;
     vec3 normal;
     vec2 uv;
-
-    vec3 viewPosition;
 } fs_in;
 
 void main() {
     gPosition = fs_in.position;
-    gNormal = normalize(fs_in.normal);
+    gNormal = fs_in.normal;
     gAlbedoSpec.rgb = texture(textureDiffuse, fs_in.uv).rgb * brightness * tint.rgb;
     gAlbedoSpec.a = shininess;
 }

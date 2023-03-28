@@ -2,11 +2,5 @@
   "vertexShader": "res/shaders/quad_renderer.vert",
   "fragmentShader": "res/shaders/SSAOPass/ssao_pass.frag",
   "uniforms": [],
-  "textures": [
-    {
-      "name": "noise",
-      "index": 0,
-      "path": "res/textures/RGB_Noise.png"
-    }
-  ]
+  "textures": []
 }

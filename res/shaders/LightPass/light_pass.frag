@@ -34,7 +34,10 @@ vec3 CalculateDirectionalLight() {
     float specular = texture(gAlbedoSpecular, fs_in.uv).a;
 
     vec3 lightDirection = normalize(-light_direction);
-    vec3 viewDirection = normalize(viewPosition - fragPos);
+    mat3 viewNormalMatrix = mat3(transpose(inverse(view)));
+    lightDirection = normalize(viewNormalMatrix * lightDirection);
+
+    vec3 viewDirection = normalize(-fragPos);
 
     // diffuse light
     float diffuse = max(dot(normal, lightDirection), 0.0);
@@ -43,7 +46,7 @@ vec3 CalculateDirectionalLight() {
     vec3 reflectDirection = reflect(-lightDirection, normal);
     float calculated_specular = pow(max(dot(viewDirection, reflectDirection), 0.0), specular);
 
-    vec3 ambientColor = light_ambient * albedo * texture(ssao, fs_in.uv).r;
+    vec3 ambientColor = light_ambient * albedo;
     vec3 diffuseColor = light_diffuse * diffuse * albedo;
     vec3 specularColor = light_specular * calculated_specular;
     return ambientColor + diffuseColor + specularColor;
@@ -51,6 +54,5 @@ vec3 CalculateDirectionalLight() {
 
 void main()
 {
-    fragColor = vec4(CalculateDirectionalLight(), 1.0);
-//    fragColor = vec4(vec3(texture(ssao, fs_in.uv).x), 1.0);
+    fragColor = vec4(CalculateDirectionalLight() * vec3(texture(ssao, fs_in.uv).r), 1.0);
 }

@@ -78,7 +78,7 @@ namespace mlg {
         if (!ShaderCompilationResult) {
             char Log[512] = "Error";
             glGetShaderInfoLog(shader, 512, nullptr, Log);
-            SPDLOG_ERROR(message + std::string(Log));
+            SPDLOG_ERROR(message + "\n" + std::string(Log));
         }
     }
 
