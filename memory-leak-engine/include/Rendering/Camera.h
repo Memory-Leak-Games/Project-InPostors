@@ -15,7 +15,7 @@ namespace mlg {
 
     class Camera {
     private:
-        static std::shared_ptr<Camera> instance;
+        static Camera* instance;
 
         glm::vec3 position;
         glm::vec3 front;
@@ -40,7 +40,7 @@ namespace mlg {
         Camera();
 
     public:
-        static std::shared_ptr<Camera> GetInstance();
+        static Camera* GetInstance();
         ~Camera();
 
 

@@ -131,11 +131,11 @@ glm::vec3 Camera::GetRight() const
     return glm::cross(front, up);
 }
 
-std::shared_ptr<Camera> Camera::instance;
+Camera* Camera::instance;
 
-std::shared_ptr<Camera> Camera::GetInstance() {
+Camera* Camera::GetInstance() {
     if (!instance)
-        instance = std::shared_ptr<Camera>(new Camera);
+        instance = new Camera;
 
     return instance;
 }
