@@ -5,11 +5,8 @@
 #include <glad/glad.h>
 #include <iostream>
 
-#include "Core/Window.h"
-#include "Events/WindowEvent.h"
 #include "Macros.h"
 
-#include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
 
 namespace mlg {
@@ -45,6 +42,8 @@ namespace mlg {
         glEnable(GL_CULL_FACE);
         glEnable(GL_LINE_SMOOTH);
         glEnable(GL_STENCIL_TEST);
+
+        instance->screenSpaceQuad.Initialize();
     }
 
     void RenderingAPI::OpenGlMessageCallback(unsigned int source, unsigned int type, unsigned int id,
@@ -96,5 +95,10 @@ namespace mlg {
     void RenderingAPI::DrawModel(ModelAsset* model) {
         model->Draw();
     }
+
+    void RenderingAPI::DrawScreenSpaceQuad() {
+        screenSpaceQuad.Draw();
+    }
+
 
 }// namespace mlg

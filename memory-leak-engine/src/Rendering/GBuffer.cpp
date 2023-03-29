@@ -2,8 +2,10 @@
 
 #include <glad/glad.h>
 
-#include "Rendering/Assets/MaterialAsset.h"
 #include "Core/AssetManager/AssetManager.h"
+
+#include "Rendering/Assets/MaterialAsset.h"
+#include "Rendering/RenderingAPI.h"
 
 #include "Macros.h"
 
@@ -140,7 +142,7 @@ namespace mlg {
         glActiveTexture(GL_TEXTURE3);
         glBindTexture(GL_TEXTURE_2D, ssaoBlurTexture);
 
-        screenSpacePlane.Draw();
+        RenderingAPI::GetInstance()->DrawScreenSpaceQuad();
 
         lightPassMaterial->DeActivate();
     }
@@ -156,7 +158,7 @@ namespace mlg {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, gNormalTexture);
 
-        screenSpacePlane.Draw();
+        RenderingAPI::GetInstance()->DrawScreenSpaceQuad();
 
         ssaoPassMaterial->DeActivate();
 
@@ -171,7 +173,7 @@ namespace mlg {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, ssaoTexture);
 
-        screenSpacePlane.Draw();
+        RenderingAPI::GetInstance()->DrawScreenSpaceQuad();
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }

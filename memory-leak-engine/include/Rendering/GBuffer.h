@@ -1,7 +1,5 @@
 #pragma once
 
-#include "QuadRenderer.h"
-
 namespace mlg {
 
     class GBuffer {
@@ -22,8 +20,6 @@ namespace mlg {
         std::shared_ptr<class MaterialAsset> lightPassMaterial;
         std::shared_ptr<MaterialAsset> ssaoPassMaterial;
         std::shared_ptr<MaterialAsset> ssaoBlurPassMaterial;
-
-        QuadRenderer screenSpacePlane;
 
         int32_t screenWidth;
         int32_t screenHeight;

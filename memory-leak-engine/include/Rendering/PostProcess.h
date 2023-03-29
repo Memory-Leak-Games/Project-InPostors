@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ShaderProgram.h"
-#include "QuadRenderer.h"
 
 namespace mlg {
 
@@ -12,8 +11,6 @@ namespace mlg {
         uint32_t rboDepth;
 
         std::shared_ptr<class MaterialAsset> material;
-
-        QuadRenderer screenSpacePlane;
 
         PostProcess() = default;
     public:

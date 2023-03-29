@@ -1,6 +1,8 @@
 #include "Rendering/PostProcess.h"
 
 #include "Core/AssetManager/AssetManager.h"
+
+#include "Rendering/RenderingAPI.h"
 #include "Rendering/Assets/MaterialAsset.h"
 
 #include "Macros.h"
@@ -59,8 +61,6 @@ namespace mlg {
 
     void PostProcess::Clear(glm::vec4 color) {
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-//        glClearColor(color.r, color.g, color.b, color.a);
-//        glClear(GL_COLOR_BUFFER_BIT);
     }
 
     void PostProcess::DeActivate() {
@@ -75,7 +75,7 @@ namespace mlg {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture (GL_TEXTURE_2D, colorTexture);
 
-        screenSpacePlane.Draw();
+        RenderingAPI::GetInstance()->DrawScreenSpaceQuad();
 
         material->DeActivate();
     }
