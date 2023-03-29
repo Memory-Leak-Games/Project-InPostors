@@ -99,7 +99,7 @@ void Core::MainLoop() {
         postProcessingFrameBuffer.Clear({0.f, 0.f, 0.f, 1.f});
 
         gBuffer.DrawLightPass();
-        Gizmos::DrawPoint(glm::vec3{0., 0., 0.});
+        Gizmos::DrawGizmos();
 
         postProcessingFrameBuffer.DeActivate();
         postProcessingFrameBuffer.Draw();

@@ -255,3 +255,7 @@ void Gizmos::GenerateSphere(std::vector<GLfloat>& vertices, std::vector<GLuint>&
 
     sphereIndicesCount = indices.size();
 }
+
+void Gizmos::DrawGizmos() {
+
+}

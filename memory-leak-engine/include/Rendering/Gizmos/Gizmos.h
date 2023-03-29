@@ -28,6 +28,8 @@ namespace mlg {
         static void Initialize();
         static void Stop();
 
+        static void DrawGizmos();
+
         static void DrawLine(glm::vec3 start, glm::vec3 end, glm::vec4 color = defaultColor, bool alwaysFront = false);
         static void DrawBox(glm::vec3 position, glm::vec3 size = {1, 1, 1}, glm::quat rotation = glm::quat(), glm::vec4 color = defaultColor, bool alwaysFront = false);
         static void DrawBox(Transform& transform, glm::vec4 color = defaultColor, bool alwaysFront = false);
