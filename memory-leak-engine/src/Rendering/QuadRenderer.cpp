@@ -5,8 +5,7 @@
 
 namespace mlg {
     QuadRenderer::QuadRenderer()
-    : vao(0), vbo(0) {
-    }
+    : vao(0), vbo(0) {}
 
     QuadRenderer::~QuadRenderer() {
         glDeleteBuffers(1, &vbo);
