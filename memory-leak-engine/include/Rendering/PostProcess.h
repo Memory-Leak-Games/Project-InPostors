@@ -28,6 +28,8 @@ namespace mlg {
 
         virtual void Resize(int32_t x, int32_t y);
 
+        uint32_t GetFrameBuffer() const;
+
     private:
         void InitializeFbo(int32_t resolutionX, int32_t resolutionY);
 

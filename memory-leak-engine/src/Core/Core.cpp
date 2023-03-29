@@ -75,6 +75,7 @@ void Core::MainLoop() {
         Input::Update();
 
         ComponentManager::Update();
+
         EntityManager::Update();
 
         ComponentManager::LateUpdate();
@@ -87,7 +88,7 @@ void Core::MainLoop() {
         Renderer::GetInstance()->Draw();
 
         gBuffer.DeActivate();
-        gBuffer.CopyDepthBuffer();
+        gBuffer.CopyDepthBuffer(0);
 
         Renderer::GetInstance()->LateDraw();
 
@@ -99,11 +100,11 @@ void Core::MainLoop() {
         postProcessingFrameBuffer.Clear({0.f, 0.f, 0.f, 1.f});
 
         gBuffer.DrawLightPass();
+        gBuffer.CopyDepthBuffer(postProcessingFrameBuffer.GetFrameBuffer());
         Gizmos::DrawGizmos();
 
         postProcessingFrameBuffer.DeActivate();
         postProcessingFrameBuffer.Draw();
-
 
         glEnable(GL_DEPTH_TEST);
 

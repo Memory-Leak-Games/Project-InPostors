@@ -30,14 +30,14 @@ GLfloat lineVertices[]{
         1.0f, 1.0f, 1.0f};
 
 GLfloat boxVertices[]{
-        0.5f,0.5f,0.5f,
-        0.5f,0.5f,-0.5f,
-        -0.5f,0.5f,-0.5f,
-        -0.5f,0.5f,0.5f,
-        0.5f,-0.5f,0.5f,
-        0.5f,-0.5f,-0.5f,
-        -0.5f,-0.5f,-0.5f,
-        -0.5f,-0.5f,0.5f,
+        0.5f, 0.5f, 0.5f,
+        0.5f, 0.5f, -0.5f,
+        -0.5f, 0.5f, -0.5f,
+        -0.5f, 0.5f, 0.5f,
+        0.5f, -0.5f, 0.5f,
+        0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f, 0.5f,
 };
 
 GLuint boxIndices[]{
@@ -52,7 +52,7 @@ GLfloat pointVertex[]{
 
 void mlg::Gizmos::Initialize() {
     // Load gizmo shader
-    shader = new ShaderProgram (
+    shader = new ShaderProgram(
             mlg::AssetManager::GetAsset<ShaderAsset>("res/shaders/Utils/gizmo.vert"),
             mlg::AssetManager::GetAsset<ShaderAsset>("res/shaders/Utils/gizmo.frag"));
 
@@ -132,11 +132,12 @@ void mlg::Gizmos::Stop() {
 }
 
 void Gizmos::DrawGizmos() {
+    glEnable(GL_DEPTH_TEST);
+
     shader->Activate();
     glEnable(GL_PROGRAM_POINT_SIZE);
     auto gizmoEnd = gizmoInstances.end();
-    for(auto gizmoIt = gizmoInstances.begin(); gizmoIt < gizmoEnd; gizmoIt++)
-    {
+    for (auto gizmoIt = gizmoInstances.begin(); gizmoIt < gizmoEnd; gizmoIt++) {
         GizmoObject gizmo = *gizmoIt;
         shader->SetMat4F("world", gizmo.world);
         shader->SetVec4F("color", gizmo.color);
@@ -144,13 +145,10 @@ void Gizmos::DrawGizmos() {
         shader->SetFloat("pointSize", gizmo.pointSize);
 
         glBindVertexArray(gizmo.VAO);
-        if(gizmo.EBO)
-        {
+        if (gizmo.EBO) {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gizmo.EBO);
             glDrawElements(gizmo.primitive, gizmo.elements, GL_UNSIGNED_INT, nullptr);
-        }
-        else
-        {
+        } else {
             glDrawArrays(gizmo.primitive, 0, gizmo.elements);
         }
     }
@@ -171,7 +169,8 @@ void mlg::Gizmos::DrawLine(glm::vec3 start, glm::vec3 end, glm::vec4 color, bool
 
     gizmo.world = glm::mat4(1.0f);
     gizmo.world = glm::translate(gizmo.world, start);
-    gizmo.world = glm::scale(gizmo.world, end - start); // Use position diff to scale line (which is from [0, 0, 0] to [1, 1, 1])
+    gizmo.world = glm::scale(gizmo.world,
+                             end - start); // Use position diff to scale line (which is from [0, 0, 0] to [1, 1, 1])
 
     gizmo.color = color;
     gizmo.alwaysFront = alwaysFront;

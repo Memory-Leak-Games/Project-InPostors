@@ -78,13 +78,15 @@ namespace mlg {
         screenSpacePlane.Draw();
 
         material->DeActivate();
-
-        glEnable(GL_DEPTH_TEST);
     }
 
     PostProcess::~PostProcess() {
         glDeleteRenderbuffers(1, &rboDepth);
         glDeleteTextures(1, &colorTexture);
         glDeleteFramebuffers(1, &frameBuffer);
+    }
+
+    uint32_t PostProcess::GetFrameBuffer() const {
+        return frameBuffer;
     }
 } // mlg

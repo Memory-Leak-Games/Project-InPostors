@@ -40,7 +40,7 @@ namespace mlg {
         virtual void DrawSSAOBlurTexture();
         virtual void DrawLightPass();
 
-        virtual void CopyDepthBuffer();
+        virtual void CopyDepthBuffer(uint32_t fbo);
 
         virtual void Resize(int32_t screenWidth, int32_t screenHeight);
 

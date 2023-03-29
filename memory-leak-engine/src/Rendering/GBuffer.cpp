@@ -176,11 +176,11 @@ namespace mlg {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void GBuffer::CopyDepthBuffer() {
+    void GBuffer::CopyDepthBuffer(uint32_t fbo) {
         glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
         glBlitFramebuffer(0, 0, screenWidth, screenHeight, 0, 0, screenWidth, screenHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     }
 
     void GBuffer::Resize(int32_t screenWidth, int32_t screenHeight) {
