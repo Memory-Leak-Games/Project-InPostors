@@ -1,6 +1,6 @@
-#include "Rendering/GBuffer.h"
+#include "Rendering/FrameBuffers/GBuffer.h"
 
-#include <glad/glad.h>
+#include "glad/glad.h"
 
 #include "Core/AssetManager/AssetManager.h"
 
@@ -33,6 +33,10 @@ namespace mlg {
     }
 
     void GBuffer::GenerateAndBindGTextures() {
+        glDeleteTextures(1, &gAlbedoSpecularTexture);
+        glDeleteTextures(1, &gNormalTexture);
+        glDeleteTextures(1, &gPositionTexture);
+
         glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
 
         glGenTextures(1, &gPositionTexture);
@@ -83,6 +87,8 @@ namespace mlg {
     }
 
     void GBuffer::GenerateAndBindSSAOTextures() {
+        glDeleteTextures(1, &ssaoTexture);
+
         glBindFramebuffer(GL_FRAMEBUFFER, ssaoBuffer);
         glGenTextures(1, &ssaoTexture);
         glBindTexture(GL_TEXTURE_2D, ssaoTexture);
@@ -93,6 +99,8 @@ namespace mlg {
     }
 
     void GBuffer::GenerateAndBindSSAOBlurTextures() {
+        glDeleteTextures(1, &ssaoBlurTexture);
+
         glBindFramebuffer(GL_FRAMEBUFFER, ssaoBlurBuffer);
         glGenTextures(1, &ssaoBlurTexture);
         glBindTexture(GL_TEXTURE_2D, ssaoBlurTexture);
@@ -148,7 +156,7 @@ namespace mlg {
     }
 
     void GBuffer::DrawSSAOTexture() {
-
+        glDisable(GL_DEPTH_TEST);
         glBindFramebuffer(GL_FRAMEBUFFER, ssaoBuffer);
 
         ssaoPassMaterial->Activate();

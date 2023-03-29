@@ -25,9 +25,9 @@
 #include "Gameplay/ComponentManager.h"
 #include "Gameplay/EntityManager.h"
 #include "SceneGraph/SceneGraph.h"
-#include "Rendering/PostProcess.h"
+#include "include/Rendering/FrameBuffers/PostProcess.h"
 #include "Rendering/Camera.h"
-#include "Rendering/GBuffer.h"
+#include "include/Rendering/FrameBuffers/GBuffer.h"
 
 using namespace mlg;
 
@@ -84,29 +84,23 @@ void Core::MainLoop() {
         SceneGraph::CalculateGlobalTransforms();
 
         gBuffer.Activate();
-
         Renderer::GetInstance()->Draw();
-
         gBuffer.DeActivate();
-        gBuffer.CopyDepthBuffer(0);
+        gBuffer.CopyDepthBuffer(postProcessingFrameBuffer.GetFrameBuffer());
 
-        Renderer::GetInstance()->LateDraw();
-
-        glDisable(GL_DEPTH_TEST);
         gBuffer.DrawSSAOTexture();
         gBuffer.DrawSSAOBlurTexture();
 
         postProcessingFrameBuffer.Activate();
-        postProcessingFrameBuffer.Clear({0.f, 0.f, 0.f, 1.f});
 
         gBuffer.DrawLightPass();
-        gBuffer.CopyDepthBuffer(postProcessingFrameBuffer.GetFrameBuffer());
-        Gizmos::DrawGizmos();
+        Renderer::GetInstance()->LateDraw();
 
         postProcessingFrameBuffer.DeActivate();
         postProcessingFrameBuffer.Draw();
+        postProcessingFrameBuffer.CopyDepthBuffer();
 
-        glEnable(GL_DEPTH_TEST);
+        Gizmos::DrawGizmos();
 
 #ifdef DEBUG
         ImGui::Begin("FPS");
