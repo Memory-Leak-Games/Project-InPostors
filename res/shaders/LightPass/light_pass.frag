@@ -12,10 +12,15 @@ in VS_OUT {
     vec2 uv;
 } fs_in;
 
-layout(std140, binding = 0) uniform TransformationMatrices {
+layout(std140, binding = 0) uniform CommonUnifomrs {
     mat4 projection;
     mat4 view;
-    vec3 viewPosition;
+
+    float seconds;
+    float deltaSeconds;
+
+    int randInt;
+    float randFloat;
 };
 
 layout(std140, binding = 1) uniform light {

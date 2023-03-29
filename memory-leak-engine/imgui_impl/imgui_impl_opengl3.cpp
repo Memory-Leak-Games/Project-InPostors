@@ -185,7 +185,7 @@ struct ImGui_ImplOpenGL3_Data
     char            GlslVersionString[32];   // Specified by user or detected based on compile time GL settings.
     GLuint          FontTexture;
     GLuint          ShaderHandle;
-    GLint           AttribLocationTex;       // Uniforms location
+    GLint           AttribLocationTex;       // CommonUniforms location
     GLint           AttribLocationProjMtx;
     GLuint          AttribLocationVtxPos;    // Vertex attributes location
     GLuint          AttribLocationVtxUV;

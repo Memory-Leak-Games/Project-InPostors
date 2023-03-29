@@ -4,14 +4,6 @@
 #include "glad/glad.h"
 
 namespace mlg {
-    enum CameraMovement {
-        FORWARD,
-        BACKWARD,
-        LEFT,
-        RIGHT,
-        UP,
-        DOWN
-    };
 
     class Camera {
     private:
@@ -24,13 +16,6 @@ namespace mlg {
         float pitch = 75.0f;
         float yaw = -180.0f;
         float roll;
-        float speed = 20.0f;
-        float sensitivity = 0.1f;
-        float zoom = 45.0f;
-        const float MAX_ZOOM = 45.0f;
-
-        bool isFixedHeight = true;
-        float height = 20.0f;
 
         GLuint uboTransformMatrices;
 
@@ -61,10 +46,6 @@ namespace mlg {
         [[nodiscard]] const glm::vec3 &GetFront() const;
         [[nodiscard]] const glm::vec3 &GetUp() const;
         [[nodiscard]] glm::vec3 GetRight() const;
-
-        void ProcessMovement(CameraMovement movement, float deltaTime = Time::GetDeltaSeconds());
-        void ProcessRotation(float xOffset, float yOffset, bool pitchConstrain = true);
-        [[maybe_unused]] void ProcessZoom(float offset);
 
     private:
         void UpdateProjection();

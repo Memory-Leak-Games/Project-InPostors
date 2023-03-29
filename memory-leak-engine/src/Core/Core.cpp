@@ -15,6 +15,7 @@
 
 #include "Rendering/RenderingAPI.h"
 #include "Rendering/Renderer.h"
+#include "Rendering/CommonUniformBuffer.h"
 
 #include "Events/WindowEvent.h"
 
@@ -82,6 +83,8 @@ void Core::MainLoop() {
         EntityManager::LateUpdate();
 
         SceneGraph::CalculateGlobalTransforms();
+
+        CommonUniformBuffer::UpdateAndSendToGPU();
 
         gBuffer.Activate();
         Renderer::GetInstance()->Draw();

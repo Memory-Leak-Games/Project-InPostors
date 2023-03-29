@@ -3,6 +3,7 @@
 
 #include "Rendering/RenderingAPI.h"
 #include "Rendering/Renderer.h"
+#include "Rendering/CommonUniformBuffer.h"
 
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/ShaderProgram.h"
@@ -25,7 +26,17 @@ namespace mlg {
 
     void StaticMeshComponent::Draw(struct Renderer* renderer) {
         material->Activate();
-        material->GetShaderProgram()->SetMat4F("world", GetTransform().GetWorldMatrix());
+
+        glm::mat4 worldMatrix = GetTransform().GetWorldMatrix();
+        glm::mat4 modelToView = CommonUniformBuffer::GetUniforms().view * worldMatrix;
+        glm::mat4 modelToScreen = CommonUniformBuffer::GetUniforms().projection * modelToView;
+
+        glm::mat3 modelToViewNormals = glm::mat3(glm::transpose(glm::inverse(modelToView)));
+
+//        material->GetShaderProgram()->SetMat4F("world", worldMatrix);
+        material->GetShaderProgram()->SetMat4F("modelToView", modelToView);
+        material->GetShaderProgram()->SetMat4F("modelToScreen", modelToScreen);
+        material->GetShaderProgram()->SetMat3F("modelToViewNormals", modelToViewNormals);
         RenderingAPI::GetInstance()->DrawModel(model.get());
     }
 

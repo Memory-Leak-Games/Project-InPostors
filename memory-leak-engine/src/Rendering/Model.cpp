@@ -3,9 +3,6 @@
 #include "assimp/Importer.hpp"
 #include <filesystem>
 
-#include "Core/AssetManager/AssetManager.h"
-#include "include/Rendering/Assets/TextureAsset.h"
-
 #include "Macros.h"
 #include "stb_image.h"
 
