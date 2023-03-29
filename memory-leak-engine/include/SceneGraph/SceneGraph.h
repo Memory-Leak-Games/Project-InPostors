@@ -11,7 +11,7 @@ namespace mlg {
         static void Initialize();
         static void Stop();
 
-        void CalculateGlobalTransforms();
+        static void CalculateGlobalTransforms();
 
         static SceneGraph* GetInstance();
         static Transform* GetRoot();

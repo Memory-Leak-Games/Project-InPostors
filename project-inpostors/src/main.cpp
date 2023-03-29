@@ -2,50 +2,61 @@
 #include "Rendering/Camera.h"
 #include "Rendering/Model.h"
 #include "Rendering/Renderer.h"
-#include "Rendering/ShaderWrapper.h"
-#include <Core/AssetManager/AssetManager.h>
-#include <Core/HID/Input.h>
-#include <Rendering/Gizmos/Gizmos.h>
-#include <Rendering/Renderable.h>
+
 #include <Rendering/RenderingAPI.h>
+
+#include <Rendering/Assets/MaterialAsset.h>
+#include <Rendering/Assets/ModelAsset.h>
+
+#include <Core/HID/Input.h>
+#include <Core/AssetManager/AssetManager.h>
 
 #include "Core/Core.h"
 #include "Core/Time.h"
-#include "SceneGraph/Transform.h"
 
-class RenderableTest : public mlg::Renderable {
+#include "SceneGraph/SceneGraph.h"
+
+#include <Gameplay/ComponentManager.h>
+#include <Gameplay/Components/StaticMeshComponent.h>
+#include <Gameplay/EntityManager.h>
+#include <Rendering/Gizmos/Gizmos.h>
+
+class ComponentTest : public mlg::Component {
 public:
-    mlg::Model model;
-    mlg::Transform transform;
+    ComponentTest(const std::weak_ptr<mlg::Entity>& owner, const std::string& name) : Component(owner, name) {}
 
-    RenderableTest(std::string modelPath, std::string vert, std::string frag)
-    : model(modelPath, std::make_shared<mlg::ShaderWrapper>(vert, frag)),
-    transform() {}
+    void Update() override {
+        glm::vec3 position = GetOwner().lock()->GetTransform().GetPosition();
+        position.z = glm::sin(mlg::Time::GetSeconds() * 2.f) * 8.f;
 
-    void Draw(mlg::Renderer* renderer) override {
-        model.GetShader()->Activate();
-        model.GetShader()->SetMat4F("World", transform.GetLocalMatrix());
-        model.Draw();
+        GetOwner().lock()->GetTransform().SetRotation({{0.f, mlg::Time::GetSeconds(), 0.f}});
+        GetOwner().lock()->GetTransform().SetPosition(position);
+
+        if (mlg::Input::IsActionPressed("test_button")) {
+            GetOwner().lock()->QueueForDeletion();
+        }
     }
 
+    ~ComponentTest() override {
+
+    }
 };
 
 class ProjectInpostors {
-private:
-    std::shared_ptr<mlg::Camera> camera;
-    std::shared_ptr<RenderableTest> tardis;
-    std::shared_ptr<RenderableTest> tardis2;
 public:
     ProjectInpostors() = default;
 
     int Main(int argc, char* argv[]) {
         mlg::Time::Initialize();
         mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
-        mlg::Window::GetInstance()->SetVerticalSync(false);
+        mlg::Window::GetInstance()->SetVerticalSync(true);
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
-        mlg::Gizmos::Initialize();
         mlg::AssetManager::Initialize();
+        mlg::Gizmos::Initialize();
+        mlg::SceneGraph::Initialize();
+        mlg::ComponentManager::Initialize();
+        mlg::EntityManager::Initialize();
 
         mlg::Core::Initialize();
         mlg::Input::Initialize();
@@ -54,10 +65,13 @@ public:
         PrepareScene();
         engine->MainLoop();
 
+        mlg::EntityManager::Stop();
+        mlg::ComponentManager::Stop();
+        mlg::SceneGraph::Stop();
         mlg::Input::Stop();
         mlg::Core::Stop();
+        mlg::Gizmos::Stop();
         mlg::AssetManager::Stop();
-        //mlg::Gizmos::Stop();
         mlg::Renderer::Stop();
         mlg::RenderingAPI::Stop();
         mlg::Window::Stop();
@@ -67,14 +81,41 @@ public:
     }
 
     void PrepareScene() {
-        mlg::Camera::GetInstance()->SetPosition({0, 0, -20});
-        tardis = std::make_shared<RenderableTest>("res/models/Tardis/tardis.obj", "res/shaders/model.vert", "res/shaders/textured_model.frag");
-        tardis->transform.SetPosition({-5, 0, 0});
-        mlg::Renderer::GetInstance()->AddRenderable(tardis);
+        mlg::Camera::GetInstance()->SetPosition({-8.f, 15.f, 8.f});
+        mlg::Camera::GetInstance()->SetRotation(glm::radians(-60.f), glm::radians(45.f));
 
-        tardis2 = std::make_shared<RenderableTest>("res/models/Tardis/tardis.obj", "res/shaders/model.vert", "res/shaders/textured_model.frag");
-        tardis2->transform.SetPosition({5, 0, 0});
-        mlg::Renderer::GetInstance()->AddRenderable(tardis2);
+        auto tardisMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Tardis/tardis_material.json");
+        auto tardisModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Tardis/tardis.obj");
+
+        auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
+        auto planeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/plane.obj");
+
+        auto tardisEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisOne", false, mlg::SceneGraph::GetRoot());
+        tardisEntity.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel, tardisMaterial);
+        tardisEntity.lock()->AddComponent<ComponentTest>("RotationComponent");
+
+        auto tardisMaterial1 = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Tardis/tardis_material_green.json");
+        auto tardisModel1 = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Tardis/tardis.obj");
+
+        auto tardisEntity1 = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisRight", false, mlg::SceneGraph::GetRoot());
+        tardisEntity1.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel1, tardisMaterial1);
+        tardisEntity1.lock()->AddComponent<ComponentTest>("RotationComponent");
+
+        tardisEntity1.lock()->GetTransform().SetPosition({-7.f, 0.f, 0.f});
+
+        auto tardisMaterial2 = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Tardis/tardis_material_another.json");
+        auto tardisModel2 = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Tardis/tardis.obj");
+
+        auto tardisEntity2 = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisLeft", false, mlg::SceneGraph::GetRoot());
+        tardisEntity2.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel2, tardisMaterial2);
+//        tardisEntity2.lock()->AddComponent<ComponentTest>("RotationComponent");
+
+        tardisEntity2.lock()->GetTransform().SetPosition({7.f, 0.f, 0.f});
+
+        auto ground = mlg::EntityManager::SpawnEntity<mlg::Entity>("Ground", true, mlg::SceneGraph::GetRoot());
+        ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, whiteMaterial);
+        ground.lock()->GetTransform().SetPosition({0.f, -3.9f, 0.f});
+        ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
     }
 
     virtual ~ProjectInpostors() {

@@ -21,6 +21,13 @@
 // TODO: delete this
 #include "Rendering/Gizmos/Gizmos.h"
 #include "Rendering/Lights.h"
+#include "Rendering/Camera.h"
+#include "Gameplay/ComponentManager.h"
+#include "Gameplay/EntityManager.h"
+#include "SceneGraph/SceneGraph.h"
+#include "Rendering/PostProcess.h"
+#include "Rendering/Camera.h"
+#include "Rendering/GBuffer.h"
 
 using namespace mlg;
 
@@ -30,43 +37,75 @@ void Core::MainLoop() {
 
     // TODO: Remove this
     sceneLight = std::make_shared<Lights>();
-    auto begin = std::chrono::high_resolution_clock::now();
+
+    PostProcess postProcessingFrameBuffer(Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
+    GBuffer gBuffer(Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
+
+    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, [&postProcessingFrameBuffer, &gBuffer](const Event& event) {
+        auto& windowResizeEvent = (WindowResizeEvent&) event;
+        RenderingAPI::GetInstance()->SetViewport(0, 0, windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+
+        postProcessingFrameBuffer.Resize(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+        gBuffer.Resize(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+
+        Camera::GetInstance()->SetResolution({windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight()});
+    });
 
     bool shouldClose = false;
     Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowClose, [&shouldClose](const Event& event) {
         shouldClose = true;
     });
 
+    ComponentManager::Start();
+    EntityManager::Start();
+
     while (!shouldClose) {
         Time::UpdateStartFrameTime();
-
         RenderingAPI::GetInstance()->Clear();
+
 
 #ifdef DEBUG
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 #endif
+        ComponentManager::ProcessComponents();
+        EntityManager::ProcessEntities();
 
         Input::Update();
 
+        ComponentManager::Update();
+        EntityManager::Update();
+
+        ComponentManager::LateUpdate();
+        EntityManager::LateUpdate();
+
+        SceneGraph::CalculateGlobalTransforms();
+
+        gBuffer.Activate();
+
         Renderer::GetInstance()->Draw();
+
+        gBuffer.DeActivate();
+        gBuffer.CopyDepthBuffer();
+
         Renderer::GetInstance()->LateDraw();
 
-        // Gizmos test
-        {
-            Gizmos::DrawLine({-10, 0, 0}, {10, sin(Time::GetSeconds() * 4) * 7, 0}, {0, 1, 0, 1});
-            Gizmos::DrawLine({-10, 0, 0}, {10, sin(Time::GetSeconds() * 4 - 1) * 7, 0}, {0, 1, 0, 1}, true);
-            Gizmos::DrawBox({1, -3, -1}, {6, 2, 10}, glm::angleAxis(Time::GetSeconds(), glm::vec3(1, 0, 0)), {0, 0, 1, 1});
-            Transform transform = Transform();
-            transform.SetPosition({-10, 5, -5});
-            transform.SetScale(glm::vec3(3, 1, 2) * (sin(Time::GetSeconds()) + 1.1f));
-            transform.SetRotation(glm::quat({Time::GetSeconds() * 5, 2, 3}));
-            Gizmos::DrawBox(transform, {1, 1, 0, 1});
-            Gizmos::DrawSphere({cos(Time::GetSeconds()) * 5, -2, sin(Time::GetSeconds()) * 5}, 10, {1, 0, 1, 1});
-            for(int i = 1; i < 10; i++)
-                Gizmos::DrawPoint({cos(Time::GetSeconds() + i) * 4, cos(Time::GetSeconds() + i) * sin(Time::GetSeconds() + i) * 4, sin(Time::GetSeconds() + i) * 4}, i, {0, 1, 1, 1}, false);
-        }
+        glDisable(GL_DEPTH_TEST);
+        gBuffer.DrawSSAOTexture();
+        gBuffer.DrawSSAOBlurTexture();
+
+        postProcessingFrameBuffer.Activate();
+        postProcessingFrameBuffer.Clear({0.f, 0.f, 0.f, 1.f});
+
+        gBuffer.DrawLightPass();
+        Gizmos::DrawPoint(glm::vec3{0., 0., 0.});
+
+        postProcessingFrameBuffer.DeActivate();
+        postProcessingFrameBuffer.Draw();
+
+
+        glEnable(GL_DEPTH_TEST);
 
 #ifdef DEBUG
         ImGui::Begin("FPS");
@@ -86,7 +125,19 @@ void Core::MainLoop() {
             ImGui::Text("Strength: %f", testFloat);
             ImGui::Text("State: %b, JustPressed: %b, JustReleased: %b", isTestPressed,
                         isTestJustPressed, isTestJustReleased);
+
         }
+
+        ImGui::Separator();
+        bool vSync = Window::GetInstance()->GetVerticalSync();
+        ImGui::Checkbox("VSync ", &vSync);
+        Window::GetInstance()->SetVerticalSync(vSync);
+
+        ImGui::Separator();
+        ImGui::Text("Camera");
+        glm::vec3 position = Camera::GetInstance()->GetPosition();
+        ImGui::DragFloat3("Camera Position", (float*) &position);
+        Camera::GetInstance()->SetPosition(position);
 
         ImGui::End();
 
@@ -97,7 +148,6 @@ void Core::MainLoop() {
         Window::GetInstance()->SwapBuffers();
         Window::GetInstance()->PollEvents();
     }
-
 }
 
 void Core::Stop() {

@@ -1,15 +1,36 @@
 #pragma once
 
+#include <Core/Time.h>
 #include "glad/glad.h"
 
 namespace mlg {
+    enum CameraMovement {
+        FORWARD,
+        BACKWARD,
+        LEFT,
+        RIGHT,
+        UP,
+        DOWN
+    };
+
     class Camera {
     private:
-        static std::shared_ptr<Camera> instance;
+        static Camera* instance;
 
         glm::vec3 position;
         glm::vec3 front;
         glm::vec3 up;
+
+        float pitch = 75.0f;
+        float yaw = -180.0f;
+        float roll;
+        float speed = 20.0f;
+        float sensitivity = 0.1f;
+        float zoom = 45.0f;
+        const float MAX_ZOOM = 45.0f;
+
+        bool isFixedHeight = true;
+        float height = 20.0f;
 
         GLuint uboTransformMatrices;
 
@@ -19,12 +40,13 @@ namespace mlg {
         Camera();
 
     public:
-        static std::shared_ptr<Camera> GetInstance();
+        static Camera* GetInstance();
         ~Camera();
+
 
         void SetPosition(glm::vec3 newPosition);
 
-        void SetRotation(float x, float y);
+        void SetRotation(float pitch, float yaw);
         void SetRotation(glm::vec3 frontVector, glm::vec3 upVector);
 
         void LookAt(glm::vec3 lookAtPosition);
@@ -39,6 +61,10 @@ namespace mlg {
         [[nodiscard]] const glm::vec3 &GetFront() const;
         [[nodiscard]] const glm::vec3 &GetUp() const;
         [[nodiscard]] glm::vec3 GetRight() const;
+
+        void ProcessMovement(CameraMovement movement, float deltaTime = Time::GetDeltaSeconds());
+        void ProcessRotation(float xOffset, float yOffset, bool pitchConstrain = true);
+        [[maybe_unused]] void ProcessZoom(float offset);
 
     private:
         void UpdateProjection();

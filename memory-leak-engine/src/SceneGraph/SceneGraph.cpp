@@ -23,7 +23,7 @@ namespace mlg {
     }
 
     void SceneGraph::CalculateGlobalTransforms() {
-        root->Calculate();
+        instance->root->Calculate();
     }
 
     SceneGraph* SceneGraph::GetInstance() {
