@@ -1,6 +1,37 @@
 {
   "vertexShader": "res/shaders/quad_renderer.vert",
   "fragmentShader": "res/shaders/SSAOPass/ssao_pass.frag",
-  "uniforms": [],
+  "uniforms": [
+    {
+      "type": "int",
+      "name": "samples",
+      "value": 16
+    },
+    {
+      "type": "float",
+      "name": "intensity",
+      "value": 16
+    },
+    {
+      "type": "float",
+      "name": "scale",
+      "value": 10.0
+    },
+    {
+      "type": "float",
+      "name": "bias",
+      "value": 0.05
+    },
+    {
+      "type": "float",
+      "name": "sample_rad",
+      "value": 0.5
+    },
+    {
+      "type": "float",
+      "name": "max_distance",
+      "value": 2.0
+    }
+  ],
   "textures": []
 }

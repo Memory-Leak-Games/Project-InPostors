@@ -202,6 +202,4 @@ namespace mlg {
         GenerateAndBindSSAOBlurTextures();
     }
 
-
-
 } // mlg
