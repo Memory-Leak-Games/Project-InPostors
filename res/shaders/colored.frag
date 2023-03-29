@@ -14,8 +14,6 @@ in VS_OUT {
     vec3 position;
     vec3 normal;
     vec2 uv;
-
-    vec3 viewPosition;
 } fs_in;
 
 void main() {

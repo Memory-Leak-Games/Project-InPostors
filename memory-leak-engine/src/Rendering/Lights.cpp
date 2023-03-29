@@ -1,5 +1,4 @@
 #include "Rendering/Lights.h"
-#include "Rendering/Gizmos/SphereGizmo.h"
 
 using namespace mlg;
 
@@ -17,8 +16,8 @@ Lights::Lights() {
 
 void Lights::InitializeLights() {
     sun.direction = glm::normalize(glm::vec3(0.5f, -0.5f, -0.5f));
-    sun.diffuse = glm::vec3(1.f);
-    sun.ambient = glm::vec3(0.1f);
+    sun.diffuse = glm::vec3(0.7f);
+    sun.ambient = glm::vec3(0.3f);
     sun.specular = glm::vec3(0.1f);
 }
 

@@ -16,19 +16,19 @@ out VS_OUT {
     vec3 position;
     vec3 normal;
     vec2 uv;
-
-    vec3 viewPosition;
 } vs_out;
 
 void main() {
-    vec4 translatedPosition = world * vec4(position, 1.0f);
+    mat4 viewWorld = view * world;
+
+    vec4 positionInViewSpace = viewWorld * vec4(position, 1.0f);
 
     // Send data to Fragment shader
     vs_out.uv = uv;
-    vs_out.position = vec3(translatedPosition);
-    vs_out.normal = normalize(mat3(transpose(inverse(world))) * normal);
-    vs_out.viewPosition = viewPosition;
+    vs_out.position = vec3(positionInViewSpace);
+    mat3 viewWorldNormalMatrix = mat3(transpose(inverse(viewWorld)));
+    vs_out.normal = normalize(viewWorldNormalMatrix * normal);
 
     // Set vertex position
-    gl_Position = projection * view * translatedPosition;
+    gl_Position = projection * positionInViewSpace;
 }

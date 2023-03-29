@@ -2,6 +2,7 @@
 #include "Rendering/Camera.h"
 #include "Rendering/Model.h"
 #include "Rendering/Renderer.h"
+
 #include <Rendering/RenderingAPI.h>
 
 #include <Rendering/Assets/MaterialAsset.h>
@@ -9,14 +10,16 @@
 
 #include <Core/HID/Input.h>
 #include <Core/AssetManager/AssetManager.h>
+
 #include "Core/Core.h"
 #include "Core/Time.h"
 
 #include "SceneGraph/SceneGraph.h"
 
-#include <Gameplay/EntityManager.h>
 #include <Gameplay/ComponentManager.h>
 #include <Gameplay/Components/StaticMeshComponent.h>
+#include <Gameplay/EntityManager.h>
+#include <Rendering/Gizmos/Gizmos.h>
 
 class ComponentTest : public mlg::Component {
 public:
@@ -50,6 +53,7 @@ public:
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
         mlg::AssetManager::Initialize();
+        mlg::Gizmos::Initialize();
         mlg::SceneGraph::Initialize();
         mlg::ComponentManager::Initialize();
         mlg::EntityManager::Initialize();
@@ -66,6 +70,7 @@ public:
         mlg::SceneGraph::Stop();
         mlg::Input::Stop();
         mlg::Core::Stop();
+        mlg::Gizmos::Stop();
         mlg::AssetManager::Stop();
         mlg::Renderer::Stop();
         mlg::RenderingAPI::Stop();
