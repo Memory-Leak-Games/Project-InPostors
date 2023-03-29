@@ -2,14 +2,14 @@
 
 namespace mlg {
     struct CommonUniforms {
-        glm::mat4 projection; // 0 - 16
-        glm::mat4 view;       // 16 - 32
+        glm::mat4 projection; // 0 - 64
+        glm::mat4 view;       // 64 - 128
 
-        float seconds;        // 32 - 36
-        float deltaSeconds;   // 36 - 40
+        float seconds;        // 128 - 132
+        float deltaSeconds;   // 136 - 140
 
-        uint32_t randInt;     // 40 - 44
-        float randFloat;      // 44 - 48
+        uint32_t randInt;     // 144 - 148
+        float randFloat;      // 148 - 152
     };
 
     class CommonUniformBuffer {

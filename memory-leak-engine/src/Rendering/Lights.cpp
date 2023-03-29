@@ -7,7 +7,7 @@ Lights::Lights() {
 
     glGenBuffers(1, &uboLightData);
     glBindBuffer(GL_UNIFORM_BUFFER, uboLightData);
-    glBufferData(GL_UNIFORM_BUFFER, 64, nullptr, GL_DYNAMIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(DirectionalLight), nullptr, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, uboLightData);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
@@ -19,6 +19,13 @@ void Lights::InitializeLights() {
     sun.diffuse = glm::vec3(0.7f);
     sun.ambient = glm::vec3(0.3f);
     sun.specular = glm::vec3(0.1f);
+
+    glm::vec3 position = glm::vec3(-5.f);
+
+    glm::mat4 lightView = glm::lookAt(position, position + sun.direction, glm::vec3{0.f, 1.f, 0.f});
+    glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 50.f);
+
+    sun.lightSpaceMatrix = lightProjection * lightView;
 }
 
 void Lights::UpdateSun() {

@@ -29,6 +29,8 @@ layout(std140, binding = 1) uniform light {
     vec3 light_ambient;// 16
     vec3 light_diffuse;// 16
     vec3 light_specular;// 16
+
+    mat4 light_lightSpaceMatrix;
 };
 
 
