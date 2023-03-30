@@ -89,7 +89,7 @@ void Core::MainLoop() {
         gBuffer.Activate();
         Renderer::GetInstance()->Draw();
         gBuffer.DeActivate();
-        gBuffer.CopyDepthBuffer(postProcessingFrameBuffer.GetFrameBuffer());
+        gBuffer.CopyDepthBuffer(postProcessingFrameBuffer.GetFbo());
 
         gBuffer.DrawSSAOTexture();
         gBuffer.DrawSSAOBlurTexture();
@@ -99,7 +99,7 @@ void Core::MainLoop() {
         gBuffer.DrawLightPass();
         Renderer::GetInstance()->LateDraw();
 
-        postProcessingFrameBuffer.DeActivate();
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         postProcessingFrameBuffer.Draw();
         postProcessingFrameBuffer.CopyDepthBuffer(0);
 

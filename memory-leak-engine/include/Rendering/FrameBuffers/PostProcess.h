@@ -1,40 +1,27 @@
 #pragma once
 
-#include "Rendering/ShaderProgram.h"
+#include "Rendering/FrameBuffers/FrameBuffer.h"
 
 namespace mlg {
 
-    class PostProcess {
+    class PostProcess : public FrameBuffer {
     private:
-        uint32_t frameBuffer = 0;
         uint32_t colorTexture = 0;
         uint32_t rboDepth = 0;
 
-        std::shared_ptr<class MaterialAsset> material;
-
-        int32_t width;
-        int32_t height;
-
-        PostProcess() = default;
     public:
+        PostProcess() = delete;
+
         PostProcess(int32_t width, int32_t height);
-        ~PostProcess();
+        ~PostProcess() override;
 
-        virtual void Activate();
-        virtual void DeActivate();
+        void Draw() override;
 
-        virtual void Draw();
-
-        virtual void Resize(int32_t width, int32_t height);
+        void Resize(int32_t width, int32_t height) override;
         void CopyDepthBuffer(uint32_t fbo = 0);
 
-        uint32_t GetFrameBuffer() const;
-
     private:
-        void InitializeFbo();
-
         void GenerateAndBindTextures() ;
-
     };
 
 } // mlg
