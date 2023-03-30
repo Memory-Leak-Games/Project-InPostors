@@ -28,7 +28,7 @@ namespace mlg {
         glTextureParameteri(colorTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTextureParameteri(colorTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTextureParameteri(colorTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTextureStorage2D(colorTexture, 1, GL_RGBA16, GetWidth(), GetHeight());
+        glTextureStorage2D(colorTexture, 1, GL_RGB8, GetWidth(), GetHeight());
         glNamedFramebufferTexture(GetFbo(), GL_COLOR_ATTACHMENT0, colorTexture, 0);
 
         glCreateRenderbuffers(1, &rboDepth);

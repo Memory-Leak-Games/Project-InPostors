@@ -17,6 +17,12 @@
 #include "Rendering/Renderer.h"
 #include "Rendering/CommonUniformBuffer.h"
 
+#include "Rendering/FrameBuffers/FrameBuffer.h"
+#include "Rendering/FrameBuffers/GBuffer.h"
+#include "Rendering/FrameBuffers/SSAO.h"
+#include "Rendering/FrameBuffers/BlurPass.h"
+#include "Rendering/FrameBuffers/PostProcess.h"
+
 #include "Events/WindowEvent.h"
 
 // TODO: delete this
@@ -26,9 +32,7 @@
 #include "Gameplay/ComponentManager.h"
 #include "Gameplay/EntityManager.h"
 #include "SceneGraph/SceneGraph.h"
-#include "include/Rendering/FrameBuffers/PostProcess.h"
 #include "Rendering/Camera.h"
-#include "include/Rendering/FrameBuffers/GBuffer.h"
 
 using namespace mlg;
 
@@ -39,23 +43,40 @@ void Core::MainLoop() {
     // TODO: Remove this
     sceneLight = std::make_shared<Lights>();
 
-    PostProcess postProcessingFrameBuffer(Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
-    GBuffer gBuffer(Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
+    int32_t windowWidth = Window::GetInstance()->GetWidth();
+    int32_t windowHeight = Window::GetInstance()->GetHeight();
 
-    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, [&postProcessingFrameBuffer, &gBuffer](const Event& event) {
-        auto& windowResizeEvent = (WindowResizeEvent&) event;
-        RenderingAPI::GetInstance()->SetViewport(0, 0, windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+    GBuffer gBuffer(windowWidth, windowHeight);
+    SSAO ssao(windowWidth, windowHeight);
+    BlurPass blurPass(windowWidth, windowHeight);
+    PostProcess postProcessingFrameBuffer(windowWidth, windowHeight);
 
-        postProcessingFrameBuffer.Resize(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
-        gBuffer.Resize(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize,
+                                                                [&postProcessingFrameBuffer, &gBuffer, &ssao](
+                                                                        const Event& event) {
+                                                                    auto& windowResizeEvent = (WindowResizeEvent&) event;
+                                                                    RenderingAPI::GetInstance()->SetViewport(0, 0,
+                                                                                                             windowResizeEvent.GetWidth(),
+                                                                                                             windowResizeEvent.GetHeight());
 
-        Camera::GetInstance()->SetResolution({windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight()});
-    });
+                                                                    int32_t windowWidth = windowResizeEvent.GetWidth();
+                                                                    int32_t windowHeight = windowResizeEvent.GetHeight();
+
+                                                                    gBuffer.Resize(windowWidth, windowHeight);
+                                                                    ssao.Resize(windowWidth, windowHeight);
+                                                                    postProcessingFrameBuffer.Resize(windowWidth,
+                                                                                                     windowHeight);
+
+                                                                    Camera::GetInstance()->SetResolution(
+                                                                            {windowResizeEvent.GetWidth(),
+                                                                             windowResizeEvent.GetHeight()});
+                                                                });
 
     bool shouldClose = false;
-    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowClose, [&shouldClose](const Event& event) {
-        shouldClose = true;
-    });
+    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowClose,
+                                                                [&shouldClose](const Event& event) {
+                                                                    shouldClose = true;
+                                                                });
 
     ComponentManager::Start();
     EntityManager::Start();
@@ -63,7 +84,6 @@ void Core::MainLoop() {
     while (!shouldClose) {
         Time::UpdateStartFrameTime();
         RenderingAPI::GetInstance()->Clear();
-
 
 #ifdef DEBUG
         ImGui_ImplOpenGL3_NewFrame();
@@ -76,26 +96,25 @@ void Core::MainLoop() {
         Input::Update();
 
         ComponentManager::Update();
-
         EntityManager::Update();
-
         ComponentManager::LateUpdate();
         EntityManager::LateUpdate();
 
         SceneGraph::CalculateGlobalTransforms();
-
         CommonUniformBuffer::UpdateAndSendToGPU();
 
         gBuffer.Activate();
         Renderer::GetInstance()->Draw();
-        gBuffer.DeActivate();
         gBuffer.CopyDepthBuffer(postProcessingFrameBuffer.GetFbo());
 
-        gBuffer.DrawSSAOTexture();
-        gBuffer.DrawSSAOBlurTexture();
+        ssao.BindTextureUnits(gBuffer.GetPositionTexture(), gBuffer.GetNormalTexture());
+        ssao.Draw();
+        blurPass.BindTextureUnits(ssao.GetOutput());
+        blurPass.Draw();
 
         postProcessingFrameBuffer.Activate();
 
+        gBuffer.BindTextures(blurPass.GetBlurredTexture());
         gBuffer.DrawLightPass();
         Renderer::GetInstance()->LateDraw();
 
@@ -112,8 +131,7 @@ void Core::MainLoop() {
 
         ImGui::Separator();
 
-        for (const std::string& action : {"test_button", "test_axis"})
-        {
+        for (const std::string& action : {"test_button", "test_axis"}) {
             float testFloat = Input::GetActionStrength(action);
             bool isTestPressed = Input::IsActionPressed(action);
             bool isTestJustPressed = Input::IsActionJustPressed(action);

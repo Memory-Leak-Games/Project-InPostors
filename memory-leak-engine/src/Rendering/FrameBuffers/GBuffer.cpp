@@ -15,11 +15,8 @@ namespace mlg {
         SPDLOG_INFO("Initializing GBuffer and SSAO");
 
         lightPassMaterial = AssetManager::GetAsset<MaterialAsset>("res/config/light_pass_material.json");
-        ssaoPassMaterial = AssetManager::GetAsset<MaterialAsset>("res/config/ssao_material.json");
-        ssaoBlurPassMaterial = AssetManager::GetAsset<MaterialAsset>("res/config/ssao_blur_material.json");
 
         InitializeGBuffer();
-        InitializeSSAOBuffer();
     }
 
     void GBuffer::InitializeGBuffer() {
@@ -72,58 +69,14 @@ namespace mlg {
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
     }
 
-    void GBuffer::InitializeSSAOBuffer() {
-        glGenFramebuffers(1, &ssaoBuffer);
-        GenerateAndBindSSAOTextures();
-        glBindFramebuffer(GL_FRAMEBUFFER, ssaoBuffer);
-        MLG_ASSERT_MSG(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "SSAOBuffer is not complete");
-
-        glGenFramebuffers(1, &ssaoBlurBuffer);
-        GenerateAndBindSSAOBlurTextures();
-        glBindFramebuffer(GL_FRAMEBUFFER, ssaoBlurBuffer);
-        MLG_ASSERT_MSG(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "SSAOBlurBuffer is not complete");
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    }
-
-    void GBuffer::GenerateAndBindSSAOTextures() {
-        glDeleteTextures(1, &ssaoTexture);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, ssaoBuffer);
-        glGenTextures(1, &ssaoTexture);
-        glBindTexture(GL_TEXTURE_2D, ssaoTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, screenWidth, screenHeight, 0, GL_RED, GL_FLOAT, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ssaoTexture, 0);
-    }
-
-    void GBuffer::GenerateAndBindSSAOBlurTextures() {
-        glDeleteTextures(1, &ssaoBlurTexture);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, ssaoBlurBuffer);
-        glGenTextures(1, &ssaoBlurTexture);
-        glBindTexture(GL_TEXTURE_2D, ssaoBlurTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, screenWidth, screenHeight, 0, GL_RED, GL_FLOAT, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ssaoBlurTexture, 0);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    }
-
     GBuffer::~GBuffer() {
         glDeleteRenderbuffers(1, &rboDepth);
 
         glDeleteTextures(1, &gAlbedoSpecularTexture);
         glDeleteTextures(1, &gNormalTexture);
         glDeleteTextures(1, &gPositionTexture);
-        glDeleteTextures(1, &ssaoTexture);
-        glDeleteTextures(1, &ssaoBlurBuffer);
 
         glDeleteFramebuffers(1, &gBuffer);
-        glDeleteFramebuffers(1, &ssaoBuffer);
-        glDeleteFramebuffers(1, &ssaoBlurBuffer);
     }
 
     void GBuffer::Activate() {
@@ -131,10 +84,6 @@ namespace mlg {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
         glDisable(GL_BLEND);
-    }
-
-    void GBuffer::DeActivate() {
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
 
@@ -147,43 +96,10 @@ namespace mlg {
         glBindTexture(GL_TEXTURE_2D, gNormalTexture);
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, gAlbedoSpecularTexture);
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, ssaoBlurTexture);
 
         RenderingAPI::GetInstance()->DrawScreenSpaceQuad();
 
         lightPassMaterial->DeActivate();
-    }
-
-    void GBuffer::DrawSSAOTexture() {
-        glDisable(GL_DEPTH_TEST);
-        glBindFramebuffer(GL_FRAMEBUFFER, ssaoBuffer);
-
-        ssaoPassMaterial->Activate();
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, gPositionTexture);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, gNormalTexture);
-
-        RenderingAPI::GetInstance()->DrawScreenSpaceQuad();
-
-        ssaoPassMaterial->DeActivate();
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    }
-
-    void GBuffer::DrawSSAOBlurTexture() {
-        glBindFramebuffer(GL_FRAMEBUFFER, ssaoBlurBuffer);
-
-        ssaoBlurPassMaterial->Activate();
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, ssaoTexture);
-
-        RenderingAPI::GetInstance()->DrawScreenSpaceQuad();
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     void GBuffer::CopyDepthBuffer(uint32_t fbo) {
@@ -198,8 +114,23 @@ namespace mlg {
         this->screenHeight = screenHeight;
 
         GenerateAndBindGTextures();
-        GenerateAndBindSSAOTextures();
-        GenerateAndBindSSAOBlurTextures();
+    }
+
+    const uint32_t GBuffer::GetPositionTexture() const {
+        return gPositionTexture;
+    }
+
+    const uint32_t GBuffer::GetNormalTexture() const {
+        return gNormalTexture;
+    }
+
+    const uint32_t GBuffer::GetAlbedoTexture() const {
+        return gAlbedoSpecularTexture;
+    }
+
+    void GBuffer::BindTextures(uint32_t ssao) {
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, ssao);
     }
 
 } // mlg
