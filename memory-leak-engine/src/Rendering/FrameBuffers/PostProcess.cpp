@@ -91,7 +91,7 @@ namespace mlg {
     }
 
     void PostProcess::CopyDepthBuffer(uint32_t fbo) {
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, colorTexture);
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBuffer);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
         glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);

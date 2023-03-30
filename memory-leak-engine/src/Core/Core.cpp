@@ -101,7 +101,7 @@ void Core::MainLoop() {
 
         postProcessingFrameBuffer.DeActivate();
         postProcessingFrameBuffer.Draw();
-        postProcessingFrameBuffer.CopyDepthBuffer();
+        postProcessingFrameBuffer.CopyDepthBuffer(0);
 
         Gizmos::DrawGizmos();
 
