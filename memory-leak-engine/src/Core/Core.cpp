@@ -115,7 +115,7 @@ void Core::MainLoop() {
         postProcessingFrameBuffer.Activate();
 
         gBuffer.BindTextures(blurPass.GetBlurredTexture());
-        gBuffer.DrawLightPass();
+        gBuffer.Draw();
         Renderer::GetInstance()->LateDraw();
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
