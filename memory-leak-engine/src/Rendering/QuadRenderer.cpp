@@ -33,20 +33,20 @@ namespace mlg {
                                                              1.0f, 1.0f, 1.0f, 1.0f
                                                      });
 
-        glGenVertexArrays(1, &vao);
-        glGenBuffers(1, &vbo);
-        glBindVertexArray(vao);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, (int32_t) (quadVertices.size() * sizeof(float)), &quadVertices[0],
-                     GL_STATIC_DRAW);
+        glCreateVertexArrays(1, &vao);
+        glCreateBuffers(1, &vbo);
 
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*) 0);
+        glNamedBufferData(vbo, quadVertices.size() * sizeof(float), &quadVertices[0], GL_STATIC_DRAW);
 
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*) (2 * sizeof(float)));
+        glEnableVertexArrayAttrib(vao, 0);
+        glVertexArrayAttribBinding(vao, 0, 0);
+        glVertexArrayAttribFormat(vao, 0, 2, GL_FLOAT, GL_FALSE, 0);
 
-        glBindVertexArray(0);
+        glEnableVertexArrayAttrib(vao, 1);
+        glVertexArrayAttribBinding(vao, 1, 0);
+        glVertexArrayAttribFormat(vao, 1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float));
+
+        glVertexArrayVertexBuffer(vao, 0, vbo, 0, 4 * sizeof(float));
     }
 
 } // mlg
