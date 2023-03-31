@@ -91,11 +91,6 @@ namespace mlg {
         return instance;
     }
 
-
-    void RenderingAPI::DrawModel(ModelAsset* model) {
-        model->Draw();
-    }
-
     void RenderingAPI::DrawScreenSpaceQuad() {
         screenSpaceQuad.Draw();
     }

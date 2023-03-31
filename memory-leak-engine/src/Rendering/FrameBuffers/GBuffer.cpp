@@ -63,9 +63,6 @@ namespace mlg {
 
     void GBuffer::Activate() {
         glBindFramebuffer(GL_FRAMEBUFFER, GetFbo());
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_DEPTH_TEST);
-        glDisable(GL_BLEND);
     }
 
     void GBuffer::Draw() {
@@ -105,6 +102,13 @@ namespace mlg {
 
     void GBuffer::BindTextures(uint32_t ssao) {
         glBindTextureUnit(3, ssao);
+    }
+
+    void GBuffer::Clear() {
+        FrameBuffer::Clear();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
+        glDisable(GL_BLEND);
     }
 
 } // mlg

@@ -50,4 +50,8 @@ namespace mlg {
         glDeleteFramebuffers(1, &fbo);
     }
 
+    void FrameBuffer::Clear() {
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
+
 } // mlg

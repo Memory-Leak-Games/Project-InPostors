@@ -17,6 +17,7 @@ namespace mlg {
         GBuffer(int32_t width, int32_t height);
         ~GBuffer() override;
 
+        void Clear() override;
         void Activate() override;
 
         void BindTextures(uint32_t ssao);

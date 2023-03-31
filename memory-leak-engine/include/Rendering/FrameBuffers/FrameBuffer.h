@@ -20,6 +20,7 @@ namespace mlg {
 
         bool IsFrameBufferComplete();
 
+        virtual void Clear();
         virtual void Activate();
         virtual void Draw();
 

@@ -104,7 +104,8 @@ void Core::MainLoop() {
         CommonUniformBuffer::UpdateAndSendToGPU();
 
         gBuffer.Activate();
-        Renderer::GetInstance()->Draw();
+        gBuffer.Clear();
+        Renderer::GetInstance()->Draw(&gBuffer);
         gBuffer.CopyDepthBuffer(postProcessingFrameBuffer.GetFbo());
 
         ssao.BindTextureUnits(gBuffer.GetPositionTexture(), gBuffer.GetNormalTexture());
@@ -116,7 +117,7 @@ void Core::MainLoop() {
 
         gBuffer.BindTextures(blurPass.GetBlurredTexture());
         gBuffer.Draw();
-        Renderer::GetInstance()->LateDraw();
+        Renderer::GetInstance()->LateDraw(&postProcessingFrameBuffer);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         postProcessingFrameBuffer.Draw();

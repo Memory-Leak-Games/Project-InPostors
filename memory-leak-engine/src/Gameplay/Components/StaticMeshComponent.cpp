@@ -25,7 +25,7 @@ namespace mlg {
     }
 
     void StaticMeshComponent::Draw(struct Renderer* renderer) {
-        material->Activate();
+        material->GetShaderProgram()->Activate();
 
         glm::mat4 worldMatrix = GetTransform().GetWorldMatrix();
         glm::mat4 modelToView = CommonUniformBuffer::GetUniforms().view * worldMatrix;
@@ -37,7 +37,7 @@ namespace mlg {
         material->GetShaderProgram()->SetMat4F("modelToView", modelToView);
         material->GetShaderProgram()->SetMat4F("modelToScreen", modelToScreen);
         material->GetShaderProgram()->SetMat3F("modelToViewNormals", modelToViewNormals);
-        RenderingAPI::GetInstance()->DrawModel(model.get());
+        Renderer::GetInstance()->DrawModel(model.get(), material.get());
     }
 
     void StaticMeshComponent::Stop() {
