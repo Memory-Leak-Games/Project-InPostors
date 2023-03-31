@@ -12,8 +12,8 @@ layout(std140, binding = 1) uniform light {
     mat4 light_lightSpaceMatrix;
 };
 
-uniform mat4 lightTomodel;
+uniform mat4 modelToLight;
 
 void main() {
-    gl_Position = lightSpaceMatrix * model * vec4(aPos, 1.0);
+    gl_Position = modelToLight * vec4(aPos, 1.0);
 }

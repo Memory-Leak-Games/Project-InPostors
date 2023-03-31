@@ -163,6 +163,9 @@ void Window::SetWindowHint(int hint, int value) {
 }
 
 void Window::SetVerticalSync(bool isEnabled) {
+    if (windowData.vSync == isEnabled)
+        return;
+
     glfwSwapInterval(isEnabled);
     windowData.vSync = isEnabled;
 }

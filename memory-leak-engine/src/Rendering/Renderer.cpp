@@ -1,12 +1,15 @@
-#include "include/Rendering/Renderer.h"
+#include "Rendering/Renderer.h"
 
 #include "Macros.h"
+#include "Core/Window.h"
 #include "Rendering/Renderable.h"
 #include "Rendering/LateRenderable.h"
 
 #include "Rendering/FrameBuffers/FrameBuffer.h"
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
+
+#include "Rendering/DirectionalLight.h"
 
 namespace mlg {
     Renderer* Renderer::instance;
@@ -28,24 +31,25 @@ namespace mlg {
     }
 
     void Renderer::Draw(FrameBuffer* currentFramebuffer) {
-        this->currentFramebuffer = currentFramebuffer;
+        DirectionalLight::GetInstance()->BindShadowMap();
+        DirectionalLight::GetInstance()->BindShadowMapShader();
+        for (auto& renderable : renderables) {
+            renderable.lock()->DrawShadowMap(this,
+                                             DirectionalLight::GetInstance()->GetShadowShaderProgram().lock().get());
+        }
 
+        glViewport(0, 0, Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
+        currentFramebuffer->Activate();
         for (auto& renderable : renderables) {
             renderable.lock()->Draw(this);
         }
     }
 
-    void Renderer::DrawModel(ModelAsset* model, MaterialAsset* material) {
-        // Render to shadowmap
-
-        currentFramebuffer->Activate();
-        material->Activate();
+    void Renderer::DrawModel(ModelAsset* model) {
         model->Draw();
     }
 
-    void Renderer::LateDraw(FrameBuffer* currentFramebuffer) {
-        this->currentFramebuffer = currentFramebuffer;
-
+    void Renderer::LateDraw() {
         for (auto& lateRenderable : lateRenderables) {
             lateRenderable.lock()->LateDraw(this);
         }

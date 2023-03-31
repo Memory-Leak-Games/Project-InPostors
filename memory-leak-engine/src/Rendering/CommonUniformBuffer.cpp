@@ -17,7 +17,6 @@ namespace mlg {
 
         glCreateBuffers(1, &instance->ubo);
         glNamedBufferData(instance->ubo, sizeof(CommonUniforms), nullptr, GL_DYNAMIC_DRAW);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(CommonUniforms), nullptr, GL_DYNAMIC_DRAW);
         glBindBufferBase(GL_UNIFORM_BUFFER, 0, instance->ubo);
     }
 

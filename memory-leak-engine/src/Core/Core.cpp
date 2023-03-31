@@ -39,9 +39,7 @@ using namespace mlg;
 Core* Core::instance;
 
 void Core::MainLoop() {
-
-    // TODO: Remove this
-    sceneLight = std::make_shared<DirectionalLight>();
+    DirectionalLight::GetInstance();
 
     int32_t windowWidth = Window::GetInstance()->GetWidth();
     int32_t windowHeight = Window::GetInstance()->GetHeight();
@@ -106,6 +104,7 @@ void Core::MainLoop() {
         gBuffer.Activate();
         gBuffer.Clear();
         Renderer::GetInstance()->Draw(&gBuffer);
+
         gBuffer.CopyDepthBuffer(postProcessingFrameBuffer.GetFbo());
 
         ssao.BindTextureUnits(gBuffer.GetPositionTexture(), gBuffer.GetNormalTexture());
@@ -117,13 +116,14 @@ void Core::MainLoop() {
 
         gBuffer.BindTextures(blurPass.GetBlurredTexture());
         gBuffer.Draw();
-        Renderer::GetInstance()->LateDraw(&postProcessingFrameBuffer);
+        Renderer::GetInstance()->LateDraw();
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         postProcessingFrameBuffer.Draw();
         postProcessingFrameBuffer.CopyDepthBuffer(0);
 
         Gizmos::DrawGizmos();
+
 
 #ifdef DEBUG
         ImGui::Begin("FPS");

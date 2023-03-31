@@ -4,6 +4,7 @@
 #include "Rendering/RenderingAPI.h"
 #include "Rendering/Renderer.h"
 #include "Rendering/CommonUniformBuffer.h"
+#include "Rendering/DirectionalLight.h"
 
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/ShaderProgram.h"
@@ -25,7 +26,7 @@ namespace mlg {
     }
 
     void StaticMeshComponent::Draw(struct Renderer* renderer) {
-        material->GetShaderProgram()->Activate();
+        material->Activate();
 
         glm::mat4 worldMatrix = GetTransform().GetWorldMatrix();
         glm::mat4 modelToView = CommonUniformBuffer::GetUniforms().view * worldMatrix;
@@ -37,7 +38,15 @@ namespace mlg {
         material->GetShaderProgram()->SetMat4F("modelToView", modelToView);
         material->GetShaderProgram()->SetMat4F("modelToScreen", modelToScreen);
         material->GetShaderProgram()->SetMat3F("modelToViewNormals", modelToViewNormals);
-        Renderer::GetInstance()->DrawModel(model.get(), material.get());
+        renderer->DrawModel(model.get());
+    }
+
+    void StaticMeshComponent::DrawShadowMap(struct Renderer* renderer, struct ShaderProgram* shaderProgram) {
+        glm::mat4 worldMatrix = GetTransform().GetWorldMatrix();
+        glm::mat4 modelToLight = DirectionalLight::GetInstance()->GetSun().lightSpaceMatrix * worldMatrix;
+
+        shaderProgram->SetMat4F("modelToLight", modelToLight);
+        renderer->DrawModel(model.get());
     }
 
     void StaticMeshComponent::Stop() {
@@ -48,5 +57,6 @@ namespace mlg {
     }
 
     StaticMeshComponent::~StaticMeshComponent() {}
+
 
 } // mlg

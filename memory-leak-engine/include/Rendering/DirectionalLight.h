@@ -18,14 +18,29 @@ namespace mlg {
 
     class DirectionalLight {
     private:
-        uint32_t uboLightData;
+        static DirectionalLight* instance;
+
+        uint32_t shadowMapFrameBuffer = 0;
+        uint32_t shadowMapTexture = 0;
+
+        std::shared_ptr<class MaterialAsset> shadowMapMaterial;
+
+        uint32_t uboLightData = 0;
 
         DirectionalLightData sun;
 
-    public:
-        DirectionalLight();
+        //todo: extract to settings file
+        int shadowMapResolution = 2048;
+        float shadowMapSize = 20.f;
 
+        DirectionalLight();
+    public:
+        static DirectionalLight* GetInstance();
         virtual ~DirectionalLight();
+
+        virtual void BindShadowMap();
+        virtual void BindShadowMapShader();
+        std::weak_ptr<class ShaderProgram> GetShadowShaderProgram();
 
         [[nodiscard]] const DirectionalLightData &GetSun() const;
         void SetSun(const DirectionalLightData &sun);
@@ -34,6 +49,7 @@ namespace mlg {
 
     private:
         void InitializeLights();
+        void InitializeFrameBuffer();
 
         void UpdateSun();
     };

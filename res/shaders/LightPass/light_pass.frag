@@ -62,4 +62,5 @@ vec3 CalculateDirectionalLight() {
 void main()
 {
     fragColor = vec4(CalculateDirectionalLight() * vec3(texture(ssao, fs_in.uv).r), 1.0);
+//    fragColor = vec4(CalculateDirectionalLight(), 1.0);
 }

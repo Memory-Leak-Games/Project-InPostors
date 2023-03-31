@@ -50,7 +50,6 @@ public:
     int Main(int argc, char* argv[]) {
         mlg::Time::Initialize();
         mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
-        mlg::Window::GetInstance()->SetVerticalSync(true);
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
         mlg::AssetManager::Initialize();
