@@ -126,3 +126,7 @@ Camera* Camera::GetInstance() {
 
     return instance;
 }
+
+glm::mat4 Camera::GetCameraViewMatrix() const {
+    return CommonUniformBuffer::instance->uniforms.view;
+}

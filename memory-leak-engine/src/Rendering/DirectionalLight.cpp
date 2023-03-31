@@ -61,8 +61,8 @@ void DirectionalLight::InitializeFrameBuffer() {
     glCreateTextures(GL_TEXTURE_2D, 1, &shadowMapTexture);
     glTextureParameteri(shadowMapTexture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTextureParameteri(shadowMapTexture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTextureParameteri(shadowMapTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTextureParameteri(shadowMapTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTextureParameteri(shadowMapTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTextureParameteri(shadowMapTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     glTextureStorage2D(shadowMapTexture, 1, GL_DEPTH_COMPONENT24, shadowMapResolution, shadowMapResolution);
 
     glm::vec4 borderColor{1.f};
@@ -102,5 +102,9 @@ void DirectionalLight::BindShadowMapShader() {
 
 std::weak_ptr<class ShaderProgram> DirectionalLight::GetShadowShaderProgram() {
     return shadowMapMaterial->GetShaderProgram();
+}
+
+uint32_t DirectionalLight::GetShadowMap() {
+    return shadowMapTexture;
 }
 

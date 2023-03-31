@@ -41,6 +41,7 @@ namespace mlg {
         void SetFow(float newFow);
 
         [[nodiscard]] glm::mat4 GetCameraProjectionMatrix(int resolutionX, int resolutionY) const;
+        [[nodiscard]] glm::mat4 GetCameraViewMatrix() const;
 
         [[nodiscard]] const glm::vec3 &GetPosition() const;
         [[nodiscard]] const glm::vec3 &GetFront() const;

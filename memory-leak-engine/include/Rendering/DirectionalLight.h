@@ -41,6 +41,7 @@ namespace mlg {
         virtual void BindShadowMap();
         virtual void BindShadowMapShader();
         std::weak_ptr<class ShaderProgram> GetShadowShaderProgram();
+        uint32_t GetShadowMap();
 
         [[nodiscard]] const DirectionalLightData &GetSun() const;
         void SetSun(const DirectionalLightData &sun);

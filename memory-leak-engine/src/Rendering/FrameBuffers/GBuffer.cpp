@@ -5,13 +5,17 @@
 #include "Core/AssetManager/AssetManager.h"
 
 #include "Rendering/Assets/MaterialAsset.h"
+#include "Rendering/ShaderProgram.h"
 #include "Rendering/RenderingAPI.h"
+
+#include "Rendering/Camera.h"
+#include "Rendering/DirectionalLight.h"
 
 #include "Macros.h"
 
 namespace mlg {
     GBuffer::GBuffer(int32_t width, int32_t height)
-    : FrameBuffer(width, height) {
+            : FrameBuffer(width, height) {
         SPDLOG_INFO("Initializing GBuffer and SSAO");
         GenerateAndBindGTextures();
 
@@ -71,6 +75,13 @@ namespace mlg {
         glBindTextureUnit(0, gPositionTexture);
         glBindTextureUnit(1, gNormalTexture);
         glBindTextureUnit(2, gAlbedoSpecularTexture);
+        glBindTextureUnit(4, DirectionalLight::GetInstance()->GetShadowMap());
+
+        glm::mat4 lightSpace = DirectionalLight::GetInstance()->GetSun().lightSpaceMatrix;
+        glm::mat4 viewToModel = glm::inverse(Camera::GetInstance()->GetCameraViewMatrix());
+        glm::mat4 viewToLight = lightSpace * viewToModel;
+
+        material->GetShaderProgram()->SetMat4F("viewToLight", viewToLight);
 
         RenderingAPI::GetInstance()->DrawScreenSpaceQuad();
 
