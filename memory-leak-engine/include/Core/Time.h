@@ -7,14 +7,14 @@ namespace mlg {
     private:
         static Time* instance;
 
-        float frameStart = 0.f;
-        float lastFrameStart = 0.f;
+        double frameStart = 0.f;
+        double lastFrameStart = 0.f;
 
     public:
         static void Initialize();
         static void Stop();
 
-        static float GetSeconds();
+        static double GetSeconds();
         static float GetTrueDeltaSeconds();
         static float GetDeltaSeconds();
         [[deprecated("Unimplemented")]]static float GetFixedDeltaSeconds();

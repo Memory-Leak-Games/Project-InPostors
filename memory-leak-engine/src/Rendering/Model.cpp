@@ -3,9 +3,6 @@
 #include "assimp/Importer.hpp"
 #include <filesystem>
 
-#include "Core/AssetManager/AssetManager.h"
-#include "include/Rendering/Assets/TextureAsset.h"
-
 #include "Macros.h"
 #include "stb_image.h"
 
@@ -83,7 +80,7 @@ Vertex Model::GetVertexFromAIMesh(const aiMesh* MeshPtr, unsigned int i) {
 
     NewVertex.position = Position;
     NewVertex.normal = Normal;
-    NewVertex.texCoord = TextureCoords;
+    NewVertex.uv = TextureCoords;
 
     return NewVertex;
 }

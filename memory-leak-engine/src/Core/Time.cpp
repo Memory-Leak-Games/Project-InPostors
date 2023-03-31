@@ -6,8 +6,8 @@
 namespace mlg {
     Time* Time::instance;
 
-    float Time::GetSeconds() {
-        return (float) glfwGetTime();
+    double Time::GetSeconds() {
+        return glfwGetTime();
     }
 
     float Time::GetTrueDeltaSeconds() {
@@ -44,7 +44,7 @@ namespace mlg {
 
     void Time::UpdateStartFrameTime() {
         instance->lastFrameStart = instance->frameStart;
-        instance->frameStart = (float) glfwGetTime();
+        instance->frameStart = glfwGetTime();
     }
 
 }// namespace mlg

@@ -17,6 +17,7 @@
 #include "SceneGraph/SceneGraph.h"
 
 #include <Gameplay/ComponentManager.h>
+#include <Rendering/CommonUniformBuffer.h>
 #include <Gameplay/Components/StaticMeshComponent.h>
 #include <Gameplay/EntityManager.h>
 #include <Rendering/Gizmos/Gizmos.h>
@@ -49,11 +50,11 @@ public:
     int Main(int argc, char* argv[]) {
         mlg::Time::Initialize();
         mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
-        mlg::Window::GetInstance()->SetVerticalSync(true);
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
         mlg::AssetManager::Initialize();
         mlg::Gizmos::Initialize();
+        mlg::CommonUniformBuffer::Initialize();
         mlg::SceneGraph::Initialize();
         mlg::ComponentManager::Initialize();
         mlg::EntityManager::Initialize();

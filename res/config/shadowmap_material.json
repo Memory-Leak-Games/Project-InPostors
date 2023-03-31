@@ -1,0 +1,6 @@
+{
+  "vertexShader": "res/shaders/ShadowMap/shadowMap.vert",
+  "fragmentShader": "res/shaders/ShadowMap/shadowMap.frag",
+  "uniforms": [],
+  "textures": []
+}

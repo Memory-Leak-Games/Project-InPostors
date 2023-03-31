@@ -16,30 +16,35 @@ namespace mlg {
         stbi_set_flip_vertically_on_load(true);
         uint8_t* imageData = stbi_load(path.c_str(), &width, &height, &numberOfComponents, 0);
         if (imageData) {
-            int32_t colorFormat;
+            int32_t storageColorFormat;
+            int32_t imageColorFormat;
             switch (numberOfComponents) {
                 case 1:
-                    colorFormat = GL_RED;
+                    imageColorFormat = GL_RED;
+                    storageColorFormat = GL_RED;
                     break;
                 case 3:
-                    colorFormat = GL_RGB;
+                    imageColorFormat = GL_RGB;
+                    storageColorFormat = GL_RGB8;
                     break;
                 case 4:
-                    colorFormat = GL_RGBA;
+                    imageColorFormat = GL_RGBA;
+                    storageColorFormat = GL_RGBA8;
                     break;
                 default:
                     MLG_ASSERT_MSG(false, "Texture format not implemented");
             }
 
-            glGenTextures(1, &textureID);
-            glBindTexture(GL_TEXTURE_2D, textureID);
-            glTexImage2D(GL_TEXTURE_2D, 0, colorFormat, width, height, 0, colorFormat, GL_UNSIGNED_BYTE, imageData);
-            glGenerateMipmap(GL_TEXTURE_2D);
+            glCreateTextures(GL_TEXTURE_2D, 1, &textureID);
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+            glTextureStorage2D(textureID, 1, storageColorFormat, width, height);
+            glTextureSubImage2D(textureID, 0, 0, 0, width, height, imageColorFormat, GL_UNSIGNED_BYTE, imageData);
+            glGenerateTextureMipmap(textureID);
 
             stbi_image_free(imageData);
         } else {

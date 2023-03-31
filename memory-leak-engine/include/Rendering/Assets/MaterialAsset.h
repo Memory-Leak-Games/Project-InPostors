@@ -11,8 +11,9 @@ namespace mlg {
     private:
         struct Uniform {
             std::string name;
-
             virtual void ApplyValue(class ShaderProgram* shaderProgram) = 0;
+
+            virtual ~Uniform() = default;
         };
 
         struct FloatUniform : public Uniform {
@@ -30,7 +31,7 @@ namespace mlg {
             void ApplyValue(class ShaderProgram* shaderProgram) override;
         };
 
-        struct Texture : Uniform {
+        struct Texture : public Uniform {
             int index;
             std::shared_ptr<TextureAsset> textureAsset;
             void ApplyValue(class ShaderProgram* shaderProgram) override;
