@@ -42,9 +42,6 @@ void Window::Initialize(std::string title, int32_t width, int32_t height) {
 }
 
 int32_t Window::SetupWindow() {
-
-
-    // TODO: Change this
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);

@@ -80,7 +80,7 @@ Vertex Model::GetVertexFromAIMesh(const aiMesh* MeshPtr, unsigned int i) {
 
     NewVertex.position = Position;
     NewVertex.normal = Normal;
-    NewVertex.texCoord = TextureCoords;
+    NewVertex.uv = TextureCoords;
 
     return NewVertex;
 }
