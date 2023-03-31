@@ -15,8 +15,8 @@ namespace mlg {
         instance = new CommonUniformBuffer();
 
 
-        glGenBuffers(1, &instance->ubo);
-        glBindBuffer(GL_UNIFORM_BUFFER, instance->ubo);
+        glCreateBuffers(1, &instance->ubo);
+        glNamedBufferData(instance->ubo, sizeof(CommonUniforms), nullptr, GL_DYNAMIC_DRAW);
         glBufferData(GL_UNIFORM_BUFFER, sizeof(CommonUniforms), nullptr, GL_DYNAMIC_DRAW);
         glBindBufferBase(GL_UNIFORM_BUFFER, 0, instance->ubo);
     }
@@ -38,11 +38,9 @@ namespace mlg {
         instance->uniforms.deltaSeconds = Time::GetDeltaSeconds();
 
         instance->uniforms.randInt = rand();
-        instance->uniforms.randFloat = (float) rand() / RAND_MAX;
+        instance->uniforms.randFloat = (float) rand() / (float) RAND_MAX;
 
-        glBindBuffer(GL_UNIFORM_BUFFER, instance->ubo);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(CommonUniforms), &instance->uniforms);
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        glNamedBufferSubData(instance->ubo, 0, sizeof(CommonUniforms), &instance->uniforms);
     }
 
     const CommonUniforms& CommonUniformBuffer::GetUniforms() {

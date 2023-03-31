@@ -11,6 +11,7 @@ namespace mlg {
         glm::vec3 diffuse;      // 32 - 48
         float offeset3;
         glm::vec3 specular;     // 48 - 64
+        float offeset4;
 
         glm::mat4 lightSpaceMatrix; // 64 - 128
     };

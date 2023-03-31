@@ -8,7 +8,7 @@ layout(std140, binding = 0) uniform CommonUnifomrs {
     mat4 projection;
     mat4 view;
 
-    float seconds;
+    double seconds;
     float deltaSeconds;
 
     int randInt;

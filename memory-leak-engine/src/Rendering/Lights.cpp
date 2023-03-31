@@ -5,11 +5,9 @@ using namespace mlg;
 DirectionalLight::DirectionalLight() {
     InitializeLights();
 
-    glGenBuffers(1, &uboLightData);
-    glBindBuffer(GL_UNIFORM_BUFFER, uboLightData);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(DirectionalLightData), nullptr, GL_DYNAMIC_DRAW);
+    glCreateBuffers(1, &uboLightData);
+    glNamedBufferData(uboLightData, sizeof(DirectionalLightData), nullptr, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, uboLightData);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     UpdateSun();
 }
@@ -29,9 +27,7 @@ void DirectionalLight::InitializeLights() {
 }
 
 void DirectionalLight::UpdateSun() {
-    glBindBuffer(GL_UNIFORM_BUFFER, uboLightData);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, 64, &sun);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    glNamedBufferSubData(uboLightData, 0, sizeof(DirectionalLightData), &sun);
 }
 
 const DirectionalLightData& DirectionalLight::GetSun() const {
