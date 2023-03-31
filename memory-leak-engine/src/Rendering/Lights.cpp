@@ -1,20 +1,20 @@
-#include "Rendering/Lights.h"
+#include "Rendering/DirectionalLight.h"
 
 using namespace mlg;
 
-Lights::Lights() {
+DirectionalLight::DirectionalLight() {
     InitializeLights();
 
     glGenBuffers(1, &uboLightData);
     glBindBuffer(GL_UNIFORM_BUFFER, uboLightData);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(DirectionalLight), nullptr, GL_DYNAMIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(DirectionalLightData), nullptr, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, uboLightData);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     UpdateSun();
 }
 
-void Lights::InitializeLights() {
+void DirectionalLight::InitializeLights() {
     sun.direction = glm::normalize(glm::vec3(0.5f, -0.5f, -0.5f));
     sun.diffuse = glm::vec3(0.7f);
     sun.ambient = glm::vec3(0.3f);
@@ -28,26 +28,26 @@ void Lights::InitializeLights() {
     sun.lightSpaceMatrix = lightProjection * lightView;
 }
 
-void Lights::UpdateSun() {
+void DirectionalLight::UpdateSun() {
     glBindBuffer(GL_UNIFORM_BUFFER, uboLightData);
     glBufferSubData(GL_UNIFORM_BUFFER, 0, 64, &sun);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-const DirectionalLight& Lights::GetSun() const {
+const DirectionalLightData& DirectionalLight::GetSun() const {
     return sun;
 }
 
-void Lights::SetSun(const DirectionalLight& sun) {
-    Lights::sun = sun;
+void DirectionalLight::SetSun(const DirectionalLightData& sun) {
+    DirectionalLight::sun = sun;
     UpdateSun();
 }
 
-Lights::~Lights() {
+DirectionalLight::~DirectionalLight() {
     glDeleteBuffers(1, &uboLightData);
 }
 
-glm::vec3 Lights::DirectionVector(float pitch, float yaw) {
+glm::vec3 DirectionalLight::DirectionVector(float pitch, float yaw) {
     glm::vec3 Result;
     Result.x = std::cos(pitch) * std::cos(yaw);
     Result.y = std::sin(pitch);

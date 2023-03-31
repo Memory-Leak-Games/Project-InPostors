@@ -3,7 +3,7 @@
 #include "glad/glad.h"
 
 namespace mlg {
-    struct DirectionalLight {
+    struct DirectionalLightData {
         glm::vec3 direction;    // 0 - 16
         float offeset1;
         glm::vec3 ambient;      // 16 - 32
@@ -15,19 +15,19 @@ namespace mlg {
         glm::mat4 lightSpaceMatrix; // 64 - 128
     };
 
-    class Lights {
+    class DirectionalLight {
     private:
-        GLuint uboLightData;
+        uint32_t uboLightData;
 
-        DirectionalLight sun;
+        DirectionalLightData sun;
 
     public:
-        Lights();
+        DirectionalLight();
 
-        virtual ~Lights();
+        virtual ~DirectionalLight();
 
-        [[nodiscard]] const DirectionalLight &GetSun() const;
-        void SetSun(const DirectionalLight &sun);
+        [[nodiscard]] const DirectionalLightData &GetSun() const;
+        void SetSun(const DirectionalLightData &sun);
 
         static glm::vec3 DirectionVector(float pitch, float yaw);
 

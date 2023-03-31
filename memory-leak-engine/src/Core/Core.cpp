@@ -27,7 +27,7 @@
 
 // TODO: delete this
 #include "Rendering/Gizmos/Gizmos.h"
-#include "Rendering/Lights.h"
+#include "Rendering/DirectionalLight.h"
 #include "Rendering/Camera.h"
 #include "Gameplay/ComponentManager.h"
 #include "Gameplay/EntityManager.h"
@@ -41,7 +41,7 @@ Core* Core::instance;
 void Core::MainLoop() {
 
     // TODO: Remove this
-    sceneLight = std::make_shared<Lights>();
+    sceneLight = std::make_shared<DirectionalLight>();
 
     int32_t windowWidth = Window::GetInstance()->GetWidth();
     int32_t windowHeight = Window::GetInstance()->GetHeight();

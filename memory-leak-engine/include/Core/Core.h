@@ -7,7 +7,7 @@
 namespace mlg {
     class Core {
     private:
-        std::shared_ptr<class Lights> sceneLight;
+        std::shared_ptr<class DirectionalLight> sceneLight;
 
         static Core* instance;
 
