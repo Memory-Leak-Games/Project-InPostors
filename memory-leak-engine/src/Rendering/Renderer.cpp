@@ -33,6 +33,7 @@ namespace mlg {
     void Renderer::Draw(FrameBuffer* currentFramebuffer) {
         DirectionalLight::GetInstance()->BindShadowMap();
         DirectionalLight::GetInstance()->BindShadowMapShader();
+
         glCullFace(GL_FRONT);
         for (auto& renderable : renderables) {
             renderable.lock()->DrawShadowMap(this,
