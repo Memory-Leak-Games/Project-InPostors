@@ -33,6 +33,8 @@ target_link_libraries(${PROJECT_NAME} effolkronium_random)
 target_link_libraries(${PROJECT_NAME} eventpp)
 target_link_libraries(${PROJECT_NAME} nlohmann_json::nlohmann_json)
 target_link_libraries(${PROJECT_NAME} magic_enum)
+target_link_libraries(${PROJECT_NAME} OpenAL)
+target_link_libraries(${PROJECT_NAME} freetype)
 
 if (${CMAKE_BUILD_TYPE} MATCHES Debug)
     target_link_libraries(${PROJECT_NAME} imgui)
