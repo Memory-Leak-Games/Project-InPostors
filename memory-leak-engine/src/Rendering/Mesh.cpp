@@ -1,36 +1,37 @@
 #include "Rendering/Mesh.h"
 
-#include "include/Rendering/Assets/TextureAsset.h"
-
 using namespace mlg;
 
-Mesh::Mesh(const std::vector<Vertex>& Vertices, const std::vector<GLuint>& Indices)
-        : vertices(Vertices), indices(Indices), vao(0), vbo(0), ebo(0) {
+Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices)
+        : vertices(vertices), indices(indices), vao(0), vbo(0), ebo(0) {
     SetupBuffers();
 }
 
 void Mesh::SetupBuffers() {
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-    glGenBuffers(1, &ebo);
+    glCreateVertexArrays(1, &vao);
+    glCreateBuffers(1, &vbo);
+    glCreateBuffers(1, &ebo);
 
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, (int32_t) (vertices.size() * sizeof(Vertex)), &vertices[0], GL_STATIC_DRAW);
+    glNamedBufferData(vbo, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+    glNamedBufferData(ebo, indices.size() * sizeof(uint32_t), &indices[0], GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (int32_t) (indices.size() * sizeof(uint32_t)), &indices[0], GL_STATIC_DRAW);
+    // Positions
+    glEnableVertexArrayAttrib(vao, 0);
+    glVertexArrayAttribBinding(vao, 0, 0);
+    glVertexArrayAttribFormat(vao, 0, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, position));
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, position));
+    // normals
+    glEnableVertexArrayAttrib(vao, 1);
+    glVertexArrayAttribBinding(vao, 1, 0);
+    glVertexArrayAttribFormat(vao, 1, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
 
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, normal));
+    // UV's
+    glEnableVertexArrayAttrib(vao, 2);
+    glVertexArrayAttribBinding(vao, 2, 0);
+    glVertexArrayAttribFormat(vao, 2, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, uv));
 
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, texCoord));
-
-    glBindVertexArray(0);
+    glVertexArrayVertexBuffer(vao, 0, vbo, 0, sizeof(Vertex));
+    glVertexArrayElementBuffer(vao, ebo);
 }
 
 void Mesh::Draw() const {

@@ -1,9 +1,15 @@
-#include "include/Rendering/Renderer.h"
+#include "Rendering/Renderer.h"
 
 #include "Macros.h"
+#include "Core/Window.h"
 #include "Rendering/Renderable.h"
 #include "Rendering/LateRenderable.h"
-#include "Rendering/Camera.h"
+
+#include "Rendering/FrameBuffers/FrameBuffer.h"
+#include "Rendering/Assets/MaterialAsset.h"
+#include "Rendering/Assets/ModelAsset.h"
+
+#include "Rendering/DirectionalLight.h"
 
 namespace mlg {
     Renderer* Renderer::instance;
@@ -24,10 +30,23 @@ namespace mlg {
         instance = nullptr;
     }
 
-    void Renderer::Draw() {
+    void Renderer::Draw(FrameBuffer* currentFramebuffer) {
+        DirectionalLight::GetInstance()->BindShadowMap();
+        DirectionalLight::GetInstance()->BindShadowMapShader();
+        for (auto& renderable : renderables) {
+            renderable.lock()->DrawShadowMap(this,
+                                             DirectionalLight::GetInstance()->GetShadowShaderProgram().lock().get());
+        }
+
+        glViewport(0, 0, Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
+        currentFramebuffer->Activate();
         for (auto& renderable : renderables) {
             renderable.lock()->Draw(this);
         }
+    }
+
+    void Renderer::DrawModel(ModelAsset* model) {
+        model->Draw();
     }
 
     void Renderer::LateDraw() {
@@ -50,4 +69,5 @@ namespace mlg {
     Renderer* Renderer::GetInstance() {
         return instance;
     }
+
 } // mlg

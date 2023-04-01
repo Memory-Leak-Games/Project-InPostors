@@ -1,6 +1,6 @@
 {
   "vertexShader": "res/shaders/quad_renderer.vert",
-  "fragmentShader": "res/shaders/SSAOPass/ssao_blur.frag",
+  "fragmentShader": "res/shaders/PostProcess/blur.frag",
   "uniforms": [],
   "textures": []
 }

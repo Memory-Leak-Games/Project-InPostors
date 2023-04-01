@@ -28,6 +28,7 @@ namespace mlg {
         void SetVec3F(const std::string& name, glm::vec3 value) const;
         void SetVec4F(const std::string& name, glm::vec4 value) const;
         void SetMat4F(const std::string& name, glm::mat4 value) const;
+        void SetMat3F(const std::string& name, glm::mat3 value) const;
 
         [[nodiscard]] int32_t TrySetVec4f(const std::string& name, glm::vec4 value) const;
 

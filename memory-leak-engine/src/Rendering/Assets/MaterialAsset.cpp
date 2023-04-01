@@ -44,7 +44,9 @@ namespace mlg {
         shaderProgram->DeActivate();
     }
 
-    MaterialAsset::~MaterialAsset() = default;
+    MaterialAsset::~MaterialAsset() {
+        uniforms.clear();
+    }
 
     void MaterialAsset::Load() {
         std::string path = GetPath();

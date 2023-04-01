@@ -1,17 +1,20 @@
 #pragma once
 
+#include "Rendering/QuadRenderer.h"
+
 namespace mlg {
 
     class RenderingAPI {
         static RenderingAPI* instance;
+        QuadRenderer screenSpaceQuad;
 
         RenderingAPI() = default;
-
     public:
         static void Initialize();
         static void Stop();
 
-        void DrawModel(class ModelAsset* model);
+        void DrawScreenSpaceQuad();
+
         void SetClearColor(const glm::vec4& color);
         void Clear();
 

@@ -19,6 +19,8 @@ namespace mlg {
 
         void Draw(struct Renderer* renderer) override;
 
+        void DrawShadowMap(struct Renderer* renderer, struct ShaderProgram* shaderProgram) override;
+
         ~StaticMeshComponent() override;
     };
 

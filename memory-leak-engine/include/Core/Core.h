@@ -7,8 +7,6 @@
 namespace mlg {
     class Core {
     private:
-        std::shared_ptr<class Lights> sceneLight;
-
         static Core* instance;
 
         Core() = default;
