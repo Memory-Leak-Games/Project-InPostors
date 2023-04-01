@@ -2,18 +2,18 @@
 
 out vec4 fragColor;
 
-layout (binding=0) uniform sampler2D gPosition;
-layout (binding=1) uniform sampler2D gNormal;
-layout (binding=2) uniform sampler2D gAlbedoSpecular;
+layout (binding = 0) uniform sampler2D gPosition;
+layout (binding = 1) uniform sampler2D gNormal;
+layout (binding = 2) uniform sampler2D gAlbedoSpecular;
 
-layout (binding=3) uniform sampler2D ssao;
-layout (binding=4) uniform sampler2D shadowMap;
+layout (binding = 3) uniform sampler2D ssao;
+layout (binding = 4) uniform sampler2D shadowMap;
 
 in VS_OUT {
     vec2 uv;
 } fs_in;
 
-layout(std140, binding = 0) uniform CommonUnifomrs {
+layout (std140, binding = 0) uniform CommonUnifomrs {
     mat4 projection;
     mat4 view;
 
@@ -24,7 +24,7 @@ layout(std140, binding = 0) uniform CommonUnifomrs {
     float randFloat;
 };
 
-layout(std140, binding = 1) uniform light {
+layout (std140, binding = 1) uniform light {
     vec3 light_direction;// 16
 
     vec3 light_ambient;// 16
@@ -35,29 +35,29 @@ layout(std140, binding = 1) uniform light {
 };
 
 uniform mat4 viewToLight;
-uniform float maxBias = 0.007f;
-uniform float minBias = 0.005f;
+uniform float maxBias = 0.005f;
+uniform float minBias = 0.f;
 
 float CalculateShadow() {
+    vec3 normal = normalize(texture(gNormal, fs_in.uv).rgb);
     vec3 position = texture(gPosition, fs_in.uv).rgb;
     vec4 positionInLightSpace = viewToLight * vec4(position, 1.f);
-    vec3 normal = texture(gNormal, fs_in.uv).rgb;
 
     vec3 projection = positionInLightSpace.xyz / positionInLightSpace.w;
     projection = projection * 0.5 + 0.5;
+
     float closestDepth = texture(shadowMap, projection.xy).r;
     float currentDepth = projection.z;
 
-    float bias = max(maxBias * (1.0 - dot(normal, light_direction)), minBias);
+    float diffuseFactor = dot(normal, normalize(light_direction));
+    float biasFactor = mix(minBias, maxBias, diffuseFactor);
 
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
-    for(int x = -1; x <= 1; ++x)
-    {
-        for(int y = -1; y <= 1; ++y)
-        {
+    for (int x = -1; x <= 1; ++x) {
+        for (int y = -1; y <= 1; ++y) {
             float pcfDepth = texture(shadowMap, projection.xy + vec2(x, y) * texelSize).r;
-            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+            shadow += currentDepth - biasFactor > pcfDepth ? 1.0 : 0.0;
         }
     }
     shadow /= 9.0;
@@ -95,5 +95,5 @@ vec3 CalculateDirectionalLight() {
 void main()
 {
     fragColor = vec4(CalculateDirectionalLight() * vec3(texture(ssao, fs_in.uv).r), 1.0);
-//    fragColor = vec4(CalculateDirectionalLight(), 1.0);
+    //    fragColor = vec4(CalculateDirectionalLight(), 1.0);
 }
