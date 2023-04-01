@@ -17,7 +17,6 @@
 #include "Rendering/Renderer.h"
 #include "Rendering/CommonUniformBuffer.h"
 
-#include "Rendering/FrameBuffers/FrameBuffer.h"
 #include "Rendering/FrameBuffers/GBuffer.h"
 #include "Rendering/FrameBuffers/SSAO.h"
 #include "Rendering/FrameBuffers/BlurPass.h"
@@ -33,6 +32,7 @@
 #include "Gameplay/EntityManager.h"
 #include "SceneGraph/SceneGraph.h"
 #include "Rendering/Camera.h"
+#include "Physics/Physics.h"
 
 using namespace mlg;
 
@@ -93,6 +93,8 @@ void Core::MainLoop() {
 
         Input::Update();
 
+        Physics::TickFixedTimeSteps();
+
         ComponentManager::Update();
         EntityManager::Update();
         ComponentManager::LateUpdate();
@@ -123,7 +125,6 @@ void Core::MainLoop() {
         postProcessingFrameBuffer.CopyDepthBuffer(0);
 
         Gizmos::DrawGizmos();
-
 
 #ifdef DEBUG
         ImGui::Begin("FPS");

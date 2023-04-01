@@ -24,10 +24,6 @@ namespace mlg {
         return result;
     }
 
-    float Time::GetFixedDeltaSeconds() {
-        return 1. / 30.;
-    }
-
     void Time::Initialize() {
         instance = new Time;
         glfwSetTime(0.);
@@ -45,6 +41,10 @@ namespace mlg {
     void Time::UpdateStartFrameTime() {
         instance->lastFrameStart = instance->frameStart;
         instance->frameStart = glfwGetTime();
+    }
+
+    constexpr float Time::GetFixedDeltaSeconds() {
+        return fixedTimeStep;
     }
 
 }// namespace mlg

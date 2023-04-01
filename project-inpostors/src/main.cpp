@@ -21,6 +21,7 @@
 #include <Gameplay/Components/StaticMeshComponent.h>
 #include <Gameplay/EntityManager.h>
 #include <Rendering/Gizmos/Gizmos.h>
+#include <Physics/Physics.h>
 
 class ComponentTest : public mlg::Component {
 public:
@@ -56,6 +57,9 @@ public:
         mlg::Gizmos::Initialize();
         mlg::CommonUniformBuffer::Initialize();
         mlg::SceneGraph::Initialize();
+
+        mlg::Physics::Initialize();
+
         mlg::ComponentManager::Initialize();
         mlg::EntityManager::Initialize();
 
@@ -68,6 +72,9 @@ public:
 
         mlg::EntityManager::Stop();
         mlg::ComponentManager::Stop();
+
+        mlg::Physics::Stop();
+
         mlg::SceneGraph::Stop();
         mlg::Input::Stop();
         mlg::Core::Stop();
