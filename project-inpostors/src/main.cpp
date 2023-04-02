@@ -21,6 +21,9 @@
 #include <Gameplay/Components/StaticMeshComponent.h>
 #include <Gameplay/EntityManager.h>
 #include <Rendering/Gizmos/Gizmos.h>
+#include <Physics/Physics.h>
+#include <Core/Math.h>
+#include <Gameplay/Components/RigidbodyComponent.h>
 
 class ComponentTest : public mlg::Component {
 public:
@@ -56,6 +59,9 @@ public:
         mlg::Gizmos::Initialize();
         mlg::CommonUniformBuffer::Initialize();
         mlg::SceneGraph::Initialize();
+
+        mlg::Physics::Initialize();
+
         mlg::ComponentManager::Initialize();
         mlg::EntityManager::Initialize();
 
@@ -68,6 +74,9 @@ public:
 
         mlg::EntityManager::Stop();
         mlg::ComponentManager::Stop();
+
+        mlg::Physics::Stop();
+
         mlg::SceneGraph::Stop();
         mlg::Input::Stop();
         mlg::Core::Stop();
@@ -109,7 +118,12 @@ public:
 
         auto tardisEntity2 = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisLeft", false, mlg::SceneGraph::GetRoot());
         tardisEntity2.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel2, tardisMaterial2);
-//        tardisEntity2.lock()->AddComponent<ComponentTest>("RotationComponent");
+        auto rigidbody = tardisEntity2.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
+        rigidbody.lock()->AddForce({0, 40.f});
+        rigidbody.lock()->AddForce({-40.f, 0.f}, {0.f, 1.f});
+
+        rigidbody.lock()->SetLinearDrag(1.f);
+        rigidbody.lock()->SetAngularDrag(1.f);
 
         tardisEntity2.lock()->GetTransform().SetPosition({7.f, 0.f, 0.f});
 
@@ -123,9 +137,14 @@ public:
     }
 };
 
+void Test() {
+}
+
 int main(int argc, char* argv[]) {
     LoggingMacros::InitializeSPDLog();
     std::srand(std::time(0));
+
+    Test();
 
     ProjectInpostors game;
     return game.Main(argc, argv);

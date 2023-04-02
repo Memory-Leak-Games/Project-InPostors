@@ -24,10 +24,6 @@ namespace mlg {
         return result;
     }
 
-    float Time::GetFixedDeltaSeconds() {
-        return 1. / 30.;
-    }
-
     void Time::Initialize() {
         instance = new Time;
         glfwSetTime(0.);
