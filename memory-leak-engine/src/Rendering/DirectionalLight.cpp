@@ -24,12 +24,12 @@ void DirectionalLight::InitializeLights() {
     sun.ambient = glm::vec3(0.3f);
     sun.specular = glm::vec3(0.1f);
 
-    glm::vec3 position{-8.f, 15.f, -8.f};
+    glm::vec3 position{-20.f, 20.f, -20.f};
 
     glm::mat4 lightView = glm::lookAt(position, position + sun.direction, glm::vec3{0.f, 1.f, 0.f});
     glm::mat4 lightProjection = glm::ortho(-shadowMapSize, shadowMapSize,
                                            -shadowMapSize, shadowMapSize,
-                                           0.1f, 100.f);
+                                           0.1f, 200.f);
 
     sun.lightSpaceMatrix = lightProjection * lightView;
 }
