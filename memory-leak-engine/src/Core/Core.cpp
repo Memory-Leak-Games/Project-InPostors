@@ -50,25 +50,23 @@ void Core::MainLoop() {
     PostProcess postProcessingFrameBuffer(windowWidth, windowHeight);
 
     Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize,
-                                                                [&postProcessingFrameBuffer, &gBuffer, &ssao](
+                                                                [&postProcessingFrameBuffer, &gBuffer, &ssao, &blurPass](
                                                                         const Event& event) {
-                                                                    auto& windowResizeEvent = (WindowResizeEvent&) event;
-                                                                    RenderingAPI::GetInstance()->SetViewport(0, 0,
-                                                                                                             windowResizeEvent.GetWidth(),
-                                                                                                             windowResizeEvent.GetHeight());
+        auto& windowResizeEvent = (WindowResizeEvent&) event;
+        RenderingAPI::GetInstance()->SetViewport(0, 0,
+                                                 windowResizeEvent.GetWidth(),
+                                                 windowResizeEvent.GetHeight());
 
-                                                                    int32_t windowWidth = windowResizeEvent.GetWidth();
-                                                                    int32_t windowHeight = windowResizeEvent.GetHeight();
+        int32_t windowWidth = windowResizeEvent.GetWidth();
+        int32_t windowHeight = windowResizeEvent.GetHeight();
 
-                                                                    gBuffer.Resize(windowWidth, windowHeight);
-                                                                    ssao.Resize(windowWidth, windowHeight);
-                                                                    postProcessingFrameBuffer.Resize(windowWidth,
-                                                                                                     windowHeight);
+        gBuffer.Resize(windowWidth, windowHeight);
+        ssao.Resize(windowWidth, windowHeight);
+        blurPass.Resize(windowWidth, windowHeight);
+        postProcessingFrameBuffer.Resize(windowWidth, windowHeight);
 
-                                                                    Camera::GetInstance()->SetResolution(
-                                                                            {windowResizeEvent.GetWidth(),
-                                                                             windowResizeEvent.GetHeight()});
-                                                                });
+        Camera::GetInstance()->SetResolution( {windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight()});
+        });
 
     bool shouldClose = false;
     Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowClose,

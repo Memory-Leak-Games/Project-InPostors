@@ -41,6 +41,7 @@ namespace mlg {
         }
         glCullFace(GL_BACK);
 
+
         glViewport(0, 0, Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
         currentFramebuffer->Activate();
         for (auto& renderable : renderables) {
