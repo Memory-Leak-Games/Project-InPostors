@@ -1,0 +1,32 @@
+{
+  "name": "Detroit",
+  "layout": [
+    "DD|DD",
+    "DD|DD",
+    "--#--",
+    "DD|DD",
+    "DD|DD"
+  ],
+  "keys": [
+    {
+      "symbol": "D",
+      "model": "res/domek",
+      "rotation": 0
+    },
+    {
+      "symbol": "|",
+      "model": "res/droga",
+      "rotation": 0
+    },
+    {
+      "symbol": "-",
+      "model": "res/droga",
+      "rotation": 90
+    },
+    {
+      "symbol": "#",
+      "model": "res/krzyzowka",
+      "rotation": 0
+    }
+  ]
+}
