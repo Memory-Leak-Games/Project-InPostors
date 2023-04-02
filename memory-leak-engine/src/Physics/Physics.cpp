@@ -13,17 +13,16 @@ namespace mlg {
     }
 
     void Physics::Initialize() {
-        if (instance == nullptr)
+        if (instance != nullptr)
             return;
 
         SPDLOG_INFO("Initializing Physics Engine");
 
         instance = new Physics();
-        instance->physicsTimeStep = Time::GetFixedDeltaSeconds();
     }
 
     void Physics::Stop() {
-        if (instance != nullptr)
+        if (instance == nullptr)
             return;
 
         SPDLOG_INFO("Stopping Physics Engine");
@@ -47,17 +46,23 @@ namespace mlg {
 
         instance->timeAccumulator += deltaTime;
 
-        while (instance->timeAccumulator >= instance->physicsTimeStep) {
+        int test = 0;
+        while (instance->timeAccumulator >= Time::GetFixedTimeStep()) {
             instance->OnFixedUpdate();
             instance->SolveDynamics();
             // TODO: Solve collisions
             // TODO: Update states
-            instance->timeAccumulator -= instance->physicsTimeStep;
+
+            instance->timeAccumulator -= Time::GetFixedTimeStep();
+            test++;
         }
     }
 
     void Physics::SolveDynamics() {
         for (auto& state : states) {
+            if (state.expired())
+                continue;
+
             state.lock()->Integrate();
         }
     }

@@ -3,15 +3,15 @@
 namespace mlg {
 
     class Physics {
+    public:
+        eventpp::CallbackList<void ()> OnFixedUpdate;
+
     private:
         static Physics* instance;
 
-        float physicsTimeStep;
         float timeAccumulator = 0;
 
         std::vector<std::weak_ptr<class PhysicsState>> states;
-
-        eventpp::CallbackList<void ()> OnFixedUpdate;
 
         Physics() = default;
     public:

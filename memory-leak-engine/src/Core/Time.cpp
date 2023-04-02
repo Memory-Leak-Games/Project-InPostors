@@ -43,8 +43,4 @@ namespace mlg {
         instance->frameStart = glfwGetTime();
     }
 
-    constexpr float Time::GetFixedDeltaSeconds() {
-        return fixedTimeStep;
-    }
-
 }// namespace mlg

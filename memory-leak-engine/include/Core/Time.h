@@ -23,7 +23,9 @@ namespace mlg {
 
         static float GetDeltaSeconds();
 
-        constexpr static float GetFixedDeltaSeconds();
+        constexpr static float GetFixedTimeStep() {
+            return fixedTimeStep;
+        };
 
         friend class Core;
 

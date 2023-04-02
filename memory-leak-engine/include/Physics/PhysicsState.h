@@ -4,18 +4,22 @@ namespace mlg {
 
     class PhysicsState {
     private:
-        glm::vec2 position;
-        float rotation;
+        glm::vec2 position {0.f};
+        float rotation = 0.f;
 
-        glm::vec2 velocity;
-        glm::vec2 currentAcceleration;
-        glm::vec2 newAcceleration;
+        glm::vec2 linearVelocity {0.f};
+        glm::vec2 currentLinearAcceleration {0.f};
+        glm::vec2 newLinearAcceleration {0.f};
 
-        float angularVelocity;
-        float currentAngularAcceleration;
-        float newAngularAcceleration;
+        float angularVelocity = 0.f;
+        float currentAngularAcceleration = 0.f;
+        float newAngularAcceleration = 0.f;
 
-        float mass;
+        float mass = 1.f;
+
+        float linearDrag = 0.f;
+        float angularDrag = 0.f;
+
     public:
         PhysicsState();
 
@@ -24,11 +28,7 @@ namespace mlg {
 
         void AddTorque(float value);
 
-        [[nodiscard]] const glm::vec2& GetPosition() const;
-        [[nodiscard]] const glm::vec2& GetVelocity() const;
-        [[nodiscard]] float GetAngularVelocity() const;
-        [[nodiscard]] float GetMass() const;
-
+        friend class RigidbodyComponent;
         friend class Physics;
     private:
         void Integrate();
