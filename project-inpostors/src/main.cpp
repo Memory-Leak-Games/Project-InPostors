@@ -78,10 +78,8 @@ public:
         mlg::Input::Initialize();
 
         mlg::Core* engine = mlg::Core::GetInstance();
-        //PrepareScene();
-        mlg::Camera::GetInstance()->SetPosition({-8.f, 15.f, 8.f});
-        mlg::Camera::GetInstance()->SetRotation(glm::radians(-60.f), glm::radians(45.f));
-        mlg::LevelGenerator::GenerateTestLevel();
+        
+        PrepareScene();
         engine->MainLoop();
 
         mlg::EntityManager::Stop();
@@ -108,6 +106,7 @@ public:
     std::shared_ptr<mlg::ProgressBar> progressBar;
 
     void PrepareScene() {
+        mlg::LevelGenerator::GenerateTestLevel();
         mlg::Camera::GetInstance()->SetPosition({-8.f, 15.f, 8.f});
         mlg::Camera::GetInstance()->SetRotation(glm::radians(-60.f), glm::radians(45.f));
 
