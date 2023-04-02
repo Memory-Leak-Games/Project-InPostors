@@ -31,6 +31,8 @@
 #include <UI/Renderer2D.h>
 #include <UI/ProgressBar.h>
 
+#include <Gameplay/Levels/LevelGenerator.h>
+
 class ComponentTest : public mlg::Component {
 public:
     ComponentTest(const std::weak_ptr<mlg::Entity>& owner, const std::string& name) : Component(owner, name) {}
@@ -76,7 +78,10 @@ public:
         mlg::Input::Initialize();
 
         mlg::Core* engine = mlg::Core::GetInstance();
-        PrepareScene();
+        //PrepareScene();
+        mlg::Camera::GetInstance()->SetPosition({-8.f, 15.f, 8.f});
+        mlg::Camera::GetInstance()->SetRotation(glm::radians(-60.f), glm::radians(45.f));
+        mlg::LevelGenerator::GenerateTestLevel();
         engine->MainLoop();
 
         mlg::EntityManager::Stop();
