@@ -33,10 +33,13 @@ namespace mlg {
     void Renderer::Draw(FrameBuffer* currentFramebuffer) {
         DirectionalLight::GetInstance()->BindShadowMap();
         DirectionalLight::GetInstance()->BindShadowMapShader();
+
+        glCullFace(GL_FRONT);
         for (auto& renderable : renderables) {
             renderable.lock()->DrawShadowMap(this,
                                              DirectionalLight::GetInstance()->GetShadowShaderProgram().lock().get());
         }
+        glCullFace(GL_BACK);
 
         glViewport(0, 0, Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
         currentFramebuffer->Activate();

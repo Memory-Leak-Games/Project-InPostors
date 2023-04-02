@@ -34,6 +34,8 @@ CPMAddPackage("gh:effolkronium/random@1.4.1")
 CPMAddPackage("gh:wqking/eventpp@0.1.2")
 CPMAddPackage("gh:nlohmann/json@3.11.2")
 CPMAddPackage("gh:Neargye/magic_enum@0.8.2")
+CPMAddPackage("gh:kcat/openal-soft#1.23.0")
+CPMAddPackage("gh:freetype/freetype#VER-2-13-0")
 
 if (${CMAKE_BUILD_TYPE} MATCHES Debug)
 	CPMAddPackage("gh:ocornut/imgui@1.88")
@@ -55,6 +57,8 @@ set_target_properties(glad
 					  eventpp
 					  nlohmann_json
 					  magic_enum
+					  OpenAL
+					  freetype
                       spdlog PROPERTIES FOLDER "thirdparty")
 
 if (TARGET zlibstatic)
