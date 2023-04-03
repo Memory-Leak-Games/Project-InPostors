@@ -9,6 +9,6 @@ private:
     int color;
 
 public:
-    bool Equals(Product &another) const;
+    bool Equals(const std::shared_ptr<Product>& another) const;
 
 };

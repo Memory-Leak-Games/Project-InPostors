@@ -1,18 +1,18 @@
 #include "include/Utils/Blueprint.h"
 
-const std::vector<Product>& Blueprint::GetInput() const {
+const std::vector<std::shared_ptr<Product>>& Blueprint::GetInput() const {
     return input;
 }
 
-void Blueprint::SetInput(const std::vector<Product>& input) {
+void Blueprint::SetInput(const std::vector<std::shared_ptr<Product>>& input) {
     Blueprint::input = input;
 }
 
-const Product& Blueprint::GetOutput() const {
+const std::shared_ptr<Product>& Blueprint::GetOutput() const {
     return output;
 }
 
-void Blueprint::SetOutput(const Product& output) {
+void Blueprint::SetOutput(const std::shared_ptr<Product>& output) {
     Blueprint::output = output;
 }
 
