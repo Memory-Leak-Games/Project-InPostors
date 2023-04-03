@@ -5,8 +5,17 @@ namespace mlg {
 
     class CollisionResponses {
     public:
-        static bool CircleCircleColision(class CircleCollider* circleOne, CircleCollider* circleTwo);
+        static bool CircleCircleCollision(class CircleCollider* circleOne, CircleCollider* circleTwo);
+        static glm::vec2 CircleCircleSeparationVector(class CircleCollider* circleOne, CircleCollider* circleTwo);
 
+        static bool SquareSquareCollision(class RectangleCollider* rectangleOne, RectangleCollider* rectangleTwo);
+        static glm::vec2 SquareSquareSeparationVector(class RectangleCollider* rectangleOne, RectangleCollider* rectangleTwo);
+
+        static bool SquareCircleCollision(RectangleCollider* rectangle, CircleCollider* circle);
+
+        static glm::vec2 CalculateNearestPoint(const glm::vec2& position, RectangleCollider* rectangle);
     };
+
+
 
 } // mlg

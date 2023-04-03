@@ -30,6 +30,8 @@ namespace mlg {
 
         friend class RigidbodyComponent;
         friend class Physics;
+        friend class CollisionResponses;
+        friend class RectangleCollider;
     private:
         void Integrate();
     };

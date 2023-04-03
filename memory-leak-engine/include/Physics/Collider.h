@@ -8,16 +8,16 @@ namespace mlg {
         Square
     };
 
-    struct CollisionResponses {
+    struct CollisionEvent {
         glm::vec2 position;
         class Rigidbody* collidedRigidbody;
     };
 
     class Collider {
     public:
-        eventpp::CallbackList<void(CollisionResponses)> OnCollisionEnter;
+        eventpp::CallbackList<void(CollisionEvent)> OnCollisionEnter;
 
-    private:
+    protected:
         Rigidbody* owner;
 
     public:
@@ -25,6 +25,8 @@ namespace mlg {
 
         virtual ColliderType GetColliderType() = 0;
         virtual float GetRadius() = 0;
+
+        friend class CollisionResponses;
     };
 
 }// namespace mlg

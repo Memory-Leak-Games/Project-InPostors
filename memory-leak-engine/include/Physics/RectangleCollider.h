@@ -4,17 +4,23 @@
 
 namespace mlg {
 
-    class SquareCollider: Collider {
+    class RectangleCollider : public Collider {
     private:
         glm::vec2 size;
 
     public:
-        explicit SquareCollider(const glm::vec2 &size);
+        explicit RectangleCollider(const glm::vec2 &size);
 
         ColliderType GetColliderType() override;
         float GetRadius() override;
 
         const glm::vec2 &GetSize() const;
+
+        float GetTop();
+        float GetBottom();
+        float GetLeft();
+        float GetRight();
+
     };
 
 } // mlg
