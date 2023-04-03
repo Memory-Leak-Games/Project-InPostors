@@ -17,14 +17,14 @@ namespace mlg {
     }
 
     int32_t SoundAsset::ConvertToInt(char* buffer, std::size_t len) {
-        int32_t a = 0;
+        int32_t res = 0;
         if (std::endian::native == std::endian::little)
-            std::memcpy(&a, buffer, len);
+            std::memcpy(&res, buffer, len);
         else
             for (std::size_t i = 0; i < len; ++i) {
-                reinterpret_cast<char*>(&a)[3 - i] = buffer[i];
+                reinterpret_cast<char*>(&res)[3 - i] = buffer[i];
             }
-        return a;
+        return res;
     }
 
     bool SoundAsset::LoadWAVFileHeader(std::ifstream& file,
