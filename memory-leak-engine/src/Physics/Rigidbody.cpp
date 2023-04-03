@@ -1,4 +1,4 @@
-#include "Physics/PhysicsState.h"
+#include "Physics/Rigidbody.h"
 
 #include "Core/Time.h"
 #include "Core/Math.h"
@@ -6,10 +6,10 @@
 #include "Macros.h"
 
 namespace mlg {
-    PhysicsState::PhysicsState() = default;
+    Rigidbody::Rigidbody() = default;
 
     // calculate Verlet integration
-    void PhysicsState::Integrate() {
+    void Rigidbody::Integrate() {
         float deltaSecond = Time::GetFixedTimeStep();
 
         AddForce(-linearDrag * Math::ClampVectorToNormal(linearVelocity));
@@ -28,17 +28,17 @@ namespace mlg {
         newAngularAcceleration = 0.f;
     }
 
-    void PhysicsState::AddForce(glm::vec2 force) {
+    void Rigidbody::AddForce(glm::vec2 force) {
         newLinearAcceleration += force / mass;
     }
 
-    void PhysicsState::AddTorque(float value) {
+    void Rigidbody::AddTorque(float value) {
         const float momentOfInertia = 0.5f * mass;
 
         newAngularAcceleration += value / momentOfInertia;
     }
 
-    void PhysicsState::AddForce(glm::vec2 force, glm::vec2 localPosition) {
+    void Rigidbody::AddForce(glm::vec2 force, glm::vec2 localPosition) {
         AddForce(force);
 
         const float radius = glm::length(localPosition);

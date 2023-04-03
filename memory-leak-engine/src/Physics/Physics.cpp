@@ -1,7 +1,7 @@
 #include "Physics/Physics.h"
 
 #include "Core/Time.h"
-#include "Physics/PhysicsState.h"
+#include "Physics/Rigidbody.h"
 
 #include "Macros.h"
 
@@ -30,13 +30,13 @@ namespace mlg {
         delete instance;
     }
 
-    void Physics::AddState(std::weak_ptr<PhysicsState> state) {
+    void Physics::AddRigidbody(std::weak_ptr<Rigidbody> state) {
         instance->states.push_back(state);
     }
 
-    void Physics::RemoveState(std::weak_ptr<PhysicsState> state) {
+    void Physics::RemoveRigidbody(std::weak_ptr<Rigidbody> state) {
         instance->states.erase(std::remove_if(instance->states.begin(), instance->states.end(),
-                                              [&state](const std::weak_ptr<PhysicsState>& entry) {
+                                              [&state](const std::weak_ptr<Rigidbody>& entry) {
                                                   return state.lock().get() == entry.lock().get();
                                               }), instance->states.end());
     }

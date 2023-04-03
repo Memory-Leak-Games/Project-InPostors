@@ -1,7 +1,7 @@
 #include "Gameplay/Components/RigidbodyComponent.h"
 
 #include "Physics/Physics.h"
-#include "Physics/PhysicsState.h"
+#include "Physics/Rigidbody.h"
 
 #include "Gameplay/Entity.h"
 #include "SceneGraph/Transform.h"
@@ -9,44 +9,48 @@
 namespace mlg {
     RigidbodyComponent::RigidbodyComponent(const std::weak_ptr<Entity>& owner, const std::string& name)
     : Component(owner, name) {
-        physicsState = std::make_shared<PhysicsState>();
-        Physics::AddState(physicsState);
+        rigidbody = std::make_shared<Rigidbody>();
+        Physics::AddRigidbody(rigidbody);
     }
 
     RigidbodyComponent::~RigidbodyComponent() {
-        Physics::RemoveState(physicsState);
+        Physics::RemoveRigidbody(rigidbody);
     }
 
     void RigidbodyComponent::AddForce(glm::vec2 force) {
-        physicsState->AddForce(force);
+        rigidbody->AddForce(force);
     }
 
     void RigidbodyComponent::AddForce(glm::vec2 force, glm::vec2 localPosition) {
-        physicsState->AddForce(force, localPosition);
+        rigidbody->AddForce(force, localPosition);
     }
 
     void RigidbodyComponent::AddTorque(float value) {
-        physicsState->AddTorque(value);
+        rigidbody->AddTorque(value);
     }
 
     void RigidbodyComponent::PhysicsUpdate() {
+    }
+
+    void RigidbodyComponent::Update() {
         Entity* owner = GetOwner().lock().get();
         glm::vec3 ownerPosition = owner->GetTransform().GetPosition();
-        ownerPosition.x = physicsState->position.x;
-        ownerPosition.z = physicsState->position.y;
+        ownerPosition.x = rigidbody->position.x;
+        ownerPosition.z = rigidbody->position.y;
         owner->GetTransform().SetPosition(ownerPosition);
 
         glm::vec3 ownerRotation {};
-        ownerRotation.y = physicsState->rotation;
+        ownerRotation.y = rigidbody->rotation;
         owner->GetTransform().SetEulerRotation(ownerRotation);
     }
 
     void RigidbodyComponent::SetLinearDrag(float value) {
-        physicsState->linearDrag = value;
+        rigidbody->linearDrag = value;
     }
 
     void RigidbodyComponent::SetAngularDrag(float value) {
-        physicsState->angularDrag = value;
+        rigidbody->angularDrag = value;
     }
+
 
 } // mlg

@@ -2,7 +2,7 @@
 
 namespace mlg {
 
-    class PhysicsState {
+    class Rigidbody {
     private:
         glm::vec2 position {0.f};
         float rotation = 0.f;
@@ -21,7 +21,7 @@ namespace mlg {
         float angularDrag = 0.f;
 
     public:
-        PhysicsState();
+        Rigidbody();
 
         void AddForce(glm::vec2 force);
         void AddForce(glm::vec2 force, glm::vec2 localPosition);
