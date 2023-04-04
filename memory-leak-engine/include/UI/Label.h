@@ -4,7 +4,7 @@
 
 namespace mlg {
     class Label : public Renderable2D {
-        uint32_t VAO, VBO;
+        uint32_t vao, vbo;
         std::shared_ptr<class ShaderProgram> shader;
     public:
         glm::vec2 position = {0, 0};

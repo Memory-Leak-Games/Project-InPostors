@@ -24,6 +24,7 @@ namespace mlg {
 
         [[nodiscard]] const glm::vec3& GetPosition() const;
         [[nodiscard]] const glm::quat& GetRotation() const;
+        [[nodiscard]] const glm::vec3 GetEulerRotation() const;
         [[nodiscard]] const glm::vec3& GetScale() const;
 
         [[nodiscard]] const glm::mat4& GetLocalMatrix();
@@ -37,8 +38,8 @@ namespace mlg {
 
         void SetPosition(const glm::vec3& position);
         void SetRotation(const glm::quat& rotation);
+        void SetEulerRotation(const glm::vec3 rotation);
         void SetScale(const glm::vec3& scale);
-        void SetUniformScale(const float uniformScale);
 
         const std::vector<std::shared_ptr<Transform>>& GetChildren();
         Transform* GetParent();

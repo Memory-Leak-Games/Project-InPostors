@@ -75,7 +75,7 @@ namespace mlg {
         glBindTextureUnit(0, gPositionTexture);
         glBindTextureUnit(1, gNormalTexture);
         glBindTextureUnit(2, gAlbedoSpecularTexture);
-        glBindTextureUnit(4, DirectionalLight::GetInstance()->GetShadowMap());
+        glBindTextureUnit(3, DirectionalLight::GetInstance()->GetShadowMap());
 
         glm::mat4 lightSpace = DirectionalLight::GetInstance()->GetSun().lightSpaceMatrix;
         glm::mat4 viewToModel = glm::inverse(Camera::GetInstance()->GetCameraViewMatrix());
@@ -112,7 +112,7 @@ namespace mlg {
     }
 
     void GBuffer::BindTextures(uint32_t ssao) {
-        glBindTextureUnit(3, ssao);
+        glBindTextureUnit(4, ssao);
     }
 
     void GBuffer::Clear() {

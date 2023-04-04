@@ -6,8 +6,8 @@ layout (binding = 0) uniform sampler2D gPosition;
 layout (binding = 1) uniform sampler2D gNormal;
 layout (binding = 2) uniform sampler2D gAlbedoSpecular;
 
-layout (binding = 3) uniform sampler2D ssao;
-layout (binding = 4) uniform sampler2D shadowMap;
+layout (binding = 3) uniform sampler2D shadowMap;
+layout (binding = 4) uniform sampler2D ssao;
 
 in VS_OUT {
     vec2 uv;
@@ -95,5 +95,6 @@ vec3 CalculateDirectionalLight() {
 void main()
 {
     fragColor = vec4(CalculateDirectionalLight() * vec3(texture(ssao, fs_in.uv).r), 1.0);
+    //  fragColor = vec4(CalculateDirectionalLight(), 1.0);
     //    fragColor = vec4(CalculateDirectionalLight(), 1.0);
 }
