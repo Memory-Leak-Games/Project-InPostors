@@ -14,7 +14,7 @@ namespace mlg {
         };
 
         //TODO: Load font size
-        int fontSize = 16;
+        int fontSize = 32;
         std::map<char8_t, Character> characters;
 
         explicit FontAsset(const std::string& path);

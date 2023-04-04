@@ -27,6 +27,7 @@
 
 #include <UI/Assets/FontAsset.h>
 #include <UI/Label.h>
+#include <UI/Image.h>
 #include <UI/Renderer2D.h>
 
 class ComponentTest : public mlg::Component {
@@ -97,6 +98,7 @@ public:
     }
 
     std::shared_ptr<mlg::Label> label;
+    std::shared_ptr<mlg::Image> image;
 
     void PrepareScene() {
         mlg::Camera::GetInstance()->SetPosition({-8.f, 15.f, 8.f});
@@ -145,9 +147,14 @@ public:
 
         label = std::make_shared<mlg::Label>();
         label->font = font;
-        label->text = "lubie placki xd";
-        mlg::Renderer2D::GetInstance()->AddRenderable(label);
 
+        auto imageMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/cat_UI_material.json");
+        image = std::make_shared<mlg::Image>(imageMaterial);
+        image->SetSize(glm::vec2{256.f});
+        image->SetPosition({50.f, 50.f});
+
+        mlg::Renderer2D::GetInstance()->AddRenderable(label);
+        mlg::Renderer2D::GetInstance()->AddRenderable(image);
     }
 
     virtual ~ProjectInpostors() {

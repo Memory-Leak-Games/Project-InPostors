@@ -35,6 +35,8 @@ void mlg::Label::Draw() {
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // TODO: nie liczyć tego co klatkę tylko jeżeli wielkość okna się zmieni (może trzymać to w Rendererz jako pole statyczne)
     Window* window = Window::GetInstance();
     glm::mat4 projection = glm::ortho(0.0f, (float) window->GetWidth(), 0.0f, (float) window->GetHeight());
 

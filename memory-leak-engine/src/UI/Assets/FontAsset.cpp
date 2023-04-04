@@ -43,6 +43,9 @@ void mlg::FontAsset::Load() {
         auto width = (int32_t) face->glyph->bitmap.width;
         auto height = (int32_t) face->glyph->bitmap.rows;
 
+        if (width == 0 || height == 0)
+            continue;
+
         glTextureStorage2D(texture, 1, GL_R8, width, height);
         glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RED, GL_UNSIGNED_BYTE, face->glyph->bitmap.buffer);
 
