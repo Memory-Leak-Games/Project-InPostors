@@ -1,9 +1,8 @@
 #include "UI/Assets/FontAsset.h"
-#include "freetype/freetype.h"
+#include <ft2build.h>
+#include FT_FREETYPE_H
 #include "Macros.h"
-
-//TODO: Load font size
-int fontSize = 16;
+#include "glad/glad.h"
 
 mlg::FontAsset::FontAsset(const std::string& path) : Asset(path) { }
 
@@ -12,38 +11,57 @@ mlg::FontAsset::~FontAsset() {
 }
 
 void mlg::FontAsset::Load() {
-    FT_Library lib;
-    FT_Error error;
+
+    FT_Library ft;
+    if (FT_Init_FreeType(&ft))
+        SPDLOG_ERROR("Could not init FreeType Library");
+
     FT_Face face;
-    FT_UInt glyphIndex;
+    if (FT_New_Face(ft, "res/fonts/comic.ttf", 0, &face))
+        SPDLOG_ERROR("Failed to load font");
 
-    // init freetype
-    error = FT_Init_FreeType( &lib );
-    if ( error != FT_Err_Ok )
+    FT_Set_Pixel_Sizes(face, 0, fontSize);
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
+
+    for (uint8_t c = 0; c < 128; c++)
     {
-        SPDLOG_ERROR("FT_Init_FreeType failed, error code: " + error);
-        return;
+        // Load character glyph
+        if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+        {
+            SPDLOG_ERROR("Failed to load Glyph");
+            continue;
+        }
+        // Generate texture
+        uint32_t texture;
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexImage2D(
+                GL_TEXTURE_2D,
+                0,
+                GL_RED,
+                face->glyph->bitmap.width,
+                face->glyph->bitmap.rows,
+                0,
+                GL_RED,
+                GL_UNSIGNED_BYTE,
+                face->glyph->bitmap.buffer
+        );
+        // Set texture options
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        // Now store character for later use
+        Character character = {
+                texture,
+                glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+                glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+                face->glyph->advance.x
+        };
+        characters.insert(std::pair<char8_t, Character>(c, character));
     }
 
-    // load font
-    error = FT_New_Face( lib , path.c_str() , 0 , &face );
-    if ( error == FT_Err_Unknown_File_Format )
-    {
-        SPDLOG_ERROR("failed to open file \"" + path + "\", unknown file format");
-        return;
-    }
-    else if ( error )
-    {
-        SPDLOG_ERROR("failed to open file \"" + path + "\", error code: " /*+ error*/);
-        return;
-    }
-
-    // set font size
-    error = FT_Set_Pixel_Sizes( face , 0 , fontSize );
-    if ( error )
-    {
-        SPDLOG_ERROR("failed to set font size, error code: " + error);
-    }
-
-
+    FT_Done_Face(face);
+    FT_Done_FreeType(ft);
 }

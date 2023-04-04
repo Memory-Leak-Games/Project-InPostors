@@ -17,10 +17,11 @@
 #include "SceneGraph/SceneGraph.h"
 
 #include <Gameplay/ComponentManager.h>
-#include <Rendering/CommonUniformBuffer.h>
 #include <Gameplay/Components/StaticMeshComponent.h>
 #include <Gameplay/EntityManager.h>
+#include <Rendering/CommonUniformBuffer.h>
 #include <Rendering/Gizmos/Gizmos.h>
+#include <UI/Assets/FontAsset.h>
 
 class ComponentTest : public mlg::Component {
 public:
@@ -117,6 +118,9 @@ public:
         ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, whiteMaterial);
         ground.lock()->GetTransform().SetPosition({0.f, -5.f, 0.f});
         ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
+
+        auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/comic.ttf");
+
     }
 
     virtual ~ProjectInpostors() {
