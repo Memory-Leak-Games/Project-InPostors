@@ -5,7 +5,6 @@
 namespace mlg {
 
     class Asset {
-    protected:
         std::string path;
     public:
         explicit Asset(std::string path) : path(std::move(path)) {};

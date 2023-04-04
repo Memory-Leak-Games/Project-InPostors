@@ -21,6 +21,9 @@
 #include <Gameplay/EntityManager.h>
 #include <Rendering/CommonUniformBuffer.h>
 #include <Rendering/Gizmos/Gizmos.h>
+#include <Physics/Physics.h>
+#include <Core/Math.h>
+#include <Gameplay/Components/RigidbodyComponent.h>
 
 #include <UI/Assets/FontAsset.h>
 #include <UI/Label.h>
@@ -61,6 +64,9 @@ public:
         mlg::Gizmos::Initialize();
         mlg::CommonUniformBuffer::Initialize();
         mlg::SceneGraph::Initialize();
+
+        mlg::Physics::Initialize();
+
         mlg::ComponentManager::Initialize();
         mlg::EntityManager::Initialize();
 
@@ -73,6 +79,9 @@ public:
 
         mlg::EntityManager::Stop();
         mlg::ComponentManager::Stop();
+
+        mlg::Physics::Stop();
+
         mlg::SceneGraph::Stop();
         mlg::Input::Stop();
         mlg::Core::Stop();
@@ -99,25 +108,31 @@ public:
         auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
         auto planeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/plane.obj");
 
-        auto tardisEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisOne", false, mlg::SceneGraph::GetRoot());
-        tardisEntity.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel, tardisMaterial);
-        tardisEntity.lock()->AddComponent<ComponentTest>("RotationComponent");
+        auto carModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Cars/autko1.obj");
+        auto carEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("CarOne", false, mlg::SceneGraph::GetRoot());
+        carEntity.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", carModel, whiteMaterial);
+        carEntity.lock()->AddComponent<ComponentTest>("RotationComponent");
 
-        auto tardisMaterial1 = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Tardis/tardis_material_green.json");
-        auto tardisModel1 = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Tardis/tardis.obj");
+        auto buildingModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Buildings/dom1.obj");
 
-        auto tardisEntity1 = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisRight", false, mlg::SceneGraph::GetRoot());
-        tardisEntity1.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel1, tardisMaterial1);
-        tardisEntity1.lock()->AddComponent<ComponentTest>("RotationComponent");
+        auto buildingEntityOne = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisRight", false, mlg::SceneGraph::GetRoot());
+        buildingEntityOne.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", buildingModel, whiteMaterial);
+        buildingEntityOne.lock()->AddComponent<ComponentTest>("RotationComponent");
 
-        tardisEntity1.lock()->GetTransform().SetPosition({-7.f, 0.f, 0.f});
+        buildingEntityOne.lock()->GetTransform().SetPosition({-7.f, 0.f, 0.f});
+        buildingEntityOne.lock()->GetTransform().SetScale(glm::vec3{2.});
 
         auto tardisMaterial2 = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Tardis/tardis_material_another.json");
         auto tardisModel2 = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Tardis/tardis.obj");
 
         auto tardisEntity2 = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisLeft", false, mlg::SceneGraph::GetRoot());
         tardisEntity2.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel2, tardisMaterial2);
-//        tardisEntity2.lock()->AddComponent<ComponentTest>("RotationComponent");
+        auto rigidbody = tardisEntity2.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
+        rigidbody.lock()->AddForce({0, 40.f});
+        rigidbody.lock()->AddForce({-40.f, 0.f}, {0.f, 1.f});
+
+        rigidbody.lock()->SetLinearDrag(1.f);
+        rigidbody.lock()->SetAngularDrag(1.f);
 
         tardisEntity2.lock()->GetTransform().SetPosition({7.f, 0.f, 0.f});
 
@@ -139,9 +154,14 @@ public:
     }
 };
 
+void Test() {
+}
+
 int main(int argc, char* argv[]) {
     LoggingMacros::InitializeSPDLog();
     std::srand(std::time(0));
+
+    Test();
 
     ProjectInpostors game;
     return game.Main(argc, argv);

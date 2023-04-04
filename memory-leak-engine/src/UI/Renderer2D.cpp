@@ -31,7 +31,6 @@ namespace mlg {
     }
 
     void Renderer2D::Draw() {
-        SPDLOG_INFO(renderables.size());
         for (auto& renderable : renderables) {
             if (renderable.expired())
                 continue;

@@ -3,6 +3,7 @@
 #include "Macros.h"
 
 #include "Gameplay/Component.h"
+#include "Physics/Physics.h"
 
 namespace mlg {
     ComponentManager* ComponentManager::instance;
@@ -11,9 +12,11 @@ namespace mlg {
         if (instance != nullptr)
             return;
 
+        SPDLOG_INFO("Initializing Components Manager");
+
         instance = new ComponentManager();
 
-        SPDLOG_INFO("Initializing Components Manager");
+        Physics::GetInstance()->OnFixedUpdate.append(ComponentManager::PhysicsUpdate);
     }
 
     void ComponentManager::Stop() {
