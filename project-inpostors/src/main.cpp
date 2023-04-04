@@ -131,6 +131,7 @@ public:
         label = std::make_shared<mlg::Label>();
         label->font = font;
         label->text = "lubie placki xd";
+        label->textColor = {1, 0, 1};
         mlg::Renderer2D::GetInstance()->AddRenderable(label);
 
     }
