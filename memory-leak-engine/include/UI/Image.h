@@ -10,6 +10,7 @@ namespace mlg {
         glm::vec2 size{1.f, 1.f};
         glm::vec2 position{0.f, 0.f};
 
+    protected:
         std::shared_ptr<class MaterialAsset> material;
     public:
         explicit Image(const std::shared_ptr<struct MaterialAsset>& material);
@@ -24,6 +25,8 @@ namespace mlg {
         void SetSize(const glm::vec2& size);
         void SetPosition(const glm::vec2& position);
 
+    protected:
+        void DrawRect();
     };
 
 } // mlg

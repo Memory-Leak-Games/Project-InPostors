@@ -29,6 +29,7 @@
 #include <UI/Label.h>
 #include <UI/Image.h>
 #include <UI/Renderer2D.h>
+#include <UI/ProgressBar.h>
 
 class ComponentTest : public mlg::Component {
 public:
@@ -99,6 +100,7 @@ public:
 
     std::shared_ptr<mlg::Label> label;
     std::shared_ptr<mlg::Image> image;
+    std::shared_ptr<mlg::ProgressBar> progressBar;
 
     void PrepareScene() {
         mlg::Camera::GetInstance()->SetPosition({-8.f, 15.f, 8.f});
@@ -153,8 +155,15 @@ public:
         image->SetSize(glm::vec2{256.f});
         image->SetPosition({50.f, 50.f});
 
+        auto progressBarMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/progressBar_material.json");
+
+        progressBar = std::make_shared<mlg::ProgressBar>(progressBarMaterial);
+        progressBar->SetSize(glm::vec2{256.f, 32.f});
+        progressBar->SetPosition({50.f, 400.f});
+
         mlg::Renderer2D::GetInstance()->AddRenderable(label);
         mlg::Renderer2D::GetInstance()->AddRenderable(image);
+        mlg::Renderer2D::GetInstance()->AddRenderable(progressBar);
     }
 
     virtual ~ProjectInpostors() {

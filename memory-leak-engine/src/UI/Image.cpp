@@ -55,13 +55,17 @@ namespace mlg {
         material->GetShaderProgram()->SetVec2F("screenPosition", position);
         material->GetShaderProgram()->SetMat4F("projection", projection);
 
+        DrawRect();
+
+        material->DeActivate();
+    }
+
+    void Image::DrawRect() {
         MLG_ASSERT(rectVao != 0);
 
         glBindVertexArray(rectVao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
-
-        material->DeActivate();
     }
 
     const glm::vec2& Image::GetSize() const {
