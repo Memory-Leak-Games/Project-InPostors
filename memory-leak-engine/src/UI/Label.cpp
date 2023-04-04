@@ -7,7 +7,7 @@
 #include "core/window.h"
 #include "glad/glad.h"
 
-mlg::Label::Label() {
+mlg::Label::Label(std::shared_ptr<class FontAsset> font) {
     shader = std::make_shared<ShaderProgram>(
             AssetManager::GetAsset<ShaderAsset>("res/shaders/UI/glyph.vert"),
             AssetManager::GetAsset<ShaderAsset>("res/shaders/UI/glyph.frag"));
@@ -23,7 +23,7 @@ mlg::Label::Label() {
     glBindVertexArray(0);
 }
 
-void mlg::Label::Draw(struct Renderer2D* renderer) {
+void mlg::Label::Draw() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     Window* window = Window::GetInstance();

@@ -26,13 +26,13 @@
 #include "Events/WindowEvent.h"
 
 // TODO: delete this
-#include "Rendering/Gizmos/Gizmos.h"
-#include "Rendering/DirectionalLight.h"
-#include "Rendering/Camera.h"
 #include "Gameplay/ComponentManager.h"
 #include "Gameplay/EntityManager.h"
-#include "SceneGraph/SceneGraph.h"
 #include "Rendering/Camera.h"
+#include "Rendering/DirectionalLight.h"
+#include "Rendering/Gizmos/Gizmos.h"
+#include "SceneGraph/SceneGraph.h"
+#include "UI/Renderer2D.h"
 
 using namespace mlg;
 
@@ -123,6 +123,7 @@ void Core::MainLoop() {
         postProcessingFrameBuffer.CopyDepthBuffer(0);
 
         Gizmos::DrawGizmos();
+        Renderer2D::GetInstance()->Draw();
 
 
 #ifdef DEBUG

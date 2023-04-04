@@ -21,7 +21,10 @@
 #include <Gameplay/EntityManager.h>
 #include <Rendering/CommonUniformBuffer.h>
 #include <Rendering/Gizmos/Gizmos.h>
+
 #include <UI/Assets/FontAsset.h>
+#include <UI/Label.h>
+#include <UI/Renderer2D.h>
 
 class ComponentTest : public mlg::Component {
 public:
@@ -53,6 +56,7 @@ public:
         mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
+        mlg::Renderer2D::Initialize();
         mlg::AssetManager::Initialize();
         mlg::Gizmos::Initialize();
         mlg::CommonUniformBuffer::Initialize();
@@ -74,6 +78,7 @@ public:
         mlg::Core::Stop();
         mlg::Gizmos::Stop();
         mlg::AssetManager::Stop();
+        mlg::Renderer2D::Stop();
         mlg::Renderer::Stop();
         mlg::RenderingAPI::Stop();
         mlg::Window::Stop();
@@ -120,6 +125,12 @@ public:
         ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
 
         auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/comic.ttf");
+
+        std::shared_ptr<mlg::Label> label = std::make_shared<mlg::Label>();
+        label->font = font;
+        label->text = "lubie placki xd";
+        auto labelAsRenderable = std::dynamic_pointer_cast<mlg::Renderable2D>(label);
+        mlg::Renderer2D::GetInstance()->AddRenderable(labelAsRenderable);
 
     }
 

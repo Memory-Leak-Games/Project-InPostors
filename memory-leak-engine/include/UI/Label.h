@@ -3,7 +3,7 @@
 #include "Renderable2D.h"
 
 namespace mlg {
-    class Label : Renderable2D {
+    class Label : public Renderable2D {
         uint32_t VAO, VBO;
         std::shared_ptr<class ShaderProgram> shader;
     public:
@@ -13,6 +13,6 @@ namespace mlg {
         glm::vec3 textColor = {1, 1, 1};
 
         Label();
-        void Draw(class Renderer2D *renderer) override;
+        void Draw() override;
     };
 }
