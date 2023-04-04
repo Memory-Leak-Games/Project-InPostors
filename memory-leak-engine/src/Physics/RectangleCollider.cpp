@@ -18,18 +18,18 @@ namespace mlg {
     }
 
     float RectangleCollider::GetTop() {
-        return owner->position.y + size.y / 2;
+        return owner->GetPosition().y + size.y / 2;
     }
 
     float RectangleCollider::GetBottom() {
-        return owner->position.y - size.y / 2;
+        return owner->GetPosition().y - size.y / 2;
     }
 
     float RectangleCollider::GetLeft() {
-        return owner->position.x - size.x / 2;
+        return owner->GetPosition().x - size.x / 2;
     }
 
     float RectangleCollider::GetRight() {
-        return owner->position.x + size.x / 2;
+        return owner->GetPosition().x + size.x / 2;
     }
 } // mlg

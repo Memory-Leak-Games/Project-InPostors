@@ -45,4 +45,8 @@ namespace mlg {
         const float torque = Math::Cross2D(force, localPosition);
         AddTorque(torque);
     }
+
+    const glm::vec2 &Rigidbody::GetPosition() {
+        return position;
+    }
 } // mlg
