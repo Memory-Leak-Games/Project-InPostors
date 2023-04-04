@@ -42,9 +42,8 @@ void mlg::Label::Draw() {
     shader->Activate();
     shader->SetVec3F("textColor", textColor);
     shader->SetMat4F("projection", projection);
-    shader->SetFloat("size", size / font->fontSize);
     glActiveTexture(GL_TEXTURE0);
-    glBindVertexArray(VAO);
+    glBindVertexArray(vao);
 
     // Iterate through all characters
     std::string::const_iterator c;

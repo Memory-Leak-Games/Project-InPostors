@@ -11,7 +11,6 @@ namespace mlg {
         std::string text;
         std::shared_ptr<class FontAsset> font;
         glm::vec3 textColor = {1, 1, 1};
-        float size = 1;
 
         Label();
         void Draw() override;
