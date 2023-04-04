@@ -100,18 +100,19 @@ public:
         auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
         auto planeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/plane.obj");
 
-        auto tardisEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisOne", false, mlg::SceneGraph::GetRoot());
-        tardisEntity.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel, tardisMaterial);
-        tardisEntity.lock()->AddComponent<ComponentTest>("RotationComponent");
+        auto carModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Cars/autko1.obj");
+        auto carEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("CarOne", false, mlg::SceneGraph::GetRoot());
+        carEntity.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", carModel, whiteMaterial);
+        carEntity.lock()->AddComponent<ComponentTest>("RotationComponent");
 
-        auto tardisMaterial1 = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Tardis/tardis_material_green.json");
-        auto tardisModel1 = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Tardis/tardis.obj");
+        auto buildingModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Buildings/dom1.obj");
 
-        auto tardisEntity1 = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisRight", false, mlg::SceneGraph::GetRoot());
-        tardisEntity1.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel1, tardisMaterial1);
-        tardisEntity1.lock()->AddComponent<ComponentTest>("RotationComponent");
+        auto buildingEntityOne = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisRight", false, mlg::SceneGraph::GetRoot());
+        buildingEntityOne.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", buildingModel, whiteMaterial);
+        buildingEntityOne.lock()->AddComponent<ComponentTest>("RotationComponent");
 
-        tardisEntity1.lock()->GetTransform().SetPosition({-7.f, 0.f, 0.f});
+        buildingEntityOne.lock()->GetTransform().SetPosition({-7.f, 0.f, 0.f});
+        buildingEntityOne.lock()->GetTransform().SetScale(glm::vec3{2.});
 
         auto tardisMaterial2 = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Tardis/tardis_material_another.json");
         auto tardisModel2 = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Tardis/tardis.obj");

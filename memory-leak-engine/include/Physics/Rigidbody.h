@@ -2,7 +2,7 @@
 
 namespace mlg {
 
-    class PhysicsState {
+    class Rigidbody {
     private:
         glm::vec2 position {0.f};
         float rotation = 0.f;
@@ -20,16 +20,21 @@ namespace mlg {
         float linearDrag = 0.f;
         float angularDrag = 0.f;
 
+//        std::vector<std::unique_ptr<class Collider>> collider;
+
     public:
-        PhysicsState();
+        Rigidbody();
 
         void AddForce(glm::vec2 force);
         void AddForce(glm::vec2 force, glm::vec2 localPosition);
 
         void AddTorque(float value);
 
-        friend class RigidbodyComponent;
+        const glm::vec2& GetPosition();
+
         friend class Physics;
+        friend class CollisionResponses;
+        friend class RigidbodyComponent;
     private:
         void Integrate();
     };

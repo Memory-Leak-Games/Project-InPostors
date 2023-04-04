@@ -11,7 +11,7 @@ namespace mlg {
 
         float timeAccumulator = 0;
 
-        std::vector<std::weak_ptr<class PhysicsState>> states;
+        std::vector<std::weak_ptr<class Rigidbody>> states;
 
         Physics() = default;
     public:
@@ -20,8 +20,8 @@ namespace mlg {
 
         static Physics* GetInstance();
 
-        static void AddState(std::weak_ptr<PhysicsState> state);
-        static void RemoveState(std::weak_ptr<PhysicsState> state);
+        static void AddRigidbody(std::weak_ptr<Rigidbody> state);
+        static void RemoveRigidbody(std::weak_ptr<Rigidbody> state);
 
         static void TickFixedTimeSteps();
 
