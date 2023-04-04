@@ -1,13 +1,14 @@
 #include "UI/Label.h"
 
 #include "Core/AssetManager/AssetManager.h"
+#include "Core/Time.h"
 #include "Rendering/Assets/ShaderAsset.h"
 #include "Rendering/ShaderProgram.h"
 #include "UI/Assets/FontAsset.h"
 #include "core/window.h"
 #include "glad/glad.h"
 
-mlg::Label::Label(std::shared_ptr<class FontAsset> font) {
+mlg::Label::Label() {
     shader = std::make_shared<ShaderProgram>(
             AssetManager::GetAsset<ShaderAsset>("res/shaders/UI/glyph.vert"),
             AssetManager::GetAsset<ShaderAsset>("res/shaders/UI/glyph.frag"));
@@ -24,6 +25,10 @@ mlg::Label::Label(std::shared_ptr<class FontAsset> font) {
 }
 
 void mlg::Label::Draw() {
+
+    //TODO: Remove me later
+    text = std::to_string(Time::GetSeconds());
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     Window* window = Window::GetInstance();
@@ -32,6 +37,7 @@ void mlg::Label::Draw() {
     // Activate corresponding render state
     shader->Activate();
     shader->SetVec3F("textColor", textColor);
+    shader->SetMat4F("projection", projection);
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);
 

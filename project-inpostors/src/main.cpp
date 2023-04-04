@@ -87,6 +87,8 @@ public:
         return 0;
     }
 
+    std::shared_ptr<mlg::Label> label;
+
     void PrepareScene() {
         mlg::Camera::GetInstance()->SetPosition({-8.f, 15.f, 8.f});
         mlg::Camera::GetInstance()->SetRotation(glm::radians(-60.f), glm::radians(45.f));
@@ -126,11 +128,10 @@ public:
 
         auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/comic.ttf");
 
-        std::shared_ptr<mlg::Label> label = std::make_shared<mlg::Label>();
+        label = std::make_shared<mlg::Label>();
         label->font = font;
         label->text = "lubie placki xd";
-        auto labelAsRenderable = std::dynamic_pointer_cast<mlg::Renderable2D>(label);
-        mlg::Renderer2D::GetInstance()->AddRenderable(labelAsRenderable);
+        mlg::Renderer2D::GetInstance()->AddRenderable(label);
 
     }
 

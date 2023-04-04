@@ -14,7 +14,7 @@ namespace mlg {
 
         void Draw();
 
-        void AddRenderable(const std::weak_ptr<Renderable2D>& renderable);
+        void AddRenderable(std::weak_ptr<Renderable2D> renderable);
         void RemoveRenderable(std::weak_ptr<Renderable2D> renderable);
     };
 }

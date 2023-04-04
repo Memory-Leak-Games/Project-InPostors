@@ -33,11 +33,13 @@ namespace mlg {
     void Renderer2D::Draw() {
         SPDLOG_INFO(renderables.size());
         for (auto& renderable : renderables) {
+            if (renderable.expired())
+                continue;
             renderable.lock()->Draw();
         }
     }
 
-    void Renderer2D::AddRenderable(const std::weak_ptr<Renderable2D>& renderable) {
+    void Renderer2D::AddRenderable(std::weak_ptr<Renderable2D> renderable) {
         renderables.push_back(renderable);
     }
 
