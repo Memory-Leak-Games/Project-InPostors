@@ -17,13 +17,19 @@
 #include "SceneGraph/SceneGraph.h"
 
 #include <Gameplay/ComponentManager.h>
-#include <Rendering/CommonUniformBuffer.h>
 #include <Gameplay/Components/StaticMeshComponent.h>
 #include <Gameplay/EntityManager.h>
+#include <Rendering/CommonUniformBuffer.h>
 #include <Rendering/Gizmos/Gizmos.h>
 #include <Physics/Physics.h>
 #include <Core/Math.h>
 #include <Gameplay/Components/RigidbodyComponent.h>
+
+#include <UI/Assets/FontAsset.h>
+#include <UI/Label.h>
+#include <UI/Image.h>
+#include <UI/Renderer2D.h>
+#include <UI/ProgressBar.h>
 
 class ComponentTest : public mlg::Component {
 public:
@@ -55,6 +61,7 @@ public:
         mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
+        mlg::Renderer2D::Initialize();
         mlg::AssetManager::Initialize();
         mlg::Gizmos::Initialize();
         mlg::CommonUniformBuffer::Initialize();
@@ -82,6 +89,7 @@ public:
         mlg::Core::Stop();
         mlg::Gizmos::Stop();
         mlg::AssetManager::Stop();
+        mlg::Renderer2D::Stop();
         mlg::Renderer::Stop();
         mlg::RenderingAPI::Stop();
         mlg::Window::Stop();
@@ -89,6 +97,10 @@ public:
 
         return 0;
     }
+
+    std::shared_ptr<mlg::Label> label;
+    std::shared_ptr<mlg::Image> image;
+    std::shared_ptr<mlg::ProgressBar> progressBar;
 
     void PrepareScene() {
         mlg::Camera::GetInstance()->SetPosition({-8.f, 15.f, 8.f});
@@ -132,6 +144,26 @@ public:
         ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, whiteMaterial);
         ground.lock()->GetTransform().SetPosition({0.f, -5.f, 0.f});
         ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
+
+        auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/comic.ttf");
+
+        label = std::make_shared<mlg::Label>();
+        label->font = font;
+
+        auto imageMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/cat_UI_material.json");
+        image = std::make_shared<mlg::Image>(imageMaterial);
+        image->SetSize(glm::vec2{256.f});
+        image->SetPosition({50.f, 50.f});
+
+        auto progressBarMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/progressBar_material.json");
+
+        progressBar = std::make_shared<mlg::ProgressBar>(progressBarMaterial);
+        progressBar->SetSize(glm::vec2{256.f, 32.f});
+        progressBar->SetPosition({50.f, 400.f});
+
+        mlg::Renderer2D::GetInstance()->AddRenderable(label);
+        mlg::Renderer2D::GetInstance()->AddRenderable(image);
+        mlg::Renderer2D::GetInstance()->AddRenderable(progressBar);
     }
 
     virtual ~ProjectInpostors() {
