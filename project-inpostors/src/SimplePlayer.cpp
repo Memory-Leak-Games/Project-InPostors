@@ -20,8 +20,8 @@ std::shared_ptr<SimplePlayer> SimplePlayer::Create(const std::string& name, bool
 
     newPlayer->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
 
-    auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Cube.obj");
-    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/red_material.json");
+    auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Sphere.obj");
+    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/blue_material.json");
 
     newPlayer->AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
     newPlayer->AddComponent<SimpleCarMovementComponent>("MovementComponent");

@@ -108,12 +108,18 @@ public:
         mlg::Camera::GetInstance()->SetRotation(glm::radians(-60.f), glm::radians(45.f));
 
         auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
+        auto redMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/red_material.json");
         auto planeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/plane.obj");
+        auto cubeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Cube.obj");
 
         auto ground = mlg::EntityManager::SpawnEntity<mlg::Entity>("Ground", true, mlg::SceneGraph::GetRoot());
         ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, whiteMaterial);
         ground.lock()->GetTransform().SetPosition({0.f, -5.f, 0.f});
         ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
+
+        auto wall = mlg::EntityManager::SpawnEntity<mlg::Entity>("Wall", true, mlg::SceneGraph::GetRoot());
+        wall.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", cubeModel, redMaterial);
+        wall.lock()->GetTransform().SetPosition({-2.f, 0.f, -5.f});
 
         auto player = mlg::EntityManager::SpawnEntity<SimplePlayer>("Player", false, mlg::SceneGraph::GetRoot());
     }
