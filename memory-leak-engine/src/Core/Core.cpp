@@ -128,22 +128,24 @@ void Core::MainLoop() {
         ImGui::Begin("FPS");
         ImGui::Text("Framerate: %.3f (%.1f FPS)", Time::GetTrueDeltaSeconds(), 1 / Time::GetTrueDeltaSeconds());
         ImGui::Text("Time: %.3f", Time::GetSeconds());
+        ImGui::End();
 
-        ImGui::Separator();
+        ImGui::Begin("Input");
+        float forward = 0.f;
+        float right = 0.f;
 
-        for (const std::string& action : {"test_button", "test_axis"}) {
-            float testFloat = Input::GetActionStrength(action);
-            bool isTestPressed = Input::IsActionPressed(action);
-            bool isTestJustPressed = Input::IsActionJustPressed(action);
-            bool isTestJustReleased = Input::IsActionJustReleased(action);
+        forward += Input::GetActionStrength("forward_one");
+        forward -= Input::GetActionStrength("backward_one");
 
-            ImGui::Text("%s", action.c_str());
-            ImGui::Text("Strength: %f", testFloat);
-            ImGui::Text("State: %b, JustPressed: %b, JustReleased: %b", isTestPressed,
-                        isTestJustPressed, isTestJustReleased);
+        right += Input::GetActionStrength("right_one");
+        right -= Input::GetActionStrength("left_one");
 
-        }
+        ImGui::Text("forward: %f", forward);
+        ImGui::Text("right: %f", right);
 
+        ImGui::End();
+
+        ImGui::Begin("Testing");
         ImGui::Separator();
         bool vSync = Window::GetInstance()->GetVerticalSync();
         ImGui::Checkbox("VSync ", &vSync);

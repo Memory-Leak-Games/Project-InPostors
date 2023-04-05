@@ -4,33 +4,31 @@
 #include "include/SceneGraph/Transform.h"
 
 namespace mlg {
-    SceneGraph* SceneGraph::instance;
+    Transform* SceneGraph::root;
 
     void SceneGraph::Initialize() {
-        if (instance != nullptr)
+        if (root != nullptr)
             return;
-
-        instance = new SceneGraph();
 
         SPDLOG_INFO("Initializing SceneRoot");
 
-        instance->root = std::make_unique<Transform>();
+        root = new Transform;
     }
 
     void SceneGraph::Stop() {
-        delete instance;
-        instance = nullptr;
+        if (root == nullptr)
+            return;
+
+        SPDLOG_INFO("Deleting SceneRoot");
+
+        delete root;
     }
 
     void SceneGraph::CalculateGlobalTransforms() {
-        instance->root->Calculate();
-    }
-
-    SceneGraph* SceneGraph::GetInstance() {
-        return instance;
+        root->Calculate();
     }
 
     Transform* SceneGraph::GetRoot() {
-        return instance->root.get();
+        return root;
     }
 } // mlg

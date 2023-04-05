@@ -28,7 +28,12 @@ namespace mlg {
         return instance;
     }
 
+    void CollisionManager::DetectCollisions() {
+        // Doin' collisions
+    }
+
     void CollisionManager::SolveCollisions() {
         // Doin' math
     }
+
 } // mlg

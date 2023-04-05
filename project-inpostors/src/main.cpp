@@ -15,6 +15,7 @@
 #include "Core/Time.h"
 
 #include "SceneGraph/SceneGraph.h"
+#include "SimplePlayer.h"
 
 #include <Gameplay/ComponentManager.h>
 #include <Gameplay/Components/StaticMeshComponent.h>
@@ -106,44 +107,15 @@ public:
         mlg::Camera::GetInstance()->SetPosition({-8.f, 15.f, 8.f});
         mlg::Camera::GetInstance()->SetRotation(glm::radians(-60.f), glm::radians(45.f));
 
-        auto tardisMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Tardis/tardis_material.json");
-        auto tardisModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Tardis/tardis.obj");
-
         auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
         auto planeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/plane.obj");
-
-        auto carModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Cars/autko1.obj");
-        auto carEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("CarOne", false, mlg::SceneGraph::GetRoot());
-        carEntity.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", carModel, whiteMaterial);
-        carEntity.lock()->AddComponent<ComponentTest>("RotationComponent");
-
-        auto buildingModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Buildings/dom1.obj");
-
-        auto buildingEntityOne = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisRight", false, mlg::SceneGraph::GetRoot());
-        buildingEntityOne.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", buildingModel, whiteMaterial);
-        buildingEntityOne.lock()->AddComponent<ComponentTest>("RotationComponent");
-
-        buildingEntityOne.lock()->GetTransform().SetPosition({-7.f, 0.f, 0.f});
-        buildingEntityOne.lock()->GetTransform().SetScale(glm::vec3{2.});
-
-        auto tardisMaterial2 = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Tardis/tardis_material_another.json");
-        auto tardisModel2 = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Tardis/tardis.obj");
-
-        auto tardisEntity2 = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisLeft", false, mlg::SceneGraph::GetRoot());
-        tardisEntity2.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel2, tardisMaterial2);
-        auto rigidbody = tardisEntity2.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
-        rigidbody.lock()->AddForce({0, 40.f});
-        rigidbody.lock()->AddForce({-40.f, 0.f}, {0.f, 1.f});
-
-        rigidbody.lock()->SetLinearDrag(1.f);
-        rigidbody.lock()->SetAngularDrag(1.f);
-
-        tardisEntity2.lock()->GetTransform().SetPosition({7.f, 0.f, 0.f});
 
         auto ground = mlg::EntityManager::SpawnEntity<mlg::Entity>("Ground", true, mlg::SceneGraph::GetRoot());
         ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, whiteMaterial);
         ground.lock()->GetTransform().SetPosition({0.f, -5.f, 0.f});
         ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
+
+        auto player = mlg::EntityManager::SpawnEntity<SimplePlayer>("Player", false, mlg::SceneGraph::GetRoot());
     }
 
     virtual ~ProjectInpostors() {

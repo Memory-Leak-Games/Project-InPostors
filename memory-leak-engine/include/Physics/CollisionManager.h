@@ -14,6 +14,7 @@ namespace mlg {
 
         static CollisionManager* GetInstance();
 
+        static void DetectCollisions();
         static void SolveCollisions();
     };
 

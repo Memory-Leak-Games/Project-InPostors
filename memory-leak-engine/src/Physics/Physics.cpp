@@ -52,9 +52,8 @@ namespace mlg {
         while (instance->timeAccumulator >= Time::GetFixedTimeStep()) {
             instance->OnFixedUpdate();
             instance->SolveDynamics();
-            CollisionManager::GetInstance()->Sol
-            // TODO: Solve collisions
-            // TODO: Update states
+            CollisionManager::DetectCollisions();
+            CollisionManager::SolveCollisions();
 
             instance->timeAccumulator -= Time::GetFixedTimeStep();
             test++;
