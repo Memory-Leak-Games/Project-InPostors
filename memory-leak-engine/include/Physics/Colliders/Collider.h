@@ -26,7 +26,7 @@ namespace mlg {
         virtual ColliderType GetColliderType() = 0;
         virtual float GetRadius() = 0;
 
-        friend class CollisionResponses;
+        friend class CollisionDetection;
     };
 
 }// namespace mlg

@@ -20,10 +20,11 @@ namespace mlg {
         float linearDrag = 0.f;
         float angularDrag = 0.f;
 
-//        std::vector<std::unique_ptr<class Collider>> collider;
+        std::vector<std::unique_ptr<class Collider>> colliders;
 
     public:
         Rigidbody();
+        ~Rigidbody();
 
         void AddForce(glm::vec2 force);
         void AddForce(glm::vec2 force, glm::vec2 localPosition);
@@ -33,7 +34,7 @@ namespace mlg {
         const glm::vec2& GetPosition();
 
         friend class Physics;
-        friend class CollisionResponses;
+        friend class CollisionDetection;
         friend class RigidbodyComponent;
     private:
         void Integrate();

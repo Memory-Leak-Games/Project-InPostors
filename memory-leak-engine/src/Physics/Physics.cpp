@@ -3,6 +3,8 @@
 #include "Core/Time.h"
 #include "Physics/Rigidbody.h"
 
+#include "Physics/CollisionManager.h"
+
 #include "Macros.h"
 
 namespace mlg {
@@ -50,6 +52,7 @@ namespace mlg {
         while (instance->timeAccumulator >= Time::GetFixedTimeStep()) {
             instance->OnFixedUpdate();
             instance->SolveDynamics();
+            CollisionManager::GetInstance()->Sol
             // TODO: Solve collisions
             // TODO: Update states
 
@@ -59,11 +62,12 @@ namespace mlg {
     }
 
     void Physics::SolveDynamics() {
-        for (auto& state : states) {
-            if (state.expired())
+        for (auto& rigidbody : states) {
+            if (rigidbody.expired())
                 continue;
 
-            state.lock()->Integrate();
+            rigidbody.lock()->Integrate();
         }
     }
+
 } // mlg

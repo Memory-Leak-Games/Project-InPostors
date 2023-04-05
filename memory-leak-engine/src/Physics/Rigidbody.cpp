@@ -3,10 +3,13 @@
 #include "Core/Time.h"
 #include "Core/Math.h"
 
+#include "include/Physics/Colliders/Collider.h"
+
 #include "Macros.h"
 
 namespace mlg {
     Rigidbody::Rigidbody() = default;
+    Rigidbody::~Rigidbody() = default;
 
     // calculate Verlet integration
     void Rigidbody::Integrate() {

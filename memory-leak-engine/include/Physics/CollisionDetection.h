@@ -3,7 +3,7 @@
 
 namespace mlg {
 
-    class CollisionResponses {
+    class CollisionDetection {
     public:
         static bool CircleCircleCollision(class CircleCollider* circleOne, CircleCollider* circleTwo);
         static glm::vec2 CircleCircleSeparation(class CircleCollider *circleOne, CircleCollider *circleTwo);

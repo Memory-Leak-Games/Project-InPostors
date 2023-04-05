@@ -144,26 +144,6 @@ public:
         ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, whiteMaterial);
         ground.lock()->GetTransform().SetPosition({0.f, -5.f, 0.f});
         ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
-
-        auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/comic.ttf");
-
-        label = std::make_shared<mlg::Label>();
-        label->font = font;
-
-        auto imageMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/cat_UI_material.json");
-        image = std::make_shared<mlg::Image>(imageMaterial);
-        image->SetSize(glm::vec2{256.f});
-        image->SetPosition({50.f, 50.f});
-
-        auto progressBarMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/progressBar_material.json");
-
-        progressBar = std::make_shared<mlg::ProgressBar>(progressBarMaterial);
-        progressBar->SetSize(glm::vec2{256.f, 32.f});
-        progressBar->SetPosition({50.f, 400.f});
-
-        mlg::Renderer2D::GetInstance()->AddRenderable(label);
-        mlg::Renderer2D::GetInstance()->AddRenderable(image);
-        mlg::Renderer2D::GetInstance()->AddRenderable(progressBar);
     }
 
     virtual ~ProjectInpostors() {

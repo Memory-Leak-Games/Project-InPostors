@@ -1,13 +1,13 @@
-#include "Physics/CollisionResponses.h"
+#include "Physics/CollisionDetection.h"
 
 #include "Core/Math.h"
 
 #include "Physics/Rigidbody.h"
-#include "Physics/CircleCollider.h"
-#include "Physics/RectangleCollider.h"
+#include "include/Physics/Colliders/CircleCollider.h"
+#include "include/Physics/Colliders/RectangleCollider.h"
 
 namespace mlg {
-    bool CollisionResponses::CircleCircleCollision(CircleCollider *circleOne,
+    bool CollisionDetection::CircleCircleCollision(CircleCollider *circleOne,
                                                    CircleCollider *circleTwo) {
         glm::vec2 positionOne = circleOne->owner->position;
         glm::vec2 positionTwo = circleTwo->owner->position;
@@ -20,7 +20,7 @@ namespace mlg {
         return glm::length2(positionOne - positionTwo) <= radiusSum * radiusSum;
     }
 
-    glm::vec2 CollisionResponses::CircleCircleSeparation(CircleCollider *circleOne,
+    glm::vec2 CollisionDetection::CircleCircleSeparation(CircleCollider *circleOne,
                                                          CircleCollider *circleTwo) {
         glm::vec2 positionOne = circleOne->owner->position;
         glm::vec2 positionTwo = circleTwo->owner->position;
@@ -34,7 +34,7 @@ namespace mlg {
         return Math::SafeNormal(oneToTwo) * separationLength;
     }
 
-    bool CollisionResponses::SquareSquareCollision(RectangleCollider *rectangleOne,
+    bool CollisionDetection::SquareSquareCollision(RectangleCollider *rectangleOne,
                                                    RectangleCollider *rectangleTwo) {
         return rectangleOne->GetRight() > rectangleTwo->GetLeft()
                && rectangleOne->GetLeft() < rectangleTwo->GetRight()
@@ -42,7 +42,7 @@ namespace mlg {
                && rectangleOne->GetBottom() < rectangleTwo->GetTop();
     }
 
-    glm::vec2 CollisionResponses::SquareSquareSeparation(RectangleCollider *rectangleOne,
+    glm::vec2 CollisionDetection::SquareSquareSeparation(RectangleCollider *rectangleOne,
                                                          RectangleCollider *rectangleTwo) {
         float leftSeparation = rectangleOne->GetRight() - rectangleTwo->GetLeft();
         float rightSeparation = rectangleTwo->GetRight() - rectangleOne->GetLeft();
@@ -61,7 +61,7 @@ namespace mlg {
         return finalSeparation;
     }
 
-    bool CollisionResponses::SquareCircleCollision(RectangleCollider *rectangle, CircleCollider *circle) {
+    bool CollisionDetection::SquareCircleCollision(RectangleCollider *rectangle, CircleCollider *circle) {
         glm::vec2 rectanglePosition = rectangle->owner->position;
         glm::vec2 circlePosition = circle->owner->position;
 
@@ -69,7 +69,7 @@ namespace mlg {
         return glm::length(circlePosition - nearestPoint) <= circle->GetRadius();
     }
 
-    glm::vec2 CollisionResponses::CalculateNearestPoint(const glm::vec2 &position, RectangleCollider *rectangle) {
+    glm::vec2 CollisionDetection::CalculateNearestPoint(const glm::vec2 &position, RectangleCollider *rectangle) {
         glm::vec2 result;
         result.x = glm::clamp(position.x, rectangle->GetLeft(), rectangle->GetRight());
         result.y = glm::clamp(position.y, rectangle->GetBottom(), rectangle->GetTop());
@@ -77,7 +77,7 @@ namespace mlg {
         return result;
     }
 
-    glm::vec2 CollisionResponses::SquareCircleSeparation(RectangleCollider *rectangle, CircleCollider *circle) {
+    glm::vec2 CollisionDetection::SquareCircleSeparation(RectangleCollider *rectangle, CircleCollider *circle) {
         glm::vec2 rectanglePosition = rectangle->owner->position;
         glm::vec2 circlePosition = circle->owner->position;
         glm::vec2 nearestPoint = CalculateNearestPoint(circlePosition, rectangle);

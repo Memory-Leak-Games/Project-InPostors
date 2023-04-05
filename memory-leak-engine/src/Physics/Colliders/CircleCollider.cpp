@@ -1,4 +1,4 @@
-#include "Physics/CircleCollider.h"
+#include "include/Physics/Colliders/CircleCollider.h"
 
 namespace mlg {
     CircleCollider::CircleCollider(float radius) : radius(radius) {}

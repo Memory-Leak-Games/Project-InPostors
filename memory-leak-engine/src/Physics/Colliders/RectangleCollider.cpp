@@ -1,4 +1,4 @@
-#include "Physics/RectangleCollider.h"
+#include "include/Physics/Colliders/RectangleCollider.h"
 
 #include "Physics/Rigidbody.h"
 
