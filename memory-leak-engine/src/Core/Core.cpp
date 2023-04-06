@@ -125,48 +125,54 @@ void Core::MainLoop() {
         Renderer2D::GetInstance()->Draw();
 
 #ifdef DEBUG
-        ImGui::Begin("FPS");
-        ImGui::Text("Framerate: %.3f (%.1f FPS)", Time::GetTrueDeltaSeconds(), 1 / Time::GetTrueDeltaSeconds());
-        ImGui::Text("Time: %.3f", Time::GetSeconds());
-        ImGui::End();
-
-        ImGui::Begin("Input");
-        float forward = 0.f;
-        float right = 0.f;
-
-        forward += Input::GetActionStrength("forward_one");
-        forward -= Input::GetActionStrength("backward_one");
-
-        right += Input::GetActionStrength("right_one");
-        right -= Input::GetActionStrength("left_one");
-
-        ImGui::Text("forward: %f", forward);
-        ImGui::Text("right: %f", right);
-
-        ImGui::End();
-
-        ImGui::Begin("Testing");
-        ImGui::Separator();
-        bool vSync = Window::GetInstance()->GetVerticalSync();
-        ImGui::Checkbox("VSync ", &vSync);
-        Window::GetInstance()->SetVerticalSync(vSync);
-
-        ImGui::Separator();
-        ImGui::Text("Camera");
-        glm::vec3 position = Camera::GetInstance()->GetPosition();
-        ImGui::DragFloat3("Camera Position", (float*) &position);
-        Camera::GetInstance()->SetPosition(position);
-
-        ImGui::End();
-
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        RenderImGUI();
 #endif
 
         Window::GetInstance()->SwapBuffers();
         Window::GetInstance()->PollEvents();
     }
 }
+
+#ifdef DEBUG
+void Core::RenderImGUI() const {
+    ImGui::Begin("FPS");
+    ImGui::Text("Framerate: %.3f (%.1f FPS)", Time::GetTrueDeltaSeconds(), 1 / Time::GetTrueDeltaSeconds());
+    ImGui::Text("Time: %.3f", Time::GetSeconds());
+    ImGui::End();
+
+    ImGui::Begin("Input");
+    float forward = 0.f;
+    float right = 0.f;
+
+    forward += Input::GetActionStrength("forward_one");
+    forward -= Input::GetActionStrength("backward_one");
+
+    right += Input::GetActionStrength("right_one");
+    right -= Input::GetActionStrength("left_one");
+
+    ImGui::Text("forward: %f", forward);
+    ImGui::Text("right: %f", right);
+
+    ImGui::End();
+
+    ImGui::Begin("Testing");
+    ImGui::Separator();
+    bool vSync = Window::GetInstance()->GetVerticalSync();
+    ImGui::Checkbox("VSync ", &vSync);
+    Window::GetInstance()->SetVerticalSync(vSync);
+
+    ImGui::Separator();
+    ImGui::Text("Camera");
+    glm::vec3 position = Camera::GetInstance()->GetPosition();
+    ImGui::DragFloat3("Camera Position", (float*) &position);
+    Camera::GetInstance()->SetPosition(position);
+
+    ImGui::End();
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+#endif
 
 void Core::Stop() {
     SPDLOG_INFO("Stopping CoreEngine");

@@ -13,7 +13,10 @@ void SimpleCarMovementComponent::Start() {
     rigidbodyComponent.lock()->SetAngularDrag(5.f);
 }
 
-void SimpleCarMovementComponent::Update() {
+SimpleCarMovementComponent::SimpleCarMovementComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name)
+        : Component(owner, name) {}
+
+void SimpleCarMovementComponent::PhysicsUpdate() {
     float forward = mlg::Input::GetActionStrength("forward_one");
     forward -= mlg::Input::GetActionStrength("backward_one");
 
@@ -26,13 +29,15 @@ void SimpleCarMovementComponent::Update() {
     forwardVector2D.x = forwardVector.x;
     forwardVector2D.y = forwardVector.z;
 
-    glm::vec3 worldPosition = owner->GetTransform().GetWorldPosition();
-    mlg::Gizmos::DrawPoint(worldPosition + owner->GetTransform().GetForwardVector() * 2.f);
-    mlg::Gizmos::DrawSphere(glm::vec3(0.f), 1.f);
-
     rigidbodyComponent.lock()->AddForce(forwardVector2D * forward * 10.f);
     rigidbodyComponent.lock()->AddTorque(right * -3.f);
 }
 
-SimpleCarMovementComponent::SimpleCarMovementComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name)
-        : Component(owner, name) {}
+void SimpleCarMovementComponent::Update() {
+
+    auto owner = GetOwner().lock();
+
+    glm::vec3 worldPosition = owner->GetTransform().GetWorldPosition();
+    mlg::Gizmos::DrawPoint(worldPosition + owner->GetTransform().GetForwardVector() * 2.f);
+    mlg::Gizmos::DrawSphere(worldPosition, 1.f);
+}

@@ -14,5 +14,8 @@ public:
     SimpleCarMovementComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name);
 
     void Start() override;
+
     void Update() override;
+
+    void PhysicsUpdate() override;
 };

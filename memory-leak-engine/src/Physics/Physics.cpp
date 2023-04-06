@@ -48,7 +48,6 @@ namespace mlg {
 
         instance->timeAccumulator += deltaTime;
 
-        int test = 0;
         while (instance->timeAccumulator >= Time::GetFixedTimeStep()) {
             instance->OnFixedUpdate();
             instance->SolveDynamics();
@@ -56,7 +55,6 @@ namespace mlg {
             CollisionManager::SolveCollisions();
 
             instance->timeAccumulator -= Time::GetFixedTimeStep();
-            test++;
         }
     }
 

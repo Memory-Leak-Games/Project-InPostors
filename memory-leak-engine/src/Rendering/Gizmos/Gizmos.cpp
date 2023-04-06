@@ -113,8 +113,8 @@ void mlg::Gizmos::Initialize() {
         glCreateBuffers(1, &pointVBO);
         glNamedBufferData(pointVBO, sizeof(glm::vec3), lineVertices, GL_STATIC_DRAW);
 
-        glEnableVertexArrayAttrib(pointVBO, 0);
-        glVertexArrayAttribBinding(pointVBO, 0, 0);
+        glEnableVertexArrayAttrib(pointVAO, 0);
+        glVertexArrayAttribBinding(pointVAO, 0, 0);
         glVertexArrayAttribFormat(pointVAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
 
         glVertexArrayVertexBuffer(pointVAO, 0, pointVBO, 0, sizeof(glm::vec3));
