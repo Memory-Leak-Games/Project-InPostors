@@ -40,7 +40,7 @@ namespace mlg {
 
         static std::vector<GizmoObject> gizmoInstances;
 
-        static void GenerateSphere(std::vector<GLfloat>& vertices, std::vector<uint32_t>& indices, int LOD);
+        static void GenerateSphere(std::vector<GLfloat>& vertices, std::vector<uint32_t>& indices);
 
     public:
         static void Initialize();

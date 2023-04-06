@@ -58,63 +58,68 @@ void mlg::Gizmos::Initialize() {
 
     // Generate line gizmo
     {
-        glGenBuffers(1, &lineVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
-        glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(glm::vec3), lineVertices, GL_STATIC_DRAW);
-        glGenVertexArrays(1, &lineVAO);
-        glBindVertexArray(lineVAO);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*) nullptr);
-        glEnableVertexAttribArray(0);
+        glCreateVertexArrays(1, &lineVAO);
+
+        glCreateBuffers(1, &lineVBO);
+        glNamedBufferData(lineVAO, 2 * sizeof(glm::vec3), lineVertices, GL_STATIC_DRAW);
+
+        glEnableVertexArrayAttrib(lineVAO, 0);
+        glVertexArrayAttribBinding(lineVAO, 0, 0);
+        glVertexArrayAttribFormat(lineVAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
+
+        glVertexArrayVertexBuffer(lineVAO, 0, lineVBO, 0, sizeof(glm::vec3));
     }
 
     // Generate box gizmo
     {
-        glGenBuffers(1, &boxVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, boxVBO);
-        glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(glm::vec3), boxVertices, GL_STATIC_DRAW);
-        glGenBuffers(1, &boxEBO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, boxEBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, 24 * sizeof(GLuint), boxIndices, GL_STATIC_DRAW);
-        glGenVertexArrays(1, &boxVAO);
-        glBindVertexArray(boxVAO);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLuint), (void*) nullptr);
-        glEnableVertexAttribArray(0);
+        glCreateVertexArrays(1, &boxVAO);
+
+        glCreateBuffers(1, &boxVBO);
+        glCreateBuffers(1, &boxEBO);
+        glNamedBufferData(boxVBO, 8 * sizeof(glm::vec3), boxVertices, GL_STATIC_DRAW);
+        glNamedBufferData(boxEBO, 24 * sizeof(float), boxIndices, GL_STATIC_DRAW);
+
+        glEnableVertexArrayAttrib(boxVAO, 0);
+        glVertexArrayAttribBinding(boxVAO, 0, 0);
+        glVertexArrayAttribFormat(boxVAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
+
+        glVertexArrayVertexBuffer(boxVAO, 0, boxVBO, 0, sizeof(glm::vec3));
+        glVertexArrayElementBuffer(boxVAO, boxEBO);
     }
 
     // Generate sphere gizmo
     {
         std::vector<GLfloat> SphereVertices;
         std::vector<GLuint> SphereIndices;
-        GenerateSphere(SphereVertices, SphereIndices, 30);
+        GenerateSphere(SphereVertices, SphereIndices);
 
-        glGenBuffers(1, &sphereVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, sphereVBO);
-        glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(glm::vec3), &SphereVertices[0], GL_STATIC_DRAW);
-        glGenBuffers(1, &sphereEBO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphereEBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, 24 * sizeof(GLuint), &SphereIndices[0], GL_STATIC_DRAW);
-        glGenVertexArrays(1, &sphereVAO);
-        glBindVertexArray(sphereVAO);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLuint), (void*) nullptr);
-        glEnableVertexAttribArray(0);
+        glCreateVertexArrays(1, &sphereVAO);
+
+        glCreateBuffers(1, &sphereVBO);
+        glCreateBuffers(1, &sphereEBO);
+        glNamedBufferData(sphereVBO, SphereVertices.size() * sizeof(glm::vec3), &SphereVertices[0], GL_STATIC_DRAW);
+        glNamedBufferData(sphereEBO, SphereIndices.size() * sizeof(float), &SphereIndices[0], GL_STATIC_DRAW);
+
+        glEnableVertexArrayAttrib(sphereVAO, 0);
+        glVertexArrayAttribBinding(sphereVAO, 0, 0);
+        glVertexArrayAttribFormat(sphereVAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
+
+        glVertexArrayVertexBuffer(sphereVAO, 0, sphereVBO, 0, sizeof(glm::vec3));
+        glVertexArrayElementBuffer(sphereVAO, sphereEBO);
     }
 
     // Generate point gizmo
     {
-        glGenBuffers(1, &pointVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, pointVBO);
-        glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(glm::vec3), pointVertex, GL_STATIC_DRAW);
-        glGenVertexArrays(1, &pointVAO);
-        glBindVertexArray(pointVAO);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*) nullptr);
-        glEnableVertexAttribArray(0);
-    }
+        glCreateVertexArrays(1, &pointVAO);
 
-    // Unbind
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
+        glCreateBuffers(1, &pointVBO);
+        glNamedBufferData(pointVBO, sizeof(glm::vec3), lineVertices, GL_STATIC_DRAW);
+
+        glEnableVertexArrayAttrib(pointVBO, 0);
+        glVertexArrayAttribBinding(pointVBO, 0, 0);
+        glVertexArrayAttribFormat(pointVAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
+
+        glVertexArrayVertexBuffer(pointVAO, 0, pointVBO, 0, sizeof(glm::vec3));
     }
 }
 
@@ -220,6 +225,7 @@ void Gizmos::DrawSphere(glm::vec3 position, float radius, glm::vec4 color, bool 
     gizmo.VAO = sphereVAO;
     gizmo.EBO = sphereEBO;
     gizmo.elements = sphereIndicesCount;
+    gizmo.primitive = GL_LINE_STRIP;
 
     gizmo.world = glm::mat4(1.0f);
     gizmo.world = glm::translate(gizmo.world, position);
@@ -229,7 +235,6 @@ void Gizmos::DrawSphere(glm::vec3 position, float radius, glm::vec4 color, bool 
     gizmo.alwaysFront = alwaysFront;
 
     gizmoInstances.push_back(gizmo);
-
 }
 
 void Gizmos::DrawPoint(glm::vec3 position, glm::vec4 color, bool alwaysFront) {
@@ -255,32 +260,34 @@ void Gizmos::DrawSizedPoint(glm::vec3 position, float pointSize, glm::vec4 color
 }
 
 // FIXME: It's not a sphere :/
-void Gizmos::GenerateSphere(std::vector<GLfloat>& vertices, std::vector<GLuint>& indices, int LOD) {
-    int i, j;
-    int indicator = 0;
-    for (i = 0; i <= LOD; i++) {
-        double lat0 = glm::pi<double>() * (-0.5 + (double) (i - 1) / LOD);
-        double z0 = glm::sin(lat0);
-        double zr0 = glm::cos(lat0);
+void Gizmos::GenerateSphere(std::vector<GLfloat>& vertices, std::vector<GLuint>& indices) {
+    constexpr float radius = 0.5;
+    constexpr uint32_t LOD = 10;
+    uint32_t indicator = 0;
 
-        double lat1 = glm::pi<double>() * (-0.5 + (double) i / LOD);
-        double z1 = glm::sin(lat1);
-        double zr1 = glm::cos(lat1);
+    for (uint32_t i = 0; i <= LOD; i++) {
+        float lat0 = glm::pi<float>() * (-0.5f + (float) (i - 1) / (float) LOD);
+        float z0 = glm::sin(lat0);
+        float zr0 = glm::cos(lat0);
 
-        for (j = 0; j <= LOD; j++) {
-            double lng = 2 * glm::pi<double>() * (double) (j - 1) / LOD;
-            double x = glm::cos(lng);
-            double y = glm::sin(lng);
+        float lat1 = glm::pi<float>() * (-0.5f + (float) i / (float) LOD);
+        float z1 = glm::sin(lat1);
+        float zr1 = glm::cos(lat1);
 
-            vertices.push_back(x * zr0 * 0.5f);
-            vertices.push_back(y * zr0 * 0.5f);
-            vertices.push_back(z0 * 0.5f);
+        for (uint32_t j = 0; j <= LOD; j++) {
+            float lng = 2 * glm::pi<float>() * (float) (j - 1) / (float) LOD;
+            float x = glm::cos(lng);
+            float y = glm::sin(lng);
+
+            vertices.push_back(x * zr0 * radius);
+            vertices.push_back(y * zr0 * radius);
+            vertices.push_back(z0 * radius);
             indices.push_back(indicator);
             indicator++;
 
-            vertices.push_back(x * zr1 * 0.5f);
-            vertices.push_back(y * zr1 * 0.5f);
-            vertices.push_back(z1 * 0.5f);
+            vertices.push_back(x * zr1 * radius);
+            vertices.push_back(y * zr1 * radius);
+            vertices.push_back(z1 * radius);
             indices.push_back(indicator);
             indicator++;
         }
