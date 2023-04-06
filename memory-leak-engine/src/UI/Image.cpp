@@ -1,6 +1,7 @@
 #include "UI/Image.h"
-#include "Macros.h"
 #include "Core/Window.h"
+#include "Macros.h"
+#include "UI/Renderer2D.h"
 
 #include <glad/glad.h>
 
@@ -44,16 +45,12 @@ namespace mlg {
         glVertexArrayVertexBuffer(rectVao, 0, rectVbo, 0, 2 * sizeof(float));
     }
 
-    void Image::Draw() {
+    void Image::Draw(const Renderer2D* renderer) {
         material->Activate();
-
-        // TODO: nie liczyć tego co klatkę tylko jeżeli wielkość okna się zmieni (może trzymać to w Rendererz jako pole statyczne)
-        Window* window = Window::GetInstance();
-        glm::mat4 projection = glm::ortho(0.0f, (float) window->GetWidth(), 0.0f, (float) window->GetHeight());
 
         material->GetShaderProgram()->SetVec2F("size", size);
         material->GetShaderProgram()->SetVec2F("screenPosition", position);
-        material->GetShaderProgram()->SetMat4F("projection", projection);
+        material->GetShaderProgram()->SetMat4F("projection", renderer->GetProjection());
 
         DrawRect();
 

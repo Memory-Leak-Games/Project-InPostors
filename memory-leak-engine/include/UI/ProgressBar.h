@@ -10,7 +10,7 @@ namespace mlg {
     public:
         explicit ProgressBar(const std::shared_ptr<struct MaterialAsset>& material);
 
-        void Draw() override;
+        void Draw(const Renderer2D* renderer) override;
     };
 
 } // mlg

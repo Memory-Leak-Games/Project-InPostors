@@ -17,7 +17,7 @@ namespace mlg {
 
         void InitializeRect();
 
-        void Draw() override;
+        void Draw(const class Renderer2D* renderer) override;
 
         const glm::vec2& GetSize() const;
         const glm::vec2& GetPosition() const;

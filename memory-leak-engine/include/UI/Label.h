@@ -13,6 +13,6 @@ namespace mlg {
         glm::vec3 textColor = {1, 1, 1};
 
         Label();
-        void Draw() override;
+        void Draw(const Renderer2D* renderer) override;
     };
 }

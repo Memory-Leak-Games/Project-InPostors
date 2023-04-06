@@ -65,6 +65,7 @@ void Core::MainLoop() {
         postProcessingFrameBuffer.Resize(windowWidth, windowHeight);
 
         Camera::GetInstance()->SetResolution( {windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight()});
+        Renderer2D::GetInstance()->SetProjection(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
         });
 
     bool shouldClose = false;

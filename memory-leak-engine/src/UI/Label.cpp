@@ -10,6 +10,7 @@
 
 #include "Rendering/Assets/ShaderAsset.h"
 #include "Rendering/ShaderProgram.h"
+#include "UI/Renderer2D.h"
 
 mlg::Label::Label() {
     shader = std::make_shared<ShaderProgram>(
@@ -28,22 +29,18 @@ mlg::Label::Label() {
     glVertexArrayVertexBuffer(vao, 0, vbo, 0, 4 * sizeof(float));
 }
 
-void mlg::Label::Draw() {
+void mlg::Label::Draw(const Renderer2D* renderer) {
 
     //TODO: Remove me later
-    text = std::to_string(Time::GetSeconds());
+    text = std::to_string(renderer->GetProjection()[0][0]);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // TODO: nie liczyć tego co klatkę tylko jeżeli wielkość okna się zmieni (może trzymać to w Rendererz jako pole statyczne)
-    Window* window = Window::GetInstance();
-    glm::mat4 projection = glm::ortho(0.0f, (float) window->GetWidth(), 0.0f, (float) window->GetHeight());
-
     // Activate corresponding render state
     shader->Activate();
     shader->SetVec3F("textColor", textColor);
-    shader->SetMat4F("projection", projection);
+    shader->SetMat4F("projection", renderer->GetProjection());
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(vao);
 
