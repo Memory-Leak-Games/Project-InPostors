@@ -4,7 +4,6 @@
 #include "Rendering/Assets/ShaderAsset.h"
 
 #include "Rendering/ShaderProgram.h"
-#include "Core/Time.h"
 
 using namespace mlg;
 
@@ -25,11 +24,11 @@ glm::vec4 Gizmos::defaultColor = {0, 1, 0, 1};
 
 std::vector<Gizmos::GizmoObject> Gizmos::gizmoInstances;
 
-GLfloat lineVertices[]{
+float lineVertices[]{
         0.0f, 0.0f, 0.0f,
         1.0f, 1.0f, 1.0f};
 
-GLfloat boxVertices[]{
+float boxVertices[]{
         0.5f, 0.5f, 0.5f,
         0.5f, 0.5f, -0.5f,
         -0.5f, 0.5f, -0.5f,
@@ -40,15 +39,14 @@ GLfloat boxVertices[]{
         -0.5f, -0.5f, 0.5f,
 };
 
-GLuint boxIndices[]{
+uint32_t boxIndices[]{
         0, 1, 1, 2, 2, 3, 3, 0,
         4, 5, 5, 6, 6, 7, 7, 4,
         0, 4, 1, 5, 2, 6, 3, 7
 };
 
 // Yes, I also find this silly
-GLfloat pointVertex[]{
-        0.0f, 0.0f, 0.0f};
+float pointVertex[]{0.0f, 0.0f, 0.0f};
 
 void mlg::Gizmos::Initialize() {
     // Load gizmo shader
@@ -126,12 +124,15 @@ void mlg::Gizmos::Initialize() {
 void mlg::Gizmos::Stop() {
     glDeleteBuffers(1, &lineVBO);
     glDeleteVertexArrays(1, &lineVAO);
+
     glDeleteBuffers(1, &boxVBO);
     glDeleteVertexArrays(1, &boxVAO);
     glDeleteBuffers(1, &boxEBO);
+
     glDeleteBuffers(1, &sphereVBO);
     glDeleteVertexArrays(1, &sphereVAO);
     glDeleteBuffers(1, &sphereEBO);
+
     glDeleteBuffers(1, &pointVBO);
     glDeleteVertexArrays(1, &pointVAO);
 }
@@ -259,10 +260,9 @@ void Gizmos::DrawSizedPoint(glm::vec3 position, float pointSize, glm::vec4 color
     gizmoInstances.push_back(gizmo);
 }
 
-// FIXME: It's not a sphere :/
 void Gizmos::GenerateSphere(std::vector<GLfloat>& vertices, std::vector<GLuint>& indices) {
     constexpr float radius = 0.5;
-    constexpr uint32_t LOD = 10;
+    constexpr uint32_t LOD = 5;
     uint32_t indicator = 0;
 
     for (uint32_t i = 0; i <= LOD; i++) {
@@ -293,5 +293,5 @@ void Gizmos::GenerateSphere(std::vector<GLfloat>& vertices, std::vector<GLuint>&
         }
     }
 
-    sphereIndicesCount = indices.size();
+    sphereIndicesCount = (int32_t) indices.size();
 }
