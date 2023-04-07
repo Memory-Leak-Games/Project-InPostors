@@ -1,9 +1,10 @@
 #pragma once
 
+#include "Gameplay/Component.h"
 #include "Renderable2D.h"
 
 namespace mlg {
-    class Label : public Renderable2D {
+    class Label : public Component, public Renderable2D {
         uint32_t vao, vbo;
         std::shared_ptr<class ShaderProgram> shader;
     public:
@@ -12,7 +13,7 @@ namespace mlg {
         std::shared_ptr<class FontAsset> font;
         glm::vec3 textColor = {1, 1, 1};
 
-        Label();
+        Label(std::weak_ptr<Entity> owner, std::string name);
         void Draw(const Renderer2D* renderer) override;
     };
 }

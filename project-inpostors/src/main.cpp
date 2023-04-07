@@ -97,8 +97,7 @@ public:
 
         return 0;
     }
-
-    std::shared_ptr<mlg::Label> label;
+    
     std::shared_ptr<mlg::Image> image;
     std::shared_ptr<mlg::ProgressBar> progressBar;
 
@@ -147,8 +146,11 @@ public:
 
         auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/comic.ttf");
 
-        label = std::make_shared<mlg::Label>();
-        label->font = font;
+        auto ui = mlg::EntityManager::SpawnEntity<mlg::Entity>("ui", true, mlg::SceneGraph::GetRoot());
+
+        auto label = ui.lock()->AddComponent<mlg::Label>("Label");
+        label.lock()->font = font;
+        label.lock()->position = {10, 10};
 
         auto imageMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/cat_UI_material.json");
         image = std::make_shared<mlg::Image>(imageMaterial);
