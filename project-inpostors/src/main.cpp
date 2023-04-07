@@ -15,6 +15,8 @@
 #include "Core/Time.h"
 
 #include "SceneGraph/SceneGraph.h"
+#include "SimplePlayer.h"
+#include "Core/Settings/SettingsManager.h"
 
 #include <Gameplay/ComponentManager.h>
 #include <Gameplay/Components/StaticMeshComponent.h>
@@ -57,6 +59,8 @@ public:
     ProjectInpostors() = default;
 
     int Main(int argc, char* argv[]) {
+        mlg::SettingsManager::Initialize();
+
         mlg::Time::Initialize();
         mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
         mlg::RenderingAPI::Initialize();
@@ -95,6 +99,8 @@ public:
         mlg::Window::Stop();
         mlg::Time::Stop();
 
+        mlg::SettingsManager::Initialize();
+
         return 0;
     }
 
@@ -106,64 +112,23 @@ public:
         mlg::Camera::GetInstance()->SetPosition({-8.f, 15.f, 8.f});
         mlg::Camera::GetInstance()->SetRotation(glm::radians(-60.f), glm::radians(45.f));
 
-        auto tardisMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Tardis/tardis_material.json");
-        auto tardisModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Tardis/tardis.obj");
-
         auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
+        auto redMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/red_material.json");
         auto planeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/plane.obj");
-
-        auto carModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Cars/autko1.obj");
-        auto carEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("CarOne", false, mlg::SceneGraph::GetRoot());
-        carEntity.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", carModel, whiteMaterial);
-        carEntity.lock()->AddComponent<ComponentTest>("RotationComponent");
-
-        auto buildingModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Buildings/dom1.obj");
-
-        auto buildingEntityOne = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisRight", false, mlg::SceneGraph::GetRoot());
-        buildingEntityOne.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", buildingModel, whiteMaterial);
-        buildingEntityOne.lock()->AddComponent<ComponentTest>("RotationComponent");
-
-        buildingEntityOne.lock()->GetTransform().SetPosition({-7.f, 0.f, 0.f});
-        buildingEntityOne.lock()->GetTransform().SetScale(glm::vec3{2.});
-
-        auto tardisMaterial2 = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Tardis/tardis_material_another.json");
-        auto tardisModel2 = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Tardis/tardis.obj");
-
-        auto tardisEntity2 = mlg::EntityManager::SpawnEntity<mlg::Entity>("TardisLeft", false, mlg::SceneGraph::GetRoot());
-        tardisEntity2.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", tardisModel2, tardisMaterial2);
-        auto rigidbody = tardisEntity2.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
-        rigidbody.lock()->AddForce({0, 40.f});
-        rigidbody.lock()->AddForce({-40.f, 0.f}, {0.f, 1.f});
-
-        rigidbody.lock()->SetLinearDrag(1.f);
-        rigidbody.lock()->SetAngularDrag(1.f);
-
-        tardisEntity2.lock()->GetTransform().SetPosition({7.f, 0.f, 0.f});
+        auto cubeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Cube.obj");
 
         auto ground = mlg::EntityManager::SpawnEntity<mlg::Entity>("Ground", true, mlg::SceneGraph::GetRoot());
         ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, whiteMaterial);
-        ground.lock()->GetTransform().SetPosition({0.f, -5.f, 0.f});
+        ground.lock()->GetTransform().SetPosition({0.f, -1.f, 0.f});
         ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
 
-        auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/comic.ttf");
+        auto wall = mlg::EntityManager::SpawnEntity<mlg::Entity>("Wall", true, mlg::SceneGraph::GetRoot());
+        wall.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", cubeModel, redMaterial);
+        wall.lock()->GetTransform().SetPosition({-2.f, 0.f, -5.f});
+        auto rigidbody = wall.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
+        rigidbody.lock()->AddCollider<mlg::ColliderShape::Rectangle>(glm::vec2(0.f), glm::vec2(1.f));
 
-        label = std::make_shared<mlg::Label>();
-        label->font = font;
-
-        auto imageMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/cat_UI_material.json");
-        image = std::make_shared<mlg::Image>(imageMaterial);
-        image->SetSize(glm::vec2{256.f});
-        image->SetPosition({50.f, 50.f});
-
-        auto progressBarMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/progressBar_material.json");
-
-        progressBar = std::make_shared<mlg::ProgressBar>(progressBarMaterial);
-        progressBar->SetSize(glm::vec2{256.f, 32.f});
-        progressBar->SetPosition({50.f, 400.f});
-
-        mlg::Renderer2D::GetInstance()->AddRenderable(label);
-        mlg::Renderer2D::GetInstance()->AddRenderable(image);
-        mlg::Renderer2D::GetInstance()->AddRenderable(progressBar);
+        auto player = mlg::EntityManager::SpawnEntity<SimplePlayer>("Player", false, mlg::SceneGraph::GetRoot());
     }
 
     virtual ~ProjectInpostors() {

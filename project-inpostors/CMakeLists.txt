@@ -14,7 +14,7 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE pch.h)
 target_compile_definitions(${PROJECT_NAME} PRIVATE GLFW_INCLUDE_NONE)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_SOURCE_DIR}/src/include
+        ${CMAKE_SOURCE_DIR}/project-inpostors/include
         ${CMAKE_SOURCE_DIR}/memory-leak-engine/include)
 
 target_link_libraries(${PROJECT_NAME} memory-leak-engine)

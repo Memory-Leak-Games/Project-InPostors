@@ -1,16 +1,27 @@
 #include "Gameplay/Components/RigidbodyComponent.h"
 
+#include "Core/Settings/SettingsManager.h"
+
 #include "Physics/Physics.h"
 #include "Physics/Rigidbody.h"
+#include "Physics/Colliders/Collider.h"
+#include "Physics/Colliders/ColliderShapes.h"
 
 #include "Gameplay/Entity.h"
-#include "SceneGraph/Transform.h"
+
+#include "Rendering/Gizmos/Gizmos.h"
 
 namespace mlg {
     RigidbodyComponent::RigidbodyComponent(const std::weak_ptr<Entity>& owner, const std::string& name)
     : Component(owner, name) {
         rigidbody = std::make_shared<Rigidbody>();
         Physics::AddRigidbody(rigidbody);
+
+        const glm::vec3 ownerPosition = GetOwner().lock()->GetTransform().GetPosition();
+        rigidbody->position.x = ownerPosition.x;
+        rigidbody->position.y = ownerPosition.z;
+
+        SetKinematic(GetOwner().lock()->IsStatic());
     }
 
     RigidbodyComponent::~RigidbodyComponent() {
@@ -42,6 +53,29 @@ namespace mlg {
         glm::vec3 ownerRotation {};
         ownerRotation.y = rigidbody->rotation;
         owner->GetTransform().SetEulerRotation(ownerRotation);
+
+#ifdef DEBUG
+        if (!SettingsManager::Get<bool>(SettingsType::Debug, "showColliders"))
+            return;
+
+        for (auto& collider : rigidbody->colliders) {
+            glm::vec3 position {0.f};
+            position.x = collider->shape->position.x;
+            position.z = collider->shape->position.y;
+
+            switch (collider->shape->GetType()) {
+                case ColliderShape::ColliderShapeType::Circle: {
+                    auto circle = (ColliderShape::Circle*) collider->shape.get();
+                    Gizmos::DrawSphere(position, circle->radius);
+                    break;
+                }
+                case ColliderShape::ColliderShapeType::Rectangle:
+                    auto rect = (ColliderShape::Rectangle*) collider->shape.get();
+                    Gizmos::DrawBox(position, {rect->size.x, 1.f, rect->size.y});
+                    break;
+            }
+        }
+#endif
     }
 
     void RigidbodyComponent::SetLinearDrag(float value) {
@@ -50,6 +84,18 @@ namespace mlg {
 
     void RigidbodyComponent::SetAngularDrag(float value) {
         rigidbody->angularDrag = value;
+    }
+
+    void RigidbodyComponent::Start() {
+        const glm::vec3 ownerPosition = GetOwner().lock()->GetTransform().GetPosition();
+        rigidbody->position.x = ownerPosition.x;
+        rigidbody->position.y = ownerPosition.z;
+
+        SetKinematic(GetOwner().lock()->IsStatic());
+    }
+
+    void RigidbodyComponent::SetKinematic(bool isKinematic) {
+        rigidbody->isKinematic = isKinematic;
     }
 
 
