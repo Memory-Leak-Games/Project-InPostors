@@ -29,7 +29,6 @@ namespace mlg {
 
         DirectionalLightData sun;
 
-        //todo: extract to settings file
         int shadowMapResolution = 1024;
         float shadowMapSize = 20.f;
 

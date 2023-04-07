@@ -160,9 +160,6 @@ void Core::RenderImGUI() const {
 
     ImGui::Begin("Testing");
     ImGui::Separator();
-    bool vSync = Window::GetInstance()->GetVerticalSync();
-    ImGui::Checkbox("VSync ", &vSync);
-    Window::GetInstance()->SetVerticalSync(vSync);
 
     ImGui::Separator();
     ImGui::Text("Camera");

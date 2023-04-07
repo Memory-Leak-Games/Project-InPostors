@@ -16,6 +16,7 @@
 
 #include "SceneGraph/SceneGraph.h"
 #include "SimplePlayer.h"
+#include "Core/Settings/SettingsManager.h"
 
 #include <Gameplay/ComponentManager.h>
 #include <Gameplay/Components/StaticMeshComponent.h>
@@ -58,6 +59,8 @@ public:
     ProjectInpostors() = default;
 
     int Main(int argc, char* argv[]) {
+        mlg::SettingsManager::Initialize();
+
         mlg::Time::Initialize();
         mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
         mlg::RenderingAPI::Initialize();
@@ -96,6 +99,8 @@ public:
         mlg::Window::Stop();
         mlg::Time::Stop();
 
+        mlg::SettingsManager::Initialize();
+
         return 0;
     }
 
@@ -120,7 +125,8 @@ public:
         auto wall = mlg::EntityManager::SpawnEntity<mlg::Entity>("Wall", true, mlg::SceneGraph::GetRoot());
         wall.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", cubeModel, redMaterial);
         wall.lock()->GetTransform().SetPosition({-2.f, 0.f, -5.f});
-        wall.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
+        auto rigidbody = wall.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
+        rigidbody.lock()->AddCollider<mlg::ColliderShape::Rectangle>(glm::vec2(0.f), glm::vec2(1.f));
 
         auto player = mlg::EntityManager::SpawnEntity<SimplePlayer>("Player", false, mlg::SceneGraph::GetRoot());
     }

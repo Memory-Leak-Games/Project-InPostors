@@ -7,13 +7,11 @@ namespace mlg {
     private:
         static Time* instance;
 
-        constexpr const static float fixedTimeStep = 1.f / 30.f;
-
         double frameStart = 0.f;
         double lastFrameStart = 0.f;
 
-        // to config file
-        uint32_t maxFPS = 1000;
+        int fpsCap;
+        int physicsTickRate;
 
     public:
         static void Initialize();
@@ -23,9 +21,7 @@ namespace mlg {
         static float GetTrueDeltaSeconds();
         static float GetDeltaSeconds();
 
-        constexpr static float GetFixedTimeStep() {
-            return fixedTimeStep;
-        };
+        static float GetFixedTimeStep();
 
         static void CapFPS();
         static void Sleep(double seconds);

@@ -8,13 +8,12 @@
 #include "imgui_impl/imgui_impl_glfw.h"
 #endif
 
-// TODO: Remove this
-#include "Core/MouseHandler.h"
 
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
 #include "Events/WindowEvent.h"
 #include "magic_enum.hpp"
+#include "Core/Settings/SettingsManager.h"
 
 using namespace mlg;
 
@@ -39,6 +38,8 @@ void Window::Initialize(std::string title, int32_t width, int32_t height) {
     SPDLOG_INFO("Creating GLFW Window: {} {}x{}", title, width, height);
     instance = new Window(std::move(title), width, height);
     instance->SetupWindow();
+
+    instance->SetVerticalSync(SettingsManager::Get<bool>(SettingsType::Video, "VSync"));
 }
 
 int32_t Window::SetupWindow() {
@@ -59,6 +60,7 @@ int32_t Window::SetupWindow() {
 
     // TODO: Move this to HID classes
     glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    glfwSwapInterval(false);
 
     return 0;
 }
