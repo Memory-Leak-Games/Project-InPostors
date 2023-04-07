@@ -43,4 +43,17 @@ namespace mlg {
         instance->frameStart = glfwGetTime();
     }
 
+    void Time::Sleep(double seconds) {
+        double startSleepTime = GetSeconds();
+        while (GetSeconds() - startSleepTime <= seconds) {
+            // This is sleep method so I am empty
+        }
+    }
+
+    void Time::CapFPS() {
+        while (GetSeconds() - instance->frameStart <= 1 / (double) instance->maxFPS) {
+            // This is sleep method so I am empty
+        }
+    }
+
 }// namespace mlg

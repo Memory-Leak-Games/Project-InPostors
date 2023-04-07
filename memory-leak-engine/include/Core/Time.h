@@ -12,23 +12,25 @@ namespace mlg {
         double frameStart = 0.f;
         double lastFrameStart = 0.f;
 
+        // to config file
+        uint32_t maxFPS = 1000;
+
     public:
         static void Initialize();
-
         static void Stop();
 
         static double GetSeconds();
-
         static float GetTrueDeltaSeconds();
-
         static float GetDeltaSeconds();
 
         constexpr static float GetFixedTimeStep() {
             return fixedTimeStep;
         };
 
-        friend class Core;
+        static void CapFPS();
+        static void Sleep(double seconds);
 
+        friend class Core;
     private:
         Time() = default;
 

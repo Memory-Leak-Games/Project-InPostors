@@ -43,6 +43,7 @@ void Core::MainLoop() {
     int32_t windowWidth = Window::GetInstance()->GetWidth();
     int32_t windowHeight = Window::GetInstance()->GetHeight();
 
+    // TODO: transfer to Rendering class
     GBuffer gBuffer(windowWidth, windowHeight);
     SSAO ssao(windowWidth, windowHeight);
     BlurPass blurPass(windowWidth, windowHeight);
@@ -130,6 +131,8 @@ void Core::MainLoop() {
 
         Window::GetInstance()->SwapBuffers();
         Window::GetInstance()->PollEvents();
+
+        Time::CapFPS();
     }
 }
 
