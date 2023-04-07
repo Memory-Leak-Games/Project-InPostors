@@ -7,17 +7,25 @@ namespace mlg {
     private:
         static Time* instance;
 
+        constexpr const static float fixedTimeStep = 1.f / 30.f;
+
         double frameStart = 0.f;
         double lastFrameStart = 0.f;
 
     public:
         static void Initialize();
+
         static void Stop();
 
         static double GetSeconds();
+
         static float GetTrueDeltaSeconds();
+
         static float GetDeltaSeconds();
-        [[deprecated("Unimplemented")]]static float GetFixedDeltaSeconds();
+
+        constexpr static float GetFixedTimeStep() {
+            return fixedTimeStep;
+        };
 
         friend class Core;
 

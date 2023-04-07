@@ -47,9 +47,18 @@ namespace mlg {
         return rotation;
     }
 
+    const glm::vec3 Transform::GetEulerRotation() const {
+        return glm::eulerAngles(rotation);
+    }
+
     void Transform::SetRotation(const glm::quat& rotation) {
         SetDirtyRecursive();
         Transform::rotation = rotation;
+    }
+
+    void Transform::SetEulerRotation(const glm::vec3 rotation) {
+        SetDirtyRecursive();
+        Transform::rotation = {rotation};
     }
 
     const glm::mat4& Transform::GetWorldMatrix() {
@@ -178,6 +187,7 @@ namespace mlg {
             child->parent = this->parent;
         }
     }
+
 
 
 } // mlg

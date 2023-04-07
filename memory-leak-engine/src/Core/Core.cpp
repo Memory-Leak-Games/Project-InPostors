@@ -17,7 +17,6 @@
 #include "Rendering/Renderer.h"
 #include "Rendering/CommonUniformBuffer.h"
 
-#include "Rendering/FrameBuffers/FrameBuffer.h"
 #include "Rendering/FrameBuffers/GBuffer.h"
 #include "Rendering/FrameBuffers/SSAO.h"
 #include "Rendering/FrameBuffers/BlurPass.h"
@@ -25,14 +24,14 @@
 
 #include "Events/WindowEvent.h"
 
-// TODO: delete this
-#include "Rendering/Gizmos/Gizmos.h"
-#include "Rendering/DirectionalLight.h"
-#include "Rendering/Camera.h"
 #include "Gameplay/ComponentManager.h"
 #include "Gameplay/EntityManager.h"
-#include "SceneGraph/SceneGraph.h"
 #include "Rendering/Camera.h"
+#include "Rendering/DirectionalLight.h"
+#include "Rendering/Gizmos/Gizmos.h"
+#include "SceneGraph/SceneGraph.h"
+#include "UI/Renderer2D.h"
+#include "Physics/Physics.h"
 
 using namespace mlg;
 
@@ -50,25 +49,23 @@ void Core::MainLoop() {
     PostProcess postProcessingFrameBuffer(windowWidth, windowHeight);
 
     Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize,
-                                                                [&postProcessingFrameBuffer, &gBuffer, &ssao](
+                                                                [&postProcessingFrameBuffer, &gBuffer, &ssao, &blurPass](
                                                                         const Event& event) {
-                                                                    auto& windowResizeEvent = (WindowResizeEvent&) event;
-                                                                    RenderingAPI::GetInstance()->SetViewport(0, 0,
-                                                                                                             windowResizeEvent.GetWidth(),
-                                                                                                             windowResizeEvent.GetHeight());
+        auto& windowResizeEvent = (WindowResizeEvent&) event;
+        RenderingAPI::GetInstance()->SetViewport(0, 0,
+                                                 windowResizeEvent.GetWidth(),
+                                                 windowResizeEvent.GetHeight());
 
-                                                                    int32_t windowWidth = windowResizeEvent.GetWidth();
-                                                                    int32_t windowHeight = windowResizeEvent.GetHeight();
+        int32_t windowWidth = windowResizeEvent.GetWidth();
+        int32_t windowHeight = windowResizeEvent.GetHeight();
 
-                                                                    gBuffer.Resize(windowWidth, windowHeight);
-                                                                    ssao.Resize(windowWidth, windowHeight);
-                                                                    postProcessingFrameBuffer.Resize(windowWidth,
-                                                                                                     windowHeight);
+        gBuffer.Resize(windowWidth, windowHeight);
+        ssao.Resize(windowWidth, windowHeight);
+        blurPass.Resize(windowWidth, windowHeight);
+        postProcessingFrameBuffer.Resize(windowWidth, windowHeight);
 
-                                                                    Camera::GetInstance()->SetResolution(
-                                                                            {windowResizeEvent.GetWidth(),
-                                                                             windowResizeEvent.GetHeight()});
-                                                                });
+        Camera::GetInstance()->SetResolution( {windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight()});
+        });
 
     bool shouldClose = false;
     Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowClose,
@@ -92,6 +89,8 @@ void Core::MainLoop() {
         EntityManager::ProcessEntities();
 
         Input::Update();
+
+        Physics::TickFixedTimeSteps();
 
         ComponentManager::Update();
         EntityManager::Update();
@@ -123,7 +122,7 @@ void Core::MainLoop() {
         postProcessingFrameBuffer.CopyDepthBuffer(0);
 
         Gizmos::DrawGizmos();
-
+        Renderer2D::GetInstance()->Draw();
 
 #ifdef DEBUG
         ImGui::Begin("FPS");
