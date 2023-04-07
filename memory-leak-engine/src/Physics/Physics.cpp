@@ -21,6 +21,7 @@ namespace mlg {
         SPDLOG_INFO("Initializing Physics Engine");
 
         instance = new Physics();
+        CollisionManager::Initialize();
     }
 
     void Physics::Stop() {
@@ -30,6 +31,7 @@ namespace mlg {
         SPDLOG_INFO("Stopping Physics Engine");
 
         delete instance;
+        CollisionManager::Stop();
     }
 
     void Physics::AddRigidbody(std::weak_ptr<Rigidbody> state) {

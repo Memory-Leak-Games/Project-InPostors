@@ -5,10 +5,13 @@
 namespace mlg {
 
     class RigidbodyComponent : public Component {
+    private:
         std::shared_ptr<class Rigidbody> rigidbody;
 
     public:
         RigidbodyComponent(const std::weak_ptr<Entity>& owner, const std::string& name);
+
+        void Start() override;
 
         void PhysicsUpdate() override;
         void Update() override;

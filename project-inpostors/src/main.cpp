@@ -120,6 +120,7 @@ public:
         auto wall = mlg::EntityManager::SpawnEntity<mlg::Entity>("Wall", true, mlg::SceneGraph::GetRoot());
         wall.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", cubeModel, redMaterial);
         wall.lock()->GetTransform().SetPosition({-2.f, 0.f, -5.f});
+        wall.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
 
         auto player = mlg::EntityManager::SpawnEntity<SimplePlayer>("Player", false, mlg::SceneGraph::GetRoot());
     }

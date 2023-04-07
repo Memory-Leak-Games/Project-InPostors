@@ -2,6 +2,8 @@
 
 #include "Physics/Physics.h"
 #include "Physics/Rigidbody.h"
+#include "Physics/Colliders/Collider.h"
+#include "Physics/Colliders/ColliderShapes.h"
 
 #include "Gameplay/Entity.h"
 #include "SceneGraph/Transform.h"
@@ -50,6 +52,18 @@ namespace mlg {
 
     void RigidbodyComponent::SetAngularDrag(float value) {
         rigidbody->angularDrag = value;
+    }
+
+    void RigidbodyComponent::Start() {
+        //TODO: change this
+        auto shape = std::make_unique<ColliderShape::Circle>();
+        shape->radius = 1.f;
+
+        rigidbody->AddCollider(std::move(shape));
+        rigidbody->colliders[0]->OnCollisionEnter.append([](const mlg::CollisionEvent& collisionEvent) {
+            SPDLOG_DEBUG("Collision!");
+        });
+
     }
 
 

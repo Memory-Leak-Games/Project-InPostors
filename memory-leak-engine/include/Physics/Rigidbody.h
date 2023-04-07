@@ -2,6 +2,10 @@
 
 namespace mlg {
 
+    namespace ColliderShape {
+        class Shape;
+    }
+
     class Rigidbody {
     private:
         glm::vec2 position {0.f};
@@ -20,8 +24,9 @@ namespace mlg {
         float linearDrag = 0.f;
         float angularDrag = 0.f;
 
-        std::vector<std::unique_ptr<class Collider>> colliders;
+        bool isKinematic = false;
 
+        std::vector<std::shared_ptr<class Collider>> colliders;
     public:
         Rigidbody();
         ~Rigidbody();
@@ -31,10 +36,12 @@ namespace mlg {
 
         void AddTorque(float value);
 
-        const glm::vec2& GetPosition();
+        void AddCollider(std::unique_ptr<ColliderShape::Shape> shape);
+
+        [[nodiscard]] const glm::vec2& GetPosition() const;
+        [[nodiscard]] bool GetIsKinematic() const;
 
         friend class Physics;
-        friend class CollisionDetection;
         friend class RigidbodyComponent;
     private:
         void Integrate();

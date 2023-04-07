@@ -202,7 +202,7 @@ void Core::Initialize() {
 
     Window::GetInstance()->ImGuiInit();
 
-    ImGui_ImplOpenGL3_Init("#version 460");
+    ImGui_ImplOpenGL3_Init("#version 450");
 
     ImGui::StyleColorsDark();
 #endif

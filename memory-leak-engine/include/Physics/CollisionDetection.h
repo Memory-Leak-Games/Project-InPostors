@@ -1,22 +1,36 @@
-
 #pragma once
 
 namespace mlg {
 
+    namespace ColliderShape {
+        class Rectangle;
+
+        class Circle;
+    }
+
     class CollisionDetection {
     public:
-        static bool CircleCircleCollision(class CircleCollider* circleOne, CircleCollider* circleTwo);
-        static glm::vec2 CircleCircleSeparation(class CircleCollider *circleOne, CircleCollider *circleTwo);
+        static bool CircleCircleCollision(const ColliderShape::Circle* circleOne,
+                                          const ColliderShape::Circle* circleTwo);
 
-        static bool SquareSquareCollision(class RectangleCollider* rectangleOne, RectangleCollider* rectangleTwo);
-        static glm::vec2 SquareSquareSeparation(class RectangleCollider *rectangleOne, RectangleCollider *rectangleTwo);
+        static glm::vec2 CircleCircleSeparation(const ColliderShape::Circle* circleOne,
+                                                const ColliderShape::Circle* circleTwo);
 
-        static bool SquareCircleCollision(RectangleCollider* rectangle, CircleCollider* circle);
-        static glm::vec2 SquareCircleSeparation(RectangleCollider* rectangle, CircleCollider* circle);
+        static bool RectangleRectangleCollision(const ColliderShape::Rectangle* rectangleOne,
+                                                const ColliderShape::Rectangle* rectangleTwo);
 
-        static glm::vec2 CalculateNearestPoint(const glm::vec2& position, RectangleCollider* rectangle);
+        static glm::vec2 SquareSquareSeparation(const ColliderShape::Rectangle* rectangleOne,
+                                                const ColliderShape::Rectangle* rectangleTwo);
+
+        static bool RectangleCircleCollision(const ColliderShape::Rectangle* rectangle,
+                                             const ColliderShape::Circle* circle);
+
+        static glm::vec2 SquareCircleSeparation(const ColliderShape::Rectangle* rectangle,
+                                                const ColliderShape::Circle* circle);
+
+        static glm::vec2 CalculateNearestPoint(const glm::vec2& position,
+                                               const ColliderShape::Rectangle* rectangle);
     };
-
 
 
 } // mlg

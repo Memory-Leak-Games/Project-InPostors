@@ -2,48 +2,35 @@
 
 #include "Core/Math.h"
 
-#include "Physics/Rigidbody.h"
-#include "include/Physics/Colliders/CircleCollider.h"
-#include "include/Physics/Colliders/RectangleCollider.h"
+#include "Physics/Colliders/ColliderShapes.h"
 
 namespace mlg {
-    bool CollisionDetection::CircleCircleCollision(CircleCollider *circleOne,
-                                                   CircleCollider *circleTwo) {
-        glm::vec2 positionOne = circleOne->owner->position;
-        glm::vec2 positionTwo = circleTwo->owner->position;
 
-        float radiusOne = circleOne->GetRadius();
-        float radiusTwo = circleTwo->GetRadius();
-
-        float radiusSum = radiusOne + radiusTwo;
-
-        return glm::length2(positionOne - positionTwo) <= radiusSum * radiusSum;
+    bool CollisionDetection::CircleCircleCollision(const ColliderShape::Circle* circleOne,
+                                                   const ColliderShape::Circle* circleTwo) {
+        const float radiusSum = circleOne->radius + circleTwo->radius;
+        bool test = glm::length2(circleOne->position - circleTwo->position) <= radiusSum * radiusSum;
+        return glm::length2(circleOne->position - circleTwo->position) <= radiusSum * radiusSum;
     }
 
-    glm::vec2 CollisionDetection::CircleCircleSeparation(CircleCollider *circleOne,
-                                                         CircleCollider *circleTwo) {
-        glm::vec2 positionOne = circleOne->owner->position;
-        glm::vec2 positionTwo = circleTwo->owner->position;
+    glm::vec2 CollisionDetection::CircleCircleSeparation(const ColliderShape::Circle* circleOne,
+                                                         const ColliderShape::Circle* circleTwo) {
+        const glm::vec2 oneToTwoVector = circleTwo->position - circleOne->position;
+        const float separationLength = circleOne->radius + circleTwo->radius - glm::length(oneToTwoVector);
 
-        float radiusOne = circleOne->GetRadius();
-        float radiusTwo = circleTwo->GetRadius();
-
-        glm::vec2 oneToTwo = positionTwo - positionOne;
-        float separationLength = radiusOne + radiusTwo - glm::length(oneToTwo);
-
-        return Math::SafeNormal(oneToTwo) * separationLength;
+        return Math::SafeNormal(oneToTwoVector) * separationLength;
     }
 
-    bool CollisionDetection::SquareSquareCollision(RectangleCollider *rectangleOne,
-                                                   RectangleCollider *rectangleTwo) {
+    bool CollisionDetection::RectangleRectangleCollision(const ColliderShape::Rectangle* rectangleOne,
+                                                         const ColliderShape::Rectangle* rectangleTwo) {
         return rectangleOne->GetRight() > rectangleTwo->GetLeft()
                && rectangleOne->GetLeft() < rectangleTwo->GetRight()
                && rectangleOne->GetTop() > rectangleTwo->GetBottom()
                && rectangleOne->GetBottom() < rectangleTwo->GetTop();
     }
 
-    glm::vec2 CollisionDetection::SquareSquareSeparation(RectangleCollider *rectangleOne,
-                                                         RectangleCollider *rectangleTwo) {
+    glm::vec2 CollisionDetection::SquareSquareSeparation(const ColliderShape::Rectangle* rectangleOne,
+                                                         const ColliderShape::Rectangle* rectangleTwo) {
         float leftSeparation = rectangleOne->GetRight() - rectangleTwo->GetLeft();
         float rightSeparation = rectangleTwo->GetRight() - rectangleOne->GetLeft();
         float topSeparation = rectangleOne->GetTop() - rectangleTwo->GetBottom();
@@ -61,15 +48,14 @@ namespace mlg {
         return finalSeparation;
     }
 
-    bool CollisionDetection::SquareCircleCollision(RectangleCollider *rectangle, CircleCollider *circle) {
-        glm::vec2 rectanglePosition = rectangle->owner->position;
-        glm::vec2 circlePosition = circle->owner->position;
-
-        glm::vec2 nearestPoint = CalculateNearestPoint(circlePosition, rectangle);
-        return glm::length(circlePosition - nearestPoint) <= circle->GetRadius();
+    bool CollisionDetection::RectangleCircleCollision(const ColliderShape::Rectangle* rectangle,
+                                                      const ColliderShape::Circle* circle) {
+        glm::vec2 nearestPoint = CalculateNearestPoint(circle->position, rectangle);
+        return glm::length(circle->position - nearestPoint) <= circle->radius;
     }
 
-    glm::vec2 CollisionDetection::CalculateNearestPoint(const glm::vec2 &position, RectangleCollider *rectangle) {
+    glm::vec2 CollisionDetection::CalculateNearestPoint(const glm::vec2& position,
+                                                        const ColliderShape::Rectangle* rectangle) {
         glm::vec2 result;
         result.x = glm::clamp(position.x, rectangle->GetLeft(), rectangle->GetRight());
         result.y = glm::clamp(position.y, rectangle->GetBottom(), rectangle->GetTop());
@@ -77,16 +63,15 @@ namespace mlg {
         return result;
     }
 
-    glm::vec2 CollisionDetection::SquareCircleSeparation(RectangleCollider *rectangle, CircleCollider *circle) {
-        glm::vec2 rectanglePosition = rectangle->owner->position;
-        glm::vec2 circlePosition = circle->owner->position;
-        glm::vec2 nearestPoint = CalculateNearestPoint(circlePosition, rectangle);
+    glm::vec2 CollisionDetection::SquareCircleSeparation(const ColliderShape::Rectangle* rectangle,
+                                                         const ColliderShape::Circle* circle) {
+        glm::vec2 nearestPoint = CalculateNearestPoint(circle->position, rectangle);
 
-        glm::vec2 circleToNearestPointVector = circlePosition - nearestPoint;
+        glm::vec2 circleToNearestPointVector = circle->position - nearestPoint;
         glm::vec2 circleToNearestPointDirection = Math::SafeNormal(circleToNearestPointVector);
 
         float circleToNearestPointDistance = glm::length(circleToNearestPointDistance);
-        float separationLength = circle->GetRadius() - circleToNearestPointDistance;
+        float separationLength = circle->radius - circleToNearestPointDistance;
 
         return circleToNearestPointDirection * separationLength;
     }

@@ -1,32 +1,36 @@
-
 #pragma once
+
+#include "Physics/Rigidbody.h"
 
 namespace mlg {
 
-    enum class ColliderType {
-        Circle,
-        Square
-    };
+    namespace ColliderShape {
+        class Shape;
+    }
 
     struct CollisionEvent {
         glm::vec2 position;
-        class Rigidbody* collidedRigidbody;
+        const class Rigidbody* collidedRigidbody;
     };
 
     class Collider {
     public:
         eventpp::CallbackList<void(CollisionEvent)> OnCollisionEnter;
 
-    protected:
+    private:
         Rigidbody* owner;
+        std::unique_ptr<ColliderShape::Shape> shape;
 
     public:
-        Collider() = default;
+        Collider(Rigidbody* owner, std::unique_ptr<ColliderShape::Shape> shape);
+        ~Collider();
 
-        virtual ColliderType GetColliderType() = 0;
-        virtual float GetRadius() = 0;
+        bool DetectCollision(Collider* anotherCollider);
 
-        friend class CollisionDetection;
+        const Rigidbody* GetOwner() const;
+    private:
+        bool DetectCollisionAsCircle(Collider* anotherCollider);
+        bool DetectCollisionAsRectangle(Collider* anotherCollider);
     };
 
 }// namespace mlg
