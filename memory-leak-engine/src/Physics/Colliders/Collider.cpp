@@ -14,9 +14,6 @@ namespace mlg {
     }
 
     bool Collider::DetectCollision(Collider* anotherCollider) {
-        shape->position = owner->GetPosition();
-        anotherCollider->shape->position = anotherCollider->owner->GetPosition();
-
         if (shape->GetType() == ColliderShape::ColliderShapeType::Circle) {
             return DetectCollisionAsCircle(anotherCollider);
         } else {

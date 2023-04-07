@@ -6,8 +6,13 @@
 #include "Core/HID/Input.h"
 #include "Rendering/Gizmos/Gizmos.h"
 
+#include "Physics/Colliders/ColliderShapes.h"
+
 void SimpleCarMovementComponent::Start() {
     rigidbodyComponent = GetOwner().lock()->GetComponentByClass<mlg::RigidbodyComponent>();
+
+    rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f), 1.f);
+    rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f, -1.f), 1.f);
 
     rigidbodyComponent.lock()->SetLinearDrag(10.f);
     rigidbodyComponent.lock()->SetAngularDrag(5.f);
@@ -29,15 +34,13 @@ void SimpleCarMovementComponent::PhysicsUpdate() {
     forwardVector2D.x = forwardVector.x;
     forwardVector2D.y = forwardVector.z;
 
-    rigidbodyComponent.lock()->AddForce(forwardVector2D * forward * 10.f);
-    rigidbodyComponent.lock()->AddTorque(right * -3.f);
+    rigidbodyComponent.lock()->AddForce(forwardVector2D * forward * 20.f);
+    rigidbodyComponent.lock()->AddTorque(right * -6.f);
 }
 
 void SimpleCarMovementComponent::Update() {
-
     auto owner = GetOwner().lock();
 
     glm::vec3 worldPosition = owner->GetTransform().GetWorldPosition();
     mlg::Gizmos::DrawPoint(worldPosition + owner->GetTransform().GetForwardVector() * 2.f);
-    mlg::Gizmos::DrawSphere(worldPosition, 1.f);
 }

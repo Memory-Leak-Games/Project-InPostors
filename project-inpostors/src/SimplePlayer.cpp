@@ -20,6 +20,7 @@ std::shared_ptr<SimplePlayer> SimplePlayer::Create(const std::string& name, bool
 
     newPlayer->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
 
+
     auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Sphere.obj");
     auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/blue_material.json");
 

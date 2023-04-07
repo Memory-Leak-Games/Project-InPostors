@@ -28,6 +28,9 @@ namespace mlg {
         bool DetectCollision(Collider* anotherCollider);
 
         const Rigidbody* GetOwner() const;
+
+        friend class RigidbodyComponent;
+        friend class Rigidbody;
     private:
         bool DetectCollisionAsCircle(Collider* anotherCollider);
         bool DetectCollisionAsRectangle(Collider* anotherCollider);

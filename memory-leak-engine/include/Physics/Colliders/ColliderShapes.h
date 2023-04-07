@@ -11,6 +11,10 @@ namespace mlg::ColliderShape {
 
     struct Shape {
         glm::vec2 position{0.f};
+        glm::vec2 offset{0.f};
+
+        Shape(const glm::vec2& position, const glm::vec2& offset) : position(position), offset(offset) {}
+        virtual ~Shape() = default;
 
         [[nodiscard]] virtual float GetRadius() const = 0;
         [[nodiscard]] virtual ColliderShapeType GetType() const = 0;
@@ -18,6 +22,10 @@ namespace mlg::ColliderShape {
 
     struct Circle : public Shape {
         float radius = 0.f;
+
+        Circle(const glm::vec2& position, const glm::vec2& offset, float radius)
+        : Shape(position, offset), radius(radius) {}
+        ~Circle() override = default;
 
         [[nodiscard]] float GetRadius() const override {
             return radius;
@@ -31,6 +39,10 @@ namespace mlg::ColliderShape {
 
     struct Rectangle : public Shape {
         glm::vec2 size{0.f};
+
+        Rectangle(const glm::vec2& position, const glm::vec2& offset, const glm::vec2& size)
+        : Shape(position, offset), size(size) {}
+        ~Rectangle() override = default;
 
         [[nodiscard]] float GetRadius() const override {
             return std::sqrt(size.x + size.y) * 0.5f;

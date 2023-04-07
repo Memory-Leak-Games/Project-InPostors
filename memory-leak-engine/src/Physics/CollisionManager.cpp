@@ -39,7 +39,8 @@ namespace mlg {
 
             // Check collision with every other collider
             for (auto& anotherCollider : instance->colliders) {
-                if (collider.get() == anotherCollider.get())
+                // But not with self
+                if (collider->GetOwner() == anotherCollider->GetOwner())
                     continue;
 
                 if (collider->DetectCollision(anotherCollider.get())) {
@@ -49,7 +50,7 @@ namespace mlg {
         }
     }
 
-    void CollisionManager::SolveCollisions() {
+    void CollisionManager::SeparateColliders() {
         // Doin' math
     }
 

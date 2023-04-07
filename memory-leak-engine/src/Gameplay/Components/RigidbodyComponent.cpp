@@ -8,6 +8,8 @@
 #include "Gameplay/Entity.h"
 #include "SceneGraph/Transform.h"
 
+#include "Rendering/Gizmos/Gizmos.h"
+
 namespace mlg {
     RigidbodyComponent::RigidbodyComponent(const std::weak_ptr<Entity>& owner, const std::string& name)
     : Component(owner, name) {
@@ -44,6 +46,27 @@ namespace mlg {
         glm::vec3 ownerRotation {};
         ownerRotation.y = rigidbody->rotation;
         owner->GetTransform().SetEulerRotation(ownerRotation);
+
+        // TODO: DEBUG SETTINGS AND BINDING TO SWITCH
+#ifdef DEBUG
+        for (auto& collider : rigidbody->colliders) {
+            glm::vec3 position {0.f};
+            position.x = collider->shape->position.x;
+            position.z = collider->shape->position.y;
+
+            switch (collider->shape->GetType()) {
+                case ColliderShape::ColliderShapeType::Circle: {
+                    auto circle = (ColliderShape::Circle*) collider->shape.get();
+                    Gizmos::DrawSphere(position, circle->radius);
+                    break;
+                }
+                case ColliderShape::ColliderShapeType::Rectangle:
+                    auto rect = (ColliderShape::Rectangle*) collider->shape.get();
+                    Gizmos::DrawBox(position, {rect->size.x, 1.f, rect->size.y});
+                    break;
+            }
+        }
+#endif
     }
 
     void RigidbodyComponent::SetLinearDrag(float value) {
@@ -55,15 +78,15 @@ namespace mlg {
     }
 
     void RigidbodyComponent::Start() {
-        //TODO: change this
-        auto shape = std::make_unique<ColliderShape::Circle>();
-        shape->radius = 1.f;
+        const glm::vec3 ownerPosition = GetOwner().lock()->GetTransform().GetPosition();
+        rigidbody->position.x = ownerPosition.x;
+        rigidbody->position.y = ownerPosition.z;
 
-        rigidbody->AddCollider(std::move(shape));
-        rigidbody->colliders[0]->OnCollisionEnter.append([](const mlg::CollisionEvent& collisionEvent) {
-            SPDLOG_DEBUG("Collision!");
-        });
+        SetKinematic(GetOwner().lock()->IsStatic());
+    }
 
+    void RigidbodyComponent::SetKinematic(bool isKinematic) {
+        rigidbody->isKinematic = isKinematic;
     }
 
 

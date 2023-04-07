@@ -16,7 +16,7 @@ namespace mlg {
         static CollisionManager* GetInstance();
 
         static void DetectCollisions();
-        static void SolveCollisions();
+        static void SeparateColliders();
 
         static void AddCollider(const std::shared_ptr<Collider>& collider);
         static void RemoveCollider(std::shared_ptr<Collider>& collider);

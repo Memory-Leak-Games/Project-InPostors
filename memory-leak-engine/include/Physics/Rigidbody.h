@@ -45,6 +45,9 @@ namespace mlg {
         friend class RigidbodyComponent;
     private:
         void Integrate();
+        void UpdateColliders();
+
+        void CalculateColliderPosition(std::shared_ptr<Collider>& collider);
     };
 
 } // mlg
