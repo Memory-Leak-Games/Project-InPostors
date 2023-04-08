@@ -1,7 +1,5 @@
 #include "Gameplay/Levels/LevelGenerator.h"
 #include "Core/AssetManager/AssetManager.h"
-#include "Rendering/Assets/MaterialAsset.h"
-#include "Rendering/Assets/ModelAsset.h"
 #include "Gameplay/EntityManager.h"
 #include "Gameplay/Entity.h"
 #include "Gameplay/Components/StaticMeshComponent.h"
@@ -27,12 +25,14 @@ namespace mlg {
         ground.lock()->GetTransform().SetPosition({0.f, -5.f, 0.f});
         ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
 
-        for (unsigned int i = 0; i < 10; i++)
+        for (unsigned int i = 0; i < 9; i++)
         {
-            for (unsigned int k = 0; k < 10; k++)
+            for (unsigned int k = 0; k < 9; k++)
             {
                 if (k % 5 == 0) continue; // testing something
-                PutObject("res/models/Tardis/tardis.obj", -50.0f + 10.0f * (float)i, -50.0f + 10.0f * (float)k);
+                //PutObject("res/models/Tardis/tardis.obj", "res/models/Tardis/tardis_material.json",
+                PutObject(tardisModel, tardisMaterial,
+                          {-50.0f + 10.0f * (float)i, 0.0f, -50.0f + 10.0f * (float)k});
             }
         }
 
@@ -44,22 +44,31 @@ namespace mlg {
         return false;
     }
 
-    bool LevelGenerator::PutObject(const std::string& modelPath, float posX, float posY, float rotation) {
+    bool LevelGenerator::PutObject(const std::string& modelPath, const std::string& materialPath, glm::vec3 pos, float rotation) {
         auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>(modelPath);
-        auto modelMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json"); //don't @ me
-        auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>(Hash(modelPath, posX, posY), false, mlg::SceneGraph::GetRoot());
+        auto modelMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(materialPath);
+        auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>(Hash(modelPath, pos.x, pos.z), false, mlg::SceneGraph::GetRoot());
         modelEntity.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", model, modelMaterial);
-        modelEntity.lock()->GetTransform().SetPosition({posX, -5.f, posY});
+        modelEntity.lock()->GetTransform().SetPosition(pos);
 
         return true;
     }
 
-    // will improve later, psycha is sitting
+    bool LevelGenerator::PutObject(std::shared_ptr<ModelAsset>& modelAsset, std::shared_ptr<MaterialAsset>& materialAsset, glm::vec3 pos, float rotation) {
+        auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>(Hash("MapObject", pos.x, pos.z), false, mlg::SceneGraph::GetRoot());
+        modelEntity.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", modelAsset, materialAsset);
+        modelEntity.lock()->GetTransform().SetPosition(pos);
+
+        return true;
+    }
+
+
     std::string LevelGenerator::Hash(const std::string &modelPath, float posX, float posY) {
         std::size_t h1 = std::hash<std::string>{}(modelPath);
-        auto h2 = static_cast<size_t>(posX * posY);
+        auto h2 = static_cast<size_t>(posX * posY + posX);
         std::stringstream ss;
         ss << (h1 ^ (h2 << 1));
         return ss.str();
     }
+
 }

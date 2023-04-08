@@ -49,10 +49,10 @@ namespace mlg {
         }
 
         template<typename T>
-        std::weak_ptr<T> GetComponentByName(const std::string& name) {
+        std::weak_ptr<T> GetComponentByName(const std::string& componentName) {
             auto foundIterator = std::find_if(components.begin(), components.end(),
-                                              [name](const std::weak_ptr<Component>& entry) {
-                                                  return entry.lock()->GetName() == name;
+                                              [componentName](const std::weak_ptr<Component>& entry) {
+                                                  return entry.lock()->GetName() == componentName;
                                               });
 
             if (foundIterator != components.end())
