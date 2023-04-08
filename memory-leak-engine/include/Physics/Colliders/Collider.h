@@ -11,6 +11,7 @@ namespace mlg {
 
     struct CollisionEvent {
         glm::vec2 position;
+        glm::vec2 separationVector;
         const class Rigidbody* collidedRigidbody;
     };
 

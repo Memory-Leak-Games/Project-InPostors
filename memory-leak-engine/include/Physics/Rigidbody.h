@@ -49,6 +49,8 @@ namespace mlg {
         void UpdateColliders();
 
         void CalculateColliderPosition(std::shared_ptr<Collider>& collider);
+
+        void ApplyCollisionForce(const class CollisionEvent& collision);
     };
 
 } // mlg

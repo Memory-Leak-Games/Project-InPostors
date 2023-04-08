@@ -11,6 +11,9 @@
 
 #include "Macros.h"
 
+#include "Rendering/Gizmos/Gizmos.h"
+#include "Core/Settings/SettingsManager.h"
+
 namespace mlg {
     Rigidbody::Rigidbody() = default;
 
@@ -72,7 +75,6 @@ namespace mlg {
     void Rigidbody::AddForce(glm::vec2 force, glm::vec2 localPosition) {
         AddForce(force);
 
-        const float radius = glm::length(localPosition);
         const float torque = Math::Cross2D(force, localPosition);
         AddTorque(torque);
     }
@@ -90,10 +92,40 @@ namespace mlg {
         colliders.push_back(collider);
 
         CalculateColliderPosition(collider);
-
         CollisionManager::AddCollider(collider);
 
+        if (!isKinematic) {
+            collider->OnCollisionEnter.append([this](CollisionEvent event) {
+                this->ApplyCollisionForce(event);
+            });
+        }
+
         return collider;
+    }
+
+    void Rigidbody::ApplyCollisionForce(const CollisionEvent& collision) {
+        const glm::vec2 forcePosition = collision.position;
+        const glm::vec2 forceDirection = Math::SafeNormal(position - collision.collidedRigidbody->position);
+
+        const glm::vec2 thisVelocity = this->linearVelocity;
+        const glm::vec2 anotherVelocity = collision.collidedRigidbody->linearVelocity;
+
+        const glm::vec2 relativeVelocity = anotherVelocity - thisVelocity;
+        const float relativeSpeed = glm::length(relativeVelocity);
+
+        const float anotherMass = collision.collidedRigidbody->mass;
+        const float relativeKineticEnergy = 0.5f * anotherMass * relativeSpeed * relativeSpeed;
+
+        glm::vec2 localForcePosition = collision.position - position;
+
+        auto linearForceMultiplier = SettingsManager::Get<float>(SettingsType::Engine,"collisionForceMultiplier");
+        auto angularForceMultiplier = SettingsManager::Get<float>(SettingsType::Engine,"collisionTorqueMultiplier");
+
+        const float linearForceStrength = relativeKineticEnergy * linearForceMultiplier;
+        const float torque = Math::Cross2D(forceDirection * relativeKineticEnergy, localForcePosition) * angularForceMultiplier;
+
+        AddForce(forceDirection * linearForceStrength);
+        AddTorque(torque);
     }
 
 } // mlg

@@ -72,7 +72,7 @@ namespace mlg {
             collider->Separate(anotherCollider.get(), separationVector);
 
             glm::vec2 collisionPoint = collider->FindCollisionPoint(anotherCollider->GetOwner()->GetPosition());
-            collider->OnCollisionEnter({collisionPoint, anotherCollider->GetOwner()});
+            collider->OnCollisionEnter({collisionPoint, separationVector, anotherCollider->GetOwner()});
         }
 
         instance->collisionsThisTick.clear();
