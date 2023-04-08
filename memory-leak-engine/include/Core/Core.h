@@ -18,5 +18,7 @@ namespace mlg {
         static Core* GetInstance();
 
         void MainLoop();
+
+        void RenderImGUI() const;
     };
 }// namespace mlg

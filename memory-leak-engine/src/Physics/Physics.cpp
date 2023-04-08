@@ -3,6 +3,8 @@
 #include "Core/Time.h"
 #include "Physics/Rigidbody.h"
 
+#include "Physics/CollisionManager.h"
+
 #include "Macros.h"
 
 namespace mlg {
@@ -19,6 +21,7 @@ namespace mlg {
         SPDLOG_INFO("Initializing Physics Engine");
 
         instance = new Physics();
+        CollisionManager::Initialize();
     }
 
     void Physics::Stop() {
@@ -28,6 +31,7 @@ namespace mlg {
         SPDLOG_INFO("Stopping Physics Engine");
 
         delete instance;
+        CollisionManager::Stop();
     }
 
     void Physics::AddRigidbody(std::weak_ptr<Rigidbody> state) {
@@ -46,24 +50,24 @@ namespace mlg {
 
         instance->timeAccumulator += deltaTime;
 
-        int test = 0;
         while (instance->timeAccumulator >= Time::GetFixedTimeStep()) {
             instance->OnFixedUpdate();
             instance->SolveDynamics();
-            // TODO: Solve collisions
-            // TODO: Update states
+            CollisionManager::DetectCollisions();
+            CollisionManager::SeparateColliders();
 
             instance->timeAccumulator -= Time::GetFixedTimeStep();
-            test++;
         }
     }
 
     void Physics::SolveDynamics() {
-        for (auto& state : states) {
-            if (state.expired())
+        for (auto& rigidbody : states) {
+            if (rigidbody.expired())
                 continue;
 
-            state.lock()->Integrate();
+            rigidbody.lock()->Integrate();
+            rigidbody.lock()->UpdateColliders();
         }
     }
+
 } // mlg

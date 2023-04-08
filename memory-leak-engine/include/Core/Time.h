@@ -7,28 +7,26 @@ namespace mlg {
     private:
         static Time* instance;
 
-        constexpr const static float fixedTimeStep = 1.f / 30.f;
-
         double frameStart = 0.f;
         double lastFrameStart = 0.f;
 
+        int fpsCap;
+        int physicsTickRate;
+
     public:
         static void Initialize();
-
         static void Stop();
 
         static double GetSeconds();
-
         static float GetTrueDeltaSeconds();
-
         static float GetDeltaSeconds();
 
-        constexpr static float GetFixedTimeStep() {
-            return fixedTimeStep;
-        };
+        static float GetFixedTimeStep();
+
+        static void CapFPS();
+        static void Sleep(double seconds);
 
         friend class Core;
-
     private:
         Time() = default;
 
