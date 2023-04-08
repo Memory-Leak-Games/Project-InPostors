@@ -3,6 +3,8 @@
 #include "Physics/CollisionDetection.h"
 #include "Physics/Colliders/ColliderShapes.h"
 
+#include "Macros.h"
+
 namespace mlg {
     Collider::Collider(Rigidbody* owner, std::unique_ptr<ColliderShape::Shape> shape)
             : owner(owner), shape(std::move(shape)) {}
@@ -62,13 +64,12 @@ namespace mlg {
     }
 
     glm::vec2 Collider::CalculateSeparationAsCircle(Collider* anotherCollider) {
-        if (shape->GetType() == ColliderShape::ColliderShapeType::Circle) {
+        if (anotherCollider->shape->GetType() == ColliderShape::ColliderShapeType::Circle) {
             return CollisionDetection::CircleCircleSeparation((ColliderShape::Circle*) shape.get(),
                                                               (ColliderShape::Circle*) anotherCollider->shape.get());
         } else {
-            return -CollisionDetection::RectangleCircleSeparation(
-                    (ColliderShape::Rectangle*) anotherCollider->shape.get(),
-                    (ColliderShape::Circle*) shape.get());
+            return -CollisionDetection::RectangleCircleSeparation((ColliderShape::Rectangle*) anotherCollider->shape.get(),
+                                                                 (ColliderShape::Circle*) shape.get());
         }
     }
 
