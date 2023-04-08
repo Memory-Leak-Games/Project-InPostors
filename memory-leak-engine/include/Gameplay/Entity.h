@@ -21,7 +21,10 @@ namespace mlg {
         std::vector<std::weak_ptr<class Component>> components;
 
         Entity() = delete;
+
+    protected:
         explicit Entity(std::string name, bool isStatic, Transform* parent);
+
     public:
         static std::shared_ptr<Entity> Create(const std::string& name, bool isStatic, Transform* parent);
 
@@ -40,7 +43,7 @@ namespace mlg {
                                               });
 
             if (foundIterator != components.end())
-                return *foundIterator;
+                return std::static_pointer_cast<T>(foundIterator->lock());
             else
                 return std::weak_ptr<T>();
         }

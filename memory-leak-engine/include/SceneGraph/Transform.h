@@ -14,11 +14,10 @@ namespace mlg {
         bool isDirty;
 
         std::vector<std::shared_ptr<Transform>> children;
-        Transform* parent;
+        Transform* parent = nullptr;
     public:
         Transform();
-        Transform(const Transform& original);
-        void operator= (const Transform& another);
+        Transform(const Transform& another) = delete;
 
         ~Transform();
 

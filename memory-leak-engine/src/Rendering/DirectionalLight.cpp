@@ -4,6 +4,8 @@
 #include "Rendering/ShaderProgram.h"
 #include "Core/AssetManager/AssetManager.h"
 
+#include "Core/Settings/SettingsManager.h"
+
 using namespace mlg;
 
 DirectionalLight::DirectionalLight() {
@@ -16,6 +18,9 @@ DirectionalLight::DirectionalLight() {
     InitializeFrameBuffer();
 
     UpdateSun();
+
+    shadowMapResolution = SettingsManager::Get<int>(SettingsType::Video, "shadowMapResolution");
+    shadowMapSize = SettingsManager::Get<float>(SettingsType::Video, "shadowMapSize");
 }
 
 void DirectionalLight::InitializeLights() {

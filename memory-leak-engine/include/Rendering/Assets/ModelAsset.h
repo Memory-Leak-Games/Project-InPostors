@@ -10,6 +10,7 @@ namespace mlg {
 
     public:
         explicit ModelAsset(const std::string& path);
+        ~ModelAsset() override;
 
         void Draw();
 

@@ -1,22 +1,6 @@
 [
   {
-    "name": "test_button",
-    "mappings": [
-      {
-        "deviceType" : "Keyboard",
-        "code" : 32
-      },
-      {
-        "deviceType" : "Gamepad",
-        "deviceIndex" : 0,
-        "isAxis" : false,
-        "code" : 0
-      }
-    ]
-  },
-
-  {
-    "name": "test_axis",
+    "name": "forward_one",
     "mappings": [
       {
         "deviceType" : "Keyboard",
@@ -29,107 +13,61 @@
         "isPositive" : false,
         "triggerZone" : 0.5,
         "deadZone" : 0.2,
+        "code" : 1
+      }
+    ]
+  },
+  {
+    "name": "backward_one",
+    "mappings": [
+      {
+        "deviceType" : "Keyboard",
+        "code" : 83
+      },
+      {
+        "deviceType" : "Gamepad",
+        "deviceIndex" : 0,
+        "isAxis" : true,
+        "isPositive" : true,
+        "triggerZone" : 0.5,
+        "deadZone" : 0.2,
+        "code" : 1
+      }
+    ]
+  },
+  {
+    "name": "left_one",
+    "mappings": [
+      {
+        "deviceType" : "Keyboard",
+        "code" : 65
+      },
+      {
+        "deviceType" : "Gamepad",
+        "deviceIndex" : 0,
+        "isAxis" : true,
+        "isPositive" : false,
+        "triggerZone" : 0.5,
+        "deadZone" : 0.2,
         "code" : 0
       }
     ]
   },
-
   {
-    "name": "debug_cam_forward",
+    "name": "right_one",
     "mappings": [
       {
         "deviceType" : "Keyboard",
-        "code" : 73
-      }
-    ]
-  },
-
-  {
-    "name": "debug_cam_back",
-    "mappings": [
+        "code" : 68
+      },
       {
-        "deviceType" : "Keyboard",
-        "code" : 75
-      }
-    ]
-  },
-
-  {
-    "name": "debug_cam_left",
-    "mappings": [
-      {
-        "deviceType" : "Keyboard",
-        "code" : 74
-      }
-    ]
-  },
-
-  {
-    "name": "debug_cam_right",
-    "mappings": [
-      {
-        "deviceType" : "Keyboard",
-        "code" : 76
-      }
-    ]
-  },
-
-  {
-    "name": "debug_rotate_left",
-    "mappings": [
-      {
-        "deviceType" : "Keyboard",
-        "code" : 85
-      }
-    ]
-  },
-
-  {
-    "name": "debug_rotate_right",
-    "mappings": [
-      {
-        "deviceType" : "Keyboard",
-        "code" : 79
-      }
-    ]
-  },
-
-  {
-    "name": "debug_cam_up",
-    "mappings": [
-      {
-        "deviceType" : "Keyboard",
-        "code" : 80
-      }
-    ]
-  },
-
-  {
-    "name": "debug_cam_down",
-    "mappings": [
-      {
-        "deviceType" : "Keyboard",
-        "code" : 59
-      }
-    ]
-  },
-
-  {
-    "name": "debug_rotate_up",
-    "mappings": [
-      {
-        "deviceType" : "Keyboard",
-        "code" : 89
-      }
-    ]
-  },
-
-  {
-    "name": "debug_rotate_down",
-    "mappings": [
-      {
-        "deviceType" : "Keyboard",
-        "code" : 72
+        "deviceType" : "Gamepad",
+        "deviceIndex" : 0,
+        "isAxis" : true,
+        "isPositive" : true,
+        "triggerZone" : 0.5,
+        "deadZone" : 0.2,
+        "code" : 0
       }
     ]
   }
