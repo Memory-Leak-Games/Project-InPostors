@@ -28,10 +28,10 @@
 #include <Gameplay/Components/RigidbodyComponent.h>
 
 #include <UI/Assets/FontAsset.h>
-#include <UI/Label.h>
-#include <UI/Image.h>
+#include <UI/Components/Image.h>
+#include <UI/Components/Label.h>
+#include <UI/Components/ProgressBar.h>
 #include <UI/Renderer2D.h>
-#include <UI/ProgressBar.h>
 
 class ComponentTest : public mlg::Component {
 public:
@@ -104,10 +104,6 @@ public:
         return 0;
     }
 
-    std::shared_ptr<mlg::Label> label;
-    std::shared_ptr<mlg::Image> image;
-    std::shared_ptr<mlg::ProgressBar> progressBar;
-
     void PrepareScene() {
         mlg::Camera::GetInstance()->SetPosition({-8.f, 15.f, 8.f});
         mlg::Camera::GetInstance()->SetRotation(glm::radians(-60.f), glm::radians(45.f));
@@ -126,6 +122,26 @@ public:
         ground.lock()->GetTransform().SetPosition({0.f, -1.f, 0.f});
         ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
 
+        auto ui = mlg::EntityManager::SpawnEntity<mlg::Entity>("ui", true, mlg::SceneGraph::GetRoot());
+
+        auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/comic.ttf");
+        auto label = ui.lock()->AddComponent<mlg::Label>("Label", font);
+        label.lock()->SetPosition({10, 10});
+
+        auto imageMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/cat_UI_material.json");
+        auto image = ui.lock()->AddComponent<mlg::Image>("Image", imageMaterial);
+        image.lock()->SetSize(glm::vec2{256.f});
+        image.lock()->SetPosition({50.f, 50.f});
+
+        auto progressBarMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/progressBar_material.json");
+        auto progressBar = ui.lock()->AddComponent<mlg::ProgressBar>("ProgressBar", progressBarMaterial);
+        progressBar.lock()->SetSize(glm::vec2{256.f, 32.f});
+        progressBar.lock()->SetPosition({50.f, 400.f});
+
+        mlg::Renderer2D::GetInstance()->AddRenderable(label);
+        mlg::Renderer2D::GetInstance()->AddRenderable(image);
+        mlg::Renderer2D::GetInstance()->AddRenderable(progressBar);
+        
         auto wall = mlg::EntityManager::SpawnEntity<mlg::Entity>("Wall", true, mlg::SceneGraph::GetRoot());
         wall.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", cubeModel, redMaterial);
         wall.lock()->GetTransform().SetPosition({-2.f, 0.f, -5.f});
