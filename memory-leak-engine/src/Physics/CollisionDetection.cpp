@@ -45,7 +45,7 @@ namespace mlg {
         else
             finalSeparation.x = 0.f;
 
-        return finalSeparation;
+        return -finalSeparation;
     }
 
     bool CollisionDetection::RectangleCircleCollision(const ColliderShape::Rectangle* rectangle,

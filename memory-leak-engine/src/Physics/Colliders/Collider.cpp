@@ -32,7 +32,7 @@ namespace mlg {
     }
 
     bool Collider::DetectCollisionAsRectangle(Collider* anotherCollider) {
-        if (anotherCollider->shape->GetType() == ColliderShape::ColliderShapeType::Circle) {
+        if (anotherCollider->shape->GetType() == ColliderShape::ColliderShapeType::Rectangle) {
             return CollisionDetection::RectangleRectangleCollision((ColliderShape::Rectangle*) shape.get(),
                                                                    (ColliderShape::Rectangle*) anotherCollider->shape.get());
         } else {
