@@ -53,19 +53,19 @@ namespace mlg::ColliderShape {
         }
 
         [[nodiscard]] float GetTop() const {
-            return position.y + size.y * 0.5f;
+            return position.y + (size.y * 0.5f);
         }
 
         [[nodiscard]] float GetBottom() const {
-            return position.y - size.y * 0.5f;
+            return position.y - (size.y * 0.5f);
         }
 
         [[nodiscard]] float GetLeft() const {
-            return position.x - size.x * 0.5f;
+            return position.x - (size.x * 0.5f);
         }
 
         [[nodiscard]] float GetRight() const {
-            return position.x + size.x * 0.5f;
+            return position.x + (size.x * 0.5f);
         }
     };
 

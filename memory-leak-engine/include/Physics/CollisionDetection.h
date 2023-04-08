@@ -28,8 +28,8 @@ namespace mlg {
         static glm::vec2 RectangleCircleSeparation(const ColliderShape::Rectangle* rectangle,
                                                    const ColliderShape::Circle* circle);
 
-        static glm::vec2 CalculateNearestPoint(const glm::vec2& position,
-                                               const ColliderShape::Rectangle* rectangle);
+        static glm::vec2 CalculateNearestPointOnRect(const glm::vec2& position,
+                                                     const ColliderShape::Rectangle* rectangle);
     };
 
 
