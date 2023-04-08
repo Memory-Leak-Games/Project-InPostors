@@ -27,6 +27,17 @@ else()
 	CPMAddPackage("gh:assimp/assimp@5.2.5")
 endif()
 
+#openAL
+find_package(OpenAL QUIET)
+message(${OPENAL_FOUND})
+if (${OPENAL_FOUND})
+	message("Using System OpenAL")
+else()
+	message("Downloading OpenAL")
+	CPMAddPackage("gh:kcat/openal-soft#1.23.0")
+endif()
+
+
 CPMAddPackage("gh:glfw/glfw#3.3.8")
 CPMAddPackage("gh:g-truc/glm#0.9.9.8")
 CPMAddPackage("gh:gabime/spdlog@1.10.0")
@@ -34,7 +45,6 @@ CPMAddPackage("gh:effolkronium/random@1.4.1")
 CPMAddPackage("gh:wqking/eventpp@0.1.2")
 CPMAddPackage("gh:nlohmann/json@3.11.2")
 CPMAddPackage("gh:Neargye/magic_enum@0.8.2")
-CPMAddPackage("gh:kcat/openal-soft#1.23.0")
 CPMAddPackage("gh:freetype/freetype#VER-2-13-0")
 
 if (${CMAKE_BUILD_TYPE} MATCHES Debug)

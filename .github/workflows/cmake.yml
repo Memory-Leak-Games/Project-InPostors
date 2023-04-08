@@ -24,15 +24,24 @@ jobs:
         submodules: recursive
         
     - uses: openrndr/setup-opengl@v1.1
-    
+
+    - name: Apt update
+      run: sudo apt-get update
+
+    - name: Install Ninja
+      run: sudo apt-get install -y ninja-build
+
     - name: Install OpenGL
-      run: sudo apt-get install -y libgl1-mesa-dev libxrandr-dev libx11-dev libxinerama-dev libxcursor-dev libxi-dev libassimp-dev
+      run: sudo apt-get install -y libgl1-mesa-dev libxrandr-dev libx11-dev libxinerama-dev libxcursor-dev libxi-dev
+
+    - name: Install Assimp
+      run: sudo apt-get install -y libassimp-dev libassimp5
+
+    - name: Install OpenAL
+      run: sudo apt-get install -y libopenal-dev libopenal1
         
     - name: Configure CMake
-      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake -G Ninja -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build
-      # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}    
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
