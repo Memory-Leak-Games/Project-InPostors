@@ -11,9 +11,6 @@
 void SimpleCarMovementComponent::Start() {
     rigidbodyComponent = GetOwner().lock()->GetComponentByClass<mlg::RigidbodyComponent>();
 
-    rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f), 1.f);
-    rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f, -1.f), 1.f);
-
     rigidbodyComponent.lock()->SetLinearDrag(10.f);
     rigidbodyComponent.lock()->SetAngularDrag(5.f);
 }

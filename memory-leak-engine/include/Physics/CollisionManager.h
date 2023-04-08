@@ -6,7 +6,14 @@ namespace mlg {
     private:
         static CollisionManager* instance;
 
-        std::vector<std::shared_ptr<class Collider>> colliders;
+        std::vector<std::weak_ptr<class Collider>> colliders;
+
+        struct Collision {
+            std::weak_ptr<Collider> collider;
+            std::weak_ptr<Collider> anotherCollider;
+        };
+
+        std::vector<Collision> collisionsThisTick;
 
         CollisionManager() = default;
     public:
@@ -18,8 +25,8 @@ namespace mlg {
         static void DetectCollisions();
         static void SeparateColliders();
 
-        static void AddCollider(const std::shared_ptr<Collider>& collider);
-        static void RemoveCollider(std::shared_ptr<Collider>& collider);
+        static void AddCollider(std::weak_ptr<Collider> collider);
+        static void RemoveCollider(std::weak_ptr<Collider> collider);
     };
 
 } // mlg

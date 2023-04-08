@@ -16,7 +16,6 @@ set(stb_image_SOURCE_DIR ${STB_IMAGE_DIR} CACHE INTERNAL "")
 add_library(stb_image STATIC ${STB_IMAGE_DIR}/stb_image.cpp)
 target_include_directories(stb_image PRIVATE ${STB_IMAGE_DIR})
 
-CMAKE_POLICY(SET CMP0012 NEW)
 
 #assimp caching
 find_package(Assimp QUIET)
@@ -27,6 +26,18 @@ else()
 	CPMAddPackage("gh:assimp/assimp@5.2.5")
 endif()
 
+#openAL
+find_package(OpenAL QUIET)
+if (${OPENAL_FOUND})
+	message("Using System OpenAL")
+	set_target_properties(OpenAL::OpenAL PROPERTIES FOLDER "thirdparty")
+else()
+	message("Downloading OpenAL")
+	CPMAddPackage("gh:kcat/openal-soft#1.23.0")
+	set_target_properties(OpenAL PROPERTIES FOLDER "thirdparty")
+endif()
+
+
 CPMAddPackage("gh:glfw/glfw#3.3.8")
 CPMAddPackage("gh:g-truc/glm#0.9.9.8")
 CPMAddPackage("gh:gabime/spdlog@1.10.0")
@@ -34,7 +45,6 @@ CPMAddPackage("gh:effolkronium/random@1.4.1")
 CPMAddPackage("gh:wqking/eventpp@0.1.2")
 CPMAddPackage("gh:nlohmann/json@3.11.2")
 CPMAddPackage("gh:Neargye/magic_enum@0.8.2")
-CPMAddPackage("gh:kcat/openal-soft#1.23.0")
 CPMAddPackage("gh:freetype/freetype#VER-2-13-0")
 
 if (${CMAKE_BUILD_TYPE} MATCHES Debug)
@@ -57,7 +67,6 @@ set_target_properties(glad
 					  eventpp
 					  nlohmann_json
 					  magic_enum
-					  OpenAL
 					  freetype
                       spdlog PROPERTIES FOLDER "thirdparty")
 

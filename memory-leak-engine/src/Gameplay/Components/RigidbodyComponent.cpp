@@ -55,6 +55,12 @@ namespace mlg {
         owner->GetTransform().SetEulerRotation(ownerRotation);
 
 #ifdef DEBUG
+        DebugDraw();
+#endif
+    }
+
+#ifdef DEBUG
+    void RigidbodyComponent::DebugDraw() {
         if (!SettingsManager::Get<bool>(SettingsType::Debug, "showColliders"))
             return;
 
@@ -63,20 +69,24 @@ namespace mlg {
             position.x = collider->shape->position.x;
             position.z = collider->shape->position.y;
 
+            glm::vec4 gizmoColor {0.f, 1.f, 0.f, 1.f};
+            if (rigidbody->GetIsKinematic())
+                gizmoColor = {0.f, 0.f, 1.f, 1.f};
+
             switch (collider->shape->GetType()) {
                 case ColliderShape::ColliderShapeType::Circle: {
                     auto circle = (ColliderShape::Circle*) collider->shape.get();
-                    Gizmos::DrawSphere(position, circle->radius);
+                    Gizmos::DrawSphere(position, circle->radius, gizmoColor);
                     break;
                 }
                 case ColliderShape::ColliderShapeType::Rectangle:
                     auto rect = (ColliderShape::Rectangle*) collider->shape.get();
-                    Gizmos::DrawBox(position, {rect->size.x, 1.f, rect->size.y});
+                    Gizmos::DrawBox(position, {rect->size.x, 1.f, rect->size.y}, glm::quat{glm::vec3{0.f}}, gizmoColor);
                     break;
             }
         }
-#endif
     }
+#endif
 
     void RigidbodyComponent::SetLinearDrag(float value) {
         rigidbody->linearDrag = value;
@@ -97,6 +107,7 @@ namespace mlg {
     void RigidbodyComponent::SetKinematic(bool isKinematic) {
         rigidbody->isKinematic = isKinematic;
     }
+
 
 
 } // mlg
