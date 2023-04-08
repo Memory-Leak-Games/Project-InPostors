@@ -18,8 +18,8 @@ namespace mlg {
         static void DetectCollisions();
         static void SeparateColliders();
 
-        static void AddCollider(const std::shared_ptr<Collider>& collider);
-        static void RemoveCollider(std::shared_ptr<Collider>& collider);
+        static void AddCollider(std::weak_ptr<Collider> collider);
+        static void RemoveCollider(std::weak_ptr<Collider> collider);
     };
 
 } // mlg

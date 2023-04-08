@@ -64,14 +64,14 @@ namespace mlg {
         // Doin' math
     }
 
-    void CollisionManager::AddCollider(const std::shared_ptr<Collider>& collider) {
+    void CollisionManager::AddCollider(std::weak_ptr<Collider> collider) {
         instance->colliders.push_back(collider);
     }
 
-    void CollisionManager::RemoveCollider(std::shared_ptr<Collider>& collider) {
+    void CollisionManager::RemoveCollider(std::weak_ptr<Collider> collider) {
         instance->colliders.erase(std::remove_if(instance->colliders.begin(), instance->colliders.end(),
-                                         [&collider](const std::shared_ptr<Collider>& entry) {
-                                             return collider.get() == entry.get();
+                                         [&collider](const std::weak_ptr<Collider>& entry) {
+                                             return collider.lock().get() == entry.lock().get();
                                          }), instance->colliders.end());
     }
 
