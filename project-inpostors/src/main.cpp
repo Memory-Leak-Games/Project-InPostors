@@ -114,8 +114,11 @@ public:
 
         auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
         auto redMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/red_material.json");
+        auto blueMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/blue_material.json");
+
         auto planeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/plane.obj");
         auto cubeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Cube.obj");
+        auto sphereModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Sphere.obj");
 
         auto ground = mlg::EntityManager::SpawnEntity<mlg::Entity>("Ground", true, mlg::SceneGraph::GetRoot());
         ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, whiteMaterial);
@@ -127,6 +130,18 @@ public:
         wall.lock()->GetTransform().SetPosition({-2.f, 0.f, -5.f});
         auto rigidbody = wall.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
         rigidbody.lock()->AddCollider<mlg::ColliderShape::Rectangle>(glm::vec2(0.f), glm::vec2(1.f));
+
+        auto box = mlg::EntityManager::SpawnEntity<mlg::Entity>("Box", false, mlg::SceneGraph::GetRoot());
+        box.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", cubeModel, blueMaterial);
+        box.lock()->GetTransform().SetPosition({2.f, 0.f, -5.f});
+        auto boxRigidbody = box.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
+        boxRigidbody.lock()->AddCollider<mlg::ColliderShape::Rectangle>(glm::vec2(0.f), glm::vec2(1.f));
+
+        auto sphere = mlg::EntityManager::SpawnEntity<mlg::Entity>("Sphere", false, mlg::SceneGraph::GetRoot());
+        sphere.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", sphereModel, blueMaterial);
+        sphere.lock()->GetTransform().SetPosition({2.f, 0.f, 5.f});
+        auto sphereRigidbody = sphere.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
+        sphereRigidbody.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f), 1.f);
 
         auto player = mlg::EntityManager::SpawnEntity<SimplePlayer>("Player", false, mlg::SceneGraph::GetRoot());
     }

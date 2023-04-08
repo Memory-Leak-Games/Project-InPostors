@@ -261,8 +261,8 @@ void Gizmos::DrawSizedPoint(glm::vec3 position, float pointSize, glm::vec4 color
 }
 
 void Gizmos::GenerateSphere(std::vector<GLfloat>& vertices, std::vector<GLuint>& indices) {
-    constexpr float radius = 0.25f;
-    constexpr uint32_t LOD = 5;
+    constexpr float radius = 0.5f;
+    constexpr uint32_t LOD = 8;
     uint32_t indicator = 0;
 
     for (uint32_t i = 0; i <= LOD; i++) {

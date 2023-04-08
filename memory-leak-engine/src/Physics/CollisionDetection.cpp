@@ -29,8 +29,8 @@ namespace mlg {
                && rectangleOne->GetBottom() < rectangleTwo->GetTop();
     }
 
-    glm::vec2 CollisionDetection::SquareSquareSeparation(const ColliderShape::Rectangle* rectangleOne,
-                                                         const ColliderShape::Rectangle* rectangleTwo) {
+    glm::vec2 CollisionDetection::RectangleRectangleSeparation(const ColliderShape::Rectangle* rectangleOne,
+                                                               const ColliderShape::Rectangle* rectangleTwo) {
         float leftSeparation = rectangleOne->GetRight() - rectangleTwo->GetLeft();
         float rightSeparation = rectangleTwo->GetRight() - rectangleOne->GetLeft();
         float topSeparation = rectangleOne->GetTop() - rectangleTwo->GetBottom();
@@ -63,8 +63,8 @@ namespace mlg {
         return result;
     }
 
-    glm::vec2 CollisionDetection::SquareCircleSeparation(const ColliderShape::Rectangle* rectangle,
-                                                         const ColliderShape::Circle* circle) {
+    glm::vec2 CollisionDetection::RectangleCircleSeparation(const ColliderShape::Rectangle* rectangle,
+                                                            const ColliderShape::Circle* circle) {
         glm::vec2 nearestPoint = CalculateNearestPoint(circle->position, rectangle);
 
         glm::vec2 circleToNearestPointVector = circle->position - nearestPoint;

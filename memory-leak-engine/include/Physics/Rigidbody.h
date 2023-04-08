@@ -43,6 +43,7 @@ namespace mlg {
 
         friend class Physics;
         friend class RigidbodyComponent;
+        friend class Collider;
     private:
         void Integrate();
         void UpdateColliders();

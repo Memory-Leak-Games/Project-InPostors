@@ -19,6 +19,10 @@ namespace mlg {
         void PhysicsUpdate() override;
         void Update() override;
 
+#ifdef DEBUG
+        void DebugDraw();
+#endif
+
         void AddForce(glm::vec2 force);
         void AddForce(glm::vec2 force, glm::vec2 localPosition);
         void AddTorque(float value);

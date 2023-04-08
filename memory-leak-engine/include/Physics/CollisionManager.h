@@ -8,6 +8,13 @@ namespace mlg {
 
         std::vector<std::weak_ptr<class Collider>> colliders;
 
+        struct Collision {
+            std::weak_ptr<Collider> collider;
+            std::weak_ptr<Collider> anotherCollider;
+        };
+
+        std::vector<Collision> collisionsThisTick;
+
         CollisionManager() = default;
     public:
         static void Initialize();
