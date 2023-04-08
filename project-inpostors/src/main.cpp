@@ -26,10 +26,10 @@
 #include <Gameplay/Components/RigidbodyComponent.h>
 
 #include <UI/Assets/FontAsset.h>
-#include <UI/Label.h>
-#include <UI/Image.h>
+#include <UI/Components/Image.h>
+#include <UI/Components/Label.h>
+#include <UI/Components/ProgressBar.h>
 #include <UI/Renderer2D.h>
-#include <UI/ProgressBar.h>
 
 class ComponentTest : public mlg::Component {
 public:
@@ -97,9 +97,6 @@ public:
 
         return 0;
     }
-    
-    std::shared_ptr<mlg::Image> image;
-    std::shared_ptr<mlg::ProgressBar> progressBar;
 
     void PrepareScene() {
         mlg::Camera::GetInstance()->SetPosition({-8.f, 15.f, 8.f});
@@ -150,18 +147,18 @@ public:
 
         auto label = ui.lock()->AddComponent<mlg::Label>("Label");
         label.lock()->font = font;
-        label.lock()->position = {10, 10};
+        label.lock()->SetPosition({10, 10});
 
         auto imageMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/cat_UI_material.json");
-        image = std::make_shared<mlg::Image>(imageMaterial);
-        image->SetSize(glm::vec2{256.f});
-        image->SetPosition({50.f, 50.f});
+        auto image = ui.lock()->AddComponent<mlg::Image>("Image", imageMaterial);
+        image.lock()->SetSize(glm::vec2{256.f});
+        image.lock()->SetPosition({50.f, 50.f});
 
         auto progressBarMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/progressBar_material.json");
 
-        progressBar = std::make_shared<mlg::ProgressBar>(progressBarMaterial);
-        progressBar->SetSize(glm::vec2{256.f, 32.f});
-        progressBar->SetPosition({50.f, 400.f});
+        auto progressBar = ui.lock()->AddComponent<mlg::ProgressBar>("ProgressBar", progressBarMaterial);
+        progressBar.lock()->SetSize(glm::vec2{256.f, 32.f});
+        progressBar.lock()->SetPosition({50.f, 400.f});
 
         mlg::Renderer2D::GetInstance()->AddRenderable(label);
         mlg::Renderer2D::GetInstance()->AddRenderable(image);

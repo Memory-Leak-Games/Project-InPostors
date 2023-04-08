@@ -1,8 +1,7 @@
-#include "UI/ProgressBar.h"
+#include "include/UI/Components/ProgressBar.h"
 
-#include <glad/glad.h>
+#include <utility>
 
-#include "Core/Window.h"
 #include "Core/AssetManager/AssetManager.h"
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/ShaderProgram.h"
@@ -11,7 +10,8 @@
 #include "UI/Renderer2D.h"
 
 namespace mlg {
-    ProgressBar::ProgressBar(const std::shared_ptr<struct MaterialAsset>& material) : Image(material) {}
+    ProgressBar::ProgressBar(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<struct MaterialAsset>& material)
+        : Image(std::move(owner), std::move(name), material) {}
 
     // TODO: Do przemyślenia czy ta klasa powinna dziedziczyć z obrazka a jeżeli tak to wypadało by korzystać z jej kodu
     void ProgressBar::Draw(const Renderer2D* renderer) {

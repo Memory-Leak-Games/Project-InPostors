@@ -1,18 +1,21 @@
-#include "UI/Image.h"
-#include "Core/Window.h"
+#include "include/UI/Components/Image.h"
+
 #include "Macros.h"
 #include "UI/Renderer2D.h"
 
-#include <glad/glad.h>
+#include "glad/glad.h"
 
-#include <Rendering/Assets/MaterialAsset.h>
-#include <Rendering/ShaderProgram.h>
+#include "include/Rendering/Assets/MaterialAsset.h"
+#include "include/Rendering/ShaderProgram.h"
+
+#include <utility>
 
 namespace mlg {
     uint32_t Image::rectVao;
     uint32_t Image::rectVbo;
 
-    Image::Image(const std::shared_ptr<struct MaterialAsset>& material) : material(material) {
+    Image::Image(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<struct MaterialAsset>& material)
+        : UIComponent(std::move(owner), std::move(name)), material(material) {
         if (rectVao == 0 || rectVbo == 0)
             InitializeRect();
     }
@@ -71,13 +74,5 @@ namespace mlg {
 
     void Image::SetSize(const glm::vec2& size) {
         Image::size = size;
-    }
-
-    const glm::vec2& Image::GetPosition() const {
-        return position;
-    }
-
-    void Image::SetPosition(const glm::vec2& position) {
-        Image::position = position;
     }
 } // mlg

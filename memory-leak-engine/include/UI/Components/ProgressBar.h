@@ -8,7 +8,8 @@ namespace mlg {
     private:
         float percentage = 0.f;
     public:
-        explicit ProgressBar(const std::shared_ptr<struct MaterialAsset>& material);
+        explicit ProgressBar(std::weak_ptr<Entity> owner, std::string name,
+                             const std::shared_ptr<struct MaterialAsset>& material);
 
         void Draw(const Renderer2D* renderer) override;
     };

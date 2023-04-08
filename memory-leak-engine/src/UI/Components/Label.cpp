@@ -1,9 +1,8 @@
-#include "UI/Label.h"
+#include "include/UI/Components/Label.h"
 
-#include <glad/glad.h>
+#include "glad/glad.h"
 
-#include "Core/Time.h"
-#include "Core/Window.h"
+#include <utility>
 
 #include "Core/AssetManager/AssetManager.h"
 #include "UI/Assets/FontAsset.h"
@@ -14,7 +13,7 @@
 
 namespace mlg {
 
-    Label::Label(std::weak_ptr<Entity> owner, std::string name) : Component(owner, name) {
+    Label::Label(std::weak_ptr<Entity> owner, std::string name) : UIComponent(std::move(owner), std::move(name)) {
         shader = std::make_shared<ShaderProgram>(
                 AssetManager::GetAsset<ShaderAsset>("res/shaders/UI/glyph.vert"),
                 AssetManager::GetAsset<ShaderAsset>("res/shaders/UI/glyph.frag"));
@@ -47,7 +46,6 @@ namespace mlg {
         glBindVertexArray(vao);
 
         // Iterate through all characters
-        std::string::const_iterator c;
         GLfloat cursor = position.x;
         for (char8_t c : text) {
             FontAsset::Character ch = font->characters[c];
