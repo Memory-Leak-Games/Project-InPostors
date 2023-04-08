@@ -57,7 +57,7 @@ namespace mlg {
         if (shape->GetType() == ColliderShape::ColliderShapeType::Circle) {
             return CalculateSeparationAsCircle(anotherCollider);
         } else {
-            return CalculateSeparationAsCircle(anotherCollider);
+            return CalculateSeparationAsRectangle(anotherCollider);
         }
     }
 
@@ -73,7 +73,7 @@ namespace mlg {
     }
 
     glm::vec2 Collider::CalculateSeparationAsRectangle(Collider* anotherCollider) {
-        if (anotherCollider->shape->GetType() == ColliderShape::ColliderShapeType::Circle) {
+        if (anotherCollider->shape->GetType() == ColliderShape::ColliderShapeType::Rectangle) {
             return CollisionDetection::RectangleRectangleSeparation((ColliderShape::Rectangle*) shape.get(),
                                                                     (ColliderShape::Rectangle*) anotherCollider->shape.get());
         } else {
