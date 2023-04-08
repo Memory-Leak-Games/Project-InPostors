@@ -4,14 +4,24 @@
 
 namespace mlg {
     class Label : public UIComponent {
+        std::shared_ptr<class FontAsset> font;
+
         uint32_t vao{}, vbo{};
         std::shared_ptr<class ShaderProgram> shader;
-    public:
-        std::string text;
-        std::shared_ptr<class FontAsset> font;
-        glm::vec3 textColor = {1, 1, 1};
 
-        Label(std::weak_ptr<Entity> owner, std::string name, std::shared_ptr<class FontAsset> font);
+        std::string text;
+        glm::vec3 textColor = {1, 1, 1};
+    public:
+
+        Label(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<class FontAsset>& font);
         void Draw(const Renderer2D* renderer) override;
+
+        [[nodiscard]] const std::string& GetText() const;
+        [[nodiscard]] const glm::vec3& GetTextColor() const;
+        [[nodiscard]] std::shared_ptr<class FontAsset> GetFont() const;
+
+        void SetText(const std::string& text);
+        void SetTextColor(const glm::vec3& textColor);
+        void SetFont(const std::shared_ptr<class FontAsset>& font);
     };
 }

@@ -13,8 +13,8 @@
 
 namespace mlg {
 
-    Label::Label(std::weak_ptr<Entity> owner, std::string name, std::shared_ptr<class FontAsset> font)
-        : UIComponent(std::move(owner), std::move(name)), font(std::move(font)) {
+    Label::Label(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<class FontAsset>& font)
+        : UIComponent(std::move(owner), std::move(name)), font(font) {
         shader = std::make_shared<ShaderProgram>(
                 AssetManager::GetAsset<ShaderAsset>("res/shaders/UI/glyph.vert"),
                 AssetManager::GetAsset<ShaderAsset>("res/shaders/UI/glyph.frag"));
@@ -47,7 +47,7 @@ namespace mlg {
         glBindVertexArray(vao);
 
         // Iterate through all characters
-        GLfloat cursor = position.x;
+        float cursor = position.x;
         for (char8_t c : text) {
             FontAsset::Character ch = font->characters[c];
 
@@ -79,6 +79,30 @@ namespace mlg {
         }
         glBindVertexArray(0);
         glBindTextureUnit(0, 0);
+    }
+
+    std::shared_ptr<FontAsset> Label::GetFont() const {
+        return font;
+    }
+
+    const std::string& Label::GetText() const {
+        return text;
+    }
+
+    const glm::vec3& Label::GetTextColor() const {
+        return textColor;
+    }
+
+    void Label::SetFont(const std::shared_ptr<FontAsset>& font) {
+        Label::font = font;
+    }
+
+    void Label::SetText(const std::string& text) {
+        Label::text = text;
+    }
+
+    void Label::SetTextColor(const glm::vec3& textColor) {
+        Label::textColor = textColor;
     }
 }
 
