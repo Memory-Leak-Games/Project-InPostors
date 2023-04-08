@@ -6,7 +6,7 @@ namespace mlg {
     private:
         static CollisionManager* instance;
 
-        std::vector<std::shared_ptr<class Collider>> colliders;
+        std::vector<std::weak_ptr<class Collider>> colliders;
 
         CollisionManager() = default;
     public:

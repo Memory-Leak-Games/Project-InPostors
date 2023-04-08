@@ -34,17 +34,27 @@ namespace mlg {
 // TODO: Hash grid table
     void CollisionManager::DetectCollisions() {
         for (auto& collider : instance->colliders) {
-            if (collider->GetOwner()->GetIsKinematic())
+            if (collider.expired())
+                continue;
+
+            auto sharedCollider = collider.lock();
+
+            if (sharedCollider->GetOwner()->GetIsKinematic())
                 continue;
 
             // Check collision with every other collider
             for (auto& anotherCollider : instance->colliders) {
+                if (anotherCollider.expired())
+                    return;
+
+                auto sharedAnotherCollider = anotherCollider.lock();
+
                 // But not with self
-                if (collider->GetOwner() == anotherCollider->GetOwner())
+                if (sharedCollider->GetOwner() == sharedAnotherCollider->GetOwner())
                     continue;
 
-                if (collider->DetectCollision(anotherCollider.get())) {
-                    collider->OnCollisionEnter(CollisionEvent{glm::vec2(0.f), anotherCollider->GetOwner()});
+                if (sharedCollider->DetectCollision(sharedAnotherCollider.get())) {
+                    sharedCollider->OnCollisionEnter(CollisionEvent{glm::vec2(0.f), sharedAnotherCollider->GetOwner()});
                 }
             }
         }
