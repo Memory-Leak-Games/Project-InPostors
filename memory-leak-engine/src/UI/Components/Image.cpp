@@ -1,17 +1,21 @@
-#include "UI/Image.h"
+#include "include/UI/Components/Image.h"
+
 #include "Macros.h"
-#include "Core/Window.h"
+#include "UI/Renderer2D.h"
 
-#include <glad/glad.h>
+#include "glad/glad.h"
 
-#include <Rendering/Assets/MaterialAsset.h>
-#include <Rendering/ShaderProgram.h>
+#include "include/Rendering/Assets/MaterialAsset.h"
+#include "include/Rendering/ShaderProgram.h"
+
+#include <utility>
 
 namespace mlg {
     uint32_t Image::rectVao;
     uint32_t Image::rectVbo;
 
-    Image::Image(const std::shared_ptr<struct MaterialAsset>& material) : material(material) {
+    Image::Image(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<struct MaterialAsset>& material)
+        : UIComponent(std::move(owner), std::move(name)), material(material) {
         if (rectVao == 0 || rectVbo == 0)
             InitializeRect();
     }
@@ -44,16 +48,12 @@ namespace mlg {
         glVertexArrayVertexBuffer(rectVao, 0, rectVbo, 0, 2 * sizeof(float));
     }
 
-    void Image::Draw() {
+    void Image::Draw(const Renderer2D* renderer) {
         material->Activate();
-
-        // TODO: nie liczyć tego co klatkę tylko jeżeli wielkość okna się zmieni (może trzymać to w Rendererz jako pole statyczne)
-        Window* window = Window::GetInstance();
-        glm::mat4 projection = glm::ortho(0.0f, (float) window->GetWidth(), 0.0f, (float) window->GetHeight());
 
         material->GetShaderProgram()->SetVec2F("size", size);
         material->GetShaderProgram()->SetVec2F("screenPosition", position);
-        material->GetShaderProgram()->SetMat4F("projection", projection);
+        material->GetShaderProgram()->SetMat4F("projection", renderer->GetProjection());
 
         DrawRect();
 
@@ -74,13 +74,5 @@ namespace mlg {
 
     void Image::SetSize(const glm::vec2& size) {
         Image::size = size;
-    }
-
-    const glm::vec2& Image::GetPosition() const {
-        return position;
-    }
-
-    void Image::SetPosition(const glm::vec2& position) {
-        Image::position = position;
     }
 } // mlg
