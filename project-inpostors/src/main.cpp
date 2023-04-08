@@ -141,12 +141,10 @@ public:
         ground.lock()->GetTransform().SetPosition({0.f, -5.f, 0.f});
         ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
 
-        auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/comic.ttf");
-
         auto ui = mlg::EntityManager::SpawnEntity<mlg::Entity>("ui", true, mlg::SceneGraph::GetRoot());
 
-        auto label = ui.lock()->AddComponent<mlg::Label>("Label");
-        label.lock()->font = font;
+        auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/comic.ttf");
+        auto label = ui.lock()->AddComponent<mlg::Label>("Label", font);
         label.lock()->SetPosition({10, 10});
 
         auto imageMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/cat_UI_material.json");
@@ -155,7 +153,6 @@ public:
         image.lock()->SetPosition({50.f, 50.f});
 
         auto progressBarMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/progressBar_material.json");
-
         auto progressBar = ui.lock()->AddComponent<mlg::ProgressBar>("ProgressBar", progressBarMaterial);
         progressBar.lock()->SetSize(glm::vec2{256.f, 32.f});
         progressBar.lock()->SetPosition({50.f, 400.f});

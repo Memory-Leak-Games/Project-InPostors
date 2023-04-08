@@ -11,7 +11,7 @@ namespace mlg {
         std::shared_ptr<class FontAsset> font;
         glm::vec3 textColor = {1, 1, 1};
 
-        Label(std::weak_ptr<Entity> owner, std::string name);
+        Label(std::weak_ptr<Entity> owner, std::string name, std::shared_ptr<class FontAsset> font);
         void Draw(const Renderer2D* renderer) override;
     };
 }
