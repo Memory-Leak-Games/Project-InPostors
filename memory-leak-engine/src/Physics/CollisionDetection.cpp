@@ -71,4 +71,17 @@ namespace mlg {
         return CircleCircleSeparation(rectangleAsCircle.get(), circle);
     }
 
+    glm::vec2 CollisionDetection::FindCollisionPointForCircle(const mlg::ColliderShape::Circle* circle,
+                                                              const glm::vec2& anotherPosition) {
+        glm::vec2 oneToTwoDirection = -Math::SafeNormal(circle->position - anotherPosition);
+        return oneToTwoDirection * circle->radius + circle->position;
+    }
+
+    glm::vec2 CollisionDetection::FindCollisionPointForRect(const ColliderShape::Rectangle* rectangle,
+                                                            const glm::vec2& anotherPosition) {
+        glm::vec2 oneToTwoDirection = -Math::SafeNormal(rectangle->position - anotherPosition);
+        return oneToTwoDirection * rectangle->GetRadius() + rectangle->position;
+    }
+
+
 } // mlg

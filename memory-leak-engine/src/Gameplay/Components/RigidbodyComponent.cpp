@@ -54,6 +54,7 @@ namespace mlg {
         ownerRotation.y = rigidbody->rotation;
         owner->GetTransform().SetEulerRotation(ownerRotation);
 
+
 #ifdef DEBUG
         DebugDraw();
 #endif
@@ -108,6 +109,21 @@ namespace mlg {
         rigidbody->isKinematic = isKinematic;
     }
 
+    void RigidbodyComponent::AddCollider(std::unique_ptr<ColliderShape::Shape> shape) {
+        auto collider = rigidbody->AddCollider(std::move(shape)).lock();
+
+#ifdef DEBUG
+        if (!SettingsManager::Get<bool>(SettingsType::Debug, "showColliders"))
+            return;
+
+        collider->OnCollisionEnter.append([](CollisionEvent event) {
+            glm::vec3 position {0.f};
+            position.x = event.position.x;
+            position.z = event.position.y;
+            Gizmos::DrawPoint(position, glm::vec4{1.f, 0.f, 0.f, 1.f}, true);
+        });
+#endif
+    }
 
 
 } // mlg

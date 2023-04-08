@@ -111,6 +111,7 @@ public:
     void PrepareScene() {
         mlg::Camera::GetInstance()->SetPosition({-8.f, 15.f, 8.f});
         mlg::Camera::GetInstance()->SetRotation(glm::radians(-60.f), glm::radians(45.f));
+//        mlg::Camera::GetInstance()->SetRotation(glm::radians(-90.f), glm::radians(0.f));
 
         auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
         auto redMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/red_material.json");

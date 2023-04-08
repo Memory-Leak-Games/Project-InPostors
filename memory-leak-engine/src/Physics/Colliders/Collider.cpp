@@ -3,6 +3,8 @@
 #include "Physics/CollisionDetection.h"
 #include "Physics/Colliders/ColliderShapes.h"
 
+#include "Core/Math.h"
+
 #include "Macros.h"
 
 namespace mlg {
@@ -43,16 +45,13 @@ namespace mlg {
         }
     }
 
-    void Collider::Separate(Collider* anotherCollider) {
-        glm::vec2 separation = CalculateSeparation(anotherCollider);
-
+    void Collider::Separate(Collider* anotherCollider, glm::vec2 separationVector) {
         if (anotherCollider->owner->isKinematic) {
-            owner->position -= separation;
+            owner->position -= separationVector;
         } else {
-            owner->position -= separation * 0.5f;
-            anotherCollider->owner->position += separation * 0.5f;
+            owner->position -= separationVector * 0.5f;
+            anotherCollider->owner->position += separationVector * 0.5f;
         }
-
     }
 
     glm::vec2 Collider::CalculateSeparation(Collider* anotherCollider) {
@@ -83,4 +82,13 @@ namespace mlg {
         }
     }
 
+    glm::vec2 Collider::FindCollisionPoint(const glm::vec2& anotherPosition) {
+        if (shape->GetType() == ColliderShape::ColliderShapeType::Circle) {
+            return CollisionDetection::FindCollisionPointForCircle((ColliderShape::Circle*) this->shape.get(),
+                                                                   anotherPosition);
+        } else {
+            return CollisionDetection::FindCollisionPointForRect((ColliderShape::Rectangle*) this->shape.get(),
+                                                                 anotherPosition);
+        }
+    }
 }

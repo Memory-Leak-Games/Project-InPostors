@@ -36,7 +36,7 @@ namespace mlg {
 
         void AddTorque(float value);
 
-        void AddCollider(std::unique_ptr<ColliderShape::Shape> shape);
+        std::weak_ptr<Collider> AddCollider(std::unique_ptr<ColliderShape::Shape> shape);
 
         [[nodiscard]] const glm::vec2& GetPosition() const;
         [[nodiscard]] bool GetIsKinematic() const;

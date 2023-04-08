@@ -85,13 +85,15 @@ namespace mlg {
         return isKinematic;
     }
 
-    void Rigidbody::AddCollider(std::unique_ptr<ColliderShape::Shape> shape) {
+    std::weak_ptr<Collider> Rigidbody::AddCollider(std::unique_ptr<ColliderShape::Shape> shape) {
         auto collider = std::make_shared<Collider>(this, std::move(shape));
         colliders.push_back(collider);
 
         CalculateColliderPosition(collider);
 
         CollisionManager::AddCollider(collider);
+
+        return collider;
     }
 
 } // mlg

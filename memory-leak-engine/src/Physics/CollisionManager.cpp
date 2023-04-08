@@ -55,18 +55,24 @@ namespace mlg {
 
                 if (sharedCollider->DetectCollision(sharedAnotherCollider.get())) {
                     instance->collisionsThisTick.push_back({collider, anotherCollider});
-                    sharedCollider->OnCollisionEnter(CollisionEvent{glm::vec2(0.f), sharedAnotherCollider->GetOwner()});
                 }
             }
         }
     }
 
-    void CollisionManager::SeparateColliders() {
+    void CollisionManager::SolveCollisions() {
         for (auto& collision : instance->collisionsThisTick) {
             if (collision.collider.lock()->GetOwner()->GetIsKinematic())
                 continue;
 
-            collision.collider.lock()->Separate(collision.anotherCollider.lock().get());
+            auto collider = collision.collider.lock();
+            auto anotherCollider = collision.anotherCollider.lock();
+
+            glm::vec2 separationVector = collider->CalculateSeparation(anotherCollider.get());
+            collider->Separate(anotherCollider.get(), separationVector);
+
+            glm::vec2 collisionPoint = collider->FindCollisionPoint(anotherCollider->GetOwner()->GetPosition());
+            collider->OnCollisionEnter({collisionPoint, anotherCollider->GetOwner()});
         }
 
         instance->collisionsThisTick.clear();
