@@ -33,12 +33,15 @@ namespace mlg {
         template<typename T, typename ... Args>
         void AddCollider(Args&& ... args) {
             auto shape = std::make_unique<T>(glm::vec2(0.f), std::forward<Args>(args) ...);
-            rigidbody->AddCollider(std::move(shape));
+            AddCollider(std::move(shape));
         }
 
         void SetKinematic(bool isKinematic);
 
         ~RigidbodyComponent() override;
+
+    private:
+        void AddCollider(std::unique_ptr<ColliderShape::Shape> shape);
     };
 
 } // mlg
