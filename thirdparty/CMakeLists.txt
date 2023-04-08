@@ -16,7 +16,6 @@ set(stb_image_SOURCE_DIR ${STB_IMAGE_DIR} CACHE INTERNAL "")
 add_library(stb_image STATIC ${STB_IMAGE_DIR}/stb_image.cpp)
 target_include_directories(stb_image PRIVATE ${STB_IMAGE_DIR})
 
-CMAKE_POLICY(SET CMP0012 NEW)
 
 #assimp caching
 find_package(Assimp QUIET)
@@ -29,12 +28,13 @@ endif()
 
 #openAL
 find_package(OpenAL QUIET)
-message(${OPENAL_FOUND})
 if (${OPENAL_FOUND})
 	message("Using System OpenAL")
+	set_target_properties(OpenAL::OpenAL PROPERTIES FOLDER "thirdparty")
 else()
 	message("Downloading OpenAL")
 	CPMAddPackage("gh:kcat/openal-soft#1.23.0")
+	set_target_properties(OpenAL PROPERTIES FOLDER "thirdparty")
 endif()
 
 
@@ -67,7 +67,6 @@ set_target_properties(glad
 					  eventpp
 					  nlohmann_json
 					  magic_enum
-					  OpenAL
 					  freetype
                       spdlog PROPERTIES FOLDER "thirdparty")
 

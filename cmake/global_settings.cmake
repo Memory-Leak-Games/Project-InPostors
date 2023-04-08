@@ -1,12 +1,15 @@
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "CMake")
 
+CMAKE_POLICY(SET CMP0012 NEW)
+
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_DEBUG_POSTFIX "_d")
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 
-set(BUILD_SHARED_LIBS                       OFF CACHE INTERNAL "Build package with shared libraries.")
+#set(BUILD_SHARED_LIBS                       OFF CACHE INTERNAL "Build package with shared libraries.")
+set(BUILD_SHARED_LIBS ON)
 set(ASSIMP_BUILD_ASSIMP_TOOLS               OFF CACHE INTERNAL "If the supplementary tools for Assimp are built in addition to the library.")
 set(ASSIMP_NO_EXPORT                        ON CACHE INTERNAL  "Disable Assimp export")
 set(ASSIMP_BUILD_ALL_EXPORTERS_BY_DEFAULT   OFF CACHE INTERNAL "Disable Assimp export")
