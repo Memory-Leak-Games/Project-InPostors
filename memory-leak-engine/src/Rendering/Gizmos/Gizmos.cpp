@@ -3,6 +3,7 @@
 #include "Core/AssetManager/AssetManager.h"
 #include "Rendering/Assets/ShaderAsset.h"
 
+#include "Core/Time.h"
 #include "Rendering/ShaderProgram.h"
 
 using namespace mlg;
@@ -139,34 +140,43 @@ void mlg::Gizmos::Stop() {
 
 void Gizmos::DrawGizmos() {
     glEnable(GL_DEPTH_TEST);
-
     shader->Activate();
     glEnable(GL_PROGRAM_POINT_SIZE);
     auto gizmoEnd = gizmoInstances.end();
-    for (auto gizmoIt = gizmoInstances.begin(); gizmoIt < gizmoEnd; gizmoIt++) {
-        GizmoObject gizmo = *gizmoIt;
-        shader->SetMat4F("world", gizmo.world);
-        shader->SetVec4F("color", gizmo.color);
-        shader->SetBool("alwaysFront", gizmo.alwaysFront);
-        shader->SetFloat("pointSize", gizmo.pointSize);
+    for (auto gizmoIt = gizmoInstances.begin(); gizmoIt < gizmoEnd;) {
+        //GizmoObject gizmo = *gizmoIt;
+        shader->SetMat4F("world", gizmoIt->world);
+        shader->SetVec4F("color", gizmoIt->color);
+        shader->SetBool("alwaysFront", gizmoIt->alwaysFront);
+        shader->SetFloat("pointSize", gizmoIt->pointSize);
 
-        glBindVertexArray(gizmo.VAO);
-        if (gizmo.EBO) {
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gizmo.EBO);
-            glDrawElements(gizmo.primitive, gizmo.elements, GL_UNSIGNED_INT, nullptr);
+        glBindVertexArray(gizmoIt->VAO);
+        if (gizmoIt->EBO) {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gizmoIt->EBO);
+            glDrawElements(gizmoIt->primitive, gizmoIt->elements, GL_UNSIGNED_INT, nullptr);
         } else {
-            glDrawArrays(gizmo.primitive, 0, gizmo.elements);
+            glDrawArrays(gizmoIt->primitive, 0, gizmoIt->elements);
+        }
+
+        // Erase outdated gizmos without causing segmentation fault
+        gizmoIt->ttl -= Time::GetTrueDeltaSeconds();
+        if(gizmoIt->ttl <= 0.0f)
+        {
+            gizmoInstances.erase(gizmoIt);
+            gizmoEnd--;
+        }
+        else
+        {
+            gizmoIt++;
         }
     }
-
-    gizmoInstances.clear();
 
     glDisable(GL_PROGRAM_POINT_SIZE);
     glBindVertexArray(0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void mlg::Gizmos::DrawLine(glm::vec3 start, glm::vec3 end, glm::vec4 color, bool alwaysFront) {
+void mlg::Gizmos::DrawLine(glm::vec3 start, glm::vec3 end, glm::vec4 color, bool alwaysFront, float ttl) {
     GizmoObject gizmo;
 
     gizmo.VBO = lineVBO;
@@ -180,11 +190,12 @@ void mlg::Gizmos::DrawLine(glm::vec3 start, glm::vec3 end, glm::vec4 color, bool
 
     gizmo.color = color;
     gizmo.alwaysFront = alwaysFront;
+    gizmo.ttl = ttl;
 
     gizmoInstances.push_back(gizmo);
 }
 
-void Gizmos::DrawBox(glm::vec3 position, glm::vec3 size, glm::quat rotation, glm::vec4 color, bool alwaysFront) {
+void Gizmos::DrawBox(glm::vec3 position, glm::vec3 size, glm::quat rotation, glm::vec4 color, bool alwaysFront, float ttl) {
     GizmoObject gizmo;
 
     gizmo.VBO = boxVBO;
@@ -199,11 +210,12 @@ void Gizmos::DrawBox(glm::vec3 position, glm::vec3 size, glm::quat rotation, glm
 
     gizmo.color = color;
     gizmo.alwaysFront = alwaysFront;
+    gizmo.ttl = ttl;
 
     gizmoInstances.push_back(gizmo);
 }
 
-void Gizmos::DrawBox(Transform& transform, glm::vec4 color, bool alwaysFront) {
+void Gizmos::DrawBox(Transform& transform, glm::vec4 color, bool alwaysFront, float ttl) {
     GizmoObject gizmo;
 
     gizmo.VBO = boxVBO;
@@ -215,11 +227,12 @@ void Gizmos::DrawBox(Transform& transform, glm::vec4 color, bool alwaysFront) {
 
     gizmo.color = color;
     gizmo.alwaysFront = alwaysFront;
+    gizmo.ttl = ttl;
 
     gizmoInstances.push_back(gizmo);
 }
 
-void Gizmos::DrawSphere(glm::vec3 position, float radius, glm::vec4 color, bool alwaysFront) {
+void Gizmos::DrawSphere(glm::vec3 position, float radius, glm::vec4 color, bool alwaysFront, float ttl) {
     GizmoObject gizmo;
 
     gizmo.VBO = sphereVBO;
@@ -234,15 +247,16 @@ void Gizmos::DrawSphere(glm::vec3 position, float radius, glm::vec4 color, bool 
 
     gizmo.color = color;
     gizmo.alwaysFront = alwaysFront;
+    gizmo.ttl = ttl;
 
     gizmoInstances.push_back(gizmo);
 }
 
-void Gizmos::DrawPoint(glm::vec3 position, glm::vec4 color, bool alwaysFront) {
-    DrawSizedPoint(position, 2, color, alwaysFront);
+void Gizmos::DrawPoint(glm::vec3 position, glm::vec4 color, bool alwaysFront, float ttl) {
+    DrawSizedPoint(position, 2, color, alwaysFront, ttl);
 }
 
-void Gizmos::DrawSizedPoint(glm::vec3 position, float pointSize, glm::vec4 color, bool alwaysFront) {
+void Gizmos::DrawSizedPoint(glm::vec3 position, float pointSize, glm::vec4 color, bool alwaysFront, float ttl) {
     GizmoObject gizmo;
 
     gizmo.VBO = pointVBO;
@@ -256,6 +270,7 @@ void Gizmos::DrawSizedPoint(glm::vec3 position, float pointSize, glm::vec4 color
     gizmo.color = color;
     gizmo.alwaysFront = alwaysFront;
     gizmo.pointSize = pointSize;
+    gizmo.ttl = ttl;
 
     gizmoInstances.push_back(gizmo);
 }
