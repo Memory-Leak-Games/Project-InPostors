@@ -3,12 +3,19 @@
 //
 
 #include "UI/Renderer2D.h"
+#include "Core/Window.h"
 #include "UI/Renderable2D.h"
 #include "spdlog/spdlog.h"
 
 namespace mlg {
 
     Renderer2D* Renderer2D::instance;
+
+    Renderer2D::Renderer2D() {
+        // Setup projection mat manually at game start
+        Window* window = Window::GetInstance();
+        SetProjection(window->GetWidth(), window->GetHeight());
+    }
 
     void Renderer2D::Initialize() {
         if (instance != nullptr)
@@ -34,7 +41,7 @@ namespace mlg {
         for (auto& renderable : renderables) {
             if (renderable.expired())
                 continue;
-            renderable.lock()->Draw();
+            renderable.lock()->Draw(this);
         }
     }
 
@@ -48,6 +55,14 @@ namespace mlg {
                                              return renderable.lock().get() == entry.lock().get();
                                          }),
                           renderables.end());
+    }
+
+    void Renderer2D::SetProjection(int32_t windowWidth, int32_t windowHeight) {
+        projection = glm::ortho(0.0f, (float) windowWidth, 0.0f, (float) windowHeight);
+    }
+
+    glm::mat4 Renderer2D::GetProjection() const {
+        return projection;
     }
 
 }
