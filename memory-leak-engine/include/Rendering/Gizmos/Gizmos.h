@@ -17,10 +17,10 @@ namespace mlg {
 
             glm::mat4 world;
             glm::vec4 color;
-            bool alwaysFront; //TODO: Make this work if false
+            bool alwaysFront;
             float pointSize = 1.0;
 
-            //float ttl = 0; // Time to live
+            float ttl = 0; // Time to live
         };
 
         static uint32_t lineVBO;
@@ -48,12 +48,12 @@ namespace mlg {
 
         static void DrawGizmos();
 
-        static void DrawLine(glm::vec3 start, glm::vec3 end, glm::vec4 color = defaultColor, bool alwaysFront = false);
-        static void DrawBox(glm::vec3 position, glm::vec3 size = {1, 1, 1}, glm::quat rotation = glm::quat(), glm::vec4 color = defaultColor, bool alwaysFront = false);
-        static void DrawBox(Transform& transform, glm::vec4 color = defaultColor, bool alwaysFront = false);
-        static void DrawSphere(glm::vec3 position, float radius = 1, glm::vec4 color = defaultColor, bool alwaysFront = false);
-        static void DrawPoint(glm::vec3 position, glm::vec4 color = defaultColor, bool alwaysFront = false);
-        static void DrawSizedPoint(glm::vec3 position, float pointSize = 2, glm::vec4 color = defaultColor, bool alwaysFront = false);
+        static void DrawLine(glm::vec3 start, glm::vec3 end, glm::vec4 color = defaultColor, bool alwaysFront = false, float ttl = 0);
+        static void DrawBox(glm::vec3 position, glm::vec3 size = {1, 1, 1}, glm::quat rotation = glm::quat(), glm::vec4 color = defaultColor, bool alwaysFront = false, float ttl = 0);
+        static void DrawBox(Transform& transform, glm::vec4 color = defaultColor, bool alwaysFront = false, float ttl = 0);
+        static void DrawSphere(glm::vec3 position, float radius = 1, glm::vec4 color = defaultColor, bool alwaysFront = false, float ttl = 0);
+        static void DrawPoint(glm::vec3 position, glm::vec4 color = defaultColor, bool alwaysFront = false, float ttl = 0);
+        static void DrawSizedPoint(glm::vec3 position, float pointSize = 2, glm::vec4 color = defaultColor, bool alwaysFront = false, float ttl = 0);
     };
 
 }// namespace mlg
