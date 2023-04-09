@@ -5,6 +5,8 @@
 
 #include <Rendering/RenderingAPI.h>
 
+#include <Audio/AudioAPI.h>
+
 #include <Rendering/Assets/MaterialAsset.h>
 #include <Rendering/Assets/ModelAsset.h>
 
@@ -59,6 +61,7 @@ public:
     int Main(int argc, char* argv[]) {
         mlg::Time::Initialize();
         mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
+        mlg::AudioAPI::Initialize();
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
         mlg::Renderer2D::Initialize();
@@ -92,6 +95,7 @@ public:
         mlg::Renderer2D::Stop();
         mlg::Renderer::Stop();
         mlg::RenderingAPI::Stop();
+        mlg::AudioAPI::Stop();
         mlg::Window::Stop();
         mlg::Time::Stop();
 
