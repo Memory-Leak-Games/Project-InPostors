@@ -26,7 +26,3 @@
 
 #include <eventpp/eventdispatcher.h>
 #include <eventpp/eventqueue.h>
-
-#ifdef DEBUG
-#include <imgui.h>
-#endif
