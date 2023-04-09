@@ -10,7 +10,7 @@
 #include "Gameplay/Entity.h"
 
 #include "Rendering/Gizmos/Gizmos.h"
-#include "include/Utils/Colors.h"
+#include "include/Rendering/Gizmos/Colors.h"
 
 namespace mlg {
     RigidbodyComponent::RigidbodyComponent(const std::weak_ptr<Entity>& owner, const std::string& name)

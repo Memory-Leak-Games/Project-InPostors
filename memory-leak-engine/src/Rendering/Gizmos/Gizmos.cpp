@@ -4,7 +4,7 @@
 #include "Core/Time.h"
 #include "Rendering/Assets/ShaderAsset.h"
 #include "Rendering/ShaderProgram.h"
-#include "Utils/Colors.h"
+#include "include/Rendering/Gizmos/Colors.h"
 
 using namespace mlg;
 
