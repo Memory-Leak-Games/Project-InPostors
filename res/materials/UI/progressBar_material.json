@@ -1,0 +1,17 @@
+{
+  "vertexShader": "res/shaders/UI/image.vert",
+  "fragmentShader": "res/shaders/UI/progressBar.frag",
+  "uniforms": [
+    {
+      "type": "vec4",
+      "name": "outRect",
+      "value": [1.0, 1.0, 1.0, 1.0]
+    },
+    {
+      "type": "vec4",
+      "name": "inRect",
+      "value": [1.0, 0.0, 0.0, 1.0]
+    }
+  ],
+  "textures": []
+}

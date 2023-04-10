@@ -1,28 +1,9 @@
-#include "include/SceneGraph/Transform.h"
+#include "SceneGraph/Transform.h"
 
 namespace mlg {
     Transform::Transform()
             : position(0.f), rotation(glm::vec3(0.f)), scale(1.f),
               isDirty(true), worldMatrix(1.f), localMatrix(1.f) {
-    }
-
-    Transform::Transform(const Transform& original)
-            : position(0.f), rotation(glm::vec3(0.f)), scale(1.f),
-              isDirty(true), worldMatrix(1.f), localMatrix(1.f) {
-
-    }
-
-    void Transform::operator=(const Transform& another) {
-        if (this == &another)
-            return;
-
-        this->position = another.position;
-        this->rotation = another.rotation;
-        this->scale = another.scale;
-
-        this->localMatrix = another.localMatrix;
-
-        isDirty = true;
     }
 
     const glm::vec3& Transform::GetPosition() const {
@@ -47,9 +28,18 @@ namespace mlg {
         return rotation;
     }
 
+    const glm::vec3 Transform::GetEulerRotation() const {
+        return glm::eulerAngles(rotation);
+    }
+
     void Transform::SetRotation(const glm::quat& rotation) {
         SetDirtyRecursive();
         Transform::rotation = rotation;
+    }
+
+    void Transform::SetEulerRotation(const glm::vec3 rotation) {
+        SetDirtyRecursive();
+        Transform::rotation = {rotation};
     }
 
     const glm::mat4& Transform::GetWorldMatrix() {
@@ -166,7 +156,7 @@ namespace mlg {
         }
 
         if (parent->isDirty) {
-            ReCalculateParentRecursive();
+            parent->ReCalculateParentRecursive();
             return;
         }
 
