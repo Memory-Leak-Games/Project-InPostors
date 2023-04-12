@@ -33,6 +33,9 @@
 #include <UI/Components/ProgressBar.h>
 #include <UI/Renderer2D.h>
 
+#include "soloud.h"
+#include "soloud_wav.h"
+
 class ComponentTest : public mlg::Component {
 public:
     ComponentTest(const std::weak_ptr<mlg::Entity>& owner, const std::string& name) : Component(owner, name) {}
@@ -161,6 +164,15 @@ public:
         sphereRigidbody.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f), 1.f);
 
         auto player = mlg::EntityManager::SpawnEntity<SimplePlayer>("Player", false, mlg::SceneGraph::GetRoot());
+
+        // DELETE ME
+        SoLoud::Soloud gSoloud; // SoLoud engine
+        SoLoud::Wav gWave;
+        auto test = gSoloud.init();
+        auto test2 = gWave.load("res/sound/test.wav");
+        gSoloud.play(gWave); // Play the wave
+        mlg::Time::Sleep(2.f);
+        gSoloud.deinit();
     }
 
     virtual ~ProjectInpostors() {

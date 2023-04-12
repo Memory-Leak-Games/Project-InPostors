@@ -9,8 +9,6 @@ file(GLOB_RECURSE HEADER_FILES
 # Define the executable
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
-target_precompile_headers(${PROJECT_NAME} PRIVATE pch.h)
-
 target_compile_definitions(${PROJECT_NAME} PRIVATE GLFW_INCLUDE_NONE)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}

@@ -5,13 +5,7 @@ file(GLOB_RECURSE HEADER_FILES include/*.h)
 
 add_library(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
-if (${CMAKE_BUILD_TYPE} MATCHES Debug)
-    target_link_libraries(${PROJECT_NAME} imgui)
-    target_link_libraries(${PROJECT_NAME} imgui_impl)
-    target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
-endif()
-
-target_precompile_headers(${PROJECT_NAME} PRIVATE pch.h)
+target_precompile_headers(${PROJECT_NAME} PUBLIC pch.h)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE GLFW_INCLUDE_NONE)
 target_compile_definitions(${PROJECT_NAME} PRIVATE LIBRARY_SUFFIX="")
@@ -33,6 +27,10 @@ target_link_libraries(${PROJECT_NAME} eventpp)
 target_link_libraries(${PROJECT_NAME} nlohmann_json::nlohmann_json)
 target_link_libraries(${PROJECT_NAME} magic_enum)
 target_link_libraries(${PROJECT_NAME} freetype)
+target_link_libraries(${PROJECT_NAME} soloud)
 
 if (${CMAKE_BUILD_TYPE} MATCHES Debug)
+    target_link_libraries(${PROJECT_NAME} imgui)
+    target_link_libraries(${PROJECT_NAME} imgui_impl)
+    target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
 endif()

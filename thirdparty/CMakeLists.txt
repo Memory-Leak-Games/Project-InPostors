@@ -18,43 +18,49 @@ target_include_directories(stb_image PRIVATE ${STB_IMAGE_DIR})
 
 # imGUI
 if (${CMAKE_BUILD_TYPE} MATCHES Debug)
-	CPMAddPackage("gh:ocornut/imgui@1.88")
+    CPMAddPackage("gh:ocornut/imgui@1.88")
 
-	add_library(imgui STATIC
-			${imgui_SOURCE_DIR}/imgui.cpp
-			${imgui_SOURCE_DIR}/imgui_demo.cpp # optionally comment this out
-			${imgui_SOURCE_DIR}/imgui_draw.cpp
-			${imgui_SOURCE_DIR}/imgui_widgets.cpp
-			${imgui_SOURCE_DIR}/imgui_tables.cpp
+    add_library(imgui STATIC
+            ${imgui_SOURCE_DIR}/imgui.cpp
+            ${imgui_SOURCE_DIR}/imgui_demo.cpp # optionally comment this out
+            ${imgui_SOURCE_DIR}/imgui_draw.cpp
+            ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+            ${imgui_SOURCE_DIR}/imgui_tables.cpp
 
-			)
+            )
 
-	target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
+    target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
 
-	add_library(imgui_impl STATIC
-			${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
-			${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
-			)
-	target_link_libraries(imgui_impl imgui)
+    add_library(imgui_impl STATIC
+            ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
+            ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+            )
+    target_link_libraries(imgui_impl imgui)
 
-	target_include_directories(imgui INTERFACE ${imgui_SOURCE_DIR}/backends)
+    target_include_directories(imgui INTERFACE ${imgui_SOURCE_DIR}/backends)
 
-	target_compile_definitions(imgui PUBLIC -DIMGUI_DISABLE_OBSOLETE_FUNCTIONS) # optional imgui setting
-	set_target_properties(imgui PROPERTIES FOLDER thirdparty)
-endif()
+    target_compile_definitions(imgui PUBLIC -DIMGUI_DISABLE_OBSOLETE_FUNCTIONS)
+    set_target_properties(imgui PROPERTIES FOLDER thirdparty)
+endif ()
 
 
 # assimp
 find_package(Assimp QUIET)
-if(${Assimp_FOUND})
-	message("Using System Assimp")
-else()
-	message("Downloading Assimp")
-	CPMAddPackage("gh:assimp/assimp@5.2.5")
-	set_target_properties(assimp PROPERTIES FOLDER "thirdparty")
-endif()
+if (${Assimp_FOUND})
+    message("Using System Assimp")
+else ()
+    message("Downloading Assimp")
+    CPMAddPackage("gh:assimp/assimp@5.2.5")
+    set_target_properties(assimp PROPERTIES FOLDER "thirdparty")
+endif ()
 
+# SoLoud
+INCLUDE(SoLoud.cmake)
 
+target_include_directories(soloud PUBLIC ${soloud_SOURCE_DIR}/include)
+set_target_properties(soloud PROPERTIES FOLDER thirdparty)
+
+# Other
 CPMAddPackage("gh:glfw/glfw#3.3.8")
 CPMAddPackage("gh:g-truc/glm#0.9.9.8")
 CPMAddPackage("gh:gabime/spdlog@1.10.0")
@@ -66,15 +72,15 @@ CPMAddPackage("gh:freetype/freetype#VER-2-13-0")
 
 
 set_target_properties(glad
-                      stb_image 
-                      glfw
-                      glm 
-					  eventpp
-					  nlohmann_json
-					  magic_enum
-					  freetype
-                      spdlog PROPERTIES FOLDER "thirdparty")
+        stb_image
+        glfw
+        glm
+        eventpp
+        nlohmann_json
+        magic_enum
+        freetype
+        spdlog PROPERTIES FOLDER "thirdparty")
 
 if (TARGET zlibstatic)
     set_target_properties(zlibstatic PROPERTIES FOLDER "thirdparty")
-endif()
+endif ()
