@@ -16,32 +16,7 @@ set(stb_image_SOURCE_DIR ${STB_IMAGE_DIR} CACHE INTERNAL "")
 add_library(stb_image STATIC ${STB_IMAGE_DIR}/stb_image.cpp)
 target_include_directories(stb_image PRIVATE ${STB_IMAGE_DIR})
 
-# imGUI
-if (${CMAKE_BUILD_TYPE} MATCHES Debug)
-    CPMAddPackage("gh:ocornut/imgui@1.88")
 
-    add_library(imgui STATIC
-            ${imgui_SOURCE_DIR}/imgui.cpp
-            ${imgui_SOURCE_DIR}/imgui_demo.cpp # optionally comment this out
-            ${imgui_SOURCE_DIR}/imgui_draw.cpp
-            ${imgui_SOURCE_DIR}/imgui_widgets.cpp
-            ${imgui_SOURCE_DIR}/imgui_tables.cpp
-
-            )
-
-    target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
-
-    add_library(imgui_impl STATIC
-            ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
-            ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
-            )
-    target_link_libraries(imgui_impl imgui)
-
-    target_include_directories(imgui INTERFACE ${imgui_SOURCE_DIR}/backends)
-
-    target_compile_definitions(imgui PUBLIC -DIMGUI_DISABLE_OBSOLETE_FUNCTIONS)
-    set_target_properties(imgui PROPERTIES FOLDER thirdparty)
-endif ()
 
 
 # assimp
@@ -83,4 +58,32 @@ set_target_properties(glad
 
 if (TARGET zlibstatic)
     set_target_properties(zlibstatic PROPERTIES FOLDER "thirdparty")
+endif ()
+
+# imGUI
+if (${CMAKE_BUILD_TYPE} MATCHES Debug)
+    CPMAddPackage("gh:ocornut/imgui@1.88")
+
+    add_library(imgui STATIC
+            ${imgui_SOURCE_DIR}/imgui.cpp
+            ${imgui_SOURCE_DIR}/imgui_demo.cpp # optionally comment this out
+            ${imgui_SOURCE_DIR}/imgui_draw.cpp
+            ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+            ${imgui_SOURCE_DIR}/imgui_tables.cpp
+
+            )
+
+    target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
+
+    add_library(imgui_impl STATIC
+            ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
+            ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+            )
+    target_link_libraries(imgui_impl imgui)
+    target_link_libraries(imgui_impl glfw)
+
+    target_include_directories(imgui INTERFACE ${imgui_SOURCE_DIR}/backends)
+
+    target_compile_definitions(imgui PUBLIC -DIMGUI_DISABLE_OBSOLETE_FUNCTIONS)
+    set_target_properties(imgui PROPERTIES FOLDER thirdparty)
 endif ()
