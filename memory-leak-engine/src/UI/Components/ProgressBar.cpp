@@ -20,8 +20,8 @@ namespace mlg {
         // TODO: To oczywiście wyrzucić
         percentage = std::sin(Time::GetSeconds()) * 0.5 + 0.5;
 
-        material->GetShaderProgram()->SetVec2F("size", GetSize());
-        material->GetShaderProgram()->SetVec2F("screenPosition", GetPosition());
+        material->GetShaderProgram()->SetVec2F("size", GetSize() * renderer->GetInstance()->uiScale);
+        material->GetShaderProgram()->SetVec2F("screenPosition", GetPosition() * renderer->GetInstance()->uiScale);
         material->GetShaderProgram()->SetMat4F("projection", renderer->GetProjection());
 
         material->GetShaderProgram()->SetFloat("percentage", percentage);

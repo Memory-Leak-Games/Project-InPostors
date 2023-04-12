@@ -58,6 +58,10 @@ namespace mlg {
     }
 
     void Renderer2D::SetProjection(int32_t windowWidth, int32_t windowHeight) {
+        Renderer2D::windowWidth = windowWidth;
+        Renderer2D::windowHeight = windowHeight;
+        Renderer2D::uiScale = windowHeight / 720.0f;
+
         projection = glm::ortho(0.0f, (float) windowWidth, 0.0f, (float) windowHeight);
     }
 
