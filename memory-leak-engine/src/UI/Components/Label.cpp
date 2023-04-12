@@ -46,16 +46,18 @@ namespace mlg {
         glActiveTexture(GL_TEXTURE0);
         glBindVertexArray(vao);
 
+        float actualScale = renderer->uiScale * scale;
+
         // Iterate through all characters
-        float cursor = position.x;
+        float cursor = position.x * actualScale;
         for (char8_t c : text) {
             FontAsset::Character ch = font->characters[c];
 
-            float xpos = cursor + ch.Bearing.x;
-            float ypos = position.y - (float) (ch.Size.y - ch.Bearing.y);
+            float xpos = cursor + ch.Bearing.x * actualScale;
+            float ypos = (position.y - (float) (ch.Size.y - ch.Bearing.y)) * actualScale;
 
-            float w = (float) ch.Size.x;
-            float h = (float) ch.Size.y;
+            float w = (float) ch.Size.x * actualScale;
+            float h = (float) ch.Size.y * actualScale;
             // Update vbo for each character
             float vertices[6][4] = {
                     {xpos, ypos + h, 0.0, 0.0},
@@ -75,7 +77,7 @@ namespace mlg {
             glBindVertexArray(vao);
             glDrawArrays(GL_TRIANGLES, 0, 6);
             // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-            cursor += (ch.Advance >> 6);// Bitshift by 6 to get value in pixels (2^6 = 64)
+            cursor += (ch.Advance >> 6) * actualScale;// Bitshift by 6 to get value in pixels (2^6 = 64)
         }
         glBindVertexArray(0);
         glBindTextureUnit(0, 0);
@@ -103,6 +105,10 @@ namespace mlg {
 
     void Label::SetTextColor(const glm::vec3& textColor) {
         Label::textColor = textColor;
+    }
+
+    void Label::SetSize(float size) {
+        Label::scale = size / font->fontSize;
     }
 }
 

@@ -8,8 +8,8 @@ namespace mlg {
 
         glm::mat4 projection;
 
-
         Renderer2D();
+        ~Renderer2D();
 
     public:
         uint32_t windowWidth = 1280;
@@ -27,6 +27,6 @@ namespace mlg {
         void RemoveRenderable(std::weak_ptr<Renderable2D> renderable);
 
         void SetProjection(int32_t windowWidth, int32_t windowHeight);
-        glm::mat4 GetProjection() const;
+        [[nodiscard]] glm::mat4 GetProjection() const;
     };
 }

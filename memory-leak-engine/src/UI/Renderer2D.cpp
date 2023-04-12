@@ -17,6 +17,10 @@ namespace mlg {
         SetProjection(window->GetWidth(), window->GetHeight());
     }
 
+    Renderer2D::~Renderer2D() {
+        renderables.clear();
+    }
+
     void Renderer2D::Initialize() {
         if (instance != nullptr)
             return;

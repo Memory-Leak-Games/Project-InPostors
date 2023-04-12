@@ -127,6 +127,7 @@ public:
         auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/comic.ttf");
         auto label = ui.lock()->AddComponent<mlg::Label>("Label", font);
         label.lock()->SetPosition({10, 10});
+        label.lock()->SetSize(32);
 
         auto imageMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/cat_UI_material.json");
         auto image = ui.lock()->AddComponent<mlg::Image>("Image", imageMaterial);
@@ -168,6 +169,7 @@ public:
 };
 
 void Test() {
+    SPDLOG_DEBUG("Testy przeszly!");
 }
 
 int main(int argc, char* argv[]) {
