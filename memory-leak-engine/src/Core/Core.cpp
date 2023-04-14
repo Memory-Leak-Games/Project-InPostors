@@ -45,7 +45,6 @@ void Core::MainLoop() {
                                                  windowResizeEvent.GetWidth(),
                                                  windowResizeEvent.GetHeight());
 
-        Renderer2D::GetInstance()->SetProjection(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
         });
 
     bool shouldClose = false;

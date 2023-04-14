@@ -1,0 +1,6 @@
+{
+  "vertexShader": "res/shaders/quad_renderer.vert",
+  "fragmentShader": "res/shaders/PostProcess/simpleFBO.frag",
+  "uniforms": [],
+  "textures": []
+}
