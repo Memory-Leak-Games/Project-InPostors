@@ -95,12 +95,7 @@ vec3 CalculateDirectionalLight() {
 
 void main()
 {
-    vec3 ssaoValue;
-    if (isSSAOActive) {
-        ssaoValue = vec3(texture(ssao, fs_in.uv).r);
-    } else {
-        ssaoValue = vec3(1.f);
-    }
+    float ssaoValue = mix(1.f, texture(ssao, fs_in.uv).r, float(isSSAOActive));
 
     fragColor = vec4(CalculateDirectionalLight() * ssaoValue, 1.0);
 }

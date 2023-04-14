@@ -70,6 +70,7 @@ namespace mlg {
     }
 
     void GBuffer::Draw() {
+        glDisable(GL_DEPTH_TEST);
         material->Activate();
 
         glBindTextureUnit(0, gPositionTexture);

@@ -34,6 +34,8 @@ namespace mlg {
 
         void AddRenderable(const std::weak_ptr<Renderable>& renderable);
         void RemoveRenderable(std::weak_ptr<Renderable> renderable);
+
+        void SSAOPass();
     };
 
 } // mlg

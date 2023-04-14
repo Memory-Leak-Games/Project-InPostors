@@ -17,6 +17,7 @@
 #include "Rendering/FrameBuffers/PostProcess.h"
 #include "Rendering/RenderingAPI.h"
 #include "Events/WindowEvent.h"
+#include "Core/Settings/SettingsManager.h"
 
 namespace mlg {
     Renderer* Renderer::instance;
@@ -105,11 +106,30 @@ namespace mlg {
     }
 
     void Renderer::DrawFrame() {
+
         gBuffer->Activate();
         gBuffer->Clear();
+
         Renderer::GetInstance()->Draw(gBuffer.get());
 
         gBuffer->CopyDepthBuffer(postProcess->GetFbo());
+
+        SSAOPass();
+
+        gBuffer->Draw();
+        Renderer::GetInstance()->LateDraw();
+
+        RenderingAPI::SetDefaultFrameBuffer();
+        postProcess->Draw();
+        postProcess->CopyDepthBuffer(0);
+    }
+
+    void Renderer::SSAOPass() {
+        if (!SettingsManager::Get<bool>(SettingsType::Video, "SSAO")) {
+            postProcess->Activate();
+            gBuffer->BindTextures(0);
+            return;
+        }
 
         ssaoFrameBuffer->BindTextureUnits(gBuffer->GetPositionTexture(), gBuffer->GetNormalTexture());
         ssaoFrameBuffer->Draw();
@@ -118,15 +138,7 @@ namespace mlg {
         ssaoBlurPass->Draw();
 
         postProcess->Activate();
-
         gBuffer->BindTextures(ssaoBlurPass->GetBlurredTexture());
-//        gBuffer.BindTextures(0);
-        gBuffer->Draw();
-        Renderer::GetInstance()->LateDraw();
-
-        RenderingAPI::SetDefaultFrameBuffer();
-        postProcess->Draw();
-        postProcess->CopyDepthBuffer(0);
     }
 
 } // mlg
