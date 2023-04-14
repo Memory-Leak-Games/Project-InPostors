@@ -14,6 +14,7 @@ namespace mlg {
             std::string title;
             int32_t width;
             int32_t height;
+            float aspectRatio;
             bool vSync;
 
             eventpp::EventDispatcher<EventType, void (const Event &), EventPolicies> eventDispatcher;
@@ -38,6 +39,7 @@ namespace mlg {
 
         virtual int32_t GetWidth();
         virtual int32_t GetHeight();
+        virtual float GetAspectRatio();
 
         virtual eventpp::EventDispatcher<EventType, void (const Event &), EventPolicies>* GetEventDispatcher();
 
@@ -49,7 +51,7 @@ namespace mlg {
 #endif
 
     private:
-        Window(std::string title, int32_t width, int32_t height);
+        Window(std::string title, int32_t width, int32_t height, float aspectRatio);
 
         virtual int32_t SetupWindow();
         void SetupCallbacks();

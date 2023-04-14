@@ -1,5 +1,4 @@
 // This is not allowed in Game layer
-#include "Rendering/Camera.h"
 #include "Rendering/Model.h"
 #include "Rendering/Renderer.h"
 
@@ -17,6 +16,7 @@
 #include "SceneGraph/SceneGraph.h"
 #include "SimplePlayer.h"
 #include "Core/Settings/SettingsManager.h"
+#include "Gameplay/Components/CameraComponent.h"
 
 #include <Gameplay/ComponentManager.h>
 #include <Gameplay/Components/StaticMeshComponent.h>
@@ -62,11 +62,11 @@ public:
         mlg::SettingsManager::Initialize();
 
         mlg::Time::Initialize();
+        mlg::AssetManager::Initialize();
         mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
         mlg::Renderer2D::Initialize();
-        mlg::AssetManager::Initialize();
         mlg::Gizmos::Initialize();
         mlg::CommonUniformBuffer::Initialize();
         mlg::SceneGraph::Initialize();
@@ -92,11 +92,11 @@ public:
         mlg::Input::Stop();
         mlg::Core::Stop();
         mlg::Gizmos::Stop();
-        mlg::AssetManager::Stop();
         mlg::Renderer2D::Stop();
         mlg::Renderer::Stop();
         mlg::RenderingAPI::Stop();
         mlg::Window::Stop();
+        mlg::AssetManager::Stop();
         mlg::Time::Stop();
 
         mlg::SettingsManager::Initialize();
@@ -105,9 +105,13 @@ public:
     }
 
     void PrepareScene() {
-        mlg::Camera::GetInstance()->SetPosition({-8.f, 15.f, 8.f});
-        mlg::Camera::GetInstance()->SetRotation(glm::radians(-60.f), glm::radians(45.f));
-//        mlg::Camera::GetInstance()->SetRotation(glm::radians(-90.f), glm::radians(0.f));
+        auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
+        auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
+//        cameraComponent.lock()->SetPerspective(glm::radians(90.f), 0.1, 100.f);
+        cameraComponent.lock()->SetOrtho(40.f, 0.1, 100.f);
+
+        cameraComponent.lock()->GetTransform().SetPosition({-10.f, 15.f, -10.f});
+        cameraComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{60.f, 45.f, 0.f}));
 
         auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
         auto redMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/red_material.json");
@@ -127,7 +131,6 @@ public:
         auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/comic.ttf");
         auto label = ui.lock()->AddComponent<mlg::Label>("Label", font);
         label.lock()->SetPosition({10, 10});
-        label.lock()->SetSize(32);
 
         auto imageMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/cat_UI_material.json");
         auto image = ui.lock()->AddComponent<mlg::Image>("Image", imageMaterial);
@@ -154,14 +157,22 @@ public:
         box.lock()->GetTransform().SetPosition({2.f, 0.f, -5.f});
         auto boxRigidbody = box.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
         boxRigidbody.lock()->AddCollider<mlg::ColliderShape::Rectangle>(glm::vec2(0.f), glm::vec2(1.f));
+        boxRigidbody.lock()->SetLinearDrag(2.f);
+        boxRigidbody.lock()->SetAngularDrag(2.f);
 
         auto sphere = mlg::EntityManager::SpawnEntity<mlg::Entity>("Sphere", false, mlg::SceneGraph::GetRoot());
-        sphere.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", sphereModel, blueMaterial);
+        auto sphereMesh = sphere.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", sphereModel, blueMaterial);
+        sphereMesh.lock()->GetTransform().SetScale(glm::vec3{2.f});
         sphere.lock()->GetTransform().SetPosition({2.f, 0.f, 5.f});
         auto sphereRigidbody = sphere.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
         sphereRigidbody.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f), 1.f);
+        sphereRigidbody.lock()->SetLinearDrag(2.f);
+        sphereRigidbody.lock()->SetAngularDrag(2.f);
 
         auto player = mlg::EntityManager::SpawnEntity<SimplePlayer>("Player", false, mlg::SceneGraph::GetRoot());
+    }
+
+    void ImGUI() {
     }
 
     virtual ~ProjectInpostors() {

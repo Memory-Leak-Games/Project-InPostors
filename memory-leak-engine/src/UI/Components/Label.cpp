@@ -46,7 +46,7 @@ namespace mlg {
         glActiveTexture(GL_TEXTURE0);
         glBindVertexArray(vao);
 
-        float actualScale = renderer->uiScale * scale;
+        float actualScale = scale;
 
         // Iterate through all characters
         float cursor = position.x * actualScale;
