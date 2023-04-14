@@ -82,6 +82,7 @@ namespace mlg {
         glm::mat4 viewToLight = lightSpace * viewToModel;
 
         material->GetShaderProgram()->SetMat4F("viewToLight", viewToLight);
+        material->GetShaderProgram()->SetBool("isSSAOActive", isSSAOActive);
 
         RenderingAPI::GetInstance()->DrawScreenSpaceQuad();
 
@@ -112,6 +113,13 @@ namespace mlg {
     }
 
     void GBuffer::BindTextures(uint32_t ssao) {
+        if (ssao == 0)
+        {
+            isSSAOActive = false;
+            return;
+        }
+
+        isSSAOActive = true;
         glBindTextureUnit(4, ssao);
     }
 

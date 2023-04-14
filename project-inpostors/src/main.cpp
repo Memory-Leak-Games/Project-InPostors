@@ -65,11 +65,11 @@ public:
         mlg::SettingsManager::Initialize();
 
         mlg::Time::Initialize();
+        mlg::AssetManager::Initialize();
         mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
         mlg::Renderer2D::Initialize();
-        mlg::AssetManager::Initialize();
         mlg::Gizmos::Initialize();
         mlg::CommonUniformBuffer::Initialize();
         mlg::SceneGraph::Initialize();
@@ -95,11 +95,11 @@ public:
         mlg::Input::Stop();
         mlg::Core::Stop();
         mlg::Gizmos::Stop();
-        mlg::AssetManager::Stop();
         mlg::Renderer2D::Stop();
         mlg::Renderer::Stop();
         mlg::RenderingAPI::Stop();
         mlg::Window::Stop();
+        mlg::AssetManager::Stop();
         mlg::Time::Stop();
 
         mlg::SettingsManager::Initialize();
@@ -160,12 +160,17 @@ public:
         box.lock()->GetTransform().SetPosition({2.f, 0.f, -5.f});
         auto boxRigidbody = box.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
         boxRigidbody.lock()->AddCollider<mlg::ColliderShape::Rectangle>(glm::vec2(0.f), glm::vec2(1.f));
+        boxRigidbody.lock()->SetLinearDrag(2.f);
+        boxRigidbody.lock()->SetAngularDrag(2.f);
 
         auto sphere = mlg::EntityManager::SpawnEntity<mlg::Entity>("Sphere", false, mlg::SceneGraph::GetRoot());
-        sphere.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", sphereModel, blueMaterial);
+        auto sphereMesh = sphere.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", sphereModel, blueMaterial);
+        sphereMesh.lock()->GetTransform().SetScale(glm::vec3{2.f});
         sphere.lock()->GetTransform().SetPosition({2.f, 0.f, 5.f});
         auto sphereRigidbody = sphere.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
         sphereRigidbody.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f), 1.f);
+        sphereRigidbody.lock()->SetLinearDrag(2.f);
+        sphereRigidbody.lock()->SetAngularDrag(2.f);
 
         auto player = mlg::EntityManager::SpawnEntity<SimplePlayer>("Player", false, mlg::SceneGraph::GetRoot());
     }

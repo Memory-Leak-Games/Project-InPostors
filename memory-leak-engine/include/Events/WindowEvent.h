@@ -9,6 +9,8 @@ namespace mlg {
         int32_t width;
         int32_t height;
 
+        float aspectRatio;
+
     public:
         WindowResizeEvent(int32_t width, int32_t height);
 
@@ -18,6 +20,7 @@ namespace mlg {
 
         [[nodiscard]] int32_t GetWidth() const;
         [[nodiscard]] int32_t GetHeight() const;
+        [[nodiscard]] float GetAspectRatio() const;
     };
 
     class WindowCloseEvent : public Event {

@@ -2,22 +2,54 @@
 
 #include "Core/Window.h"
 #include "Rendering/CommonUniformBuffer.h"
+#include "Events/WindowEvent.h"
 
 namespace mlg {
-    void CameraComponent::SetOrtho(float size, float near, float far) {
-        float aspectRatio = Window::GetInstance()->GetAspectRatio();
 
+    CameraComponent::Projection::Projection(float near, float far)
+            : near(near), far(far) {}
+
+    CameraComponent::OrthoProjection::OrthoProjection(float size, float near, float far)
+            : size(size), Projection(near, far) {}
+
+    glm::mat4 CameraComponent::OrthoProjection::CalculateProjection(float aspectRatio) {
         float halfHeight = size * 0.5f;
         float halfWidth = (size * aspectRatio) * 0.5f;
-        glm::mat4 projectionMatrix = glm::ortho(-halfWidth, halfWidth, -halfHeight, halfHeight, near, far);
-        CommonUniformBuffer::SetProjection(projectionMatrix);
+        return glm::ortho(-halfWidth, halfWidth, -halfHeight, halfHeight, near, far);
+    }
+
+    CameraComponent::PerspectiveProjection::PerspectiveProjection(float fov, float near, float far)
+            : fov(fov), Projection(near, far) {}
+
+    glm::mat4 CameraComponent::PerspectiveProjection::CalculateProjection(float aspectRatio) {
+        return glm::perspective(fov, aspectRatio, near, far);
+    }
+
+    CameraComponent::CameraComponent(const std::weak_ptr<Entity>& owner, const std::string& name)
+            : SceneComponent(owner, name) {
+        Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize,
+                                                                    [this](const Event& event) {
+            this->OnWindowResize(event);
+        });
+    }
+
+    void CameraComponent::OnWindowResize(const Event& event) {
+        auto& windowResizeEvent = (WindowResizeEvent&) event;
+        CommonUniformBuffer::SetProjection(projection->CalculateProjection(windowResizeEvent.GetAspectRatio()));
+    }
+
+    void CameraComponent::SetOrtho(float size, float near, float far) {
+        float aspectRatio = Window::GetInstance()->GetAspectRatio();
+        projection = std::make_unique<OrthoProjection>(size, near, far);
+
+        CommonUniformBuffer::SetProjection(projection->CalculateProjection(aspectRatio));
     }
 
     void CameraComponent::SetPerspective(float fov, float near, float far) {
         float aspectRatio = Window::GetInstance()->GetAspectRatio();
+        projection = std::make_unique<PerspectiveProjection>(fov, near, far);
 
-        glm::mat4 projectionMatrix = glm::perspective(fov, aspectRatio, near, far);
-        CommonUniformBuffer::SetProjection(projectionMatrix);
+        CommonUniformBuffer::SetProjection(projection->CalculateProjection(aspectRatio));
     }
 
     void CameraComponent::Update() {
@@ -34,10 +66,8 @@ namespace mlg {
 #endif
     }
 
-    CameraComponent::CameraComponent(const std::weak_ptr<Entity>& owner, const std::string& name)
-    : SceneComponent(owner, name) {}
-
 #ifdef DEBUG
+
     void CameraComponent::UpdateImGUI() {
         ImGui::Begin("Camera");
 
@@ -52,5 +82,7 @@ namespace mlg {
 
         ImGui::End();
     }
+
 #endif
+
 } // mlg

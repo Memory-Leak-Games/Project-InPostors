@@ -37,6 +37,7 @@ layout (std140, binding = 1) uniform light {
 uniform mat4 viewToLight;
 uniform float maxBias = 0.005f;
 uniform float minBias = 0.f;
+uniform bool isSSAOActive = false;
 
 float CalculateShadow() {
     vec3 normal = normalize(texture(gNormal, fs_in.uv).rgb);
@@ -94,7 +95,12 @@ vec3 CalculateDirectionalLight() {
 
 void main()
 {
-    fragColor = vec4(CalculateDirectionalLight() * vec3(texture(ssao, fs_in.uv).r), 1.0);
-    //  fragColor = vec4(CalculateDirectionalLight(), 1.0);
-    //    fragColor = vec4(CalculateDirectionalLight(), 1.0);
+    vec3 ssaoValue;
+    if (isSSAOActive) {
+        ssaoValue = vec3(texture(ssao, fs_in.uv).r);
+    } else {
+        ssaoValue = vec3(1.f);
+    }
+
+    fragColor = vec4(CalculateDirectionalLight() * ssaoValue, 1.0);
 }
