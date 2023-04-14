@@ -41,7 +41,7 @@ namespace mlg {
     void CameraComponent::UpdateImGUI() {
         ImGui::Begin("Camera");
 
-        glm::vec3 position = GetTransform().GetPosition();
+        glm::vec3 position = GetTransform().GetWorldPosition();
         glm::vec3 rotation = glm::degrees(GetTransform().GetEulerRotation());
 
         ImGui::DragFloat3("Camera Position", (float*) &position, 0.1f);
