@@ -23,7 +23,7 @@ namespace mlg {
         static CollisionManager* GetInstance();
 
         static void DetectCollisions();
-        static void SeparateColliders();
+        static void SolveCollisions();
 
         static void AddCollider(std::weak_ptr<Collider> collider);
         static void RemoveCollider(std::weak_ptr<Collider> collider);

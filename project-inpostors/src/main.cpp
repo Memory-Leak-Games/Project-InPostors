@@ -25,6 +25,9 @@
 #include <Rendering/Gizmos/Gizmos.h>
 #include <Gameplay/Levels/LevelGenerator.h>
 
+#include "soloud.h"
+#include "soloud_wav.h"
+
 class ComponentTest : public mlg::Component {
 public:
     ComponentTest(const std::weak_ptr<mlg::Entity>& owner, const std::string& name) : Component(owner, name) {}
@@ -101,6 +104,7 @@ public:
         mlg::LevelGenerator::GenerateTestLevel();
         mlg::Camera::GetInstance()->SetPosition({-8.f, 15.f, 8.f});
         mlg::Camera::GetInstance()->SetRotation(glm::radians(-60.f), glm::radians(45.f));
+//        mlg::Camera::GetInstance()->SetRotation(glm::radians(-90.f), glm::radians(0.f));
 
         auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
         auto redMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/red_material.json");
@@ -154,6 +158,15 @@ public:
         sphereRigidbody.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f), 1.f);
 
         auto player = mlg::EntityManager::SpawnEntity<SimplePlayer>("Player", false, mlg::SceneGraph::GetRoot());
+
+        // DELETE ME
+        SoLoud::Soloud gSoloud; // SoLoud engine
+        SoLoud::Wav gWave;
+        auto test = gSoloud.init();
+        auto test2 = gWave.load("res/sound/test.wav");
+        gSoloud.play(gWave); // Play the wave
+        mlg::Time::Sleep(2.f);
+        gSoloud.deinit();
     }
 
     virtual ~ProjectInpostors() {

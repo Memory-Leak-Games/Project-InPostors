@@ -54,7 +54,7 @@ namespace mlg {
             instance->OnFixedUpdate();
             instance->SolveDynamics();
             CollisionManager::DetectCollisions();
-            CollisionManager::SeparateColliders();
+            CollisionManager::SolveCollisions();
 
             instance->timeAccumulator -= Time::GetFixedTimeStep();
         }

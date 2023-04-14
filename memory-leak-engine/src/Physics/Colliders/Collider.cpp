@@ -3,6 +3,10 @@
 #include "Physics/CollisionDetection.h"
 #include "Physics/Colliders/ColliderShapes.h"
 
+#include "Core/Math.h"
+
+#include "Macros.h"
+
 namespace mlg {
     Collider::Collider(Rigidbody* owner, std::unique_ptr<ColliderShape::Shape> shape)
             : owner(owner), shape(std::move(shape)) {}
@@ -32,7 +36,7 @@ namespace mlg {
     }
 
     bool Collider::DetectCollisionAsRectangle(Collider* anotherCollider) {
-        if (anotherCollider->shape->GetType() == ColliderShape::ColliderShapeType::Circle) {
+        if (anotherCollider->shape->GetType() == ColliderShape::ColliderShapeType::Rectangle) {
             return CollisionDetection::RectangleRectangleCollision((ColliderShape::Rectangle*) shape.get(),
                                                                    (ColliderShape::Rectangle*) anotherCollider->shape.get());
         } else {
@@ -41,16 +45,13 @@ namespace mlg {
         }
     }
 
-    void Collider::Separate(Collider* anotherCollider) {
-        glm::vec2 separation = CalculateSeparation(anotherCollider);
-
+    void Collider::Separate(Collider* anotherCollider, glm::vec2 separationVector) {
         if (anotherCollider->owner->isKinematic) {
-            owner->position -= separation;
+            owner->position -= separationVector;
         } else {
-            owner->position -= separation * 0.5f;
-            anotherCollider->owner->position += separation * 0.5f;
+            owner->position -= separationVector * 0.5f;
+            anotherCollider->owner->position += separationVector * 0.5f;
         }
-
     }
 
     glm::vec2 Collider::CalculateSeparation(Collider* anotherCollider) {
@@ -62,13 +63,12 @@ namespace mlg {
     }
 
     glm::vec2 Collider::CalculateSeparationAsCircle(Collider* anotherCollider) {
-        if (shape->GetType() == ColliderShape::ColliderShapeType::Circle) {
+        if (anotherCollider->shape->GetType() == ColliderShape::ColliderShapeType::Circle) {
             return CollisionDetection::CircleCircleSeparation((ColliderShape::Circle*) shape.get(),
                                                               (ColliderShape::Circle*) anotherCollider->shape.get());
         } else {
-            return -CollisionDetection::RectangleCircleSeparation(
-                    (ColliderShape::Rectangle*) anotherCollider->shape.get(),
-                    (ColliderShape::Circle*) shape.get());
+            return -CollisionDetection::RectangleCircleSeparation((ColliderShape::Rectangle*) anotherCollider->shape.get(),
+                                                                 (ColliderShape::Circle*) shape.get());
         }
     }
 
@@ -82,4 +82,13 @@ namespace mlg {
         }
     }
 
+    glm::vec2 Collider::FindCollisionPoint(const glm::vec2& anotherPosition) {
+        if (shape->GetType() == ColliderShape::ColliderShapeType::Circle) {
+            return CollisionDetection::FindCollisionPointForCircle((ColliderShape::Circle*) this->shape.get(),
+                                                                   anotherPosition);
+        } else {
+            return CollisionDetection::FindCollisionPointForRect((ColliderShape::Rectangle*) this->shape.get(),
+                                                                 anotherPosition);
+        }
+    }
 }

@@ -45,17 +45,17 @@ namespace mlg {
         else
             finalSeparation.x = 0.f;
 
-        return finalSeparation;
+        return -finalSeparation;
     }
 
     bool CollisionDetection::RectangleCircleCollision(const ColliderShape::Rectangle* rectangle,
                                                       const ColliderShape::Circle* circle) {
-        glm::vec2 nearestPoint = CalculateNearestPoint(circle->position, rectangle);
+        glm::vec2 nearestPoint = CalculateNearestPointOnRect(circle->position, rectangle);
         return glm::length(circle->position - nearestPoint) <= circle->radius;
     }
 
-    glm::vec2 CollisionDetection::CalculateNearestPoint(const glm::vec2& position,
-                                                        const ColliderShape::Rectangle* rectangle) {
+    glm::vec2 CollisionDetection::CalculateNearestPointOnRect(const glm::vec2& position,
+                                                              const ColliderShape::Rectangle* rectangle) {
         glm::vec2 result;
         result.x = glm::clamp(position.x, rectangle->GetLeft(), rectangle->GetRight());
         result.y = glm::clamp(position.y, rectangle->GetBottom(), rectangle->GetTop());
@@ -65,15 +65,23 @@ namespace mlg {
 
     glm::vec2 CollisionDetection::RectangleCircleSeparation(const ColliderShape::Rectangle* rectangle,
                                                             const ColliderShape::Circle* circle) {
-        glm::vec2 nearestPoint = CalculateNearestPoint(circle->position, rectangle);
+        glm::vec2 nearestPoint = CalculateNearestPointOnRect(circle->position, rectangle);
 
-        glm::vec2 circleToNearestPointVector = circle->position - nearestPoint;
-        glm::vec2 circleToNearestPointDirection = Math::SafeNormal(circleToNearestPointVector);
-
-        float circleToNearestPointDistance = glm::length(circleToNearestPointDistance);
-        float separationLength = circle->radius - circleToNearestPointDistance;
-
-        return circleToNearestPointDirection * separationLength;
+        auto rectangleAsCircle = std::make_unique<ColliderShape::Circle>(nearestPoint, glm::vec2{0.f}, 0.f);
+        return CircleCircleSeparation(rectangleAsCircle.get(), circle);
     }
+
+    glm::vec2 CollisionDetection::FindCollisionPointForCircle(const mlg::ColliderShape::Circle* circle,
+                                                              const glm::vec2& anotherPosition) {
+        glm::vec2 oneToTwoDirection = -Math::SafeNormal(circle->position - anotherPosition);
+        return oneToTwoDirection * circle->radius + circle->position;
+    }
+
+    glm::vec2 CollisionDetection::FindCollisionPointForRect(const ColliderShape::Rectangle* rectangle,
+                                                            const glm::vec2& anotherPosition) {
+        glm::vec2 oneToTwoDirection = -Math::SafeNormal(rectangle->position - anotherPosition);
+        return oneToTwoDirection * rectangle->GetRadius() + rectangle->position;
+    }
+
 
 } // mlg

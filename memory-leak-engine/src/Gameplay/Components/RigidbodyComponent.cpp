@@ -10,6 +10,7 @@
 #include "Gameplay/Entity.h"
 
 #include "Rendering/Gizmos/Gizmos.h"
+#include "include/Rendering/Gizmos/Colors.h"
 
 namespace mlg {
     RigidbodyComponent::RigidbodyComponent(const std::weak_ptr<Entity>& owner, const std::string& name)
@@ -53,6 +54,7 @@ namespace mlg {
         glm::vec3 ownerRotation {};
         ownerRotation.y = rigidbody->rotation;
         owner->GetTransform().SetEulerRotation(ownerRotation);
+
 
 #ifdef DEBUG
         DebugDraw();
@@ -108,6 +110,21 @@ namespace mlg {
         rigidbody->isKinematic = isKinematic;
     }
 
+    void RigidbodyComponent::AddCollider(std::unique_ptr<ColliderShape::Shape> shape) {
+        auto collider = rigidbody->AddCollider(std::move(shape)).lock();
+
+#ifdef DEBUG
+        if (!SettingsManager::Get<bool>(SettingsType::Debug, "showColliders"))
+            return;
+
+        collider->OnCollisionEnter.append([](CollisionEvent event) {
+            glm::vec3 position {0.f};
+            position.x = event.position.x;
+            position.z = event.position.y;
+            Gizmos::DrawPoint(position, Colors::Red, true, 0.1);
+        });
+#endif
+    }
 
 
 } // mlg

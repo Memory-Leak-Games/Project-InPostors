@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Physics/Rigidbody.h"
+#include "ColliderShapes.h"
 
 namespace mlg {
 
@@ -10,6 +11,7 @@ namespace mlg {
 
     struct CollisionEvent {
         glm::vec2 position;
+        glm::vec2 separationVector;
         const class Rigidbody* collidedRigidbody;
     };
 
@@ -26,7 +28,10 @@ namespace mlg {
         ~Collider();
 
         bool DetectCollision(Collider* anotherCollider);
-        void Separate(Collider* anotherCollider);
+        void Separate(Collider* anotherCollider, glm::vec2 SeparationVector);
+
+        glm::vec2 CalculateSeparation(Collider* anotherCollider);
+        glm::vec2 FindCollisionPoint(const glm::vec2& anotherPosition);
 
         const Rigidbody* GetOwner() const;
 
@@ -35,8 +40,6 @@ namespace mlg {
     private:
         bool DetectCollisionAsCircle(Collider* anotherCollider);
         bool DetectCollisionAsRectangle(Collider* anotherCollider);
-
-        glm::vec2 CalculateSeparation(Collider* anotherCollider);
 
         glm::vec2 CalculateSeparationAsCircle(Collider* anotherCollider);
         glm::vec2 CalculateSeparationAsRectangle(Collider* anotherCollider);
