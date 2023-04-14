@@ -44,5 +44,13 @@ namespace mlg {
 
     const CommonUniforms& CommonUniformBuffer::GetUniforms() {
         return instance->uniforms;
+    }
+
+    void CommonUniformBuffer::SetProjection(const glm::mat4& projection) {
+        instance->uniforms.projection = projection;
+    }
+
+    void CommonUniformBuffer::SetView(const glm::mat4& view) {
+        instance->uniforms.view = view;
     };
 } // mlg

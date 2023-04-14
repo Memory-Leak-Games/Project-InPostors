@@ -5,7 +5,7 @@
     {
       "type": "int",
       "name": "samples",
-      "value": 8
+      "value": 16
     },
     {
       "type": "float",

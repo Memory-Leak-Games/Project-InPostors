@@ -37,7 +37,7 @@ namespace mlg {
         Transform::rotation = rotation;
     }
 
-    void Transform::SetEulerRotation(const glm::vec3 rotation) {
+    void Transform::SetEulerRotation(const glm::vec3& rotation) {
         SetDirtyRecursive();
         Transform::rotation = {rotation};
     }
@@ -167,6 +167,13 @@ namespace mlg {
         for (auto& child : children) {
             child->parent = this->parent;
         }
+    }
+
+    void Transform::LookAt(const glm::vec3& lookAtPosition) {
+        const glm::vec3 front = glm::normalize(lookAtPosition - position);
+        const glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0.f, 1.f, 0.f), front));
+        const glm::vec3 up = glm::normalize(glm::cross(front, right));
+        rotation = glm::quatLookAt(front, up);
     }
 
 

@@ -25,11 +25,12 @@ namespace mlg {
         static void Initialize();
         static void Stop();
 
+        static void SetProjection(const glm::mat4& projection);
+        static void SetView(const glm::mat4& view);
+
         static void UpdateAndSendToGPU();
 
         static const CommonUniforms& GetUniforms();
-
-        friend class Camera;
     };
 
 } // mlg

@@ -3,12 +3,12 @@
 #include "glad/glad.h"
 
 #include "Core/AssetManager/AssetManager.h"
+#include "Rendering/CommonUniformBuffer.h"
 
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/ShaderProgram.h"
 #include "Rendering/RenderingAPI.h"
 
-#include "Rendering/Camera.h"
 #include "Rendering/DirectionalLight.h"
 
 #include "Macros.h"
@@ -78,7 +78,7 @@ namespace mlg {
         glBindTextureUnit(3, DirectionalLight::GetInstance()->GetShadowMap());
 
         glm::mat4 lightSpace = DirectionalLight::GetInstance()->GetSun().lightSpaceMatrix;
-        glm::mat4 viewToModel = glm::inverse(Camera::GetInstance()->GetCameraViewMatrix());
+        glm::mat4 viewToModel = glm::inverse(CommonUniformBuffer::GetUniforms().view);
         glm::mat4 viewToLight = lightSpace * viewToModel;
 
         material->GetShaderProgram()->SetMat4F("viewToLight", viewToLight);

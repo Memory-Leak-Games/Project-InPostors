@@ -26,7 +26,6 @@
 
 #include "Gameplay/ComponentManager.h"
 #include "Gameplay/EntityManager.h"
-#include "Rendering/Camera.h"
 #include "Rendering/DirectionalLight.h"
 #include "Rendering/Gizmos/Gizmos.h"
 #include "SceneGraph/SceneGraph.h"
@@ -65,7 +64,6 @@ void Core::MainLoop() {
         blurPass.Resize(windowWidth, windowHeight);
         postProcessingFrameBuffer.Resize(windowWidth, windowHeight);
 
-        Camera::GetInstance()->SetResolution( {windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight()});
         Renderer2D::GetInstance()->SetProjection(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
         });
 
@@ -156,17 +154,6 @@ void Core::RenderImGUI() const {
 
     ImGui::Text("forward: %f", forward);
     ImGui::Text("right: %f", right);
-
-    ImGui::End();
-
-    ImGui::Begin("Testing");
-    ImGui::Separator();
-
-    ImGui::Separator();
-    ImGui::Text("Camera");
-    glm::vec3 position = Camera::GetInstance()->GetPosition();
-    ImGui::DragFloat3("Camera Position", (float*) &position);
-    Camera::GetInstance()->SetPosition(position);
 
     ImGui::End();
 
