@@ -5,12 +5,12 @@
     {
       "type": "float",
       "name": "radius",
-      "value": 2.0
+      "value": 1.5
     },
     {
       "type": "float",
       "name": "bias",
-      "value": 0.01
+      "value": 0.05
     },
     {
       "type": "float",
@@ -20,7 +20,7 @@
     {
       "type": "float",
       "name": "contrast",
-      "value": 1.1
+      "value": 1.5
     }
   ],
   "textures": []

@@ -123,7 +123,7 @@ public:
 
         auto ground = mlg::EntityManager::SpawnEntity<mlg::Entity>("Ground", true, mlg::SceneGraph::GetRoot());
         ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, whiteMaterial);
-        ground.lock()->GetTransform().SetPosition({0.f, -1.f, 0.f});
+        ground.lock()->GetTransform().SetPosition({0.f, -0.5f, 0.f});
         ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
 
         auto ui = mlg::EntityManager::SpawnEntity<mlg::Entity>("ui", true, mlg::SceneGraph::GetRoot());

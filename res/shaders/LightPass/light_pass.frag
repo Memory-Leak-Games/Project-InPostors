@@ -35,8 +35,8 @@ layout (std140, binding = 1) uniform light {
 };
 
 uniform mat4 viewToLight;
-uniform float maxBias = 0.005f;
-uniform float minBias = 0.f;
+uniform float maxBias = 0.001f;
+uniform float minBias = 0.00005f;
 uniform float fressnelPower = 5.f;
 
 uniform bool isSSAOActive = false;
@@ -100,7 +100,7 @@ vec3 CalculateDirectionalLight() {
     float ssaoValue = mix(1.f, texture(ssao, fs_in.uv).r, float(isSSAOActive));
     vec3 ambientColor = lightAmbient * albedo * ssaoValue;
 
-    vec3 diffuseColor = lightDiffuse * diffuse * albedo * shadow;
+    vec3 diffuseColor = lightDiffuse * diffuse * albedo * shadow * clamp(ssaoValue + 0.5f, 0.f, 1.f);
     vec3 specularColor = materialSpecular * lightSpecular * calculated_specular * shadow;
     return ambientColor + diffuseColor + specularColor;
 }

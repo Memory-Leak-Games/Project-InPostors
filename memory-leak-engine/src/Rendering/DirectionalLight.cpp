@@ -27,7 +27,7 @@ void DirectionalLight::InitializeLights() {
     sun.direction = glm::normalize(glm::vec3(-0.5f, -0.5f, 0.5f));
     sun.diffuse = glm::vec3(0.5f);
     sun.ambient = glm::vec3(0.5f);
-    sun.specular = glm::vec3(0.3f);
+    sun.specular = glm::vec3(0.1f);
 
     glm::vec3 position{30.f, 30.f, -30.f};
 
