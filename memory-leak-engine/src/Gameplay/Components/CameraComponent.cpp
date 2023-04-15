@@ -39,17 +39,11 @@ namespace mlg {
     }
 
     void CameraComponent::SetOrtho(float size, float near, float far) {
-        float aspectRatio = Window::GetInstance()->GetAspectRatio();
         projection = std::make_unique<OrthoProjection>(size, near, far);
-
-        CommonUniformBuffer::SetProjection(projection->CalculateProjection(aspectRatio));
     }
 
     void CameraComponent::SetPerspective(float fov, float near, float far) {
-        float aspectRatio = Window::GetInstance()->GetAspectRatio();
         projection = std::make_unique<PerspectiveProjection>(fov, near, far);
-
-        CommonUniformBuffer::SetProjection(projection->CalculateProjection(aspectRatio));
     }
 
     void CameraComponent::Update() {
@@ -59,7 +53,10 @@ namespace mlg {
 
         glm::mat4 viewMatrix = glm::lookAt(position, position + forward, up);
 
+        float aspectRatio = Window::GetInstance()->GetAspectRatio();
+
         CommonUniformBuffer::SetView(viewMatrix);
+        CommonUniformBuffer::SetProjection(projection->CalculateProjection(aspectRatio));
 
 #ifdef DEBUG
         UpdateImGUI();
@@ -79,6 +76,21 @@ namespace mlg {
 
         GetTransform().SetPosition(position);
         GetTransform().SetRotation({glm::radians(rotation)});
+
+        auto* orthoProjection = dynamic_cast<OrthoProjection*>(projection.get());
+        auto* perspectiveProjection = dynamic_cast<PerspectiveProjection*>(projection.get());
+
+        if (orthoProjection)
+        {
+            float size = orthoProjection->size;
+            ImGui::DragFloat("Ortho Size", &size, 0.1);
+            orthoProjection->size = size;
+        }
+        else if (perspectiveProjection) {
+            float fow = perspectiveProjection->fov;
+            ImGui::DragFloat("Fow", &fow, 0.1);
+            perspectiveProjection->fov = fow;
+        }
 
         ImGui::End();
     }

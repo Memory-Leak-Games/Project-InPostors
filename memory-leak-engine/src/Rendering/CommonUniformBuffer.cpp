@@ -3,6 +3,8 @@
 #include "Core/Time.h"
 #include "Macros.h"
 
+#include "Core/Window.h"
+
 #include "glad/glad.h"
 
 namespace mlg {
@@ -38,6 +40,9 @@ namespace mlg {
 
         instance->uniforms.randInt = rand();
         instance->uniforms.randFloat = (float) rand() / (float) RAND_MAX;
+
+        Window* window = Window::GetInstance();
+        instance->uniforms.resolution = {window->GetWidth(), window->GetHeight()};
 
         glNamedBufferSubData(instance->ubo, 0, sizeof(CommonUniforms), &instance->uniforms);
     }
