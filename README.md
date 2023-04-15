@@ -12,6 +12,15 @@
 * Szymon Świędrych
 
 ## Changelog
+* Rendering
+  * Advanced Camera
+  * FXAA
+  * UI (Rendered on separate FBO)
+* Basic Gameplay
+  * Factories
+* Physics
+  * Collisions
+  * Collisions dynamics
 04.04.2024
 * Rendering
     * Shadow maps

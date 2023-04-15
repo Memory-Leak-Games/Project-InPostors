@@ -59,6 +59,7 @@ namespace mlg {
         instance->ssaoFrameBuffer->Resize(windowWidth, windowHeight);
         instance->ssaoBlurPass->Resize(windowWidth, windowHeight);
         instance->postProcess->Resize(windowWidth, windowHeight);
+        instance->fxaa->Resize(windowWidth, windowHeight);
     }
 
     void Renderer::Stop() {

@@ -1,6 +1,6 @@
 {
-  "shadowMapSize": 20.0,
-  "shadowMapResolution": 1024,
+  "shadowMapSize": 60.0,
+  "shadowMapResolution": 4096,
   "VSync": false,
   "SSAO": true,
   "FXAA": true

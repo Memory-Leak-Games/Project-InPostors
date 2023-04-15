@@ -20,15 +20,13 @@ std::shared_ptr<Player> Player::Create(const std::string& name, bool isStatic, m
 
     auto rigidbodyComponent = newPlayer->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
 
-//    rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Rectangle>(glm::vec2(0.f), glm::vec2(1.f));
-//    rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f), 0.5f);
     rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f, -0.5f), 0.5f);
     rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f, 0.5f), 0.5f);
 
-    auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Sphere.obj");
+    auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Cars/car_one.obj");
     auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/blue_material.json");
 
-    newPlayer->AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
+    auto staticMeshComponent = newPlayer->AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
     newPlayer->AddComponent<CarMovementComponent>("MovementComponent");
 
     return newPlayer;

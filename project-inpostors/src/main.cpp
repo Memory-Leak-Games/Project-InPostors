@@ -179,15 +179,9 @@ public:
     }
 };
 
-void Test() {
-    SPDLOG_DEBUG("Testy przeszly!");
-}
-
 int main(int argc, char* argv[]) {
     LoggingMacros::InitializeSPDLog();
     std::srand(std::time(0));
-
-    Test();
 
     ProjectInpostors game;
     return game.Main(argc, argv);
