@@ -1,23 +1,28 @@
 #include "Rendering/Renderer.h"
 
-#include "Macros.h"
 #include "Core/Window.h"
+#include "Core/Settings/SettingsManager.h"
+
+#include "Events/WindowEvent.h"
+
+#include "Rendering/RenderingAPI.h"
+
 #include "Rendering/Renderable.h"
 #include "Rendering/LateRenderable.h"
 
-#include "Rendering/FrameBuffers/FrameBuffer.h"
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
 
 #include "Rendering/DirectionalLight.h"
 
+#include "Rendering/FrameBuffers/FrameBuffer.h"
 #include "Rendering/FrameBuffers/GBuffer.h"
 #include "Rendering/FrameBuffers/SSAOFrameBuffer.h"
 #include "Rendering/FrameBuffers/BlurPass.h"
 #include "Rendering/FrameBuffers/PostProcess.h"
-#include "Rendering/RenderingAPI.h"
-#include "Events/WindowEvent.h"
-#include "Core/Settings/SettingsManager.h"
+#include "Rendering/FrameBuffers/FXAAFrameBuffer.h"
+
+#include "Macros.h"
 
 namespace mlg {
     Renderer* Renderer::instance;
@@ -39,6 +44,7 @@ namespace mlg {
         instance->ssaoFrameBuffer = std::make_unique<SSAOFrameBuffer>(windowWidth, windowHeight);
         instance->ssaoBlurPass = std::make_unique<BlurPass>(windowWidth, windowHeight);
         instance->postProcess = std::make_unique<PostProcess>(windowWidth, windowHeight);
+        instance->fxaa = std::make_unique<FXAAFrameBuffer>(windowWidth, windowHeight);
 
 
         Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, OnWindowResize);
@@ -117,9 +123,21 @@ namespace mlg {
 
         SSAOPass();
 
-        postProcess->Activate();
+        bool isFXAAActive = SettingsManager::Get<bool>(SettingsType::Video, "FXAA");
+
+        if (isFXAAActive) {
+            fxaa->Activate();
+        } else {
+            postProcess->Activate();
+        }
+
         gBuffer->Draw();
         Renderer::GetInstance()->LateDraw();
+
+        if (isFXAAActive) {
+            postProcess->Activate();
+            fxaa->Draw();
+        }
 
         RenderingAPI::SetDefaultFrameBuffer();
         postProcess->Draw();
