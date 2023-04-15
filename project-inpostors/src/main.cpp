@@ -2,6 +2,7 @@
 #include "Rendering/Camera.h"
 #include "Rendering/Model.h"
 #include "Rendering/Renderer.h"
+#include "UI/Renderer2D.h"
 
 #include <Rendering/RenderingAPI.h>
 
@@ -27,6 +28,12 @@
 
 #include "soloud.h"
 #include "soloud_wav.h"
+#include "Physics/Physics.h"
+#include "UI/Assets/FontAsset.h"
+#include "UI/Components/Label.h"
+#include "UI/Components/Image.h"
+#include "UI/Components/ProgressBar.h"
+#include "Gameplay/Components/RigidbodyComponent.h"
 
 class ComponentTest : public mlg::Component {
 public:

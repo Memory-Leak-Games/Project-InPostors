@@ -1,17 +1,23 @@
 {
   "name": "Detroit",
   "layout": [
-    "DD|DD",
-    "DD|DD",
+    "TT|TT",
+    "TT|TT",
     "--#--",
-    "DD|DD",
-    "DD|DD"
+    "TT|TT",
+    "TT|TT"
   ],
   "keys": [
     {
       "symbol": "D",
       "model": "res/domek",
-      "rotation": 0
+      "rotation": 0,
+      "collision": {
+        "enabled": true,
+        "type": "rectangle",
+        "size": 1.0,
+        "offset": 0.0
+      }
     },
     {
       "symbol": "|",
