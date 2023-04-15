@@ -35,7 +35,7 @@
 
 class ComponentTest : public mlg::Component {
 public:
-    ComponentTest(const std::weak_ptr<mlg::Entity>& owner, const std::string& name) : Component(owner, name) {}
+    ComponentTest(const std::weak_ptr<mlg::Entity> &owner, const std::string &name) : Component(owner, name) {}
 
     void Update() override {
         glm::vec3 position = GetOwner().lock()->GetTransform().GetPosition();
@@ -58,7 +58,7 @@ class ProjectInpostors {
 public:
     ProjectInpostors() = default;
 
-    int Main(int argc, char* argv[]) {
+    int Main(int argc, char *argv[]) {
         mlg::SettingsManager::Initialize();
 
         mlg::Time::Initialize();
@@ -79,7 +79,7 @@ public:
         mlg::Core::Initialize();
         mlg::Input::Initialize();
 
-        mlg::Core* engine = mlg::Core::GetInstance();
+        mlg::Core *engine = mlg::Core::GetInstance();
         PrepareScene();
         engine->MainLoop();
 
@@ -113,7 +113,8 @@ public:
         cameraComponent.lock()->GetTransform().SetPosition({-10.f, 15.f, -10.f});
         cameraComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{60.f, 45.f, 0.f}));
 
-        auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
+        auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
+                "res/models/Primitives/white_material.json");
         auto redMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/red_material.json");
         auto blueMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/blue_material.json");
 
@@ -123,7 +124,7 @@ public:
 
         auto ground = mlg::EntityManager::SpawnEntity<mlg::Entity>("Ground", true, mlg::SceneGraph::GetRoot());
         ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, whiteMaterial);
-        ground.lock()->GetTransform().SetPosition({0.f, -1.f, 0.f});
+        ground.lock()->GetTransform().SetPosition({0.f, -0.5f, 0.f});
         ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
 
         auto ui = mlg::EntityManager::SpawnEntity<mlg::Entity>("ui", true, mlg::SceneGraph::GetRoot());
@@ -137,7 +138,8 @@ public:
         image.lock()->SetSize(glm::vec2{256.f});
         image.lock()->SetPosition({50.f, 50.f});
 
-        auto progressBarMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/progressBar_material.json");
+        auto progressBarMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
+                "res/materials/UI/progressBar_material.json");
         auto progressBar = ui.lock()->AddComponent<mlg::ProgressBar>("ProgressBar", progressBarMaterial);
         progressBar.lock()->SetSize(glm::vec2{256.f, 32.f});
         progressBar.lock()->SetPosition({50.f, 400.f});
@@ -145,7 +147,7 @@ public:
         mlg::Renderer2D::GetInstance()->AddRenderable(label);
         mlg::Renderer2D::GetInstance()->AddRenderable(image);
         mlg::Renderer2D::GetInstance()->AddRenderable(progressBar);
-        
+
         auto wall = mlg::EntityManager::SpawnEntity<mlg::Entity>("Wall", true, mlg::SceneGraph::GetRoot());
         wall.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", cubeModel, redMaterial);
         wall.lock()->GetTransform().SetPosition({-2.f, 0.f, -5.f});
@@ -161,7 +163,8 @@ public:
         boxRigidbody.lock()->SetAngularDrag(2.f);
 
         auto sphere = mlg::EntityManager::SpawnEntity<mlg::Entity>("Sphere", false, mlg::SceneGraph::GetRoot());
-        auto sphereMesh = sphere.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", sphereModel, blueMaterial);
+        auto sphereMesh = sphere.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", sphereModel,
+                                                                                blueMaterial);
         sphereMesh.lock()->GetTransform().SetScale(glm::vec3{2.f});
         sphere.lock()->GetTransform().SetPosition({2.f, 0.f, 5.f});
         auto sphereRigidbody = sphere.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
@@ -170,18 +173,52 @@ public:
         sphereRigidbody.lock()->SetAngularDrag(2.f);
 
         auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot());
+
+        SpawnHouses();
     }
 
-    void ImGUI() {
+    void SpawnHouses() {
+        using Random = effolkronium::random_static;
+
+        std::vector<std::shared_ptr<mlg::ModelAsset>> models;
+        models.push_back(mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Buildings/House_1.obj"));
+        models.push_back(mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Buildings/House_2.obj"));
+        models.push_back(mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Buildings/House_3.obj"));
+
+        float size = 10.f;
+        int city_size = 3;
+        float city_size_in_units = (float) city_size * size;
+
+        for (int i = 0; i < city_size; ++i) {
+            for (int j = 0; j < city_size; ++j) {
+                if (i % 3)
+                    Random::shuffle(models);
+
+                auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
+                        "res/models/Primitives/white_material.json");
+                auto model = models[i % 3];
+
+                glm::vec3 buildingPosition{0.f};
+                buildingPosition.x = (float) i * size - city_size_in_units / 2.f;
+                buildingPosition.y = -0.5f;
+                buildingPosition.z = (float) j * size - city_size_in_units / 2.f;
+
+                auto building = mlg::EntityManager::SpawnEntity<mlg::Entity>("Wall", true, mlg::SceneGraph::GetRoot());
+                building.lock()->GetTransform().SetPosition(buildingPosition);
+
+                building.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", model, whiteMaterial);
+                auto rigidbody = building.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
+                rigidbody.lock()->AddCollider<mlg::ColliderShape::Rectangle>(glm::vec2(0.f), glm::vec2(2.f));
+            }
+        }
     }
 
     virtual ~ProjectInpostors() {
     }
 };
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
     LoggingMacros::InitializeSPDLog();
-    std::srand(std::time(0));
 
     ProjectInpostors game;
     return game.Main(argc, argv);

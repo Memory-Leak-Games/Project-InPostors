@@ -3,19 +3,9 @@
   "fragmentShader": "res/shaders/SSAOPass/ssao_pass.frag",
   "uniforms": [
     {
-      "type": "int",
-      "name": "samples",
-      "value": 16
-    },
-    {
       "type": "float",
-      "name": "intensity",
-      "value": 30
-    },
-    {
-      "type": "float",
-      "name": "scale",
-      "value": 10.0
+      "name": "radius",
+      "value": 1.5
     },
     {
       "type": "float",
@@ -24,13 +14,13 @@
     },
     {
       "type": "float",
-      "name": "sample_rad",
-      "value": 0.8
+      "name": "magnitude",
+      "value": 0.6
     },
     {
       "type": "float",
-      "name": "max_distance",
-      "value": 2.0
+      "name": "contrast",
+      "value": 1.5
     }
   ],
   "textures": []
