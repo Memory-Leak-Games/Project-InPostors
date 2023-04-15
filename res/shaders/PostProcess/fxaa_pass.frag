@@ -27,8 +27,7 @@ out vec4 fragColor;
 
 void main() {
     vec2 rcpFrame = 1.f / resolution;
-    vec2 uv2 = fs_in.uv;
-    vec4 uv = vec4(uv2, uv2 - (rcpFrame * (0.5 + FXAA_SUBPIX_SHIFT)));
+    vec4 uv = vec4(fs_in.uv, fs_in.uv - (rcpFrame * (0.5 + FXAA_SUBPIX_SHIFT)));
 
     vec3 rgbNW = texture(inTexture, uv.zw).xyz;
     vec3 rgbNE = texture(inTexture, uv.zw + vec2(1, 0) * rcpFrame.xy).xyz;
@@ -69,7 +68,6 @@ void main() {
 
     float lumaB = dot(rgbB, luma);
 
-    if ((lumaB < lumaMin) || (lumaB > lumaMax)) fragColor = vec4(rgbA, 1.f);
-
-    fragColor = vec4(rgbA, 1.f);
+    vec3 color = mix(rgbB, rgbA, float(lumaB < lumaMin || lumaB > lumaMax));
+    fragColor = vec4(color, 1.f);
 }
