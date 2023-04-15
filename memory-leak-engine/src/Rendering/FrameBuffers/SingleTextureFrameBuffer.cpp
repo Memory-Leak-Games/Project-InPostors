@@ -9,12 +9,21 @@
 
 namespace mlg {
     SingleTextureFrameBuffer::SingleTextureFrameBuffer(int32_t width, int32_t height)
-    : FrameBuffer(width, height) {
+    : SingleTextureFrameBuffer(width, height, nullptr) {
+
+    }
+
+    SingleTextureFrameBuffer::SingleTextureFrameBuffer(int32_t width, int32_t height,
+                                                       const std::shared_ptr<MaterialAsset>& material)
+            : FrameBuffer(width, height) {
         GenerateAndBindTextures();
 
         MLG_ASSERT_MSG(IsFrameBufferComplete(), "Frame buffer is not complete");
 
-        material = AssetManager::GetAsset<MaterialAsset>("res/materials/simple_fbo_material.json");
+        if (material == nullptr)
+            this->material = AssetManager::GetAsset<MaterialAsset>("res/materials/simple_fbo_material.json");
+        else
+            this->material = material;
     }
 
     SingleTextureFrameBuffer::~SingleTextureFrameBuffer() {
@@ -47,5 +56,6 @@ namespace mlg {
     void SingleTextureFrameBuffer::Clear() {
         glClearColor(0.f, 0.f, 0.f, 0.f);
     }
+
 
 } // mlg

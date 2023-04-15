@@ -13,6 +13,7 @@ namespace mlg {
         std::unique_ptr<class SSAOFrameBuffer> ssaoFrameBuffer;
         std::unique_ptr<class BlurPass> ssaoBlurPass;
         std::unique_ptr<class PostProcess> postProcess;
+        std::unique_ptr<class PostProcess> fxaa;
 
         Renderer() = default;
     public:

@@ -19,7 +19,7 @@ namespace mlg {
 
         MLG_ASSERT_MSG(IsFrameBufferComplete(), "Frame buffer is not complete");
 
-        material = AssetManager::GetAsset<MaterialAsset>("res/config/ssao_material.json");
+        material = AssetManager::GetAsset<MaterialAsset>("res/config/EngineMaterials/ssao_material.json");
     }
 
     void SSAOFrameBuffer::GenerateAndBindTextures() {

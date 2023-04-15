@@ -39,19 +39,11 @@ Core* Core::instance;
 void Core::MainLoop() {
     DirectionalLight::GetInstance();
 
-    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, [](const Event& event) {
-        auto& windowResizeEvent = (WindowResizeEvent&) event;
-        RenderingAPI::GetInstance()->SetViewport(0, 0,
-                                                 windowResizeEvent.GetWidth(),
-                                                 windowResizeEvent.GetHeight());
-
-        });
-
     bool shouldClose = false;
-    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowClose,
-                                                                [&shouldClose](const Event& event) {
-                                                                    shouldClose = true;
-                                                                });
+    Window::GetInstance()->GetEventDispatcher()->appendListener(
+            EventType::WindowClose, [&shouldClose](const Event& event) {
+                shouldClose = true;
+            });
 
     ComponentManager::Start();
     EntityManager::Start();
@@ -65,6 +57,7 @@ void Core::MainLoop() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 #endif
+
         ComponentManager::ProcessComponents();
         EntityManager::ProcessEntities();
 
@@ -97,6 +90,7 @@ void Core::MainLoop() {
 }
 
 #ifdef DEBUG
+
 void Core::RenderImGUI() const {
     ImGui::Begin("FPS");
     ImGui::Text("Framerate: %.3f (%.1f FPS)", Time::GetTrueDeltaSeconds(), 1 / Time::GetTrueDeltaSeconds());
@@ -106,6 +100,7 @@ void Core::RenderImGUI() const {
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
+
 #endif
 
 void Core::Stop() {

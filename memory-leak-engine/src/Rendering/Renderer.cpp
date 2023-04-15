@@ -40,6 +40,7 @@ namespace mlg {
         instance->ssaoBlurPass = std::make_unique<BlurPass>(windowWidth, windowHeight);
         instance->postProcess = std::make_unique<PostProcess>(windowWidth, windowHeight);
 
+
         Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, OnWindowResize);
     }
 
@@ -116,6 +117,7 @@ namespace mlg {
 
         SSAOPass();
 
+        postProcess->Activate();
         gBuffer->Draw();
         Renderer::GetInstance()->LateDraw();
 
@@ -126,7 +128,6 @@ namespace mlg {
 
     void Renderer::SSAOPass() {
         if (!SettingsManager::Get<bool>(SettingsType::Video, "SSAO")) {
-            postProcess->Activate();
             gBuffer->BindTextures(0);
             return;
         }
@@ -137,7 +138,6 @@ namespace mlg {
         ssaoBlurPass->BindTextureUnits(ssaoFrameBuffer->GetOutput());
         ssaoBlurPass->Draw();
 
-        postProcess->Activate();
         gBuffer->BindTextures(ssaoBlurPass->GetBlurredTexture());
     }
 
