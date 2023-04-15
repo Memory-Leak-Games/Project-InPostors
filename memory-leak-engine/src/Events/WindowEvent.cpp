@@ -1,7 +1,10 @@
 #include "Events/WindowEvent.h"
 
 namespace mlg {
-    WindowResizeEvent::WindowResizeEvent(int32_t width, int32_t height) : width(width), height(height) {}
+    WindowResizeEvent::WindowResizeEvent(int32_t width, int32_t height)
+    : width(width), height(height) {
+        aspectRatio = (float) width / (float) height;
+    }
 
     int32_t WindowResizeEvent::GetWidth() const {
         return width;
@@ -15,6 +18,10 @@ namespace mlg {
         std::stringstream ss;
         ss << "WindowResizeEvent: " << width << ", " << height;
         return ss.str();
+    }
+
+    float WindowResizeEvent::GetAspectRatio() const {
+        return aspectRatio;
     }
 
     WindowFocusEvent::WindowFocusEvent(bool isWindowFocused) : isWindowFocused(isWindowFocused) {}

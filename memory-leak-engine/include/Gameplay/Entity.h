@@ -23,13 +23,13 @@ namespace mlg {
         Entity() = delete;
 
     protected:
-        explicit Entity(std::string name, bool isStatic, Transform* parent);
+        explicit Entity(std::string name, bool isStatic, Transform *parent);
 
     public:
-        static std::shared_ptr<Entity> Create(const std::string& name, bool isStatic, Transform* parent);
+        static std::shared_ptr<Entity> Create(const std::string &name, bool isStatic, Transform *parent);
 
         template<typename T, typename ... Args>
-        std::weak_ptr<T> AddComponent(Args&& ... args) {
+        std::weak_ptr<T> AddComponent(Args &&... args) {
             auto newComponent = ComponentManager::SpawnComponent<T>(shared_from_this(), std::forward<Args>(args)...);
             components.push_back(newComponent);
             return std::dynamic_pointer_cast<T>(newComponent.lock());
@@ -37,10 +37,10 @@ namespace mlg {
 
         template<typename T>
         std::weak_ptr<T> GetComponentByClass() {
-            auto foundIterator = std::find_if(components.begin(), components.end(),
-                                              [](const std::weak_ptr<Component>& entry) {
-                                                  return std::dynamic_pointer_cast<Component>(entry.lock()) != nullptr;
-                                              });
+            auto foundIterator = std::find_if(
+                    components.begin(), components.end(), [](const std::weak_ptr<Component> &entry) {
+                        return std::dynamic_pointer_cast<T>(entry.lock()) != nullptr;
+                    });
 
             if (foundIterator != components.end())
                 return std::static_pointer_cast<T>(foundIterator->lock());
@@ -49,10 +49,10 @@ namespace mlg {
         }
 
         template<typename T>
-        std::weak_ptr<T> GetComponentByName(const std::string& componentName) {
+        std::weak_ptr<T> GetComponentByName(const std::string &name) {
             auto foundIterator = std::find_if(components.begin(), components.end(),
-                                              [componentName](const std::weak_ptr<Component>& entry) {
-                                                  return entry.lock()->GetName() == componentName;
+                                              [name](const std::weak_ptr<Component> &entry) {
+                                                  return entry.lock()->GetName() == name;
                                               });
 
             if (foundIterator != components.end())
@@ -61,26 +61,33 @@ namespace mlg {
                 return std::weak_ptr<T>();
         }
 
-        void RemoveComponent(Component* component);
+        void RemoveComponent(Component *component);
 
         virtual void Start();
 
         virtual void PhysicsUpdate();
+
         virtual void Update();
+
         virtual void LateUpdate();
+
         virtual void Stop();
 
         void QueueForDeletion();
 
         [[nodiscard]] bool IsQueuedForDeletion() const;
+
         [[nodiscard]] bool IsStatic() const;
 
-        Transform& GetTransform();
-        const std::string& GetName() const;
-        const std::string& GetTag() const;
+        Transform &GetTransform();
 
-        void SetName(const std::string& name);
-        void SetTag(const std::string& tag);
+        const std::string &GetName() const;
+
+        const std::string &GetTag() const;
+
+        void SetName(const std::string &name);
+
+        void SetTag(const std::string &tag);
     };
 
 } // mlg

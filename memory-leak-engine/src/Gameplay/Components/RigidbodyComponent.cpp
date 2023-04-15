@@ -126,5 +126,21 @@ namespace mlg {
 #endif
     }
 
+    glm::vec2 RigidbodyComponent::GetLinearVelocity() {
+        return rigidbody->linearVelocity;
+    }
+
+    glm::vec2 RigidbodyComponent::GetLinearAcceleration() {
+        return rigidbody->newLinearAcceleration + rigidbody->currentLinearAcceleration / 2.f;
+    }
+
+    float RigidbodyComponent::GetAngularSpeed() {
+        return rigidbody->angularVelocity;
+    }
+
+    float RigidbodyComponent::GetAngularAcceleration() {
+        return rigidbody->newAngularAcceleration + rigidbody->currentAngularAcceleration / 2.f;
+    }
+
 
 } // mlg

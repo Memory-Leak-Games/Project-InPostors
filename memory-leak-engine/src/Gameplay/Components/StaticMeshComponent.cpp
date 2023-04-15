@@ -1,7 +1,6 @@
 #include "Gameplay/Components/StaticMeshComponent.h"
 #include "Gameplay/ComponentManager.h"
 
-#include "Rendering/RenderingAPI.h"
 #include "Rendering/Renderer.h"
 #include "Rendering/CommonUniformBuffer.h"
 #include "Rendering/DirectionalLight.h"

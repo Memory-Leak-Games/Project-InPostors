@@ -18,7 +18,6 @@ namespace mlg {
         std::map<char8_t, Character> characters;
 
         explicit FontAsset(const std::string& path);
-        ~FontAsset() override;
         void Load() override;
     };
 

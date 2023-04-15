@@ -36,7 +36,10 @@ void Window::Initialize(std::string title, int32_t width, int32_t height) {
     MLG_ASSERT_MSG(glfwInit(), "Failed to initialize GLFW");
 
     SPDLOG_INFO("Creating GLFW Window: {} {}x{}", title, width, height);
-    instance = new Window(std::move(title), width, height);
+
+    float aspectRatio = (float) width / (float) height;
+
+    instance = new Window(std::move(title), width, height, aspectRatio);
     instance->SetupWindow();
 
     instance->SetVerticalSync(SettingsManager::Get<bool>(SettingsType::Video, "VSync"));
@@ -72,6 +75,7 @@ void Window::SetupCallbacks() {
         WindowData* windowData = (WindowData*) glfwGetWindowUserPointer(window);
         windowData->width = width;
         windowData->height = height;
+        windowData->aspectRatio = (float) width / float (height);
 
         WindowResizeEvent event(width, height);
 
@@ -154,11 +158,12 @@ Window* Window::GetInstance() {
     return instance;
 }
 
-Window::Window(std::string title, int32_t width, int32_t height)
+Window::Window(std::string title, int32_t width, int32_t height, float aspectRatio)
     : glfwWindow(nullptr) {
     windowData.title = std::move(title);
     windowData.width = width;
     windowData.height = height;
+    windowData.aspectRatio = aspectRatio;
 
     windowData.vSync = false;
 }
@@ -205,4 +210,8 @@ int32_t Window::GetHeight() {
 
 void* Window::GetNativeWindowHandle() {
     return glfwWindow;
+}
+
+float Window::GetAspectRatio() {
+    return windowData.aspectRatio;
 }

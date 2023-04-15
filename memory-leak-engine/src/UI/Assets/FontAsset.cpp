@@ -6,10 +6,6 @@
 
 mlg::FontAsset::FontAsset(const std::string& path) : Asset(path) {}
 
-//TODO: Implement me
-mlg::FontAsset::~FontAsset() {
-}
-
 void mlg::FontAsset::Load() {
 
     FT_Library ft;

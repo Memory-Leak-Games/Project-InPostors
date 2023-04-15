@@ -1,4 +1,4 @@
-#include "Rendering/FrameBuffers/SSAO.h"
+#include "Rendering/FrameBuffers/SSAOFrameBuffer.h"
 
 #include <glad/glad.h>
 
@@ -8,21 +8,21 @@
 #include "Macros.h"
 
 namespace mlg {
-    SSAO::~SSAO() {
+    SSAOFrameBuffer::~SSAOFrameBuffer() {
         glDeleteTextures(1, &strengthTexture);
     }
 
-    SSAO::SSAO(int32_t width, int32_t height)
+    SSAOFrameBuffer::SSAOFrameBuffer(int32_t width, int32_t height)
     : FrameBuffer(width, height) {
         SPDLOG_DEBUG("Initializing SSAO");
         GenerateAndBindTextures();
 
         MLG_ASSERT_MSG(IsFrameBufferComplete(), "Frame buffer is not complete");
 
-        material = AssetManager::GetAsset<MaterialAsset>("res/config/ssao_material.json");
+        material = AssetManager::GetAsset<MaterialAsset>("res/config/EngineMaterials/ssao_material.json");
     }
 
-    void SSAO::GenerateAndBindTextures() {
+    void SSAOFrameBuffer::GenerateAndBindTextures() {
         glDeleteTextures(1, &strengthTexture);
 
         glCreateTextures(GL_TEXTURE_2D, 1, &strengthTexture);
@@ -34,22 +34,22 @@ namespace mlg {
         glNamedFramebufferTexture(GetFbo(), GL_COLOR_ATTACHMENT0, strengthTexture, 0);
     }
 
-    void SSAO::Resize(int32_t width, int32_t height) {
+    void SSAOFrameBuffer::Resize(int32_t width, int32_t height) {
         FrameBuffer::Resize(width, height);
 
         GenerateAndBindTextures();
     }
 
-    void SSAO::BindTextureUnits(uint32_t position, uint32_t normal) {
+    void SSAOFrameBuffer::BindTextureUnits(uint32_t position, uint32_t normal) {
         glBindTextureUnit(0, position);
         glBindTextureUnit(1, normal);
     }
 
-    uint32_t SSAO::GetOutput() {
+    uint32_t SSAOFrameBuffer::GetOutput() {
         return strengthTexture;
     }
 
-    void SSAO::Draw() {
+    void SSAOFrameBuffer::Draw() {
         glBindFramebuffer(GL_FRAMEBUFFER, GetFbo());
         FrameBuffer::Draw();
     }
