@@ -7,32 +7,31 @@
     "TT|TT",
     "TT|TT"
   ],
-  "keys": [
+  "tiles": [
     {
-      "symbol": "D",
-      "model": "res/domek",
-      "rotation": 0,
-      "collision": {
-        "enabled": true,
-        "type": "rectangle",
-        "size": 1.0,
-        "offset": 0.0
-      }
+      "symbol": "T",
+      "model": "res/model/domek",
+      "material": "res/material/domek",
+      "rotation": 0.0,
+      "collision-type": "rectangle",
+      "collision-size": 1.0,
+      "collision-offset": 0.0
     },
     {
       "symbol": "|",
-      "model": "res/droga",
-      "rotation": 0
+      "model": "res/model/droga",
+      "material": "res/material/droga"
     },
     {
       "symbol": "-",
-      "model": "res/droga",
-      "rotation": 90
+      "model": "res/model/droga",
+      "material": "res/material/droga",
+      "rotation": 90.0
     },
     {
       "symbol": "#",
-      "model": "res/krzyzowka",
-      "rotation": 0
+      "model": "res/model/krzyzowka",
+      "material": "res/material/droga"
     }
   ]
 }

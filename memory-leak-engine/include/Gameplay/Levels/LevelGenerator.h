@@ -10,6 +10,8 @@ namespace mlg {
 
     class LevelGenerator {
     public:
+        static std::unique_ptr<std::unordered_map<std::string, std::unique_ptr<MapObject>>> LoadJson(const std::string& path);
+
         static bool GenerateLevel(const mlg::LevelLayout& layout);
         static bool GenerateTestLevel();
 

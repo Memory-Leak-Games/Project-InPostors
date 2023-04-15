@@ -10,6 +10,35 @@
 #include "Physics/Colliders/ColliderShapes.h"
 
 namespace mlg {
+    std::unique_ptr<std::unordered_map<std::string, std::unique_ptr<MapObject>>>
+    LevelGenerator::LoadJson(const std::string &path) {
+        auto tileMap = std::make_unique<
+                std::unordered_map<std::string, std::unique_ptr<MapObject>>>();
+
+        std::ifstream levelFile{path};
+        json levelJson = json::parse(levelFile);
+
+        for (const auto& jsonTile : levelJson["tiles"]) {
+            std::string tileSymbol = jsonTile["symbol"].get<std::string>();
+            std::string modelPath = jsonTile["model"].get<std::string>();
+            std::string materialPath = jsonTile["material"].get<std::string>();
+            float yRot = jsonTile.contains("rotation") ? jsonTile["rotation"].get<float>() : 0.0f;
+
+            mlg::MapObject mapObj(modelPath, materialPath, yRot);
+            if (jsonTile.contains("collision-type")) {
+                std::string cType = jsonTile["collision-type"].get<std::string>();
+                float cSize = jsonTile.contains("collision-size") ? jsonTile["collision-size"].get<float>() : 1.0f;
+                float cOffset = jsonTile.contains("collision-offset") ? jsonTile["collision-offset"].get<float>(): 0.0f;
+                mapObj.AddCollision(cType, cSize, cOffset);
+            }
+
+            auto newMapObj = std::make_unique<MapObject>(mapObj);
+            tileMap->insert({tileSymbol, std::move(newMapObj)});
+        }
+
+        return std::move(tileMap);
+    }
+
 
     /**
      * Generate a hardcoded level for testing purposes
@@ -99,4 +128,5 @@ namespace mlg {
         ss << (h1 ^ (h2 << 1));
         return ss.str();
     }
+
 }

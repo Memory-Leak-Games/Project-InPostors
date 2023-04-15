@@ -181,6 +181,7 @@ public:
 };
 
 void Test() {
+    mlg::LevelGenerator::LoadJson("res/levels/detroit.json");
 }
 
 int main(int argc, char* argv[]) {
