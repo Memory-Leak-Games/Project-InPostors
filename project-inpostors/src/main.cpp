@@ -14,7 +14,7 @@
 #include "Core/Time.h"
 
 #include "SceneGraph/SceneGraph.h"
-#include "SimplePlayer.h"
+#include "Player.h"
 #include "Core/Settings/SettingsManager.h"
 #include "Gameplay/Components/CameraComponent.h"
 
@@ -169,7 +169,7 @@ public:
         sphereRigidbody.lock()->SetLinearDrag(2.f);
         sphereRigidbody.lock()->SetAngularDrag(2.f);
 
-        auto player = mlg::EntityManager::SpawnEntity<SimplePlayer>("Player", false, mlg::SceneGraph::GetRoot());
+        auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot());
     }
 
     void ImGUI() {

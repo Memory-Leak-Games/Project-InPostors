@@ -1,4 +1,4 @@
-#include "SimplePlayer.h"
+#include "Player.h"
 
 #include "Gameplay/Components/RigidbodyComponent.h"
 #include "Gameplay/Components/StaticMeshComponent.h"
@@ -10,13 +10,13 @@
 
 #include "SceneGraph/Transform.h"
 
-#include "SimpleCarMovementComponent.h"
+#include "CarMovementComponent.h"
 
-SimplePlayer::SimplePlayer(const std::string& name, bool isStatic, mlg::Transform* parent)
+Player::Player(const std::string& name, bool isStatic, mlg::Transform* parent)
 : mlg::Entity(name, isStatic, parent) {}
 
-std::shared_ptr<SimplePlayer> SimplePlayer::Create(const std::string& name, bool isStatic, mlg::Transform* parent) {
-    auto newPlayer = std::shared_ptr<SimplePlayer>(new SimplePlayer(name, isStatic, parent));
+std::shared_ptr<Player> Player::Create(const std::string& name, bool isStatic, mlg::Transform* parent) {
+    auto newPlayer = std::shared_ptr<Player>(new Player(name, isStatic, parent));
 
     auto rigidbodyComponent = newPlayer->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
 
@@ -29,7 +29,7 @@ std::shared_ptr<SimplePlayer> SimplePlayer::Create(const std::string& name, bool
     auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/blue_material.json");
 
     newPlayer->AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
-    newPlayer->AddComponent<SimpleCarMovementComponent>("MovementComponent");
+    newPlayer->AddComponent<CarMovementComponent>("MovementComponent");
 
     return newPlayer;
 }

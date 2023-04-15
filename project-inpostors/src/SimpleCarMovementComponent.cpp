@@ -1,4 +1,4 @@
-#include "SimpleCarMovementComponent.h"
+#include "CarMovementComponent.h"
 
 #include "Gameplay/Entity.h"
 #include "Gameplay/Components/RigidbodyComponent.h"
@@ -8,17 +8,17 @@
 
 #include "Physics/Colliders/ColliderShapes.h"
 
-void SimpleCarMovementComponent::Start() {
+void CarMovementComponent::Start() {
     rigidbodyComponent = GetOwner().lock()->GetComponentByClass<mlg::RigidbodyComponent>();
 
     rigidbodyComponent.lock()->SetLinearDrag(10.f);
     rigidbodyComponent.lock()->SetAngularDrag(5.f);
 }
 
-SimpleCarMovementComponent::SimpleCarMovementComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name)
+CarMovementComponent::CarMovementComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name)
         : Component(owner, name) {}
 
-void SimpleCarMovementComponent::PhysicsUpdate() {
+void CarMovementComponent::PhysicsUpdate() {
     float forward = mlg::Input::GetActionStrength("forward_one");
     forward -= mlg::Input::GetActionStrength("backward_one");
 
@@ -35,7 +35,7 @@ void SimpleCarMovementComponent::PhysicsUpdate() {
     rigidbodyComponent.lock()->AddTorque(right * -6.f);
 }
 
-void SimpleCarMovementComponent::Update() {
+void CarMovementComponent::Update() {
     auto owner = GetOwner().lock();
 
     glm::vec3 worldPosition = owner->GetTransform().GetWorldPosition();
