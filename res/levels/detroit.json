@@ -10,28 +10,27 @@
   "tiles": [
     {
       "symbol": "T",
-      "model": "res/model/domek",
-      "material": "res/material/domek",
-      "rotation": 0.0,
+      "model": "res/models/Tardis/tardis.obj",
+      "material": "res/models/Tardis/tardis_material.json",
       "collision-type": "rectangle",
       "collision-size": 1.0,
       "collision-offset": 0.0
     },
     {
       "symbol": "|",
-      "model": "res/model/droga",
-      "material": "res/material/droga"
+      "model": "res/models/Tardis/tardis.obj",
+      "material": "rres/models/Tardis/tardis_material.json"
     },
     {
       "symbol": "-",
-      "model": "res/model/droga",
-      "material": "res/material/droga",
+      "model": "res/models/Tardis/tardis.obj",
+      "material": "res/models/Tardis/tardis_material.json",
       "rotation": 90.0
     },
     {
       "symbol": "#",
-      "model": "res/model/krzyzowka",
-      "material": "res/material/droga"
+      "model": "res/models/Tardis/tardis.obj",
+      "material": "res/models/Tardis/tardis_material.json"
     }
   ]
 }
