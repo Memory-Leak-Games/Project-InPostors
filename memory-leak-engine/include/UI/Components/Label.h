@@ -11,6 +11,8 @@ namespace mlg {
 
         std::string text;
         glm::vec3 textColor = {1, 1, 1};
+
+        float scale = 1;
     public:
 
         Label(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<class FontAsset>& font);
@@ -23,5 +25,6 @@ namespace mlg {
         void SetText(const std::string& text);
         void SetTextColor(const glm::vec3& textColor);
         void SetFont(const std::shared_ptr<class FontAsset>& font);
+        void SetSize(float size);
     };
 }

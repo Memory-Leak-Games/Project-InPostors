@@ -95,5 +95,9 @@ namespace mlg {
         screenSpaceQuad.Draw();
     }
 
+    void RenderingAPI::SetDefaultFrameBuffer() {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
 
 }// namespace mlg

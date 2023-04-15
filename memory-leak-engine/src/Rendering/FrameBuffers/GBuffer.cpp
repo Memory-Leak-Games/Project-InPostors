@@ -3,12 +3,12 @@
 #include "glad/glad.h"
 
 #include "Core/AssetManager/AssetManager.h"
+#include "Rendering/CommonUniformBuffer.h"
 
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/ShaderProgram.h"
 #include "Rendering/RenderingAPI.h"
 
-#include "Rendering/Camera.h"
 #include "Rendering/DirectionalLight.h"
 
 #include "Macros.h"
@@ -21,7 +21,7 @@ namespace mlg {
 
         MLG_ASSERT_MSG(IsFrameBufferComplete(), "Frame buffer is not complete");
 
-        material = AssetManager::GetAsset<MaterialAsset>("res/config/light_pass_material.json");
+        material = AssetManager::GetAsset<MaterialAsset>("res/config/EngineMaterials/light_pass_material.json");
     }
 
     void GBuffer::GenerateAndBindGTextures() {
@@ -70,6 +70,7 @@ namespace mlg {
     }
 
     void GBuffer::Draw() {
+        glDisable(GL_DEPTH_TEST);
         material->Activate();
 
         glBindTextureUnit(0, gPositionTexture);
@@ -78,10 +79,11 @@ namespace mlg {
         glBindTextureUnit(3, DirectionalLight::GetInstance()->GetShadowMap());
 
         glm::mat4 lightSpace = DirectionalLight::GetInstance()->GetSun().lightSpaceMatrix;
-        glm::mat4 viewToModel = glm::inverse(Camera::GetInstance()->GetCameraViewMatrix());
+        glm::mat4 viewToModel = glm::inverse(CommonUniformBuffer::GetUniforms().view);
         glm::mat4 viewToLight = lightSpace * viewToModel;
 
         material->GetShaderProgram()->SetMat4F("viewToLight", viewToLight);
+        material->GetShaderProgram()->SetBool("isSSAOActive", isSSAOActive);
 
         RenderingAPI::GetInstance()->DrawScreenSpaceQuad();
 
@@ -112,6 +114,13 @@ namespace mlg {
     }
 
     void GBuffer::BindTextures(uint32_t ssao) {
+        if (ssao == 0)
+        {
+            isSSAOActive = false;
+            return;
+        }
+
+        isSSAOActive = true;
         glBindTextureUnit(4, ssao);
     }
 

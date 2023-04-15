@@ -1,18 +1,33 @@
 #include "Rendering/Renderer.h"
 
-#include "Macros.h"
 #include "Core/Window.h"
+#include "Core/Settings/SettingsManager.h"
+
+#include "Events/WindowEvent.h"
+
+#include "Rendering/RenderingAPI.h"
+
 #include "Rendering/Renderable.h"
 #include "Rendering/LateRenderable.h"
 
-#include "Rendering/FrameBuffers/FrameBuffer.h"
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
 
 #include "Rendering/DirectionalLight.h"
 
+#include "Rendering/FrameBuffers/FrameBuffer.h"
+#include "Rendering/FrameBuffers/GBuffer.h"
+#include "Rendering/FrameBuffers/SSAOFrameBuffer.h"
+#include "Rendering/FrameBuffers/BlurPass.h"
+#include "Rendering/FrameBuffers/PostProcess.h"
+#include "Rendering/FrameBuffers/FXAAFrameBuffer.h"
+
+#include "Macros.h"
+
 namespace mlg {
     Renderer* Renderer::instance;
+
+    Renderer::~Renderer() = default;
 
     void Renderer::Initialize() {
         if (instance != nullptr)
@@ -21,6 +36,29 @@ namespace mlg {
         instance = new Renderer();
 
         SPDLOG_INFO("Initializing Renderer");
+
+        int32_t windowWidth = Window::GetInstance()->GetWidth();
+        int32_t windowHeight = Window::GetInstance()->GetHeight();
+
+        instance->gBuffer = std::make_unique<GBuffer>(windowWidth, windowHeight);
+        instance->ssaoFrameBuffer = std::make_unique<SSAOFrameBuffer>(windowWidth, windowHeight);
+        instance->ssaoBlurPass = std::make_unique<BlurPass>(windowWidth, windowHeight);
+        instance->postProcess = std::make_unique<PostProcess>(windowWidth, windowHeight);
+        instance->fxaa = std::make_unique<FXAAFrameBuffer>(windowWidth, windowHeight);
+
+
+        Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, OnWindowResize);
+    }
+
+    void Renderer::OnWindowResize(const Event& event) {
+        auto& windowResizeEvent = (WindowResizeEvent&) event;
+        int32_t windowWidth = windowResizeEvent.GetWidth();
+        int32_t windowHeight = windowResizeEvent.GetHeight();
+
+        instance->gBuffer->Resize(windowWidth, windowHeight);
+        instance->ssaoFrameBuffer->Resize(windowWidth, windowHeight);
+        instance->ssaoBlurPass->Resize(windowWidth, windowHeight);
+        instance->postProcess->Resize(windowWidth, windowHeight);
     }
 
     void Renderer::Stop() {
@@ -72,6 +110,53 @@ namespace mlg {
 
     Renderer* Renderer::GetInstance() {
         return instance;
+    }
+
+    void Renderer::DrawFrame() {
+
+        gBuffer->Activate();
+        gBuffer->Clear();
+
+        Renderer::GetInstance()->Draw(gBuffer.get());
+
+        gBuffer->CopyDepthBuffer(postProcess->GetFbo());
+
+        SSAOPass();
+
+        bool isFXAAActive = SettingsManager::Get<bool>(SettingsType::Video, "FXAA");
+
+        if (isFXAAActive) {
+            fxaa->Activate();
+        } else {
+            postProcess->Activate();
+        }
+
+        gBuffer->Draw();
+        Renderer::GetInstance()->LateDraw();
+
+        if (isFXAAActive) {
+            postProcess->Activate();
+            fxaa->Draw();
+        }
+
+        RenderingAPI::SetDefaultFrameBuffer();
+        postProcess->Draw();
+        postProcess->CopyDepthBuffer(0);
+    }
+
+    void Renderer::SSAOPass() {
+        if (!SettingsManager::Get<bool>(SettingsType::Video, "SSAO")) {
+            gBuffer->BindTextures(0);
+            return;
+        }
+
+        ssaoFrameBuffer->BindTextureUnits(gBuffer->GetPositionTexture(), gBuffer->GetNormalTexture());
+        ssaoFrameBuffer->Draw();
+        ssaoBlurPass->BindTextureUnits(ssaoFrameBuffer->GetOutput());
+        ssaoBlurPass->BindTextureUnits(ssaoFrameBuffer->GetOutput());
+        ssaoBlurPass->Draw();
+
+        gBuffer->BindTextures(ssaoBlurPass->GetBlurredTexture());
     }
 
 } // mlg

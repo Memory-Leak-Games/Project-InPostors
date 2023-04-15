@@ -12,6 +12,8 @@ namespace mlg {
 
         uint32_t rboDepth = 0;
 
+        bool isSSAOActive = false;
+
         GBuffer() = default;
     public:
         GBuffer(int32_t width, int32_t height);
