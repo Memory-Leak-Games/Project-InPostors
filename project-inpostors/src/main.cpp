@@ -174,6 +174,8 @@ public:
         gSoloud.play(gWave); // Play the wave
         mlg::Time::Sleep(2.f);
         gSoloud.deinit();
+
+        mlg::LevelGenerator::LoadJson("res/levels/detroit.json");
     }
 
     virtual ~ProjectInpostors() {
@@ -181,7 +183,7 @@ public:
 };
 
 void Test() {
-    mlg::LevelGenerator::LoadJson("res/levels/detroit.json");
+
 }
 
 int main(int argc, char* argv[]) {

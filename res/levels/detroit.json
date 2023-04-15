@@ -19,7 +19,7 @@
     {
       "symbol": "|",
       "model": "res/models/Tardis/tardis.obj",
-      "material": "rres/models/Tardis/tardis_material.json"
+      "material": "res/models/Tardis/tardis_material.json"
     },
     {
       "symbol": "-",
