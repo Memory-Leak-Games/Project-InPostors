@@ -181,7 +181,6 @@ public:
 
 int main(int argc, char* argv[]) {
     LoggingMacros::InitializeSPDLog();
-    std::srand(std::time(0));
 
     ProjectInpostors game;
     return game.Main(argc, argv);

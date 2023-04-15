@@ -35,11 +35,13 @@ namespace mlg {
     }
 
     void CommonUniformBuffer::UpdateAndSendToGPU() {
+        using Random = effolkronium::random_static;
+
         instance->uniforms.seconds = Time::GetSeconds();
         instance->uniforms.deltaSeconds = Time::GetDeltaSeconds();
 
-        instance->uniforms.randInt = rand();
-        instance->uniforms.randFloat = (float) rand() / (float) RAND_MAX;
+        instance->uniforms.randInt = Random::get<uint32_t>();
+        instance->uniforms.randFloat = Random::get(0.f, 1.f);
 
         Window* window = Window::GetInstance();
         instance->uniforms.resolution = {window->GetWidth(), window->GetHeight()};

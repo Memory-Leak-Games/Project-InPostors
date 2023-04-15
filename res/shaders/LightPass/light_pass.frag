@@ -97,7 +97,9 @@ vec3 CalculateDirectionalLight() {
 
     float shadow = CalculateShadow();
 
-    vec3 ambientColor = lightAmbient * albedo;
+    float ssaoValue = mix(1.f, texture(ssao, fs_in.uv).r, float(isSSAOActive));
+    vec3 ambientColor = lightAmbient * albedo * ssaoValue;
+
     vec3 diffuseColor = lightDiffuse * diffuse * albedo * shadow;
     vec3 specularColor = materialSpecular * lightSpecular * calculated_specular * shadow;
     return ambientColor + diffuseColor + specularColor;
@@ -105,7 +107,6 @@ vec3 CalculateDirectionalLight() {
 
 void main()
 {
-    float ssaoValue = mix(1.f, texture(ssao, fs_in.uv).r, float(isSSAOActive));
 
-    fragColor = vec4(CalculateDirectionalLight() * ssaoValue, 1.0);
+    fragColor = vec4(CalculateDirectionalLight(), 1.0);
 }

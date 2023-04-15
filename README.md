@@ -16,6 +16,7 @@
   * Advanced Camera
   * FXAA
   * UI (Rendered on separate FBO)
+  * Crysis SSAO
 * Basic Gameplay
   * Factories
 * Physics

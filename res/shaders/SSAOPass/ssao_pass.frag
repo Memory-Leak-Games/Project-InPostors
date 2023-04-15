@@ -1,78 +1,83 @@
 #version 430 core
 
-out vec4 fragColor;
+out float fragColor;
 
 layout (binding = 0) uniform sampler2D gPosition;
 layout (binding = 1) uniform sampler2D gNormal;
-layout (binding = 2) uniform sampler2D gAlbedoSpecular;
+
+layout (std140, binding = 0) uniform CommonUnifomrs {
+    mat4 projection;
+    mat4 view;
+
+    double seconds;
+    float deltaSeconds;
+
+    int randInt;
+    float randFloat;
+    ivec2 resolution;
+};
 
 in VS_OUT {
     vec2 uv;
 } fs_in;
 
-uniform int samples = 16;
-uniform float intensity = 24.0;
-uniform float scale = 10.f;
-uniform float bias = 0.05f;
-uniform float sample_rad = 0.5;
-uniform float max_distance = 2.0;
+uniform int numberOfSamples = 16;
+uniform float radius = 0.6;
+uniform float bias = 0.005; // reduce acne
+uniform float magnitude = 1.1; // smaller - darker
+uniform float contrast = 1.1; //
 
-#define MOD3 vec3(.1031, .11369, .13787)
+#define MAX_SAMPLES 64
 
-float Hash12(vec2 position)
-{
-    vec3 p3 = fract(vec3(position.xyx) * MOD3);
-    p3 += dot(p3, p3.yzx + 19.19);
-    return fract((p3.x + p3.y) * p3.z);
+uniform vec3 samples[MAX_SAMPLES];
+uniform vec3 noise[MAX_SAMPLES];
+
+vec3 GetNoise(vec2 uv) {
+    int noiseWidith = int(sqrt(float(numberOfSamples)));
+    int noiseX = int(uv.x * resolution.x) % noiseWidith;
+    int noiseY = int(uv.y * resolution.y) % noiseWidith;
+    int noiseIndex = noiseX + (noiseY * noiseWidith);
+
+    return noise[noiseIndex];
 }
 
-float DoAmbientOcclusion(in vec2 tcoord, in vec2 uv, in vec3 p, in vec3 cnorm)
-{
-    vec3 diff = texture(gPosition, (tcoord + uv)).rgb - p;
-    float l = length(diff);
-    vec3 v = diff / l;
-    float d = l * scale;
-    float ao = max(0.0, dot(cnorm, v) - bias) * (1.0 / (1.0 + d));
-    ao *= smoothstep(max_distance, max_distance * 0.5, l);
-    return ao;
-
-}
-
-float SpiralAO()
-{
+void main() {
     vec2 uv = fs_in.uv;
-    vec3 position = texture(gPosition, uv).rgb;
-    vec3 normal = texture(gNormal, uv).rgb;
 
-    float rad = sample_rad / position.z;
+    // get input for SSAO algorithm
+    vec3 fragPos = texture(gPosition, uv).xyz;
+    vec3 normal = normalize(texture(gNormal, uv).rgb);
+    vec3 randomVec = GetNoise(uv);
 
-    float goldenAngle = 2.4;
-    float ao = 0.;
-    float inv = 1. / float(samples);
-    float radius = 0.;
+    // create TBN change-of-basis matrix: from tangent-space to view-space
+    vec3 tangent = normalize(randomVec - normal * dot(randomVec, normal));
+    vec3 bitangent = cross(normal, tangent);
+    mat3 TBN = mat3(tangent, bitangent, normal);
 
-    float rotatePhase = Hash12(uv * 100.) * 6.28;
-    float rStep = inv * rad;
-    vec2 spiralUV;
+    // iterate over the sample kernel and calculate occlusion factor
+    float occlusion = 0.0;
+    for (int i = 0; i < numberOfSamples; ++i)
+    {
+        // get sample position
+        vec3 samplePos = TBN * samples[i]; // from tangent to view-space
+        samplePos = fragPos + samplePos * radius;
 
-    for (int i = 0; i < samples; i++) {
-        spiralUV.x = sin(rotatePhase);
-        spiralUV.y = cos(rotatePhase);
-        radius += rStep;
-        ao += DoAmbientOcclusion(uv, spiralUV * radius, position, normal);
-        rotatePhase += goldenAngle;
+        // project sample position (to sample texture) (to get position on screen/texture)
+        vec4 offset = vec4(samplePos, 1.0);
+        offset = projection * offset; // from view to clip-space
+        offset.xyz /= offset.w; // perspective divide
+        offset.xyz = offset.xyz * 0.5 + 0.5; // transform to range 0.0 - 1.0
+
+        // get sample depth
+        float sampleDepth = texture(gPosition, offset.xy).z; // get depth value of kernel sample
+
+        // range check & accumulate
+        float rangeCheck = smoothstep(0.0, 1.0, radius / abs(fragPos.z - sampleDepth));
+        occlusion += (sampleDepth >= samplePos.z + bias ? 1.0 : 0.0) * rangeCheck;
     }
-    ao *= inv;
-    return ao;
-}
+    occlusion /= numberOfSamples;
+    occlusion = pow(occlusion, magnitude);
+    occlusion = 1.0 - (occlusion);
 
-void main()
-{
-    float ao = 0.;
-
-    ao = SpiralAO();
-
-    ao = 1. - ao * intensity;
-
-    fragColor = vec4(ao, ao, ao, 1.);
+    fragColor = (occlusion - 0.5f) * max(contrast, 0.f) + 0.5f;
 }
