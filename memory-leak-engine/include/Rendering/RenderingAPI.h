@@ -19,6 +19,7 @@ namespace mlg {
         void Clear();
 
         void SetViewport(int32_t x, int32_t y, int32_t width, int32_t height);
+        static void SetDefaultFrameBuffer();
 
         static RenderingAPI* GetInstance();
     private:

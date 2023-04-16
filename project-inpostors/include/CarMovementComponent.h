@@ -4,14 +4,16 @@
 
 namespace mlg {
     class RigidbodyComponent;
+    class StaticMeshComponent;
     class Entity;
 }
 
-class SimpleCarMovementComponent : public mlg::Component {
+class CarMovementComponent : public mlg::Component {
 private:
     std::weak_ptr<mlg::RigidbodyComponent> rigidbodyComponent;
+    std::weak_ptr<mlg::StaticMeshComponent> staticMeshComponent;
 public:
-    SimpleCarMovementComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name);
+    CarMovementComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name);
 
     void Start() override;
 

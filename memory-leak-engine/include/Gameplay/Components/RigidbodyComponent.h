@@ -30,6 +30,12 @@ namespace mlg {
         void SetLinearDrag(float value);
         void SetAngularDrag(float value);
 
+        glm::vec2 GetLinearVelocity();
+        glm::vec2 GetLinearAcceleration();
+
+        float GetAngularSpeed();
+        float GetAngularAcceleration();
+
         template<typename T, typename ... Args>
         void AddCollider(Args&& ... args) {
             auto shape = std::make_unique<T>(glm::vec2(0.f), std::forward<Args>(args) ...);

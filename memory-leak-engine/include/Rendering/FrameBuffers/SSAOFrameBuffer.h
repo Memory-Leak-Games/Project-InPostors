@@ -4,15 +4,16 @@
 
 namespace mlg {
 
-    class SSAO : public FrameBuffer {
+    class SSAOFrameBuffer : public FrameBuffer {
     private:
         uint32_t strengthTexture = 0;
+        uint32_t numberOfSamples = 16;
 
     public:
-        SSAO() = delete;
+        SSAOFrameBuffer() = delete;
 
-        SSAO(int32_t width, int32_t height);
-        ~SSAO() override;
+        SSAOFrameBuffer(int32_t width, int32_t height);
+        ~SSAOFrameBuffer() override;
 
         void Draw() override;
 
@@ -22,6 +23,9 @@ namespace mlg {
 
     private:
         void GenerateAndBindTextures() ;
+
+        void GenerateAndSendSamples();
+        void GenerateAndSendNoise();
     };
 
 } // mlg
