@@ -4,6 +4,9 @@
 
 #include <Rendering/RenderingAPI.h>
 
+#include <Audio/AudioAPI.h>
+#include <Audio/Assets/SoundAsset.h>
+
 #include <Rendering/Assets/MaterialAsset.h>
 #include <Rendering/Assets/ModelAsset.h>
 
@@ -64,6 +67,7 @@ public:
         mlg::Time::Initialize();
         mlg::AssetManager::Initialize();
         mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
+        mlg::AudioAPI::Initialize();
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
         mlg::Renderer2D::Initialize();
@@ -95,6 +99,7 @@ public:
         mlg::Renderer2D::Stop();
         mlg::Renderer::Stop();
         mlg::RenderingAPI::Stop();
+        mlg::AudioAPI::Stop();
         mlg::Window::Stop();
         mlg::AssetManager::Stop();
         mlg::Time::Stop();
@@ -112,6 +117,16 @@ public:
 
         cameraComponent.lock()->GetTransform().SetPosition({-10.f, 15.f, -10.f});
         cameraComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{60.f, 45.f, 0.f}));
+
+        // TODO: Remove this and add audio component
+        auto soundWAVTest = mlg::AssetManager::GetAsset<mlg::SoundAsset>("res/audio/SFX/test.wav");
+        auto soundOGGTest = mlg::AssetManager::GetAsset<mlg::SoundAsset>("res/audio/music/Crushin.ogg");
+
+
+        soundWAVTest->Play(mlg::AudioAPI::GetSoLoud()); //works
+
+        soundOGGTest->Play(mlg::AudioAPI::GetSoLoud()); //doesn't work... yet
+
 
         auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
                 "res/models/Primitives/white_material.json");

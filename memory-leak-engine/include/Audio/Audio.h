@@ -1,19 +1,21 @@
 #pragma once
 
-#include <AL/al.h>
-#include <AL/alc.h>
-#include <AL/alext.h>
+#include "soloud_wav.h"
 
 namespace mlg {
 
     class Audio {
         std::string audioPath;
+        SoLoud::Wav sound;
+        int handle;
 
     public:
         Audio(const std::string& path);
         ~Audio();
 
-        void Play();
+        void Play(SoLoud::Soloud* soloud);
+
+        void Stop();
     };
 
 }// namespace mlg
