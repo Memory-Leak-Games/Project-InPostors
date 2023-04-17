@@ -51,8 +51,8 @@ namespace mlg {
     void Image::Draw(const Renderer2D* renderer) {
         material->Activate();
 
-        material->GetShaderProgram()->SetVec2F("size", size);
-        material->GetShaderProgram()->SetVec2F("screenPosition", position);
+        material->GetShaderProgram()->SetVec2F("size", size * renderer->uiScale);
+        material->GetShaderProgram()->SetVec2F("screenPosition", position * renderer->uiScale);
         material->GetShaderProgram()->SetMat4F("projection", renderer->GetProjection());
 
         DrawRect();

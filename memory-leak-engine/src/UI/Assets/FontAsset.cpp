@@ -20,12 +20,16 @@ void mlg::FontAsset::Load() {
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
 
+    FT_GlyphSlot slot = face->glyph; // <-- This is new
+
     for (uint8_t c = 0; c < 128; c++) {
         // Load character glyph
         if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
             SPDLOG_ERROR("Failed to load Glyph");
             continue;
         }
+
+        FT_Render_Glyph(slot, FT_RENDER_MODE_SDF); // <-- And this is new
 
 //         Generate texture
         uint32_t texture;

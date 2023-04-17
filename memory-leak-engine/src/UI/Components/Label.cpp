@@ -38,6 +38,7 @@ namespace mlg {
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glDepthMask(GL_FALSE); // Don't write into the depth buffer
 
         // Activate corresponding render state
         shader->Activate();
@@ -46,7 +47,7 @@ namespace mlg {
         glActiveTexture(GL_TEXTURE0);
         glBindVertexArray(vao);
 
-        float actualScale = scale;
+        float actualScale = scale * renderer->uiScale;
 
         // Iterate through all characters
         float cursor = position.x * actualScale;
@@ -81,6 +82,8 @@ namespace mlg {
         }
         glBindVertexArray(0);
         glBindTextureUnit(0, 0);
+
+        glDepthMask(GL_TRUE); // Re-enable writing to the depth buffer
     }
 
     std::shared_ptr<FontAsset> Label::GetFont() const {

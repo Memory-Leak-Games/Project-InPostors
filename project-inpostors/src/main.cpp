@@ -130,17 +130,19 @@ public:
 
         auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/comic.ttf");
         auto label = ui.lock()->AddComponent<mlg::Label>("Label", font);
-        label.lock()->SetPosition({10, 10});
+        label.lock()->SetPosition({500, 500});
+        label.lock()->SetTextColor({1, 1, 1});
+        label.lock()->SetSize(64);
 
         auto imageMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/cat_UI_material.json");
         auto image = ui.lock()->AddComponent<mlg::Image>("Image", imageMaterial);
         image.lock()->SetSize(glm::vec2{256.f});
-        image.lock()->SetPosition({50.f, 50.f});
+        image.lock()->SetPosition({50.f, 200.f});
 
         auto progressBarMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/progressBar_material.json");
         auto progressBar = ui.lock()->AddComponent<mlg::ProgressBar>("ProgressBar", progressBarMaterial);
         progressBar.lock()->SetSize(glm::vec2{256.f, 32.f});
-        progressBar.lock()->SetPosition({50.f, 400.f});
+        progressBar.lock()->SetPosition({50.f, 600.f});
 
         mlg::Renderer2D::GetInstance()->AddRenderable(label);
         mlg::Renderer2D::GetInstance()->AddRenderable(image);
