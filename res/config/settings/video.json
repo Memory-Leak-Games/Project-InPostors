@@ -3,5 +3,6 @@
   "shadowMapResolution": 4096,
   "VSync": false,
   "SSAO": true,
+  "SSAOSamples": 32,
   "FXAA": true
 }

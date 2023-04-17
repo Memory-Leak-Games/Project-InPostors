@@ -27,16 +27,16 @@ layout (std140, binding = 0) uniform CommonUnifomrs {
 layout (std140, binding = 1) uniform light {
     vec3 light_direction;// 16
 
-    vec3 light_ambient;// 16
-    vec3 light_diffuse;// 16
-    vec3 light_specular;// 16
+    vec3 lightAmbient;// 16
+    vec3 lightDiffuse;// 16
+    vec3 lightSpecular;// 16
 
     mat4 light_lightSpaceMatrix;
 };
 
 uniform mat4 viewToLight;
-uniform float maxBias = 0.005f;
-uniform float minBias = 0.f;
+uniform float fressnelPower = 5.f;
+
 uniform bool isSSAOActive = false;
 
 float CalculateShadow() {
@@ -50,20 +50,19 @@ float CalculateShadow() {
     float closestDepth = texture(shadowMap, projection.xy).r;
     float currentDepth = projection.z;
 
-    float diffuseFactor = dot(normal, normalize(light_direction));
-    float biasFactor = mix(minBias, maxBias, diffuseFactor);
+    float diffuseFactor = 1.f - dot(normal, normalize(-light_direction));
 
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
     for (int x = -1; x <= 1; ++x) {
         for (int y = -1; y <= 1; ++y) {
             float pcfDepth = texture(shadowMap, projection.xy + vec2(x, y) * texelSize).r;
-            shadow += currentDepth - biasFactor > pcfDepth ? 1.0 : 0.0;
+            shadow += mix(0.f, 1.f, float(currentDepth < pcfDepth));
         }
     }
     shadow /= 9.0;
 
-    return 1 - shadow;
+    return shadow;
 }
 
 vec3 CalculateDirectionalLight() {
@@ -81,21 +80,30 @@ vec3 CalculateDirectionalLight() {
     // diffuse light
     float diffuse = max(dot(normal, lightDirection), 0.0);
 
+    // fresnell
+    float fresnelFactor = dot(normal, light_direction);
+    fresnelFactor = max(fresnelFactor, 0.0);
+    fresnelFactor = 1.0 - fresnelFactor;
+    fresnelFactor = pow(fresnelFactor, fressnelPower);
+
+    vec3 materialSpecular = mix(albedo, vec3(1.f), fresnelFactor);
+
     // specular light
     vec3 reflectDirection = reflect(-lightDirection, normal);
     float calculated_specular = pow(max(dot(viewDirection, reflectDirection), 0.0), specular);
 
     float shadow = CalculateShadow();
 
-    vec3 ambientColor = light_ambient * albedo;
-    vec3 diffuseColor = light_diffuse * diffuse * albedo * shadow;
-    vec3 specularColor = light_specular * calculated_specular * shadow;
+    float ssaoValue = mix(1.f, texture(ssao, fs_in.uv).r, float(isSSAOActive));
+    vec3 ambientColor = lightAmbient * albedo * ssaoValue;
+
+    vec3 diffuseColor = lightDiffuse * diffuse * albedo * shadow * clamp(ssaoValue + 0.5f, 0.f, 1.f);
+    vec3 specularColor = materialSpecular * lightSpecular * calculated_specular * shadow;
     return ambientColor + diffuseColor + specularColor;
 }
 
 void main()
 {
-    float ssaoValue = mix(1.f, texture(ssao, fs_in.uv).r, float(isSSAOActive));
 
-    fragColor = vec4(CalculateDirectionalLight() * ssaoValue, 1.0);
+    fragColor = vec4(CalculateDirectionalLight(), 1.0);
 }
