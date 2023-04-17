@@ -14,7 +14,9 @@
       "material": "res/models/Tardis/tardis_material.json",
       "collision-type": "rectangle",
       "collision-size": 1.0,
-      "collision-offset": 0.0
+      "collision-offset": 0.0,
+      "position-offset-h": 2.0,
+      "position-offset-v": 1.5
     },
     {
       "symbol": "|",

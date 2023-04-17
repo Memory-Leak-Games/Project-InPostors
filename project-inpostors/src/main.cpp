@@ -33,6 +33,8 @@
 #include <UI/Components/ProgressBar.h>
 #include <UI/Renderer2D.h>
 
+#include "Gameplay/Levels/LevelGenerator.h"
+
 class ComponentTest : public mlg::Component {
 public:
     ComponentTest(const std::weak_ptr<mlg::Entity> &owner, const std::string &name) : Component(owner, name) {}
@@ -174,10 +176,12 @@ public:
 
         auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot());
 
+        mlg::LevelGenerator::LoadJson("res/levels/detroit.json");
+
         SpawnHouses();
     }
 
-    void SpawnHouses() {
+    static void SpawnHouses() {
         using Random = effolkronium::random_static;
 
         std::vector<std::shared_ptr<mlg::ModelAsset>> models;

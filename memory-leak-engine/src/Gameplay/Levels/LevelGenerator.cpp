@@ -5,11 +5,30 @@
 #include "Gameplay/Components/StaticMeshComponent.h"
 #include "SceneGraph/SceneGraph.h"
 #include "Macros.h"
-#include "Rendering/Model.h"
 #include "Gameplay/Components/RigidbodyComponent.h"
 #include "Physics/Colliders/ColliderShapes.h"
+#include <fstream>
 
 namespace mlg {
+    LevelGenerator* LevelGenerator::instance;
+
+    void LevelGenerator::Initialize() {
+        if (instance != nullptr) return;
+
+        SPDLOG_INFO("Initializing LevelGenerator");
+        instance = new LevelGenerator;
+    }
+
+    void LevelGenerator::Stop() {
+        SPDLOG_INFO("Stopping LevelGenerator");
+        delete instance;
+        instance = nullptr;
+    }
+
+    LevelGenerator* LevelGenerator::GetInstance() {
+        return LevelGenerator::instance;
+    }
+
     std::unique_ptr<std::unordered_map<std::string, std::unique_ptr<MapObject>>>
     LevelGenerator::LoadJson(const std::string &path) {
         auto tileMap = std::make_unique<
@@ -17,6 +36,10 @@ namespace mlg {
 
         std::ifstream levelFile{path};
         json levelJson = json::parse(levelFile);
+
+        for (const auto& jsonLayoutString : levelJson["layout"]) {
+            levelLayout.push_back(jsonLayoutString);
+        }
 
         for (const auto& jsonTile : levelJson["tiles"]) {
             std::string tileSymbol = jsonTile["symbol"].get<std::string>();
@@ -31,12 +54,19 @@ namespace mlg {
                 float cOffset = jsonTile.contains("collision-offset") ? jsonTile["collision-offset"].get<float>(): 0.0f;
                 mapObj.AddCollision(cType, cSize, cOffset);
             }
+            //float hOffset = jsonTile.contains("position-offset-h") ? jsonTile["position-offset-h"].get<float>() : 0.0f;
+            //float vOffset = jsonTile.contains("position-offset-v") ? jsonTile["position-offset-v"].get<float>() : 0.0f;
+            //mapObj.SetPositionOffset(hOffset, vOffset);
 
             auto newMapObj = std::make_unique<MapObject>(mapObj);
             tileMap->insert({tileSymbol, std::move(newMapObj)});
         }
 
         return std::move(tileMap);
+    }
+
+    void LevelGenerator::GenerateLevel() {
+
     }
 
 
@@ -75,11 +105,6 @@ namespace mlg {
         return true;
     }
 
-
-    bool LevelGenerator::GenerateLevel(const mlg::LevelLayout& layout) {
-        SPDLOG_WARN("Not implemented yet!");
-        return false;
-    }
 
 
     void LevelGenerator::PutObject(const std::string& modelPath, const std::string& materialPath, glm::vec3 pos, float rotation) {
