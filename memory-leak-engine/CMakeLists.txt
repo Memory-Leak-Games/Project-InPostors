@@ -33,4 +33,6 @@ if (${CMAKE_BUILD_TYPE} MATCHES Debug)
     target_link_libraries(${PROJECT_NAME} imgui)
     target_link_libraries(${PROJECT_NAME} imgui_impl)
     target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
+
+    target_link_libraries(${PROJECT_NAME} TracyClient)
 endif()
