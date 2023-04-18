@@ -31,6 +31,14 @@ namespace mlg {
         static constexpr T Lerp(const T& a, const T& b, const T& t) {
             return a + (b - a) * t;
         }
+
+        template<typename T>
+        static constexpr T VectorProjection(const T& a, const T& b) {
+            if (glm::length(b) == 0.)
+                return T{0};
+
+            return (glm::dot(a, b) / glm::dot(b, b)) * b;
+        }
     };
 
 } // mlg
