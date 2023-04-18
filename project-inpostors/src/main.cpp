@@ -1,4 +1,3 @@
-// This is not allowed in Game layer
 #include "Rendering/Model.h"
 #include "Rendering/Renderer.h"
 
@@ -59,6 +58,8 @@ public:
 };
 
 class ProjectInpostors {
+    std::shared_ptr<mlg::SoundAsset> sound;
+    std::shared_ptr<mlg::MusicAsset> music;
 public:
     ProjectInpostors() = default;
 
@@ -75,6 +76,7 @@ public:
         mlg::Gizmos::Initialize();
         mlg::CommonUniformBuffer::Initialize();
         mlg::SceneGraph::Initialize();
+        mlg::AudioAPI::Initialize();
 
         mlg::Physics::Initialize();
 
@@ -93,6 +95,7 @@ public:
 
         mlg::Physics::Stop();
 
+        mlg::AudioAPI::Stop();
         mlg::SceneGraph::Stop();
         mlg::Input::Stop();
         mlg::Core::Stop();
@@ -118,9 +121,6 @@ public:
 
         cameraComponent.lock()->GetTransform().SetPosition({-10.f, 15.f, -10.f});
         cameraComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{60.f, 45.f, 0.f}));
-
-        // TODO: Remove this and add audio component
-
 
 
         auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
@@ -183,11 +183,11 @@ public:
         sphereRigidbody.lock()->SetAngularDrag(2.f);
 
         auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot());
-        auto soundWAVTest = mlg::AssetManager::GetAsset<mlg::SoundAsset>("res/audio/SFX/test.wav");
-        auto soundOGGTest = mlg::AssetManager::GetAsset<mlg::MusicAsset>("res/audio/music/Crushin.ogg");
+        sound = mlg::AssetManager::GetAsset<mlg::SoundAsset>("res/audio/SFX/test.wav");
+        music = mlg::AssetManager::GetAsset<mlg::MusicAsset>("res/audio/music/Crushin.ogg");
 
-        soundWAVTest->Play(mlg::AudioAPI::GetSoLoudSFX()); //works
-        soundOGGTest->PlayBackgroundMusic(mlg::AudioAPI::GetSoLoudSFX()); //doesn't work... yet
+        sound->Play(mlg::AudioAPI::GetSoLoudSFX()); //works
+        music->PlayBackgroundMusic(mlg::AudioAPI::GetSoLoudSFX()); //doesn't work... yet
         SpawnHouses();
 
     }
