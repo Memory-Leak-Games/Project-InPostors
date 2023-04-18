@@ -11,7 +11,7 @@
 
 namespace mlg {
     LevelGenerator* LevelGenerator::instance;
-    std::vector<std::vector<char>> levelLayout;
+    std::vector<std::vector<char>> LevelGenerator::levelLayout;
 
     void LevelGenerator::Initialize() {
         if (instance != nullptr) return;

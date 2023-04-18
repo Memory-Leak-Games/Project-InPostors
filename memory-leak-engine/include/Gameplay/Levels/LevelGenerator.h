@@ -21,9 +21,9 @@ namespace mlg {
 
     private:
         static LevelGenerator* instance;
-        LevelGenerator() = default;
-
         static std::vector<std::vector<char>> levelLayout;
+
+        LevelGenerator() = default;
 
         static void PutObject(const std::string& modelPath, const std::string& materialPath, glm::vec3 pos, float rotation = 0.0f);
         static void PutObject(std::shared_ptr<ModelAsset>& modelAsset, std::shared_ptr<MaterialAsset>& materialAsset, glm::vec3 pos, float rotation = 0.0f);
