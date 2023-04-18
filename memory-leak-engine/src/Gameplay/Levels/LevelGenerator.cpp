@@ -12,6 +12,7 @@
 namespace mlg {
     LevelGenerator* LevelGenerator::instance;
     std::vector<std::vector<char>> LevelGenerator::levelLayout;
+    std::unique_ptr<std::unordered_map<std::string, std::shared_ptr<MapObject>>> LevelGenerator::mapObjects;
 
     void LevelGenerator::Initialize() {
         if (instance != nullptr) return;
@@ -30,10 +31,7 @@ namespace mlg {
         return LevelGenerator::instance;
     }
 
-    std::unique_ptr<std::unordered_map<std::string, std::unique_ptr<MapObject>>>
-    LevelGenerator::LoadJson(const std::string &path) {
-        auto tileMap = std::make_unique<
-                std::unordered_map<std::string, std::unique_ptr<MapObject>>>();
+    void LevelGenerator::LoadJson(const std::string &path) {
 
         std::ifstream levelFile{path};
         json levelJson = json::parse(levelFile);
@@ -46,6 +44,8 @@ namespace mlg {
             }
             levelLayout.push_back(layoutString);
         }
+
+        mapObjects = std::make_unique<std::unordered_map<std::string, std::shared_ptr<MapObject>>>();
 
         for (const auto& jsonTile : levelJson["tiles"]) {
             std::string tileSymbol = jsonTile["symbol"].get<std::string>();
@@ -64,15 +64,33 @@ namespace mlg {
             //float vOffset = jsonTile.contains("position-offset-v") ? jsonTile["position-offset-v"].get<float>() : 0.0f;
             //mapObj.SetPositionOffset(hOffset, vOffset);
 
-            auto newMapObj = std::make_unique<MapObject>(mapObj);
-            tileMap->insert({tileSymbol, std::move(newMapObj)});
+            auto newMapObj = std::make_shared<MapObject>(mapObj);
+            SPDLOG_DEBUG("{}", tileSymbol);
+            mapObjects->insert({tileSymbol, std::move(newMapObj)});
         }
-
-        return std::move(tileMap);
     }
 
-    void LevelGenerator::GenerateLevel() {
-
+    void LevelGenerator::GenerateLevel(float tileSize) {
+        // Assuming all cities are square. Otherwise... suffering awaits.
+        float citySize = tileSize * static_cast<float>(levelLayout.size());
+        for (unsigned int i = 0; i < levelLayout.size(); i++)
+        {
+            for (unsigned int k = 0; k < levelLayout[i].size(); k++)
+            {
+                try {
+                    std::string symbol(1, levelLayout[i][k]);
+                    auto mapObj = mapObjects->at(symbol);
+                    glm::vec3 objectPos{0.0f};
+                    objectPos.x = static_cast<float>(i) * tileSize - citySize * 0.5f;
+                    objectPos.y = -0.5f;
+                    objectPos.z = static_cast<float>(k) * tileSize - citySize * 0.5f;
+                    PutObject(mapObj, objectPos);
+                }
+                catch (const std::out_of_range &e) {
+                    SPDLOG_CRITICAL("Exception at {}", e.what());
+                }
+            }
+        }
     }
 
 
@@ -112,14 +130,6 @@ namespace mlg {
     }
 
 
-
-    void LevelGenerator::PutObject(const std::string& modelPath, const std::string& materialPath, glm::vec3 pos, float rotation) {
-        auto modelAsset = mlg::AssetManager::GetAsset<mlg::ModelAsset>(modelPath);
-        auto modelMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(materialPath);
-        PutObject(modelAsset, modelMaterial, pos, rotation);
-    }
-
-
     void LevelGenerator::PutObject(std::shared_ptr<ModelAsset>& modelAsset, std::shared_ptr<MaterialAsset>& materialAsset, glm::vec3 pos, float rotation) {
         auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>(Hash("MapObject", pos.x, pos.z), true, mlg::SceneGraph::GetRoot());
         modelEntity.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", modelAsset, materialAsset);
@@ -144,7 +154,7 @@ namespace mlg {
         std::string colType = obj->GetColliderType();
         if (colType == "rectangle") {
             rigidbody.lock()->AddCollider<mlg::ColliderShape::Rectangle>(
-                    glm::vec2(glm::vec2(obj->GetColliderSize())), glm::vec2(obj->GetColliderOffset()));
+                    glm::vec2(glm::vec2(obj->GetColliderOffset())), glm::vec2(obj->GetColliderSize()));
         }
         else if (colType == "circle") {
             rigidbody.lock()->AddCollider<mlg::ColliderShape::Circle>(

@@ -78,12 +78,16 @@ public:
         mlg::ComponentManager::Initialize();
         mlg::EntityManager::Initialize();
 
+        mlg::LevelGenerator::Initialize();
+
         mlg::Core::Initialize();
         mlg::Input::Initialize();
 
         mlg::Core *engine = mlg::Core::GetInstance();
         PrepareScene();
         engine->MainLoop();
+
+        mlg::LevelGenerator::Stop();
 
         mlg::EntityManager::Stop();
         mlg::ComponentManager::Stop();
@@ -177,8 +181,8 @@ public:
         auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot());
 
         mlg::LevelGenerator::LoadJson("res/levels/detroit.json");
-
-        SpawnHouses();
+        mlg::LevelGenerator::GenerateLevel();
+        //SpawnHouses();
     }
 
     static void SpawnHouses() {

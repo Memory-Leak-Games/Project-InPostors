@@ -1,33 +1,35 @@
 {
   "name": "Detroit",
   "layout": [
-    "TT|TT",
-    "TT|TT",
-    "--#--",
-    "TT|TT",
-    "TT|TT"
+    "T|T|T",
+    "-TTT-",
+    "TT#TT",
+    "-TTT-",
+    "T|T|T"
   ],
   "tiles": [
     {
-      "symbol": "T",
-      "model": "res/models/Tardis/tardis.obj",
-      "material": "res/models/Tardis/tardis_material.json",
-      "collision-type": "rectangle",
-      "collision-size": 1.0,
-      "collision-offset": 0.0,
-      "position-offset-h": 2.0,
-      "position-offset-v": 1.5
+    "symbol": "T",
+    "model": "res/models/Buildings/House_1.obj",
+    "material": "res/models/Primitives/white_material.json",
+    "collision-type": "rectangle",
+    "collision-size": 2.0,
+    "collision-offset": -1.0
     },
     {
       "symbol": "|",
-      "model": "res/models/Tardis/tardis.obj",
-      "material": "res/models/Tardis/tardis_material.json"
+      "model": "res/models/Buildings/House_2.obj",
+      "material": "res/models/Primitives/blue_material.json",
+      "rotation": 30.0,
+      "collision-size": 1.0,
+      "collision-offset": 0.0
     },
     {
       "symbol": "-",
-      "model": "res/models/Tardis/tardis.obj",
-      "material": "res/models/Tardis/tardis_material.json",
-      "rotation": 90.0
+      "model": "res/models/Buildings/House_3.obj",
+      "material": "res/models/Primitives/red_material.json",
+      "rotation": 60.0,
+      "collision-type": "rectangle"
     },
     {
       "symbol": "#",
