@@ -12,6 +12,7 @@ namespace mlg {
     struct CollisionEvent {
         glm::vec2 position;
         glm::vec2 separationVector;
+        glm::vec2 normal;
         const class Rigidbody* collidedRigidbody;
     };
 
@@ -34,6 +35,7 @@ namespace mlg {
         glm::vec2 FindCollisionPoint(const glm::vec2& anotherPosition);
 
         const Rigidbody* GetOwner() const;
+        const glm::vec2 GetPosition() const;
 
         friend class RigidbodyComponent;
         friend class Rigidbody;

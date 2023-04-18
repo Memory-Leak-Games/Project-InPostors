@@ -4,22 +4,19 @@
 
 namespace mlg {
 
-    typedef glm::vec<4, float> RGBA;
-    typedef glm::vec<3, float> RGB;
-
-    class Colors {
+    class RGBA {
     public:
-        Colors() = delete;
-        ~Colors() = delete;
+        RGBA() = delete;
+        ~RGBA() = delete;
 
-        static constexpr RGBA white = glm::vec4{1.f, 1.f, 1.f, 1.f};
-        static constexpr RGBA black = glm::vec4{0.f, 0.f, 0.f, 1.f};
-        static constexpr RGBA red = glm::vec4{1.f, 0.f, 0.f, 1.f};
-        static constexpr RGBA green = glm::vec4{0.f, 1.f, 0.f, 1.f};
-        static constexpr RGBA blue = glm::vec4{0.f, 1.f, 0.f, 1.f};
-        static constexpr RGBA yellow = glm::vec4{1.f, 1.f, 0.f, 1.f};
-        static constexpr RGBA magenta = glm::vec4{1.f, 0.f, 1.f, 1.f};
-        static constexpr RGBA cyan = glm::vec4{0.f, 1.f, 1.f, 1.f};
+        static constexpr glm::vec4 white = glm::vec4{1.f, 1.f, 1.f, 1.f};
+        static constexpr glm::vec4 black = glm::vec4{0.f, 0.f, 0.f, 1.f};
+        static constexpr glm::vec4 red = glm::vec4{1.f, 0.f, 0.f, 1.f};
+        static constexpr glm::vec4 green = glm::vec4{0.f, 1.f, 0.f, 1.f};
+        static constexpr glm::vec4 blue = glm::vec4{0.f, 1.f, 0.f, 1.f};
+        static constexpr glm::vec4 yellow = glm::vec4{1.f, 1.f, 0.f, 1.f};
+        static constexpr glm::vec4 magenta = glm::vec4{1.f, 0.f, 1.f, 1.f};
+        static constexpr glm::vec4 cyan = glm::vec4{0.f, 1.f, 1.f, 1.f};
     };
 
 } // mlg
