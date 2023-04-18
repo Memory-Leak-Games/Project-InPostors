@@ -193,7 +193,7 @@ public:
     }
 
     void SpawnHouses() {
-        using Random = effolkronium::random_static;
+        using ERandom = effolkronium::random_static;
 
         std::vector<std::shared_ptr<mlg::ModelAsset>> models;
         models.push_back(mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Buildings/House_1.obj"));
@@ -207,7 +207,7 @@ public:
         for (int i = 0; i < city_size; ++i) {
             for (int j = 0; j < city_size; ++j) {
                 if (i % 3)
-                    Random::shuffle(models);
+                    ERandom::shuffle(models);
 
                 auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
                         "res/models/Primitives/white_material.json");
