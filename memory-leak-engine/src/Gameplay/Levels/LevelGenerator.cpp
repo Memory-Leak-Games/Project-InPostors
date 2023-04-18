@@ -11,6 +11,7 @@
 
 namespace mlg {
     LevelGenerator* LevelGenerator::instance;
+    std::vector<std::vector<char>> levelLayout;
 
     void LevelGenerator::Initialize() {
         if (instance != nullptr) return;
@@ -38,7 +39,12 @@ namespace mlg {
         json levelJson = json::parse(levelFile);
 
         for (const auto& jsonLayoutString : levelJson["layout"]) {
-            levelLayout.push_back(jsonLayoutString);
+            std::vector<char> layoutString;
+            std::string buf = jsonLayoutString;
+            for (char i : buf) {
+                layoutString.push_back(i);
+            }
+            levelLayout.push_back(layoutString);
         }
 
         for (const auto& jsonTile : levelJson["tiles"]) {
