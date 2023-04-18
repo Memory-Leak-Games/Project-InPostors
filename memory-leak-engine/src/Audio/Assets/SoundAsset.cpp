@@ -15,6 +15,10 @@ namespace mlg {
         audio->Play(soloud);
     }
 
+    void SoundAsset::PlayBackgroundMusic(SoLoud::Soloud* soloud) {
+        audio->PlayBackgroundMusic(soloud);
+    }
+
     void SoundAsset::Load() {
         SPDLOG_DEBUG("Loading sound Audio at path: {}", GetPath());
         audio = std::make_unique<Audio>(GetPath());

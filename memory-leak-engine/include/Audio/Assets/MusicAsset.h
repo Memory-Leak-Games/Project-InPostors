@@ -5,13 +5,13 @@
 
 namespace mlg {
 
-    class SoundAsset : public Asset {
+    class MusicAsset : public Asset {
     private:
-        std::unique_ptr<class Audio> audio;
+        std::unique_ptr<class MusicAudio> audio;
 
     public:
-        explicit SoundAsset(const std::string& path);
-        ~SoundAsset() override;
+        explicit MusicAsset(const std::string& path);
+        ~MusicAsset() override;
 
         void Play(SoLoud::Soloud* soloud);
         void PlayBackgroundMusic(SoLoud::Soloud* soloud);

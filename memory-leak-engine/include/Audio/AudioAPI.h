@@ -6,7 +6,8 @@ namespace mlg {
 
     class AudioAPI {
         static AudioAPI* instance;
-        static SoLoud::Soloud* soloud;
+        static SoLoud::Soloud* soloudSFX;
+//        static SoLoud::Soloud* soloudMusic;
 
         AudioAPI() = default;
     public:
@@ -14,7 +15,8 @@ namespace mlg {
         static void Stop();
 
         static AudioAPI* GetInstance();
-        static SoLoud::Soloud* GetSoLoud();
+        static SoLoud::Soloud* GetSoLoudSFX();
+//        static SoLoud::Soloud* GetSoLoudMusic();
     };
 
 }// namespace mlg

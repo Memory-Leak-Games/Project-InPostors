@@ -6,6 +6,7 @@
 
 #include <Audio/AudioAPI.h>
 #include <Audio/Assets/SoundAsset.h>
+#include <Audio/Assets/MusicAsset.h>
 
 #include <Rendering/Assets/MaterialAsset.h>
 #include <Rendering/Assets/ModelAsset.h>
@@ -119,13 +120,7 @@ public:
         cameraComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{60.f, 45.f, 0.f}));
 
         // TODO: Remove this and add audio component
-        auto soundWAVTest = mlg::AssetManager::GetAsset<mlg::SoundAsset>("res/audio/SFX/test.wav");
-        auto soundOGGTest = mlg::AssetManager::GetAsset<mlg::SoundAsset>("res/audio/music/Crushin.ogg");
 
-
-        soundWAVTest->Play(mlg::AudioAPI::GetSoLoud()); //works
-
-        soundOGGTest->Play(mlg::AudioAPI::GetSoLoud()); //doesn't work... yet
 
 
         auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
@@ -188,8 +183,13 @@ public:
         sphereRigidbody.lock()->SetAngularDrag(2.f);
 
         auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot());
+        auto soundWAVTest = mlg::AssetManager::GetAsset<mlg::SoundAsset>("res/audio/SFX/test.wav");
+        auto soundOGGTest = mlg::AssetManager::GetAsset<mlg::MusicAsset>("res/audio/music/Crushin.ogg");
 
+        soundWAVTest->Play(mlg::AudioAPI::GetSoLoudSFX()); //works
+        soundOGGTest->PlayBackgroundMusic(mlg::AudioAPI::GetSoLoudSFX()); //doesn't work... yet
         SpawnHouses();
+
     }
 
     void SpawnHouses() {

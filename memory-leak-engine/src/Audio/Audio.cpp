@@ -12,6 +12,10 @@ namespace mlg {
         handle = soloud->play(sound);
     }
 
+    void Audio::PlayBackgroundMusic(SoLoud::Soloud* soloud) {
+        handle = soloud->playBackground(sound);
+    }
+
     void Audio::Stop() {
         sound.stop();
     }

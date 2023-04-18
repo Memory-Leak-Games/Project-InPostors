@@ -6,7 +6,8 @@
 
 namespace mlg {
     AudioAPI* AudioAPI::instance;
-    SoLoud::Soloud* AudioAPI::soloud;
+    SoLoud::Soloud* AudioAPI::soloudSFX;
+//    SoLoud::Soloud* AudioAPI::soloudMusic;
 
     void AudioAPI::Initialize() {
         if (instance != nullptr)
@@ -14,8 +15,11 @@ namespace mlg {
 
         SPDLOG_INFO("Initializing Audio API");
 
-        soloud = new SoLoud::Soloud;
-        soloud->init();
+        soloudSFX = new SoLoud::Soloud;
+//        soloudMusic = new SoLoud::Soloud;
+
+        soloudSFX->init();
+//        soloudMusic->init();
 
         std::cout << "\n    SoLoud Version: " << SOLOUD_VERSION << "\n\n";
 
@@ -25,8 +29,11 @@ namespace mlg {
     void AudioAPI::Stop() {
         SPDLOG_INFO("Stopping Audio API");
 
-        soloud->deinit();
-        delete soloud;
+        soloudSFX->deinit();
+//        soloudMusic->deinit();
+
+        delete soloudSFX;
+//        delete soloudMusic;
 
         delete instance;
         instance = nullptr;
@@ -36,7 +43,11 @@ namespace mlg {
         return instance;
     }
 
-    SoLoud::Soloud* AudioAPI::GetSoLoud() {
-        return soloud;
+    SoLoud::Soloud* AudioAPI::GetSoLoudSFX() {
+        return soloudSFX;
     }
+
+//    SoLoud::Soloud* AudioAPI::GetSoLoudMusic() {
+//        return soloudMusic;
+//    }
 }// namespace mlg

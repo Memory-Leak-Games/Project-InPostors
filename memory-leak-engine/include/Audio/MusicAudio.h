@@ -1,17 +1,17 @@
 #pragma once
 
-#include "soloud_wav.h"
+#include "soloud_wavstream.h"
 
 namespace mlg {
 
-    class Audio {
+    class MusicAudio {
         std::string audioPath;
-        SoLoud::Wav sound;
+        SoLoud::WavStream sound;
         uint32_t handle;
 
     public:
-        Audio(const std::string& path);
-        ~Audio();
+        MusicAudio(const std::string& path);
+        ~MusicAudio();
 
         void Play(SoLoud::Soloud* soloud);
         void PlayBackgroundMusic(SoLoud::Soloud* soloud);
