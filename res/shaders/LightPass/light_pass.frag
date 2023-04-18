@@ -35,8 +35,6 @@ layout (std140, binding = 1) uniform light {
 };
 
 uniform mat4 viewToLight;
-uniform float maxBias = 0.001f;
-uniform float minBias = 0.00005f;
 uniform float fressnelPower = 5.f;
 
 uniform bool isSSAOActive = false;
@@ -52,20 +50,19 @@ float CalculateShadow() {
     float closestDepth = texture(shadowMap, projection.xy).r;
     float currentDepth = projection.z;
 
-    float diffuseFactor = dot(normal, normalize(light_direction));
-    float biasFactor = mix(minBias, maxBias, diffuseFactor);
+    float diffuseFactor = 1.f - dot(normal, normalize(-light_direction));
 
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
     for (int x = -1; x <= 1; ++x) {
         for (int y = -1; y <= 1; ++y) {
             float pcfDepth = texture(shadowMap, projection.xy + vec2(x, y) * texelSize).r;
-            shadow += currentDepth - biasFactor > pcfDepth ? 1.0 : 0.0;
+            shadow += mix(0.f, 1.f, float(currentDepth < pcfDepth));
         }
     }
     shadow /= 9.0;
 
-    return 1 - shadow;
+    return shadow;
 }
 
 vec3 CalculateDirectionalLight() {

@@ -215,15 +215,16 @@ public:
 
                 glm::vec3 buildingPosition{0.f};
                 buildingPosition.x = (float) i * size - city_size_in_units / 2.f;
-                buildingPosition.y = -0.5f;
+                buildingPosition.y = -0.5;
                 buildingPosition.z = (float) j * size - city_size_in_units / 2.f;
 
                 auto building = mlg::EntityManager::SpawnEntity<mlg::Entity>("Wall", true, mlg::SceneGraph::GetRoot());
                 building.lock()->GetTransform().SetPosition(buildingPosition);
+                building.lock()->GetTransform().SetScale(glm::vec3(2.f));
 
                 building.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", model, whiteMaterial);
                 auto rigidbody = building.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
-                rigidbody.lock()->AddCollider<mlg::ColliderShape::Rectangle>(glm::vec2(0.f), glm::vec2(2.f));
+                rigidbody.lock()->AddCollider<mlg::ColliderShape::Rectangle>(glm::vec2(0.f), glm::vec2(4.f));
             }
         }
     }

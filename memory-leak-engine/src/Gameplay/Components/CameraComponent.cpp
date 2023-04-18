@@ -6,23 +6,23 @@
 
 namespace mlg {
 
-    CameraComponent::Projection::Projection(float near, float far)
-            : near(near), far(far) {}
+    CameraComponent::Projection::Projection(float nearPlane, float farPlane)
+            : nearPlane(nearPlane), farPlane(farPlane) {}
 
-    CameraComponent::OrthoProjection::OrthoProjection(float size, float near, float far)
-            : size(size), Projection(near, far) {}
+    CameraComponent::OrthoProjection::OrthoProjection(float size, float nearPlane, float farPlane)
+            : size(size), Projection(nearPlane, farPlane) {}
 
     glm::mat4 CameraComponent::OrthoProjection::CalculateProjection(float aspectRatio) {
         float halfHeight = size * 0.5f;
         float halfWidth = (size * aspectRatio) * 0.5f;
-        return glm::ortho(-halfWidth, halfWidth, -halfHeight, halfHeight, near, far);
+        return glm::ortho(-halfWidth, halfWidth, -halfHeight, halfHeight, nearPlane, farPlane);
     }
 
-    CameraComponent::PerspectiveProjection::PerspectiveProjection(float fov, float near, float far)
-            : fov(fov), Projection(near, far) {}
+    CameraComponent::PerspectiveProjection::PerspectiveProjection(float fov, float nearPlane, float farPlane)
+            : fov(fov), Projection(nearPlane, farPlane) {}
 
     glm::mat4 CameraComponent::PerspectiveProjection::CalculateProjection(float aspectRatio) {
-        return glm::perspective(fov, aspectRatio, near, far);
+        return glm::perspective(fov, aspectRatio, nearPlane, farPlane);
     }
 
     CameraComponent::CameraComponent(const std::weak_ptr<Entity>& owner, const std::string& name)
@@ -38,12 +38,12 @@ namespace mlg {
         CommonUniformBuffer::SetProjection(projection->CalculateProjection(windowResizeEvent.GetAspectRatio()));
     }
 
-    void CameraComponent::SetOrtho(float size, float near, float far) {
-        projection = std::make_unique<OrthoProjection>(size, near, far);
+    void CameraComponent::SetOrtho(float size, float nearPlane, float farPlane) {
+        projection = std::make_unique<OrthoProjection>(size, nearPlane, farPlane);
     }
 
-    void CameraComponent::SetPerspective(float fov, float near, float far) {
-        projection = std::make_unique<PerspectiveProjection>(fov, near, far);
+    void CameraComponent::SetPerspective(float fov, float nearPlane, float farPlane) {
+        projection = std::make_unique<PerspectiveProjection>(fov, nearPlane, farPlane);
     }
 
     void CameraComponent::Update() {
