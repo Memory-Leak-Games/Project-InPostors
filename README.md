@@ -17,12 +17,15 @@
   * FXAA
   * UI (Rendered on separate FBO)
   * Crysis SSAO
+  * Add window settings
+  * Add fullscreen mode and borderless window
 * Basic Gameplay
   * Factories
 * Physics
   * Collisions
   * Collisions dynamics
-04.04.2024
+
+### 04.04.2024
 * Rendering
     * Shadow maps
     * SSAO

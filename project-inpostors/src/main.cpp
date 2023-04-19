@@ -63,7 +63,7 @@ public:
 
         mlg::Time::Initialize();
         mlg::AssetManager::Initialize();
-        mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
+        mlg::Window::Initialize("Memory Leak Engine");
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
         mlg::Renderer2D::Initialize();
