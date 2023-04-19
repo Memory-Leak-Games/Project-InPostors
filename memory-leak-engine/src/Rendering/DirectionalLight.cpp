@@ -34,7 +34,7 @@ void DirectionalLight::InitializeLights() {
     glm::mat4 lightView = glm::lookAt(position, position + sun.direction, glm::vec3{0.f, 1.f, 0.f});
     glm::mat4 lightProjection = glm::ortho(-shadowMapSize, shadowMapSize,
                                            -shadowMapSize, shadowMapSize,
-                                           0.1f, 100.f);
+                                           0.1f, 200.f);
 
     sun.lightSpaceMatrix = lightProjection * lightView;
 }

@@ -12,6 +12,7 @@
 * Szymon Świędrych
 
 ## Changelog
+* Profiler
 * Rendering
   * Advanced Camera
   * FXAA

@@ -17,6 +17,7 @@
 #include "Player.h"
 #include "Core/Settings/SettingsManager.h"
 #include "Gameplay/Components/CameraComponent.h"
+#include "Gameplay/Levels/LevelGenerator.h"
 
 #include <Gameplay/ComponentManager.h>
 #include <Gameplay/Components/StaticMeshComponent.h>
@@ -113,17 +114,18 @@ public:
         cameraComponent.lock()->GetTransform().SetPosition({-10.f, 15.f, -10.f});
         cameraComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{60.f, 45.f, 0.f}));
 
-        auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
-                "res/models/Primitives/white_material.json");
+        auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
         auto redMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/red_material.json");
         auto blueMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/blue_material.json");
 
+        auto groundMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Ground/ground_material.json");
         auto planeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/plane.obj");
+
         auto cubeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Cube.obj");
         auto sphereModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Sphere.obj");
 
         auto ground = mlg::EntityManager::SpawnEntity<mlg::Entity>("Ground", true, mlg::SceneGraph::GetRoot());
-        ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, whiteMaterial);
+        ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, groundMaterial);
         ground.lock()->GetTransform().SetPosition({0.f, -0.5f, 0.f});
         ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
 
@@ -174,7 +176,9 @@ public:
 
         auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot());
 
-        SpawnHouses();
+//        SpawnHouses();
+        mlg::LevelGenerator::LoadJson("res/levels/detroit.json");
+        mlg::LevelGenerator::GenerateLevel();
     }
 
     void SpawnHouses() {
@@ -210,7 +214,7 @@ public:
                 building.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", model, whiteMaterial);
                 auto rigidbody = building.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
                 rigidbody.lock()->AddCollider<mlg::ColliderShape::Rectangle>(glm::vec2(0.f), glm::vec2(4.f));
-                rigidbody.lock()->SetBounciness(0.1f);
+                rigidbody.lock()->SetBounciness(0.2f);
             }
         }
     }
