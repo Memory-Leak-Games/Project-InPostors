@@ -14,17 +14,17 @@ private:
     std::weak_ptr<mlg::StaticMeshComponent> staticMeshComponent;
 
     //Driving
-    float acceleration = 2200;
+    float acceleration = 2400;
     float maxSpeed = 15;
-    float backwardMaxSpeed = 5;
+    float backwardMaxSpeed = 10;
     float engineHandling = 2000;
     float handling = 4000;
 
     //Rotation and drifting
-    float rotationSpeed = 350;
-    float rotationRadius = 5;
-    float sideDrag = 50;
-    float counterTorque = 20;
+    float rotationSpeed = 600;
+    float rotationRadius = 3;
+    float sideDrag = 20;
+    float counterTorque = 5;
 
     float forward;
     float right;

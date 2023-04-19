@@ -63,9 +63,9 @@ void CarMovementComponent::HandleEngineAndBraking() {
     forwardVector2D.x = forwardVector.x;
     forwardVector2D.y = forwardVector.z;
 
-    auto localVelocity2D = rigidbodyComponent.lock()->GetLinearVelocity();
-    glm::vec3 localVelocityTransformed(localVelocity2D.x, 0, localVelocity2D.y);
-    auto localVelocity = glm::inverse((glm::mat3(owner->GetTransform().GetLocalMatrix()))) * localVelocityTransformed;
+    auto linearVelocity2D = rigidbodyComponent.lock()->GetLinearVelocity();
+    glm::vec3 linearVelocityTransformed(linearVelocity2D.x, 0, linearVelocity2D.y);
+    auto localVelocity = glm::inverse((glm::mat3(owner->GetTransform().GetLocalMatrix()))) * linearVelocityTransformed;
 
     // accelerating forward
     if (localVelocity.z < maxSpeed && forward > 0.1)
@@ -95,17 +95,16 @@ void CarMovementComponent::HandleEngineAndBraking() {
 
 void CarMovementComponent::HandleSteering() {
     auto owner = GetOwner().lock();
-    auto localVelocity2D = rigidbodyComponent.lock()->GetLinearVelocity();
-    glm::vec3 localVelocityTransformed(localVelocity2D.x, 0, localVelocity2D.y);
-
-    auto localVelocity = glm::inverse((glm::mat3(owner->GetTransform().GetLocalMatrix()))) * localVelocityTransformed;
+    auto linearVelocity2D = rigidbodyComponent.lock()->GetLinearVelocity();
+    glm::vec3 linearVelocityTransformed(linearVelocity2D.x, 0, linearVelocity2D.y);
+    auto localVelocity = glm::inverse((glm::mat3(owner->GetTransform().GetLocalMatrix()))) * linearVelocityTransformed;
 
     if (abs(localVelocity.z) < 0.1)
     {
         return;
     }
 
-    float steeringInput = right;
+    float steeringInput = -right;
     auto steeringSpeedFactor = std::clamp(localVelocity.z / rotationRadius, -1.f, 1.f);
     auto steeringTorque = steeringInput * rotationSpeed * steeringSpeedFactor * mlg::Time::GetDeltaSeconds();
 
@@ -121,10 +120,9 @@ void CarMovementComponent::HandleSideDrag() {
     auto owner = GetOwner().lock();
     auto rightVector = owner->GetTransform().GetRightVector();
 
-    auto localVelocity2D = rigidbodyComponent.lock()->GetLinearVelocity();
-    glm::vec3 localVelocityTransformed(localVelocity2D.x, 0, localVelocity2D.y);
-
-    auto localVelocity = glm::inverse((glm::mat3(owner->GetTransform().GetLocalMatrix()))) * localVelocityTransformed;
+    auto linearVelocity2D = rigidbodyComponent.lock()->GetLinearVelocity();
+    glm::vec3 linearVelocityTransformed(linearVelocity2D.x, 0, linearVelocity2D.y);
+    auto localVelocity = glm::inverse((glm::mat3(owner->GetTransform().GetLocalMatrix()))) * linearVelocityTransformed;
 
     auto sideDragStrength = localVelocity.x * sideDrag * mlg::Time::GetDeltaSeconds();
     rigidbodyComponent.lock()->AddForce(-rightVector * sideDragStrength);
@@ -141,5 +139,5 @@ void CarMovementComponent::CounterTorque() {
         return;
     }
     auto torqueStrength = std::clamp(-rotationVelocity, -1.f, 1.f) * counterTorque;
-    rigidbodyComponent.lock()->AddTorque(upVector.x * torqueStrength);
+    rigidbodyComponent.lock()->AddTorque(upVector.y * torqueStrength);
 }
