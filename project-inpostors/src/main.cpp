@@ -107,7 +107,7 @@ public:
         mlg::AssetManager::Stop();
         mlg::Time::Stop();
 
-        mlg::SettingsManager::Initialize();
+        mlg::SettingsManager::Stop();
 
         return 0;
     }
@@ -187,13 +187,16 @@ public:
 
         SpawnHouses();
 
-        music->PlayBackgroundMusic(mlg::AudioAPI::GetSoLoud());
-        music->SetSingleInstance();
-        music->PlayBackgroundMusic(mlg::AudioAPI::GetSoLoud());
-        music->SetLooping();
-        music->Pause(mlg::AudioAPI::GetSoLoud());
-        music->Seek(mlg::AudioAPI::GetSoLoud(), 240.f);
-        music->UnPause(mlg::AudioAPI::GetSoLoud());
+        music->PlayBackgroundMusic(mlg::AudioAPI::GetSoLoud(), 1.f);
+        mlg::Time::Sleep(5);
+        mlg::AudioAPI::GetSoLoud()->setGlobalVolume(mlg::SettingsManager::Get<float>(mlg::SettingsType::Audio, "volume"));
+//        music->SetVolume(0.05f);
+//        music->SetSingleInstance();
+//        music->PlayBackgroundMusic(mlg::AudioAPI::GetSoLoud());
+//        music->SetLooping();
+//        music->Pause(mlg::AudioAPI::GetSoLoud());
+//        music->Seek(mlg::AudioAPI::GetSoLoud(), 240.f);
+//        music->UnPause(mlg::AudioAPI::GetSoLoud());
 //        sound->Play(mlg::AudioAPI::GetSoLoud());
     }
 
