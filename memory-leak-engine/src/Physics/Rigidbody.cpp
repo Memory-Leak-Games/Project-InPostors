@@ -157,7 +157,7 @@ namespace mlg {
         AddImpulse(impulse * collision.normal);
 
         auto angularForceMultiplier = SettingsManager::Get<float>(SettingsType::Engine,"collisionTorqueMultiplier");
-        AddTorque(impulse * angularForceMultiplier);
+        AddForce(impulse * angularForceMultiplier * collision.normal, collision.position);
     }
 
     void Rigidbody::ApplyCollisionForceWithKinematic(const CollisionEvent &collision) {
@@ -185,7 +185,7 @@ namespace mlg {
         AddImpulse(impulse * collision.normal);
 
         auto angularForceMultiplier = SettingsManager::Get<float>(SettingsType::Engine,"collisionTorqueMultiplier");
-        AddTorque(impulse * angularForceMultiplier);
+        AddForce(impulse * angularForceMultiplier * collision.normal, collision.position);
     }
 
 } // mlg

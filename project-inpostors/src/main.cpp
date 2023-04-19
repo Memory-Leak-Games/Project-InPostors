@@ -210,7 +210,7 @@ public:
                 building.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", model, whiteMaterial);
                 auto rigidbody = building.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
                 rigidbody.lock()->AddCollider<mlg::ColliderShape::Rectangle>(glm::vec2(0.f), glm::vec2(4.f));
-                rigidbody.lock()->SetBounciness(0.1f);
+                rigidbody.lock()->SetBounciness(0.2f);
             }
         }
     }

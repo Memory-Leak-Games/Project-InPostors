@@ -49,6 +49,8 @@ void Core::MainLoop() {
     EntityManager::Start();
 
     while (!shouldClose) {
+        ZoneScoped;
+
         Time::UpdateStartFrameTime();
         RenderingAPI::GetInstance()->Clear();
 
