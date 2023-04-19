@@ -46,6 +46,8 @@ namespace mlg {
     }
 
     void Physics::TickFixedTimeSteps() {
+        ZoneScopedN("Tick Physics");
+
         float deltaTime = Time::GetTrueDeltaSeconds();
 
         instance->timeAccumulator += deltaTime;

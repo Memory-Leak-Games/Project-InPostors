@@ -35,6 +35,8 @@ namespace mlg {
     }
 
     void CommonUniformBuffer::UpdateAndSendToGPU() {
+        ZoneScoped;
+
         using Random = effolkronium::random_static;
 
         instance->uniforms.seconds = Time::GetSeconds();

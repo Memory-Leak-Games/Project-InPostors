@@ -57,7 +57,6 @@ void Core::MainLoop() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 #endif
-
         ComponentManager::ProcessComponents();
         EntityManager::ProcessEntities();
 
@@ -86,6 +85,8 @@ void Core::MainLoop() {
         Window::GetInstance()->PollEvents();
 
         Time::CapFPS();
+        FrameMark;
+        TracyGpuCollect;
     }
 }
 

@@ -8,6 +8,10 @@
 
 #include "spdlog/spdlog.h"
 
+#include "glad/glad.h"
+#include "tracy/Tracy.hpp"
+#include "tracy/TracyOpenGL.hpp"
+
 namespace LoggingMacros {
     void InitializeSPDLog();
 }
