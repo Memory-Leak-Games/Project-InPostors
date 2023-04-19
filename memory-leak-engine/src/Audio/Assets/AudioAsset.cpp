@@ -1,25 +1,25 @@
-#include "Audio/Assets/SoundAsset.h"
+#include "Audio/Assets/AudioAsset.h"
 
 #include "Audio/Audio.h"
 
 #include "Macros.h"
 
 namespace mlg {
-    SoundAsset::SoundAsset(const std::string& path) : Asset(path) {
+    AudioAsset::AudioAsset(const std::string& path) : Asset(path) {
     }
 
-    SoundAsset::~SoundAsset() {
+    AudioAsset::~AudioAsset() {
     }
 
-    void SoundAsset::Play(SoLoud::Soloud* soloud) {
+    void AudioAsset::Play(SoLoud::Soloud* soloud) {
         audio->Play(soloud);
     }
 
-    void SoundAsset::PlayBackgroundMusic(SoLoud::Soloud* soloud) {
+    void AudioAsset::PlayBackgroundMusic(SoLoud::Soloud* soloud) {
         audio->PlayBackgroundMusic(soloud);
     }
 
-    void SoundAsset::Load() {
+    void AudioAsset::Load() {
         SPDLOG_DEBUG("Loading sound Audio at path: {}", GetPath());
         audio = std::make_unique<Audio>(GetPath());
     }

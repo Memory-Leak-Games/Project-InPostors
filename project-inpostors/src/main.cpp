@@ -3,9 +3,8 @@
 
 #include <Rendering/RenderingAPI.h>
 
+#include <Audio/Assets/AudioAsset.h>
 #include <Audio/AudioAPI.h>
-#include <Audio/Assets/SoundAsset.h>
-#include <Audio/Assets/MusicAsset.h>
 
 #include <Rendering/Assets/MaterialAsset.h>
 #include <Rendering/Assets/ModelAsset.h>
@@ -58,8 +57,8 @@ public:
 };
 
 class ProjectInpostors {
-    std::shared_ptr<mlg::SoundAsset> sound;
-    std::shared_ptr<mlg::MusicAsset> music;
+    std::shared_ptr<mlg::AudioAsset> sound;
+    std::shared_ptr<mlg::AudioAsset> music;
 public:
     ProjectInpostors() = default;
 
@@ -183,11 +182,11 @@ public:
         sphereRigidbody.lock()->SetAngularDrag(2.f);
 
         auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot());
-        sound = mlg::AssetManager::GetAsset<mlg::SoundAsset>("res/audio/SFX/test.wav");
-        music = mlg::AssetManager::GetAsset<mlg::MusicAsset>("res/audio/music/Crushin.ogg");
+        sound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/SFX/mario_coin.ogg");
+        music = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/Crushin.ogg");
 
-        sound->Play(mlg::AudioAPI::GetSoLoudSFX()); //works
-        music->PlayBackgroundMusic(mlg::AudioAPI::GetSoLoudSFX()); //doesn't work... yet
+        music->PlayBackgroundMusic(mlg::AudioAPI::GetSoLoud());
+        sound->Play(mlg::AudioAPI::GetSoLoud());
         SpawnHouses();
 
     }

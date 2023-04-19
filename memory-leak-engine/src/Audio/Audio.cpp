@@ -8,8 +8,8 @@ namespace mlg {
     Audio::~Audio() {
     }
 
-    void Audio::Play(SoLoud::Soloud* soloud) {
-        handle = soloud->play(sound);
+    void Audio::Play(SoLoud::Soloud* soloud, float volume, float pan, uint32_t paused, uint32_t bus) {
+        handle = soloud->play(sound, volume, pan, paused, bus);
     }
 
     void Audio::PlayBackgroundMusic(SoLoud::Soloud* soloud) {
