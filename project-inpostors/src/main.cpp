@@ -63,7 +63,7 @@ public:
 
         mlg::Time::Initialize();
         mlg::AssetManager::Initialize();
-        mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
+        mlg::Window::Initialize("Memory Leak Engine");
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
         mlg::Renderer2D::Initialize();
@@ -210,6 +210,7 @@ public:
                 building.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", model, whiteMaterial);
                 auto rigidbody = building.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
                 rigidbody.lock()->AddCollider<mlg::ColliderShape::Rectangle>(glm::vec2(0.f), glm::vec2(4.f));
+                rigidbody.lock()->SetBounciness(0.1f);
             }
         }
     }

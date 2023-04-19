@@ -4,7 +4,7 @@
 #include "Core/Time.h"
 #include "Rendering/Assets/ShaderAsset.h"
 #include "Rendering/ShaderProgram.h"
-#include "include/Rendering/Gizmos/Colors.h"
+#include "Core/RGBA.h"
 
 using namespace mlg;
 
@@ -21,7 +21,7 @@ uint32_t Gizmos::pointVBO;
 uint32_t Gizmos::pointVAO;
 
 ShaderProgram* Gizmos::shader;
-glm::vec4 Gizmos::defaultColor = Colors::Red;
+glm::vec4 Gizmos::defaultColor = RGBA::red;
 
 std::vector<Gizmos::GizmoObject> Gizmos::gizmoInstances;
 

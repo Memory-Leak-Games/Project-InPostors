@@ -91,4 +91,8 @@ namespace mlg {
                                                                  anotherPosition);
         }
     }
+
+    const glm::vec2 Collider::GetPosition() const {
+        return shape->position;
+    }
 }

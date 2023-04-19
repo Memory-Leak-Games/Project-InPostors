@@ -43,6 +43,8 @@ namespace mlg {
         }
 
         void SetKinematic(bool isKinematic);
+        void SetMass(float mass);
+        void SetBounciness(float bounciness);
 
         ~RigidbodyComponent() override;
 
