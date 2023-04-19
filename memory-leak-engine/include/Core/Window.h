@@ -24,7 +24,7 @@ namespace mlg {
     public:
         Window() = delete;
 
-        static void Initialize(std::string title, int32_t width, int32_t height);
+        static void Initialize(std::string title);
         static void Stop();
 
         static Window* GetInstance();
@@ -57,5 +57,9 @@ namespace mlg {
         void SetupCallbacks();
 
         static void WindowErrorCallback(int error, const char* description);
+
+        void SetWindowContext() const;
+        void SetWindowSettings() const;
+        GLFWmonitor* GetMonitor();
     };
 }
