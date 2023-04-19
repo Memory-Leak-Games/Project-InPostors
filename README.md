@@ -22,7 +22,8 @@
 * Physics
   * Collisions
   * Collisions dynamics
-04.04.2024
+
+### 04.04.2024
 * Rendering
     * Shadow maps
     * SSAO
