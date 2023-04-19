@@ -20,6 +20,7 @@ namespace mlg {
         float newAngularAcceleration = 0.f;
 
         float mass = 1.f;
+        float bounciness = 0.25f;
 
         float linearDrag = 0.f;
         float angularDrag = 0.f;
@@ -33,6 +34,9 @@ namespace mlg {
 
         void AddForce(glm::vec2 force);
         void AddForce(glm::vec2 force, glm::vec2 localPosition);
+
+        void AddImpulse(glm::vec2 impulse);
+        void AddImpulse(glm::vec2 force, glm::vec2 localPosition);
 
         void AddTorque(float value);
 
@@ -51,6 +55,8 @@ namespace mlg {
         void CalculateColliderPosition(std::shared_ptr<Collider>& collider);
 
         void ApplyCollisionForce(const class CollisionEvent& collision);
+        void ApplyCollisionForceWithDynamic(const CollisionEvent& collision);
+        void ApplyCollisionForceWithKinematic(const CollisionEvent& collision);
     };
 
 } // mlg
