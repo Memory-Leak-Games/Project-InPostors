@@ -150,5 +150,9 @@ namespace mlg {
         rigidbody->bounciness = bounciness;
     }
 
+    void RigidbodyComponent::SetAngularVelocity(float newAngularVelocity) {
+        rigidbody->angularVelocity = newAngularVelocity;
+    }
+
 
 } // mlg
