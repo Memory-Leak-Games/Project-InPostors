@@ -1,12 +1,12 @@
 #include "Audio/AudioAPI.h"
 
 #include <iostream>
+#include <soloud.h>
 
 #include "Macros.h"
 
 namespace mlg {
     AudioAPI* AudioAPI::instance;
-    SoLoud::Soloud* AudioAPI::soloudSFX;
 //    SoLoud::Soloud* AudioAPI::soloudMusic;
 
     void AudioAPI::Initialize() {
@@ -14,25 +14,25 @@ namespace mlg {
             return;
 
         SPDLOG_INFO("Initializing Audio API");
+        instance = new AudioAPI();
 
-        soloudSFX = new SoLoud::Soloud;
+        instance->soloudSFX = new SoLoud::Soloud();
 //        soloudMusic = new SoLoud::Soloud;
 
-        soloudSFX->init();
+        instance->soloudSFX->init();
 //        soloudMusic->init();
 
         std::cout << "\n    SoLoud Version: " << SOLOUD_VERSION << "\n\n";
 
-        instance = new AudioAPI();
     }
 
     void AudioAPI::Stop() {
         SPDLOG_INFO("Stopping Audio API");
 
-        soloudSFX->deinit();
+        instance->soloudSFX->deinit();
 //        soloudMusic->deinit();
 
-        delete soloudSFX;
+        delete instance->soloudSFX;
 //        delete soloudMusic;
 
         delete instance;
@@ -44,7 +44,7 @@ namespace mlg {
     }
 
     SoLoud::Soloud* AudioAPI::GetSoLoudSFX() {
-        return soloudSFX;
+        return instance->soloudSFX;
     }
 
 //    SoLoud::Soloud* AudioAPI::GetSoLoudMusic() {

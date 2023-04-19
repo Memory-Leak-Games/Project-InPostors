@@ -1,12 +1,14 @@
 #pragma once
 
-#include "soloud.h"
+namespace SoLoud {
+    class Soloud;
+}
 
 namespace mlg {
 
     class AudioAPI {
         static AudioAPI* instance;
-        static SoLoud::Soloud* soloudSFX;
+        SoLoud::Soloud* soloudSFX;
 //        static SoLoud::Soloud* soloudMusic;
 
         AudioAPI() = default;
