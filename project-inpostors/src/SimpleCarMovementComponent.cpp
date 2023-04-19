@@ -56,34 +56,36 @@ void CarMovementComponent::HandleEngineAndBraking() {
     forwardVector2D.y = forwardVector.z;
 
     auto linearVelocity2D = rigidbodyComponent.lock()->GetLinearVelocity();
-    glm::vec3 linearVelocityTransformed(linearVelocity2D.x, 0, linearVelocity2D.y);
+    glm::vec3 linearVelocityTransformed(linearVelocity2D.x, 0.f, linearVelocity2D.y);
     auto localVelocity = glm::inverse((glm::mat3(owner->GetTransform().GetLocalMatrix()))) * linearVelocityTransformed;
     float speed = glm::length(localVelocity);
 
+    float targetAccelerationForce = 0.f;
+
     // accelerating forward
     if (speed < maxSpeed && forward > 0.1) {
-        auto force = forwardVector2D * acceleration * forward * mlg::Time::GetFixedTimeStep();
-        rigidbodyComponent.lock()->AddForce(force);
+        targetAccelerationForce += acceleration * forward * mlg::Time::GetFixedTimeStep();
     }
 
     if (speed > -backwardMaxSpeed && forward < -0.1) {
-        auto force = forwardVector2D * acceleration * forward * mlg::Time::GetFixedTimeStep();
-        rigidbodyComponent.lock()->AddForce(force);
+        targetAccelerationForce += acceleration * forward * mlg::Time::GetFixedTimeStep();
     }
 
     // engine handling
     if (glm::abs(forward) < 0.1f) {
-        auto force = -forwardVector2D * std::clamp(localVelocity.z, 0.f, 1.f) * engineHandling *
-                     mlg::Time::GetFixedTimeStep();
-        rigidbodyComponent.lock()->AddForce(force);
+        targetAccelerationForce =
+                -1.f * std::clamp(localVelocity.z, 0.f, 1.f) * engineHandling * mlg::Time::GetFixedTimeStep();
     }
 
     // handling when velocity direction != movement direction
-    if ((std::signbit(localVelocity.z) != std::signbit(forward)) && (glm::abs(localVelocity.z) > 0.1) &&
-        (glm::abs(forward) > 0.1)) {
-        auto force = -forwardVector2D * std::clamp(localVelocity.z, 0.f, 1.f) * handling * mlg::Time::GetFixedTimeStep();
-        rigidbodyComponent.lock()->AddForce(force);
+    if ((std::signbit(localVelocity.z) != std::signbit(forward)) &&
+        (glm::abs(localVelocity.z) > 0.1) && (glm::abs(forward) > 0.1)) {
+        targetAccelerationForce = -1.f * std::clamp(localVelocity.z, 0.f, 1.f) * handling * mlg::Time::GetFixedTimeStep();
     }
+
+    // TODO: this is quick hack not solution :3
+    currentAccelerationForce = mlg::Math::Lerp(currentAccelerationForce, targetAccelerationForce, 10.f * mlg::Time::GetFixedTimeStep());
+    rigidbodyComponent.lock()->AddForce(currentAccelerationForce * forwardVector2D);
 }
 
 void CarMovementComponent::HandleSteering() {

@@ -26,6 +26,8 @@ private:
     float sideDrag = 40;
     float counterTorque = 5;
 
+    float currentAccelerationForce;
+
     float forward;
     float right;
 
