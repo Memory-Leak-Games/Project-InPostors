@@ -185,10 +185,16 @@ public:
         sound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/SFX/mario_coin.ogg");
         music = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/Crushin.ogg");
 
-        music->PlayBackgroundMusic(mlg::AudioAPI::GetSoLoud());
-        sound->Play(mlg::AudioAPI::GetSoLoud());
         SpawnHouses();
 
+        music->PlayBackgroundMusic(mlg::AudioAPI::GetSoLoud());
+        music->SetSingleInstance();
+        music->PlayBackgroundMusic(mlg::AudioAPI::GetSoLoud());
+        music->SetLooping();
+        music->Pause(mlg::AudioAPI::GetSoLoud());
+        music->Seek(mlg::AudioAPI::GetSoLoud(), 240.f);
+        music->UnPause(mlg::AudioAPI::GetSoLoud());
+//        sound->Play(mlg::AudioAPI::GetSoLoud());
     }
 
     void SpawnHouses() {
