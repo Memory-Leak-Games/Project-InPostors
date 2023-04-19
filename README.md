@@ -17,6 +17,8 @@
   * FXAA
   * UI (Rendered on separate FBO)
   * Crysis SSAO
+  * Add window settings
+  * Add fullscreen mode and borderless window
 * Basic Gameplay
   * Factories
 * Physics
