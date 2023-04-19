@@ -4,6 +4,7 @@
 #include "Physics/Rigidbody.h"
 
 #include "Macros.h"
+#include "Core/Math.h"
 
 namespace mlg {
     CollisionManager* CollisionManager::instance;
@@ -72,7 +73,8 @@ namespace mlg {
             collider->Separate(anotherCollider.get(), separationVector);
 
             glm::vec2 collisionPoint = collider->FindCollisionPoint(anotherCollider->GetOwner()->GetPosition());
-            collider->OnCollisionEnter({collisionPoint, separationVector, anotherCollider->GetOwner()});
+            glm::vec2 normal = Math::SafeNormal(collider->GetPosition() - collisionPoint);
+            collider->OnCollisionEnter({collisionPoint, separationVector, normal, anotherCollider->GetOwner()});
         }
 
         instance->collisionsThisTick.clear();

@@ -9,8 +9,8 @@
 using namespace mlg;
 
 DirectionalLight::DirectionalLight() {
-    shadowMapResolution = SettingsManager::Get<int>(SettingsType::Video, "shadowMapResolution");
-    shadowMapSize = SettingsManager::Get<float>(SettingsType::Video, "shadowMapSize");
+    shadowMapResolution = SettingsManager::Get<int>(SettingsType::Video, "ShadowMapResolution");
+    shadowMapSize = SettingsManager::Get<float>(SettingsType::Video, "ShadowMapSize");
 
     InitializeLights();
 

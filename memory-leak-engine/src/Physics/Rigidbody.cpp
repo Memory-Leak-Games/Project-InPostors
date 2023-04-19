@@ -4,6 +4,7 @@
 
 #include "Core/Time.h"
 #include "Core/Math.h"
+#include "Core/RGBA.h"
 
 #include "Physics/Colliders/Collider.h"
 #include "Physics/CollisionManager.h"
@@ -18,7 +19,7 @@ namespace mlg {
     Rigidbody::Rigidbody() = default;
 
     Rigidbody::~Rigidbody() {
-        for (auto& collider : colliders) {
+        for (auto &collider: colliders) {
             CollisionManager::RemoveCollider(collider);
         }
     };
@@ -44,7 +45,7 @@ namespace mlg {
     }
 
     void Rigidbody::UpdateColliders() {
-        for (auto& collider : colliders) {
+        for (auto &collider: colliders) {
             if (isKinematic)
                 continue;
 
@@ -52,7 +53,7 @@ namespace mlg {
         }
     }
 
-    void Rigidbody::CalculateColliderPosition(std::shared_ptr<Collider>& collider) {
+    void Rigidbody::CalculateColliderPosition(std::shared_ptr<Collider> &collider) {
         glm::mat3 rotationMatrix = glm::rotate(glm::mat3{1.f}, rotation);
 
         glm::vec2 offset = collider->shape->offset;
@@ -64,6 +65,24 @@ namespace mlg {
 
     void Rigidbody::AddForce(glm::vec2 force) {
         newLinearAcceleration += force / mass;
+
+#ifdef DEBUG
+        if (SettingsManager::Get<bool>(SettingsType::Debug, "showForces")) {
+            glm::vec3 begin{1.f};
+            begin.x = position.x;
+            begin.z = position.y;
+
+            glm::vec3 end{1.f};
+            end.x = position.x + force.x;
+            end.z = position.y + force.y;
+
+            Gizmos::DrawLine(begin, end, RGBA::red, true, Time::GetFixedTimeStep());
+        }
+#endif
+    }
+
+    void Rigidbody::AddImpulse(glm::vec2 impulse) {
+        AddForce(mass * impulse / Time::GetFixedTimeStep());
     }
 
     void Rigidbody::AddTorque(float value) {
@@ -79,7 +98,11 @@ namespace mlg {
         AddTorque(torque);
     }
 
-    const glm::vec2& Rigidbody::GetPosition() const {
+    void Rigidbody::AddImpulse(glm::vec2 impulse, glm::vec2 localPosition) {
+        AddForce(mass * impulse / Time::GetFixedTimeStep(), localPosition);
+    }
+
+    const glm::vec2 &Rigidbody::GetPosition() const {
         return position;
     }
 
@@ -103,29 +126,66 @@ namespace mlg {
         return collider;
     }
 
-    void Rigidbody::ApplyCollisionForce(const CollisionEvent& collision) {
-        const glm::vec2 forcePosition = collision.position;
-        const glm::vec2 forceDirection = Math::SafeNormal(position - collision.collidedRigidbody->position);
+    void Rigidbody::ApplyCollisionForce(const CollisionEvent &collision) {
+        if (collision.collidedRigidbody->isKinematic)
+            ApplyCollisionForceWithKinematic(collision);
+        else
+            ApplyCollisionForceWithDynamic(collision);
+    }
 
-        const glm::vec2 thisVelocity = this->linearVelocity;
-        const glm::vec2 anotherVelocity = collision.collidedRigidbody->linearVelocity;
+    void Rigidbody::ApplyCollisionForceWithDynamic(const CollisionEvent &collision) {
+        // prepare physics conditions for readability
+        const Rigidbody *anotherRigidbody = collision.collidedRigidbody;
 
-        const glm::vec2 relativeVelocity = anotherVelocity - thisVelocity;
-        const float relativeSpeed = glm::length(relativeVelocity);
+        const glm::vec2 thisMomentum = mass * this->linearVelocity;
+        const glm::vec2 anotherMomentum = anotherRigidbody->mass * anotherRigidbody->linearVelocity;
 
-        const float anotherMass = collision.collidedRigidbody->mass;
-        const float relativeKineticEnergy = 0.5f * anotherMass * relativeSpeed * relativeSpeed;
+        // before collision
+        const float momentumBefore = glm::dot(thisMomentum + anotherMomentum, collision.normal);
+        const glm::vec2 relativeVelocities = this->linearVelocity - anotherRigidbody->linearVelocity;
 
-        glm::vec2 localForcePosition = collision.position - position;
+        // after collision (conservation of momentum)
+        const float relativeSpeedAfter = -1.f * glm::dot(relativeVelocities, collision.normal);
+        const float speedAfter = (momentumBefore + anotherRigidbody->mass * relativeSpeedAfter)
+                                 / (mass + anotherRigidbody->mass);
 
-        auto linearForceMultiplier = SettingsManager::Get<float>(SettingsType::Engine,"collisionForceMultiplier");
+        float impulse = (speedAfter - glm::dot(this->linearVelocity, collision.normal));
+
+        // apply bounciness
+        impulse *= this->bounciness * anotherRigidbody->bounciness;
+
+        AddImpulse(impulse * collision.normal);
+
         auto angularForceMultiplier = SettingsManager::Get<float>(SettingsType::Engine,"collisionTorqueMultiplier");
+        AddForce(impulse * angularForceMultiplier * collision.normal, collision.position);
+    }
 
-        const float linearForceStrength = relativeKineticEnergy * linearForceMultiplier;
-        const float torque = Math::Cross2D(forceDirection * relativeKineticEnergy, localForcePosition) * angularForceMultiplier;
+    void Rigidbody::ApplyCollisionForceWithKinematic(const CollisionEvent &collision) {
+        // prepare physics conditions for readability
+        const Rigidbody *anotherRigidbody = collision.collidedRigidbody;
 
-        AddForce(forceDirection * linearForceStrength);
-        AddTorque(torque);
+        const glm::vec2 thisMomentum = mass * this->linearVelocity;
+        const glm::vec2 anotherMomentum = anotherRigidbody->mass * anotherRigidbody->linearVelocity;
+
+        // before collision
+        const float momentumBefore = glm::dot(thisMomentum + anotherMomentum, collision.normal);
+        const glm::vec2 relativeVelocities = this->linearVelocity - anotherRigidbody->linearVelocity;
+
+        // after collision (conservation of momentum)
+        const float speedAfter = -1.f * glm::dot(relativeVelocities, collision.normal);
+
+        const float bouncinessProduct = this->bounciness * anotherRigidbody->bounciness;
+
+        const float forceToStop = -glm::dot(this->linearVelocity, collision.normal);
+        const float forceToBounce = speedAfter - 2.f * glm::dot(this->linearVelocity, collision.normal);
+
+        const float impulse = forceToStop + forceToBounce * bouncinessProduct;
+
+        //apply impulse (impulse is immediate force (affect velocity not acceleration)
+        AddImpulse(impulse * collision.normal);
+
+        auto angularForceMultiplier = SettingsManager::Get<float>(SettingsType::Engine,"collisionTorqueMultiplier");
+        AddForce(impulse * angularForceMultiplier * collision.normal, collision.position);
     }
 
 } // mlg

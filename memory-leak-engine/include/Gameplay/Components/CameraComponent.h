@@ -8,10 +8,9 @@ namespace mlg {
     private:
 
         struct Projection {
-            float near;
-            float far;
+            float nearPlane, farPlane;
 
-            Projection(float near, float far);
+            Projection(float nearPlane, float farPlane);
             virtual ~Projection() = default;
 
             virtual glm::mat4 CalculateProjection(float aspectRatio) = 0;
@@ -20,14 +19,14 @@ namespace mlg {
         struct OrthoProjection : Projection {
             float size;
 
-            OrthoProjection(float size, float near, float far);
+            OrthoProjection(float size, float nearPlane, float farPlane);
             glm::mat4 CalculateProjection(float aspectRatio) override;
         };
 
         struct PerspectiveProjection : Projection {
             float fov;
 
-            PerspectiveProjection(float fov, float near, float far);
+            PerspectiveProjection(float fov, float nearPlane, float farPlane);
             glm::mat4 CalculateProjection(float aspectRatio) override;
         };
 
@@ -38,8 +37,8 @@ namespace mlg {
 
         CameraComponent(const std::weak_ptr<Entity>& owner, const std::string& name);
 
-        void SetOrtho(float size, float near, float far);
-        void SetPerspective(float fov, float near, float far);
+        void SetOrtho(float size, float nearPlane, float farPlane);
+        void SetPerspective(float fov, float nearPlane, float farPlane);
 
         void Update() override;
         void OnWindowResize(const class Event& event);

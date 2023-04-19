@@ -44,6 +44,7 @@ CPMAddPackage("gh:wqking/eventpp@0.1.2")
 CPMAddPackage("gh:nlohmann/json@3.11.2")
 CPMAddPackage("gh:Neargye/magic_enum@0.8.2")
 CPMAddPackage("gh:freetype/freetype#VER-2-13-0")
+CPMAddPackage("gh:wolfpld/tracy#master")
 
 
 set_target_properties(glad
@@ -54,6 +55,7 @@ set_target_properties(glad
         nlohmann_json
         magic_enum
         freetype
+        TracyClient
         spdlog PROPERTIES FOLDER "thirdparty")
 
 if (TARGET zlibstatic)
