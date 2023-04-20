@@ -25,7 +25,7 @@
 #include "Macros.h"
 
 namespace mlg {
-    Renderer* Renderer::instance;
+    Renderer *Renderer::instance;
 
     Renderer::~Renderer() = default;
 
@@ -51,8 +51,8 @@ namespace mlg {
         TracyGpuContext;
     }
 
-    void Renderer::OnWindowResize(const Event& event) {
-        auto& windowResizeEvent = (WindowResizeEvent&) event;
+    void Renderer::OnWindowResize(const Event &event) {
+        auto &windowResizeEvent = (WindowResizeEvent &) event;
         int32_t windowWidth = windowResizeEvent.GetWidth();
         int32_t windowHeight = windowResizeEvent.GetHeight();
 
@@ -70,70 +70,70 @@ namespace mlg {
         instance = nullptr;
     }
 
-    void Renderer::Draw(FrameBuffer* currentFramebuffer) {
+    void Renderer::Draw(FrameBuffer *currentFramebuffer) {
         DrawShadowMap();
         DrawRenderables(currentFramebuffer);
     }
 
     void Renderer::DrawRenderables(FrameBuffer *currentFramebuffer) {
-        TracyGpuZone("DrawRenderables");
+        ZoneScopedN("Draw Renderables");
+        TracyGpuZone("Draw Renderables");
 
         glViewport(0, 0, Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
         currentFramebuffer->Activate();
-        for (auto& renderable : renderables) {
+        for (auto &renderable: renderables) {
             renderable.lock()->Draw(this);
         }
     }
 
     void Renderer::DrawShadowMap() {
-        TracyGpuZone("DrawShadowMap");
+        ZoneScopedN("Draw ShadowMap");
+        TracyGpuZone("Draw ShadowMap");
 
         DirectionalLight::GetInstance()->BindShadowMap();
         DirectionalLight::GetInstance()->BindShadowMapShader();
 
         glCullFace(GL_FRONT);
-        for (auto& renderable : renderables) {
+        for (auto &renderable: renderables) {
             renderable.lock()->DrawShadowMap(this,
                                              DirectionalLight::GetInstance()->GetShadowShaderProgram().lock().get());
         }
         glCullFace(GL_BACK);
     }
 
-    void Renderer::DrawModel(ModelAsset* model) {
+    void Renderer::DrawModel(ModelAsset *model) {
         model->Draw();
     }
 
     void Renderer::LateDraw() {
-        for (auto& lateRenderable : lateRenderables) {
+        ZoneScopedN("Late Draw");
+        TracyGpuZone("Late Draw");
+
+        for (auto &lateRenderable: lateRenderables) {
             lateRenderable.lock()->LateDraw(this);
         }
     }
 
-    void Renderer::AddRenderable(const std::weak_ptr<Renderable>& renderable) {
+    void Renderer::AddRenderable(const std::weak_ptr<Renderable> &renderable) {
         renderables.push_back(renderable);
     }
 
     void Renderer::RemoveRenderable(std::weak_ptr<Renderable> renderable) {
         renderables.erase(std::remove_if(renderables.begin(), renderables.end(),
-                                         [&renderable](const std::weak_ptr<Renderable>& entry) {
+                                         [&renderable](const std::weak_ptr<Renderable> &entry) {
                                              return renderable.lock().get() == entry.lock().get();
                                          }), renderables.end());
     }
 
-    Renderer* Renderer::GetInstance() {
+    Renderer *Renderer::GetInstance() {
         return instance;
     }
 
     void Renderer::DrawFrame() {
-        ZoneScoped;
-        TracyGpuZone("DrawFrame");
+        ZoneScopedN("Renderer DrawFrame");
+        TracyGpuZone("Renderer DrawFrame");
 
-        gBuffer->Activate();
-        gBuffer->Clear();
-
-        Renderer::GetInstance()->Draw(gBuffer.get());
-
-        gBuffer->CopyDepthBuffer(postProcess->GetFbo());
+        GeometryPass();
 
         SSAOPass();
 
@@ -149,12 +149,14 @@ namespace mlg {
         Renderer::GetInstance()->LateDraw();
 
         if (isFXAAActive) {
+            ZoneScopedN("FXAA");
             TracyGpuZone("FXAA");
             postProcess->Activate();
             fxaa->Draw();
         }
 
         {
+            ZoneScopedN("PostProcess");
             TracyGpuZone("PostProcess");
             RenderingAPI::SetDefaultFrameBuffer();
             postProcess->Draw();
@@ -162,11 +164,24 @@ namespace mlg {
         }
     }
 
+    void Renderer::GeometryPass() {
+        ZoneScopedN("Geometry Pass");
+        TracyGpuZone("Geometry Pass");
+
+        gBuffer->Activate();
+        gBuffer->Clear();
+
+        GetInstance()->Draw(gBuffer.get());
+
+        gBuffer->CopyDepthBuffer(postProcess->GetFbo());
+    }
+
     void Renderer::SSAOPass() {
         if (!SettingsManager::Get<bool>(SettingsType::Video, "SSAO")) {
             gBuffer->BindTextures(0);
             return;
         }
+        ZoneScopedN("SSAO");
         TracyGpuZone("SSAO");
 
         ssaoFrameBuffer->BindTextureUnits(gBuffer->GetPositionTexture(), gBuffer->GetNormalTexture());

@@ -46,7 +46,7 @@ namespace mlg {
     }
 
     void ComponentManager::Update() {
-        ZoneScoped;
+        ZoneScopedN("Component Update");
 
         for (const auto& component : instance->components) {
             component->Update();
@@ -54,7 +54,7 @@ namespace mlg {
     }
 
     void ComponentManager::LateUpdate() {
-        ZoneScoped;
+        ZoneScopedN("Component LateUpdate");
 
         for (const auto& component : instance->components) {
             component->LateUpdate();
