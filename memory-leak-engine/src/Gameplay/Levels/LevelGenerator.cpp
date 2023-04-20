@@ -78,7 +78,9 @@ namespace mlg {
             for (unsigned int k = 0; k < levelLayout[i].size(); k++)
             {
                 try {
-                    std::string symbol(1, levelLayout[i][k]);
+                    std::string symbol(1, levelLayout[k][i]);
+                    if (symbol == " ")
+                        continue;
                     auto mapObj = mapObjects->at(symbol);
                     glm::vec3 objectPos{0.0f};
                     objectPos.x = static_cast<float>(i) * tileSize - citySize * 0.5f;

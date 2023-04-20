@@ -178,7 +178,7 @@ public:
 
 //        SpawnHouses();
         mlg::LevelGenerator::LoadJson("res/levels/detroit.json");
-        mlg::LevelGenerator::GenerateLevel();
+        mlg::LevelGenerator::GenerateLevel(7.0f);
     }
 
     void SpawnHouses() {
