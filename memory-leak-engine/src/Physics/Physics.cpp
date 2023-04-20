@@ -46,7 +46,7 @@ namespace mlg {
     }
 
     void Physics::TickFixedTimeSteps() {
-        ZoneScopedN("Tick Physics");
+        ZoneScopedNC("Tick Physics", tracy::Color::ColorType::Green);
 
         float deltaTime = Time::GetTrueDeltaSeconds();
 

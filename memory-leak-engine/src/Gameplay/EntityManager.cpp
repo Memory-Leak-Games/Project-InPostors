@@ -43,7 +43,7 @@ namespace mlg {
     }
 
     void EntityManager::Update() {
-        ZoneScoped;
+        ZoneScopedN("Entity Update");
 
         for (const auto& entity : instance->entities) {
             if (entity->IsStatic())
@@ -54,7 +54,7 @@ namespace mlg {
     }
 
     void EntityManager::LateUpdate() {
-        ZoneScoped;
+        ZoneScopedN("Entity LateUpdate");
 
         for (const auto& entity : instance->entities) {
             if (entity->IsStatic())

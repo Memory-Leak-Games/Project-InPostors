@@ -29,6 +29,8 @@
 
 #include "effolkronium/random.hpp"
 
+#include "Macros.h"
+
 #ifdef DEBUG
 #include <imgui.h>
 #endif

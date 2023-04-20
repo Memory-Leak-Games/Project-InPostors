@@ -42,6 +42,8 @@ namespace mlg {
         void DrawShadowMap();
 
         void DrawRenderables(FrameBuffer *currentFramebuffer);
+
+        void GeometryPass();
     };
 
 } // mlg
