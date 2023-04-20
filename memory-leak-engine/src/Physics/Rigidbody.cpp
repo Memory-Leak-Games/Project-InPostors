@@ -149,7 +149,7 @@ namespace mlg {
         const float speedAfter = (momentumBefore + anotherRigidbody->mass * relativeSpeedAfter)
                                  / (mass + anotherRigidbody->mass);
 
-        float impulse = (speedAfter - glm::dot(this->linearVelocity, collision.normal));
+        float impulse = speedAfter - glm::dot(this->linearVelocity, collision.normal);
 
         // apply bounciness
         impulse *= this->bounciness * anotherRigidbody->bounciness;
@@ -177,7 +177,7 @@ namespace mlg {
         const float bouncinessProduct = this->bounciness * anotherRigidbody->bounciness;
 
         const float forceToStop = -glm::dot(this->linearVelocity, collision.normal);
-        const float forceToBounce = speedAfter - 2.f * glm::dot(this->linearVelocity, collision.normal);
+        const float forceToBounce = speedAfter;
 
         const float impulse = forceToStop + forceToBounce * bouncinessProduct;
 
