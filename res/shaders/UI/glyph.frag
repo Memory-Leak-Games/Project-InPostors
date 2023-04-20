@@ -13,9 +13,28 @@ void main()
 
     float glyphShape = texture(text, TexCoords).r;
 
-    if (glyphShape < 0.4)
-    //discard;
-    glyphShape *= 0.5;
+    // Outline test
+/*
+    if (glyphShape < 0.01)
+    discard;
+
+    if(glyphShape < 0.8)
+    {
+        color = vec4(0, 0, 0, 1);
+        return;
+    }
+
+
+   if(glyphShape >= 0.8)
+    glyphShape = 1;
+
+    color = vec4(textColor, glyphShape);*/
+
+    if (glyphShape < 0.48)
+    discard;
+
+   if(glyphShape >= 0.6)
+    glyphShape = 1;
 
     color = vec4(textColor, glyphShape);
 }

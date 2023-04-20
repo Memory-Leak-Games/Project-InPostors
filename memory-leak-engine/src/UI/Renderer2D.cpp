@@ -75,7 +75,7 @@ namespace mlg {
     void Renderer2D::SetProjection(int32_t windowWidth, int32_t windowHeight) {
         Renderer2D::windowWidth = windowWidth;
         Renderer2D::windowHeight = windowHeight;
-        Renderer2D::uiScale = windowHeight / 1080.0f;
+        Renderer2D::uiScale = windowHeight / 720.0f;
 
         float aspectRatio = (float) windowWidth / (float) windowHeight;
 

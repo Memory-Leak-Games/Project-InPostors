@@ -128,9 +128,9 @@ public:
 
         auto ui = mlg::EntityManager::SpawnEntity<mlg::Entity>("ui", true, mlg::SceneGraph::GetRoot());
 
-        auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/comic.ttf");
+        auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/ARLRDBD.ttf");
         auto label = ui.lock()->AddComponent<mlg::Label>("Label", font);
-        label.lock()->SetPosition({500, 500});
+        label.lock()->SetPosition({500, 100});
         label.lock()->SetTextColor({1, 1, 1});
         label.lock()->SetSize(64);
 

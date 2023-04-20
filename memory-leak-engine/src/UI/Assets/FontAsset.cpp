@@ -8,12 +8,14 @@ mlg::FontAsset::FontAsset(const std::string& path) : Asset(path) {}
 
 void mlg::FontAsset::Load() {
 
+    SPDLOG_DEBUG("Loading Font at path: {}", GetPath());
+
     FT_Library ft;
     if (FT_Init_FreeType(&ft))
         SPDLOG_ERROR("Could not init FreeType Library");
 
     FT_Face face;
-    if (FT_New_Face(ft, "res/fonts/comic.ttf", 0, &face))
+    if (FT_New_Face(ft, GetPath().c_str(), 0, &face))
         SPDLOG_ERROR("Failed to load font");
 
     FT_Set_Pixel_Sizes(face, 0, fontSize);
