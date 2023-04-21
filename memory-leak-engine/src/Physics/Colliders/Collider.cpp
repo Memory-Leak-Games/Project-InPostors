@@ -92,7 +92,11 @@ namespace mlg {
         }
     }
 
-    const glm::vec2 Collider::GetPosition() const {
+    glm::vec2 Collider::GetPosition() const {
         return shape->position;
+    }
+
+    float Collider::GetRadius() const {
+        return shape->GetRadius();
     }
 }

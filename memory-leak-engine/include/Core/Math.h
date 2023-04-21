@@ -28,6 +28,11 @@ namespace mlg {
         }
 
         template<typename T>
+        static constexpr T Sat(const T& x) {
+            return Clamp(x, (T) 0, (T) 1);
+        }
+
+        template<typename T>
         static constexpr T Lerp(const T& a, const T& b, const T& t) {
             return a + (b - a) * t;
         }

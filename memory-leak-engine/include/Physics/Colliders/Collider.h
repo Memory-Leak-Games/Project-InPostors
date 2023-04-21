@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Physics/Rigidbody.h"
 #include "ColliderShapes.h"
+#include "Physics/Rigidbody.h"
 
 namespace mlg {
 
@@ -24,6 +24,10 @@ namespace mlg {
         Rigidbody* owner;
         std::unique_ptr<ColliderShape::Shape> shape;
 
+        // HashGridClient
+        glm::vec2 minCoord;
+        glm::vec2 maxCoord;
+
     public:
         Collider(Rigidbody* owner, std::unique_ptr<ColliderShape::Shape> shape);
         ~Collider();
@@ -35,10 +39,14 @@ namespace mlg {
         glm::vec2 FindCollisionPoint(const glm::vec2& anotherPosition);
 
         const Rigidbody* GetOwner() const;
-        const glm::vec2 GetPosition() const;
+        glm::vec2 GetPosition() const;
+        float GetRadius() const;
 
         friend class RigidbodyComponent;
         friend class Rigidbody;
+
+        friend class SpacialHashGrid;
+
     private:
         bool DetectCollisionAsCircle(Collider* anotherCollider);
         bool DetectCollisionAsRectangle(Collider* anotherCollider);
