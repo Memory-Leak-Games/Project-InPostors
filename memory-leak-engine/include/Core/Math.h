@@ -13,7 +13,7 @@ namespace mlg {
         }
 
         template<typename T>
-        static constexpr T SafeNormal(T x) {
+        static constexpr T SafeNormal(const T& x) {
             return glm::length(x) == 0.f ? T{0.f} : glm::normalize(x);
         }
 
@@ -23,8 +23,21 @@ namespace mlg {
         }
 
         template<typename T>
-        static constexpr T Clamp(T x, T min, T max) {
+        static constexpr T Clamp(const T& x, const T& min, const T& max) {
             return std::clamp(x, min, max);
+        }
+
+        template<typename T>
+        static constexpr T Lerp(const T& a, const T& b, const T& t) {
+            return a + (b - a) * t;
+        }
+
+        template<typename T>
+        static constexpr T VectorProjection(const T& a, const T& b) {
+            if (glm::length(b) == 0.)
+                return T{0};
+
+            return (glm::dot(a, b) / glm::dot(b, b)) * b;
         }
     };
 

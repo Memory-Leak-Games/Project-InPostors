@@ -39,64 +39,81 @@ Core* Core::instance;
 void Core::MainLoop() {
     DirectionalLight::GetInstance();
 
-    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, [](const Event& event) {
-        auto& windowResizeEvent = (WindowResizeEvent&) event;
-        RenderingAPI::GetInstance()->SetViewport(0, 0,
-                                                 windowResizeEvent.GetWidth(),
-                                                 windowResizeEvent.GetHeight());
-
-        });
-
     bool shouldClose = false;
-    Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowClose,
-                                                                [&shouldClose](const Event& event) {
-                                                                    shouldClose = true;
-                                                                });
+    Window::GetInstance()->GetEventDispatcher()->appendListener(
+            EventType::WindowClose, [&shouldClose](const Event& event) {
+                shouldClose = true;
+            });
 
     ComponentManager::Start();
     EntityManager::Start();
 
     while (!shouldClose) {
+        ZoneScoped;
+
         Time::UpdateStartFrameTime();
         RenderingAPI::GetInstance()->Clear();
 
 #ifdef DEBUG
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+        {
+            ZoneScopedN("ImGui NewFrame");
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+        }
 #endif
-        ComponentManager::ProcessComponents();
-        EntityManager::ProcessEntities();
-
-        Input::Update();
-
-        Physics::TickFixedTimeSteps();
-
-        ComponentManager::Update();
-        EntityManager::Update();
-        ComponentManager::LateUpdate();
-        EntityManager::LateUpdate();
-
+        TickGameplay();
         SceneGraph::CalculateGlobalTransforms();
-        CommonUniformBuffer::UpdateAndSendToGPU();
-
-        Renderer::GetInstance()->DrawFrame();
-
-        Gizmos::DrawGizmos();
-        Renderer2D::GetInstance()->Draw();
+        TickRendering();
 
 #ifdef DEBUG
-        RenderImGUI();
+        {
+            ZoneScopedN("ImGui Render");
+            RenderImGUI();
+        }
 #endif
 
-        Window::GetInstance()->SwapBuffers();
-        Window::GetInstance()->PollEvents();
+        TickWindow();
 
         Time::CapFPS();
+        FrameMark;
+        TracyGpuCollect;
     }
 }
 
+void Core::TickWindow() const {
+    ZoneScopedN("Window Update");
+    Window::GetInstance()->SwapBuffers();
+    Window::GetInstance()->PollEvents();
+}
+
+void Core::TickGameplay() const {
+    ZoneScopedN("Tick Gameplay");
+    ComponentManager::ProcessComponents();
+    EntityManager::ProcessEntities();
+
+    Input::Update();
+
+    Physics::TickFixedTimeSteps();
+
+    ComponentManager::Update();
+    EntityManager::Update();
+    ComponentManager::LateUpdate();
+    EntityManager::LateUpdate();
+}
+
+void Core::TickRendering() const {
+    ZoneScopedN("Tick Rendering");
+    CommonUniformBuffer::UpdateAndSendToGPU();
+
+    Renderer::GetInstance()->DrawFrame();
+
+    Gizmos::DrawGizmos();
+    Renderer2D::GetInstance()->Draw();
+}
+
 #ifdef DEBUG
+
 void Core::RenderImGUI() const {
     ImGui::Begin("FPS");
     ImGui::Text("Framerate: %.3f (%.1f FPS)", Time::GetTrueDeltaSeconds(), 1 / Time::GetTrueDeltaSeconds());
@@ -106,6 +123,7 @@ void Core::RenderImGUI() const {
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
+
 #endif
 
 void Core::Stop() {

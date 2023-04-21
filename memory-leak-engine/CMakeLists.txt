@@ -28,9 +28,19 @@ target_link_libraries(${PROJECT_NAME} nlohmann_json::nlohmann_json)
 target_link_libraries(${PROJECT_NAME} magic_enum)
 target_link_libraries(${PROJECT_NAME} freetype)
 target_link_libraries(${PROJECT_NAME} soloud)
+target_link_libraries(${PROJECT_NAME} Tracy::TracyClient)
 
 if (${CMAKE_BUILD_TYPE} MATCHES Debug)
     target_link_libraries(${PROJECT_NAME} imgui)
     target_link_libraries(${PROJECT_NAME} imgui_impl)
     target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
-endif()
+
+    if (WIN32)
+        add_definitions(-D_WIN32_WINNT=0x0602 -DWINVER=0x0602)
+        target_link_libraries(${PROJECT_NAME} ws2_32 wsock32 -ldbghelp)
+    endif ()
+
+else ()
+    option(TRACY_ENABLE "" OFF)
+endif ()
+

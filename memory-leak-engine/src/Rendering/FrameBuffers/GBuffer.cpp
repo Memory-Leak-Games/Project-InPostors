@@ -21,7 +21,7 @@ namespace mlg {
 
         MLG_ASSERT_MSG(IsFrameBufferComplete(), "Frame buffer is not complete");
 
-        material = AssetManager::GetAsset<MaterialAsset>("res/config/light_pass_material.json");
+        material = AssetManager::GetAsset<MaterialAsset>("res/config/EngineMaterials/light_pass_material.json");
     }
 
     void GBuffer::GenerateAndBindGTextures() {
@@ -70,6 +70,7 @@ namespace mlg {
     }
 
     void GBuffer::Draw() {
+        glDisable(GL_DEPTH_TEST);
         material->Activate();
 
         glBindTextureUnit(0, gPositionTexture);

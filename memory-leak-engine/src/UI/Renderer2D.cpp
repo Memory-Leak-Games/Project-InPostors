@@ -1,10 +1,9 @@
-//
-// Created by LiptonLeon on 02.04.2023.
-//
-
 #include "UI/Renderer2D.h"
 
 #include "Core/Window.h"
+#include "Core/AssetManager/AssetManager.h"
+#include "Rendering/Assets/MaterialAsset.h"
+
 #include "UI/Renderable2D.h"
 #include "spdlog/spdlog.h"
 
@@ -20,9 +19,9 @@ namespace mlg {
         // Setup projection mat manually at game start
         Window* window = Window::GetInstance();
         SetProjection(window->GetWidth(), window->GetHeight());
-        frameBuffer = std::make_unique<SingleTextureFrameBuffer>(window->GetWidth(), window->GetHeight());
 
-
+        auto material = AssetManager::GetAsset<MaterialAsset>("res/materials/simple_fbo_material.json");
+        frameBuffer = std::make_unique<SingleTextureFrameBuffer>(window->GetWidth(), window->GetHeight(), material);
     }
 
     void Renderer2D::Initialize() {
@@ -47,6 +46,9 @@ namespace mlg {
     }
 
     void Renderer2D::Draw() {
+        ZoneScopedN("Draw UI");
+        TracyGpuZone("Draw UI");
+
         frameBuffer->Activate();
         frameBuffer->Clear();
 

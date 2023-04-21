@@ -9,6 +9,9 @@
 using namespace mlg;
 
 DirectionalLight::DirectionalLight() {
+    shadowMapResolution = SettingsManager::Get<int>(SettingsType::Video, "ShadowMapResolution");
+    shadowMapSize = SettingsManager::Get<float>(SettingsType::Video, "ShadowMapSize");
+
     InitializeLights();
 
     glCreateBuffers(1, &uboLightData);
@@ -18,23 +21,20 @@ DirectionalLight::DirectionalLight() {
     InitializeFrameBuffer();
 
     UpdateSun();
-
-    shadowMapResolution = SettingsManager::Get<int>(SettingsType::Video, "shadowMapResolution");
-    shadowMapSize = SettingsManager::Get<float>(SettingsType::Video, "shadowMapSize");
 }
 
 void DirectionalLight::InitializeLights() {
-    sun.direction = glm::normalize(glm::vec3(0.5f, -0.5f, 0.5f));
-    sun.diffuse = glm::vec3(0.7f);
-    sun.ambient = glm::vec3(0.3f);
+    sun.direction = glm::normalize(glm::vec3(-0.5f, -0.5f, 0.5f));
+    sun.diffuse = glm::vec3(0.5f);
+    sun.ambient = glm::vec3(0.5f);
     sun.specular = glm::vec3(0.1f);
 
-    glm::vec3 position{-8.f, 15.f, -8.f};
+    glm::vec3 position{30.f, 30.f, -30.f};
 
     glm::mat4 lightView = glm::lookAt(position, position + sun.direction, glm::vec3{0.f, 1.f, 0.f});
     glm::mat4 lightProjection = glm::ortho(-shadowMapSize, shadowMapSize,
                                            -shadowMapSize, shadowMapSize,
-                                           0.1f, 100.f);
+                                           0.1f, 200.f);
 
     sun.lightSpaceMatrix = lightProjection * lightView;
 }
@@ -77,7 +77,7 @@ void DirectionalLight::InitializeFrameBuffer() {
     MLG_ASSERT_MSG(glCheckNamedFramebufferStatus(shadowMapFrameBuffer, GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE,
                    "Shadowmap Framebuffer is not complete");
 
-    shadowMapMaterial = AssetManager::GetAsset<MaterialAsset>("res/config/shadowmap_material.json");
+    shadowMapMaterial = AssetManager::GetAsset<MaterialAsset>("res/config/EngineMaterials/shadowmap_material.json");
 }
 
 void DirectionalLight::BindShadowMap() {

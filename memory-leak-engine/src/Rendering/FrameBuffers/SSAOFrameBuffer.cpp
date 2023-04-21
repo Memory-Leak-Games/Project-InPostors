@@ -4,7 +4,11 @@
 
 #include "Core/AssetManager/AssetManager.h"
 #include "Rendering/Assets/MaterialAsset.h"
+#include "Rendering/ShaderProgram.h"
 
+#include "Core/Settings/SettingsManager.h"
+
+#include "Core/Math.h"
 #include "Macros.h"
 
 namespace mlg {
@@ -19,7 +23,15 @@ namespace mlg {
 
         MLG_ASSERT_MSG(IsFrameBufferComplete(), "Frame buffer is not complete");
 
-        material = AssetManager::GetAsset<MaterialAsset>("res/config/ssao_material.json");
+        material = AssetManager::GetAsset<MaterialAsset>("res/config/EngineMaterials/ssao_material.json");
+
+        numberOfSamples = SettingsManager::Get<uint32_t>(SettingsType::Video, "SSAOSamples");
+
+        material->GetShaderProgram()->Activate();
+        material->GetShaderProgram()->SetInt("numberOfSamples", (int) numberOfSamples);
+
+        GenerateAndSendNoise();
+        GenerateAndSendSamples();
     }
 
     void SSAOFrameBuffer::GenerateAndBindTextures() {
@@ -52,6 +64,37 @@ namespace mlg {
     void SSAOFrameBuffer::Draw() {
         glBindFramebuffer(GL_FRAMEBUFFER, GetFbo());
         FrameBuffer::Draw();
+    }
+
+    using Random = effolkronium::random_static;
+
+    void SSAOFrameBuffer::GenerateAndSendSamples() {
+        for (int i = 0; i < numberOfSamples; ++i) {
+            glm::vec3 sample{0.f};
+            sample.x = Random::get(-1.f, 1.f);
+            sample.y = Random::get(-1.f, 1.f);
+            sample.z = Random::get(0.f, 1.f);
+            sample = Math::SafeNormal(sample);
+
+            float scale = (float) i / (float) numberOfSamples;
+            scale = Math::Lerp(0.1f, 1.f, scale * scale);
+            sample *= scale;
+
+            std::string uniformName = "samples[" + std::to_string(i) + "]";
+            material->GetShaderProgram()->SetVec3F(uniformName, sample);
+        }
+    }
+
+    void SSAOFrameBuffer::GenerateAndSendNoise() {
+        for (int i = 0; i < numberOfSamples; ++i) {
+            glm::vec3 sample{0.f};
+            sample.x = Random::get(-1.f, 1.f);
+            sample.y = Random::get(-1.f, 1.f);
+            sample.z = 0.f;
+
+            std::string uniformName = "noise[" + std::to_string(i) + "]";
+            material->GetShaderProgram()->SetVec3F(uniformName, sample);
+        }
     }
 
 } // mlg

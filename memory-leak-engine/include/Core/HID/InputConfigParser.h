@@ -6,6 +6,7 @@
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
+using Random = effolkronium::random_static;
 
 namespace mlg {
 

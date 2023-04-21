@@ -10,7 +10,7 @@
 #include "Gameplay/Entity.h"
 
 #include "Rendering/Gizmos/Gizmos.h"
-#include "include/Rendering/Gizmos/Colors.h"
+#include "Core/RGBA.h"
 
 namespace mlg {
     RigidbodyComponent::RigidbodyComponent(const std::weak_ptr<Entity>& owner, const std::string& name)
@@ -121,9 +121,37 @@ namespace mlg {
             glm::vec3 position {0.f};
             position.x = event.position.x;
             position.z = event.position.y;
-            Gizmos::DrawPoint(position, Colors::Red, true, 0.1);
+            Gizmos::DrawPoint(position, RGBA::red, true, 0.016);
         });
 #endif
+    }
+
+    glm::vec2 RigidbodyComponent::GetLinearVelocity() {
+        return rigidbody->linearVelocity;
+    }
+
+    glm::vec2 RigidbodyComponent::GetLinearAcceleration() {
+        return rigidbody->newLinearAcceleration + rigidbody->currentLinearAcceleration / 2.f;
+    }
+
+    float RigidbodyComponent::GetAngularSpeed() {
+        return rigidbody->angularVelocity;
+    }
+
+    float RigidbodyComponent::GetAngularAcceleration() {
+        return rigidbody->newAngularAcceleration + rigidbody->currentAngularAcceleration / 2.f;
+    }
+
+    void RigidbodyComponent::SetMass(float mass) {
+        rigidbody->mass = mass;
+    }
+
+    void RigidbodyComponent::SetBounciness(float bounciness) {
+        rigidbody->bounciness = bounciness;
+    }
+
+    void RigidbodyComponent::SetAngularVelocity(float newAngularVelocity) {
+        rigidbody->angularVelocity = newAngularVelocity;
     }
 
 

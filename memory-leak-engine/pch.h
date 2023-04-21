@@ -27,6 +27,10 @@
 #include <eventpp/eventdispatcher.h>
 #include <eventpp/eventqueue.h>
 
+#include "effolkronium/random.hpp"
+
+#include "Macros.h"
+
 #ifdef DEBUG
 #include <imgui.h>
 #endif

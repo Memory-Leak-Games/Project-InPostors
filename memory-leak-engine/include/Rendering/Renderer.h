@@ -13,6 +13,7 @@ namespace mlg {
         std::unique_ptr<class SSAOFrameBuffer> ssaoFrameBuffer;
         std::unique_ptr<class BlurPass> ssaoBlurPass;
         std::unique_ptr<class PostProcess> postProcess;
+        std::unique_ptr<class FrameBuffer> fxaa;
 
         Renderer() = default;
     public:
@@ -34,6 +35,15 @@ namespace mlg {
 
         void AddRenderable(const std::weak_ptr<Renderable>& renderable);
         void RemoveRenderable(std::weak_ptr<Renderable> renderable);
+
+    private:
+        void SSAOPass();
+
+        void DrawShadowMap();
+
+        void DrawRenderables(FrameBuffer *currentFramebuffer);
+
+        void GeometryPass();
     };
 
 } // mlg

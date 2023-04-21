@@ -16,7 +16,7 @@ namespace mlg {
 
         MLG_ASSERT_MSG(IsFrameBufferComplete(), "Frame buffer is not complete");
 
-        material = AssetManager::GetAsset<MaterialAsset>("res/config/post_process_material.json");
+        material = AssetManager::GetAsset<MaterialAsset>("res/config/EngineMaterials/post_process_material.json");
     }
 
     void PostProcess::GenerateAndBindTextures() {

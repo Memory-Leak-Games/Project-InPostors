@@ -9,6 +9,7 @@ namespace mlg {
         uint32_t colorTexture = 0;
     public:
         SingleTextureFrameBuffer(int32_t width, int32_t height);
+        SingleTextureFrameBuffer(int32_t width, int32_t height, const std::shared_ptr<MaterialAsset>& material);
         ~SingleTextureFrameBuffer() override;
 
         void Draw() override;

@@ -7,6 +7,7 @@ namespace mlg {
     class SSAOFrameBuffer : public FrameBuffer {
     private:
         uint32_t strengthTexture = 0;
+        uint32_t numberOfSamples = 16;
 
     public:
         SSAOFrameBuffer() = delete;
@@ -22,6 +23,9 @@ namespace mlg {
 
     private:
         void GenerateAndBindTextures() ;
+
+        void GenerateAndSendSamples();
+        void GenerateAndSendNoise();
     };
 
 } // mlg

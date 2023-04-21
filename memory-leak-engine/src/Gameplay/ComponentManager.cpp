@@ -1,3 +1,4 @@
+#include <tracy/Tracy.hpp>
 #include "Gameplay/ComponentManager.h"
 
 #include "Macros.h"
@@ -45,12 +46,16 @@ namespace mlg {
     }
 
     void ComponentManager::Update() {
+        ZoneScopedN("Component Update");
+
         for (const auto& component : instance->components) {
             component->Update();
         }
     }
 
     void ComponentManager::LateUpdate() {
+        ZoneScopedN("Component LateUpdate");
+
         for (const auto& component : instance->components) {
             component->LateUpdate();
         }
@@ -63,6 +68,7 @@ namespace mlg {
     }
 
     void ComponentManager::ProcessComponents() {
+        ZoneScopedN("Component Process");
         instance->components.erase(std::remove_if(instance->components.begin(), instance->components.end(),
                                                   [](const std::shared_ptr<Component>& entry) {
                                                       if (entry->IsQueuedForDeletion()) {

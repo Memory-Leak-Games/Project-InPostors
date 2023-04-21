@@ -29,6 +29,13 @@ namespace mlg {
 
         void SetLinearDrag(float value);
         void SetAngularDrag(float value);
+        void SetAngularVelocity(float newAngularVelocity);
+
+        glm::vec2 GetLinearVelocity();
+        glm::vec2 GetLinearAcceleration();
+
+        float GetAngularSpeed();
+        float GetAngularAcceleration();
 
         template<typename T, typename ... Args>
         void AddCollider(Args&& ... args) {
@@ -37,6 +44,8 @@ namespace mlg {
         }
 
         void SetKinematic(bool isKinematic);
+        void SetMass(float mass);
+        void SetBounciness(float bounciness);
 
         ~RigidbodyComponent() override;
 

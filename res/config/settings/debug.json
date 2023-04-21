@@ -1,3 +1,4 @@
 {
-  "showColliders": true
+  "showColliders": false,
+  "showForces": true
 }
