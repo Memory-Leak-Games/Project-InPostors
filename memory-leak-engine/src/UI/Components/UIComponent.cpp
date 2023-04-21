@@ -8,14 +8,6 @@ namespace mlg {
 
     void UIComponent::CalculateActualPosition(const Renderer2D* renderer) {
         actualPositionDirty = false;
-/*        glm::vec2 anchorPosition = {
-                renderer->windowWidth * anchor.x,
-                renderer->windowHeight * anchor.y
-        };
-        actualPosition = {
-                anchorPosition.x + (position.x - 1280.f * anchor.x),
-                anchorPosition.y + (position.y - 720.f * anchor.y)
-        };*/
 
         // Component's offset from anchor for 1280x720
         glm::vec2 defaultOffset = {
@@ -29,6 +21,7 @@ namespace mlg {
                 720.f * renderer->aspectRatio * anchor.x,
                 720.f * anchor.y
         };
+
         actualPosition = anchorPosition + defaultOffset * renderer->uiScale;
     }
 

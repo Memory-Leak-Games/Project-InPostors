@@ -60,12 +60,6 @@ namespace mlg {
         DrawRect();
 
         material->DeActivate();
-
-//        ImGui::Begin("image anchor");
-//        ImGui::Text("uiScale: %f", renderer->uiScale);
-//        ImGui::Text("actualPosition: %f, %f", actualPosition.x, actualPosition.y);
-//        ImGui::SliderFloat2("anchor", (float*)&anchor, 0.0f, 1.0f);
-//        ImGui::End();
     }
 
     void Image::DrawRect() {

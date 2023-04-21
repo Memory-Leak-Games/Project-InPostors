@@ -139,8 +139,6 @@ public:
         image.lock()->SetSize(glm::vec2{256.f});
         image.lock()->SetPosition({1280.f-128.f, 720.f-128.f});
         image.lock()->SetAnchor({1, 1});
-//        image.lock()->SetPosition({0.f, 720.f-128.f});
-//        image.lock()->SetAnchor({0, 1});
 
         auto progressBarMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/progressBar_material.json");
         auto progressBar = ui.lock()->AddComponent<mlg::ProgressBar>("ProgressBar", progressBarMaterial);
