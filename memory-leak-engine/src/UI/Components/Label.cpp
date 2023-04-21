@@ -32,7 +32,7 @@ namespace mlg {
     }
 
     void Label::Draw(const Renderer2D* renderer) {
-        UIComponent::CalculateActualPosition(renderer);
+        UIComponent::Draw(renderer);
 
         //TODO: Remove me later
         text = std::to_string(renderer->GetProjection()[0][0]);

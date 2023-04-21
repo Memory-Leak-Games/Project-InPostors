@@ -49,7 +49,7 @@ namespace mlg {
     }
 
     void Image::Draw(const Renderer2D* renderer) {
-        UIComponent::CalculateActualPosition(renderer);
+        UIComponent::Draw(renderer);
 
         material->Activate();
 

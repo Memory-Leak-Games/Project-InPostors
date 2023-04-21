@@ -15,7 +15,7 @@ namespace mlg {
 
     // TODO: Do przemyślenia czy ta klasa powinna dziedziczyć z obrazka a jeżeli tak to wypadało by korzystać z jej kodu
     void ProgressBar::Draw(const Renderer2D* renderer) {
-        UIComponent::CalculateActualPosition(renderer);
+        UIComponent::Draw(renderer);
 
         material->Activate();
 
