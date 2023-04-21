@@ -8,7 +8,8 @@ namespace mlg {
     private:
 
         struct Projection {
-            float nearPlane, farPlane;
+            float nearPlane;
+            float farPlane;
 
             Projection(float nearPlane, float farPlane);
             virtual ~Projection() = default;

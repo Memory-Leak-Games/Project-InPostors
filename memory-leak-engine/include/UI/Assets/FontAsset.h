@@ -13,8 +13,8 @@ namespace mlg {
             int64_t   Advance;    // Offset to advance to next glyph
         };
 
-        //TODO: Load font size
-        int fontSize = 32;
+        //TODO: Load font resolution?
+        int fontSize = 256;
         std::map<char8_t, Character> characters;
 
         explicit FontAsset(const std::string& path);

@@ -32,12 +32,14 @@ namespace mlg {
     }
 
     void Label::Draw(const Renderer2D* renderer) {
+        UIComponent::CalculateActualPosition(renderer);
 
         //TODO: Remove me later
         text = std::to_string(renderer->GetProjection()[0][0]);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glDepthMask(GL_FALSE); // Don't write into the depth buffer
 
         // Activate corresponding render state
         shader->Activate();
@@ -46,15 +48,15 @@ namespace mlg {
         glActiveTexture(GL_TEXTURE0);
         glBindVertexArray(vao);
 
-        float actualScale = scale;
+        float actualScale = scale * renderer->uiScale;
 
         // Iterate through all characters
-        float cursor = position.x * actualScale;
+        float cursor = actualPosition.x * actualScale;
         for (char8_t c : text) {
             FontAsset::Character ch = font->characters[c];
 
             float xpos = cursor + ch.Bearing.x * actualScale;
-            float ypos = (position.y - (float) (ch.Size.y - ch.Bearing.y)) * actualScale;
+            float ypos = (actualPosition.y - (float) (ch.Size.y - ch.Bearing.y)) * actualScale;
 
             float w = (float) ch.Size.x * actualScale;
             float h = (float) ch.Size.y * actualScale;
@@ -81,6 +83,8 @@ namespace mlg {
         }
         glBindVertexArray(0);
         glBindTextureUnit(0, 0);
+
+        glDepthMask(GL_TRUE); // Re-enable writing to the depth buffer
     }
 
     std::shared_ptr<FontAsset> Label::GetFont() const {

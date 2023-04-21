@@ -22,13 +22,13 @@ namespace mlg {
 
     void Image::InitializeRect() {
         static const std::vector<float> rectVertices({
-                                                             0.f, 1.0f,
-                                                             0.f, 0.f,
-                                                             1.0f, 0.f,
+                                                             -0.5f, 0.5f,
+                                                             -0.5f, -0.5f,
+                                                             0.5f, -0.5f,
 
-                                                             0.f, 1.0f,
-                                                             1.0f, 0.f,
-                                                             1.0f, 1.0f
+                                                             -0.5f, 0.5f,
+                                                             0.5f, -0.5f,
+                                                             0.5f, 0.5f
                                                      });
 
         glCreateVertexArrays(1, &rectVao);
@@ -49,10 +49,12 @@ namespace mlg {
     }
 
     void Image::Draw(const Renderer2D* renderer) {
+        UIComponent::CalculateActualPosition(renderer);
+
         material->Activate();
 
-        material->GetShaderProgram()->SetVec2F("size", size);
-        material->GetShaderProgram()->SetVec2F("screenPosition", position);
+        material->GetShaderProgram()->SetVec2F("size", size * renderer->uiScale);
+        material->GetShaderProgram()->SetVec2F("screenPosition", actualPosition);
         material->GetShaderProgram()->SetMat4F("projection", renderer->GetProjection());
 
         DrawRect();

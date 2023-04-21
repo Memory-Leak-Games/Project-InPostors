@@ -57,6 +57,7 @@ namespace mlg {
                 continue;
             renderable.lock()->Draw(this);
         }
+        windowSizeDirty = false;
 
         RenderingAPI::SetDefaultFrameBuffer();
         frameBuffer->Draw();
@@ -75,9 +76,13 @@ namespace mlg {
     }
 
     void Renderer2D::SetProjection(int32_t windowWidth, int32_t windowHeight) {
-        float aspectRatio = (float) windowWidth / (float) windowHeight;
+        Renderer2D::windowWidth = windowWidth;
+        Renderer2D::windowHeight = windowHeight;
+        Renderer2D::uiScale = windowHeight / 720.f;
 
-        projection = glm::ortho(0.0f, 1080 * aspectRatio, 0.0f, 1080.f);
+        aspectRatio = (float) windowWidth / (float) windowHeight;
+
+        projection = glm::ortho(0.0f, 720.f * aspectRatio, 0.0f, 720.f);
     }
 
     glm::mat4 Renderer2D::GetProjection() const {
@@ -85,6 +90,8 @@ namespace mlg {
     }
 
     void Renderer2D::OnWindowResize(const Event& event) {
+        instance->windowSizeDirty = true;
+
         auto& windowResizeEvent = (WindowResizeEvent&) event;
 
         instance->SetProjection(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
