@@ -8,8 +8,7 @@ namespace mlg {
         : boundsStart(boundsStart), boundsEnd(boundsEnd), dimensions(dimensions) {
         for (int x = 0; x <= dimensions.x; ++x) {
             for (int y = 0; y <= dimensions.y; ++y) {
-                int key = x + dimensions.x * y;
-                hashGrid[key] = std::unordered_set<std::shared_ptr<Collider>>();
+                hashGrid.emplace_back();
             }
         }
     }

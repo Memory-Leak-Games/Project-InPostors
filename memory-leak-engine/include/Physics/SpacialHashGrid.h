@@ -8,7 +8,7 @@ namespace mlg {
         glm::vec2 boundsEnd;
         glm::ivec2 dimensions;
 
-        std::unordered_map<int, std::unordered_set<std::shared_ptr<class Collider>>> hashGrid;
+        std::vector<std::unordered_set<std::shared_ptr<class Collider>>> hashGrid;
 
     public:
         SpacialHashGrid(const glm::vec2& boundsStart, const glm::vec2& boundsEnd, const glm::ivec2& dimensions);

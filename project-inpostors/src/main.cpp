@@ -182,6 +182,8 @@ public:
                 sphereRigidbody.lock()->SetAngularDrag(2.f);
             }
         }
+
+        SPDLOG_WARN("Number of colliders: {}", sizeX * sizeY);
     }
 
     virtual ~ProjectInpostors() {
