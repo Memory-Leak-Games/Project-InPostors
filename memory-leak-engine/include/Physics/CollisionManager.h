@@ -1,5 +1,7 @@
 #pragma once
 
+#include "SpacialHashGrid.h"
+
 namespace mlg {
 
     class CollisionManager {
@@ -7,6 +9,7 @@ namespace mlg {
         static CollisionManager* instance;
 
         std::vector<std::weak_ptr<class Collider>> colliders;
+        SpacialHashGrid spacialHashGrid;
 
         struct Collision {
             std::weak_ptr<Collider> collider;
@@ -15,17 +18,18 @@ namespace mlg {
 
         std::vector<Collision> collisionsThisTick;
 
-        CollisionManager() = default;
+        CollisionManager();
     public:
         static void Initialize();
         static void Stop();
 
         static CollisionManager* GetInstance();
 
+        static void UpdateSpacialGrid();
         static void DetectCollisions();
         static void SolveCollisions();
 
-        static void AddCollider(std::weak_ptr<Collider> collider);
+        static void AddCollider(const std::weak_ptr<Collider>& collider);
         static void RemoveCollider(std::weak_ptr<Collider> collider);
     };
 
