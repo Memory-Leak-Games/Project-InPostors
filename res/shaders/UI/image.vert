@@ -17,5 +17,5 @@ void main() {
     outPosition += screenPosition;
 
     gl_Position = projection * vec4(outPosition, 0.0, 1.0);
-    uv = position;
+    uv = position + vec2(0.5, 0.5);
 }

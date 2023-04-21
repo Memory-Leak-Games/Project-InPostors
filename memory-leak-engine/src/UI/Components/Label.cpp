@@ -32,6 +32,7 @@ namespace mlg {
     }
 
     void Label::Draw(const Renderer2D* renderer) {
+        UIComponent::CalculateActualPosition(renderer);
 
         //TODO: Remove me later
         text = std::to_string(renderer->GetProjection()[0][0]);
@@ -50,12 +51,12 @@ namespace mlg {
         float actualScale = scale * renderer->uiScale;
 
         // Iterate through all characters
-        float cursor = position.x * actualScale;
+        float cursor = actualPosition.x * actualScale;
         for (char8_t c : text) {
             FontAsset::Character ch = font->characters[c];
 
             float xpos = cursor + ch.Bearing.x * actualScale;
-            float ypos = (position.y - (float) (ch.Size.y - ch.Bearing.y)) * actualScale;
+            float ypos = (actualPosition.y - (float) (ch.Size.y - ch.Bearing.y)) * actualScale;
 
             float w = (float) ch.Size.x * actualScale;
             float h = (float) ch.Size.y * actualScale;
