@@ -40,10 +40,10 @@ void mlg::FontAsset::Load() {
         uint32_t texture;
         glCreateTextures(GL_TEXTURE_2D, 1, &texture);
 
-        glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         auto width = (int32_t) face->glyph->bitmap.width;
         auto height = (int32_t) face->glyph->bitmap.rows;

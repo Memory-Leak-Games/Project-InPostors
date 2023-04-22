@@ -69,38 +69,26 @@ namespace mlg {
             // Skip rendering space
             if (c == ' ')
             {
-                ZoneScopedN("space");
+                ZoneScopedN("Space");
                 cursor += (font->fontSize >> 1) * actualScale;
             }
             else
             {
-                ZoneScopedN("char");
+                ZoneScopedN("Char");
                 ch = font->characters[c - 33];
 
+                // Calculate position and size
                 xpos = cursor + ch.Bearing.x * actualScale;
                 ypos = (actualPosition.y - (float) (ch.Size.y - ch.Bearing.y)) * actualScale;
 
                 w = (float) ch.Size.x * actualScale;
                 h = (float) ch.Size.y * actualScale;
-                // Update vbo for each character
-/*                float vertices[6][4] = {
-                        {xpos, ypos + h, 0.0, 0.0},
-                        {xpos, ypos, 0.0, 1.0},
-                        {xpos + w, ypos, 1.0, 1.0},
 
-                        {xpos, ypos + h, 0.0, 0.0},
-                        {xpos + w, ypos, 1.0, 1.0},
-                        {xpos + w, ypos + h, 1.0, 0.0}};*/
-
-/*                model = glm::mat4(1.0f);
-                model = glm::translate(model, {xpos, ypos, 0.0f});
-                model = glm::scale(model, {w, h, 1.0f});*/
                 shader->SetVec2F("pos", {xpos, ypos});
                 shader->SetVec2F("size", {w, h});
 
                 // Render glyph texture over quad
                 glBindTextureUnit(0, ch.textureID);
-                // Update content of vbo memory
 
                 // Render quad
                 {
