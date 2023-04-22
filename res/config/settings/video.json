@@ -9,5 +9,5 @@
   "ResolutionWidth": 1280,
   "ResolutionHeight": 720,
   "WindowType": "windowed",
-  "LockSize": true
+  "LockSize": false
 }

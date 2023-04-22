@@ -13,6 +13,7 @@ namespace mlg {
     }
 
     void ModelAsset::Load() {
+        ZoneScopedN("Load ModelAsset");
         SPDLOG_DEBUG("Loading Model at path: {}", GetPath());
         model = std::make_unique<Model>(GetPath());
     }

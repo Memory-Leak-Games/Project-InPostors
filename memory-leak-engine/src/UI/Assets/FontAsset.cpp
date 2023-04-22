@@ -7,6 +7,7 @@
 mlg::FontAsset::FontAsset(const std::string& path) : Asset(path) {}
 
 void mlg::FontAsset::Load() {
+    ZoneScopedN("Load FontAsset");
 
     SPDLOG_DEBUG("Loading Font at path: {}", GetPath());
 

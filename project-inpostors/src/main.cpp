@@ -133,9 +133,10 @@ public:
 
         auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/ARLRDBD.ttf");
         auto label = ui.lock()->AddComponent<mlg::Label>("Label", font);
-        label.lock()->SetPosition({500, 100});
+        label.lock()->SetText("Aaa Kotki 2 szarobure obydwa 1234567890");
+        label.lock()->SetPosition({50, 50});
         label.lock()->SetTextColor({1, 1, 1});
-        label.lock()->SetSize(64);
+        label.lock()->SetSize(32);
 
         auto imageMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/cat_UI_material.json");
         auto image = ui.lock()->AddComponent<mlg::Image>("Image", imageMaterial);

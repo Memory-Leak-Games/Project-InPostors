@@ -9,6 +9,7 @@ namespace mlg {
     ShaderAsset::ShaderAsset(const std::string& path) : Asset(path) {}
 
     void ShaderAsset::Load() {
+        ZoneScopedN("Load ShaderAsset");
         std::string path = GetPath();
         SPDLOG_DEBUG("Loading shader at path: {}", path);
 

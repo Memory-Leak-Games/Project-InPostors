@@ -9,6 +9,7 @@ namespace mlg {
     TextureAsset::TextureAsset(const std::string& path) : Asset(path) {}
 
     void TextureAsset::Load() {
+        ZoneScopedN("Load TextureAsset");
         std::string path = GetPath();
         SPDLOG_DEBUG("Loading texture at path: {}", path);
 
