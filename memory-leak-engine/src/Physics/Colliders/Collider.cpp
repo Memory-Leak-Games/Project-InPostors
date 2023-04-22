@@ -18,11 +18,23 @@ namespace mlg {
     }
 
     bool Collider::DetectCollision(Collider* anotherCollider) {
+        if (!DetectCollisionBoundingCircle(anotherCollider))
+            return false;
+
         if (shape->GetType() == ColliderShape::ColliderShapeType::Circle) {
             return DetectCollisionAsCircle(anotherCollider);
         } else {
             return DetectCollisionAsRectangle(anotherCollider);
         }
+    }
+
+    bool Collider::DetectCollisionBoundingCircle(Collider* anotherCollider) const {
+        const float radius = GetRadius();
+        const float anotherRadius = anotherCollider->GetRadius();
+
+        const float distance = glm::distance(this->GetPosition(), anotherCollider->GetPosition());
+
+        return radius + anotherRadius >= distance;
     }
 
     bool Collider::DetectCollisionAsCircle(Collider* anotherCollider) {
@@ -99,4 +111,5 @@ namespace mlg {
     float Collider::GetRadius() const {
         return shape->GetRadius();
     }
+
 }

@@ -35,6 +35,7 @@ namespace mlg {
         ~Collider();
 
         bool DetectCollision(Collider* anotherCollider);
+        bool DetectCollisionBoundingCircle(Collider* anotherCollider) const;
         void Separate(Collider* anotherCollider, glm::vec2 SeparationVector);
 
         glm::vec2 CalculateSeparation(Collider* anotherCollider);
