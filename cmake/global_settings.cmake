@@ -25,3 +25,14 @@ set(ASSIMP_BUILD_OBJ_IMPORTER ON)
 #set(ASSIMP_BUILD_GLTF_IMPORTER ON) // GLB and gltf
 #set(ASSIMP_BUILD_COLLADA_IMPORTER ON) // DAE
 #set(ASSIMP_BUILD_FBX_IMPORTER ON)
+
+if (UNIX)
+    execute_process(COMMAND "loginctl show-session $(loginctl | grep $(whoami) | awk '{print $1}') -p Type" OUTPUT_VARIABLE result_display_server)
+    if ("${resulting_display_server}" STREQUAL "Type=x11")
+        message(Using X11)
+        set(GLFW_USE_WAYLAND OFF CACHE BOOL "" FORCE)
+    else()
+        message(Uising Wayland)
+        set(GLFW_USE_WAYLAND ON CACHE BOOL "" FORCE)
+    endif()
+endif ()
