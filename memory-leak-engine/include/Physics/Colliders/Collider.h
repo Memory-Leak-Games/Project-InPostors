@@ -25,8 +25,8 @@ namespace mlg {
         std::unique_ptr<ColliderShape::Shape> shape;
 
         // HashGridClient
-        glm::vec2 minCoord;
-        glm::vec2 maxCoord;
+        glm::ivec2 minCoord;
+        glm::ivec2 maxCoord;
 
         uint32_t queryID = -1;
 

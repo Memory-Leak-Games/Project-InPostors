@@ -1,7 +1,7 @@
 #include "Physics/SpacialHashGrid.h"
 
-#include "Physics/Colliders/Collider.h"
 #include "Core/Math.h"
+#include "Physics/Colliders/Collider.h"
 
 namespace mlg {
     SpacialHashGrid::SpacialHashGrid(const glm::vec2& boundsStart, const glm::vec2& boundsEnd, const glm::ivec2& dimensions)
@@ -25,8 +25,7 @@ namespace mlg {
 
         for (int x = gridCoordMin.x; x <= gridCoordMax.x; ++x) {
             for (int y = gridCoordMin.y; y <= gridCoordMax.y; ++y) {
-                int key = x + dimensions.x * y;
-                hashGrid[key].insert(client);
+                hashGrid[GetHashIndex({x, y})].push_back(client);
             }
         }
     }
@@ -44,6 +43,15 @@ namespace mlg {
     }
 
     void SpacialHashGrid::Update(const std::shared_ptr<Collider>& client) {
+        const glm::vec2 clientPosition = client->GetPosition();
+        const float clientRadius = client->GetRadius();
+
+        glm::ivec2 gridCoordMin = CalculateCellIndex(clientPosition - clientRadius * glm::vec2{1.f});
+        glm::ivec2 gridCoordMax = CalculateCellIndex(clientPosition + clientRadius * glm::vec2{1.f});
+
+        if (client->minCoord == gridCoordMin && client->maxCoord == gridCoordMax)
+            return;
+
         RemoveClient(client);
         Insert(client);
     }
@@ -72,7 +80,8 @@ namespace mlg {
 
         for (int x = gridCoordMin.x; x <= gridCoordMax.x; ++x) {
             for (int y = gridCoordMin.y; y <= gridCoordMax.y; ++y) {
-                hashGrid[GetHashIndex({x, y})].erase(client);
+                auto& clientVector = hashGrid[GetHashIndex({x, y})];
+                std::erase(clientVector, client);
             }
         }
     }

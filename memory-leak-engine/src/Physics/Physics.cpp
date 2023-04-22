@@ -46,13 +46,12 @@ namespace mlg {
     }
 
     void Physics::TickFixedTimeSteps() {
-        ZoneScopedNC("Tick Physics", tracy::Color::ColorType::Green);
-
         float deltaTime = Time::GetTrueDeltaSeconds();
 
         instance->timeAccumulator += deltaTime;
 
         while (instance->timeAccumulator >= Time::GetFixedTimeStep()) {
+            ZoneScopedNC("Tick Physics", tracy::Color::ColorType::Green);
             instance->OnFixedUpdate();
             instance->SolveDynamics();
 

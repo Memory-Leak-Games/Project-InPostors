@@ -8,7 +8,7 @@ namespace mlg {
         glm::vec2 boundsEnd;
         glm::ivec2 dimensions;
 
-        std::vector<std::unordered_set<std::shared_ptr<class Collider>>> hashGrid;
+        std::vector<std::vector<std::shared_ptr<class Collider>>> hashGrid;
 
         // used to deduplicate clients in FindNear
         uint32_t queryIDs = 0;
