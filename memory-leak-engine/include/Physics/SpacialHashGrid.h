@@ -22,6 +22,7 @@ namespace mlg {
         void FindNear(const glm::vec2& position, float radius, std::vector<std::shared_ptr<Collider>>& result);
         void Update(const std::shared_ptr<Collider>& client);
 
+        void DebugDraw();
     private:
         void Insert(const std::shared_ptr<Collider>& client);
         [[nodiscard]] glm::ivec2 CalculateCellIndex(glm::vec2 position) const;

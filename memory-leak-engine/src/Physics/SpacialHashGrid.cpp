@@ -3,6 +3,9 @@
 #include "Core/Math.h"
 #include "Physics/Colliders/Collider.h"
 
+#include "Rendering/Gizmos/Gizmos.h"
+#include "Core/RGBA.h"
+
 namespace mlg {
     SpacialHashGrid::SpacialHashGrid(const glm::vec2& boundsStart, const glm::vec2& boundsEnd, const glm::ivec2& dimensions)
         : boundsStart(boundsStart), boundsEnd(boundsEnd), dimensions(dimensions) {
@@ -95,5 +98,24 @@ namespace mlg {
         return position.x + dimensions.x * position.y;
     }
 
+    void SpacialHashGrid::DebugDraw() {
+        const glm::vec2 boundsSize = boundsEnd - boundsStart;
+        glm::vec2 rectSize;
+        rectSize.x = boundsSize.x / (float) dimensions.x;
+        rectSize.y = boundsSize.y / (float) dimensions.y;
 
+        for (int x = 0; x < dimensions.x; ++x) {
+            for (int y = 0; y < dimensions.y; ++y) {
+                glm::vec3 position {0.f};
+                position.x = ((float) x + 0.5f) * rectSize.x - boundsSize.x / 2.f;
+                position.z = ((float) y + 0.5f) * rectSize.y - boundsSize.x / 2.f;
+
+                glm::vec3 size {0.f};
+                size.x = rectSize.x;
+                size.z = rectSize.y;
+
+                Gizmos::DrawBox(position, size, glm::quat(glm::vec3{0.f}), RGBA::yellow);
+            }
+        }
+    }
 }// namespace mlg

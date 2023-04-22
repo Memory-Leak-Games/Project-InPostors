@@ -1,6 +1,5 @@
 #pragma once
 
-#include "SpacialHashGrid.h"
 
 namespace mlg {
 
@@ -9,7 +8,7 @@ namespace mlg {
         static CollisionManager* instance;
 
         std::vector<std::weak_ptr<class Collider>> colliders;
-        SpacialHashGrid spacialHashGrid;
+        std::unique_ptr<class SpacialHashGrid> spacialHashGrid;
 
         struct Collision {
             std::weak_ptr<Collider> collider;
@@ -31,6 +30,10 @@ namespace mlg {
 
         static void AddCollider(const std::weak_ptr<Collider>& collider);
         static void RemoveCollider(std::weak_ptr<Collider> collider);
+
+        static void SetBounds(const glm::vec2& start, const glm::vec2& end, const glm::ivec2& dimensions);
+
+        static void DrawSpacialGrid();
     };
 
 } // mlg

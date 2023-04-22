@@ -3,6 +3,8 @@
 #include "Physics/Colliders/Collider.h"
 #include "Physics/Rigidbody.h"
 
+#include "Physics/SpacialHashGrid.h"
+
 #include "Core/Math.h"
 #include "Macros.h"
 
@@ -16,6 +18,8 @@ namespace mlg {
         instance = new CollisionManager();
 
         SPDLOG_INFO("Initializing CollisionManager");
+
+        SetBounds(glm::vec2{-50.f, -50.f}, glm::vec2{50.f, 50.f}, glm::ivec2{100, 100});
     }
 
     void CollisionManager::Stop() {
@@ -36,7 +40,7 @@ namespace mlg {
         ZoneScopedC(tracy::Color::ColorType::Green);
 
         for (auto& collider : instance->colliders) {
-            instance->spacialHashGrid.Update(collider.lock());
+            instance->spacialHashGrid->Update(collider.lock());
         }
     }
 
@@ -53,7 +57,7 @@ namespace mlg {
                 continue;
 
             std::vector<std::shared_ptr<Collider>> nearColliders;
-            instance->spacialHashGrid.FindNear(collider.lock()->GetPosition(),
+            instance->spacialHashGrid->FindNear(collider.lock()->GetPosition(),
                                                collider.lock()->GetRadius(), nearColliders);
 
             // Check collision with near colliders
@@ -92,7 +96,7 @@ namespace mlg {
 
     void CollisionManager::AddCollider(const std::weak_ptr<Collider>& collider) {
         instance->colliders.push_back(collider);
-        instance->spacialHashGrid.AddClient(collider.lock());
+        instance->spacialHashGrid->AddClient(collider.lock());
     }
 
     void CollisionManager::RemoveCollider(std::weak_ptr<Collider> collider) {
@@ -102,12 +106,20 @@ namespace mlg {
                                                  }),
                                   instance->colliders.end());
 
-        instance->spacialHashGrid.RemoveClient(collider.lock());
+        instance->spacialHashGrid->RemoveClient(collider.lock());
     }
 
-    // todo: Move out spacial grid initialization
-    CollisionManager::CollisionManager()
-        : spacialHashGrid(glm::vec2{-50.f, -50.f}, glm::vec2{50.f, 50.f}, glm::ivec2{100, 100}) {
+    CollisionManager::CollisionManager() { }
+
+    void CollisionManager::SetBounds(const glm::vec2& start, const glm::vec2& end, const glm::ivec2& dimensions) {
+        instance->spacialHashGrid = std::make_unique<SpacialHashGrid>(start, end, dimensions);
+        for (const auto & collider : instance->colliders) {
+            instance->spacialHashGrid->AddClient(collider.lock());
+        }
+    }
+
+    void CollisionManager::DrawSpacialGrid() {
+        instance->spacialHashGrid->DebugDraw();
     }
 
 
