@@ -1,5 +1,6 @@
 #pragma once
 
+#define AVERAGED_FRAMES 5
 
 namespace mlg {
 
@@ -9,6 +10,10 @@ namespace mlg {
 
         double frameStart = 0.f;
         double lastFrameStart = 0.f;
+
+        uint64_t frameCount;
+
+        std::array<double, AVERAGED_FRAMES> lastFramesDeltaSeconds;
 
         int fpsCap;
         int physicsTickRate;

@@ -122,8 +122,26 @@ void Core::TickRendering() const {
 
 void Core::RenderImGUI() const {
     ImGui::Begin("FPS");
-    ImGui::Text("Framerate: %.3f (%.1f FPS)", Time::GetTrueDeltaSeconds(), 1 / Time::GetTrueDeltaSeconds());
+    ImGui::Text("True Framerate: %.3f (%.1f FPS)", Time::GetTrueDeltaSeconds(), 1 / Time::GetTrueDeltaSeconds());
+    ImGui::Text("Logic Framerate: %.3f (%.1f FPS)", Time::GetDeltaSeconds(), 1 / Time::GetDeltaSeconds());
     ImGui::Text("Time: %.3f", Time::GetSeconds());
+
+    static float timeAccumulator;
+    static std::deque<float> frameTimes;
+
+    timeAccumulator += Time::GetDeltaSeconds();
+    if (timeAccumulator > 1/30.f) {
+        timeAccumulator = 0.f;
+
+        frameTimes.push_back(Time::GetDeltaSeconds());
+    }
+
+    if (frameTimes.size() > 100)
+        frameTimes.pop_front();
+
+    std::vector<float> frameTimeArray (frameTimes.begin(), frameTimes.end());
+    ImGui::PlotLines("Framerate", &frameTimeArray[0], frameTimeArray.size());
+
     ImGui::End();
 
     static glm::ivec2 dimensions;
