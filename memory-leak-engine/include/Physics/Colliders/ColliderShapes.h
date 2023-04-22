@@ -39,13 +39,14 @@ namespace mlg::ColliderShape {
 
     struct Rectangle : public Shape {
         glm::vec2 size{0.f};
+        const float boundingCircleRadius;
 
         Rectangle(const glm::vec2& position, const glm::vec2& offset, const glm::vec2& size)
-        : Shape(position, offset), size(size) {}
+        : Shape(position, offset), size(size), boundingCircleRadius(std::sqrt(size.x + size.y)) {}
         ~Rectangle() override = default;
 
         [[nodiscard]] float GetRadius() const override {
-            return std::sqrt(size.x + size.y) * 0.5f;
+            return boundingCircleRadius;
         }
 
         [[nodiscard]] ColliderShapeType GetType() const override {

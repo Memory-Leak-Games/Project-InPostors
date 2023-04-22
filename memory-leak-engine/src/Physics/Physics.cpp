@@ -70,6 +70,9 @@ namespace mlg {
             if (rigidbody.expired())
                 continue;
 
+            if (rigidbody.lock()->isKinematic)
+                continue;
+
             rigidbody.lock()->Integrate();
             rigidbody.lock()->UpdateColliders();
         }
