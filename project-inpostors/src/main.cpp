@@ -152,8 +152,8 @@ public:
 
         SpawnSpheres();
 
-        //        mlg::LevelGenerator::LoadJson("res/levels/detroit.json");
-        //        mlg::LevelGenerator::GenerateLevel(7.0f);
+        mlg::LevelGenerator::LoadJson("res/levels/detroit.json");
+        mlg::LevelGenerator::GenerateLevel(7.0f);
     }
 
     void SpawnSpheres() {
@@ -178,8 +178,9 @@ public:
 
                 auto sphereRigidbody = sphere.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
                 sphereRigidbody.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f), 1.f);
-                sphereRigidbody.lock()->SetLinearDrag(2.f);
-                sphereRigidbody.lock()->SetAngularDrag(2.f);
+                sphereRigidbody.lock()->SetLinearDrag(1.f);
+                sphereRigidbody.lock()->SetAngularDrag(1.f);
+                sphereRigidbody.lock()->SetMass(0.2);
             }
         }
 

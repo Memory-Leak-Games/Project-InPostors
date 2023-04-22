@@ -48,15 +48,20 @@ namespace mlg {
         Insert(client);
     }
 
-    void SpacialHashGrid::FindNear(const glm::vec2& position, float radius, std::unordered_set<std::shared_ptr<Collider>>& result) {
+    void SpacialHashGrid::FindNear(const glm::vec2& position, float radius, std::vector<std::shared_ptr<Collider>>& result) {
         glm::ivec2 gridCoordMin = CalculateCellIndex(position - radius * glm::vec2{1.f});
         glm::ivec2 gridCoordMax = CalculateCellIndex(position + radius * glm::vec2{1.f});
 
+        const uint32_t queryID = queryIDs++;
+
         for (int x = gridCoordMin.x; x <= gridCoordMax.x; ++x) {
             for (int y = gridCoordMin.y; y <= gridCoordMax.y; ++y) {
-                int key = x + dimensions.x * y;
-
-                result.insert(hashGrid[key].begin(), hashGrid[key].end());
+                for (auto& client : hashGrid[GetHashIndex({x, y})]) {
+                    if (client->queryID != queryID) {
+                        client->queryID = queryID;
+                        result.push_back(client);
+                    }
+                }
             }
         }
     }
@@ -67,14 +72,18 @@ namespace mlg {
 
         for (int x = gridCoordMin.x; x <= gridCoordMax.x; ++x) {
             for (int y = gridCoordMin.y; y <= gridCoordMax.y; ++y) {
-                int key = x + dimensions.x * y;
-                hashGrid[key].erase(client);
+                hashGrid[GetHashIndex({x, y})].erase(client);
             }
         }
     }
 
     void SpacialHashGrid::AddClient(const std::shared_ptr<Collider>& client) {
+        client->queryID = 0;
         Insert(client);
+    }
+
+    int SpacialHashGrid::GetHashIndex(const glm::ivec2& position) {
+        return position.x + dimensions.x * position.y;
     }
 
 

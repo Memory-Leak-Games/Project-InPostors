@@ -65,6 +65,8 @@ namespace mlg {
     }
 
     void Physics::SolveDynamics() {
+        ZoneScopedC(tracy::Color::ColorType::Green);
+
         for (auto& rigidbody : states) {
             if (rigidbody.expired())
                 continue;

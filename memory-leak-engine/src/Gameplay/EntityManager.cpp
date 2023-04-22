@@ -34,6 +34,8 @@ namespace mlg {
     }
 
     void EntityManager::PhysicsUpdate() {
+        ZoneScopedNC("Entity Physics Update", tracy::Color::ColorType::Green);
+
         for (const auto& entity : instance->entities) {
             if (entity->IsStatic())
                 continue;

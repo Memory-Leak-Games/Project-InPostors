@@ -28,6 +28,8 @@ namespace mlg {
         glm::vec2 minCoord;
         glm::vec2 maxCoord;
 
+        uint32_t queryID = -1;
+
     public:
         Collider(Rigidbody* owner, std::unique_ptr<ColliderShape::Shape> shape);
         ~Collider();

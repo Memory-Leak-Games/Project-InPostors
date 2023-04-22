@@ -52,10 +52,9 @@ namespace mlg {
             if (sharedCollider->GetOwner()->GetIsKinematic())
                 continue;
 
-            std::unordered_set<std::shared_ptr<Collider>> nearColliders;
+            std::vector<std::shared_ptr<Collider>> nearColliders;
             instance->spacialHashGrid.FindNear(collider.lock()->GetPosition(),
                                                collider.lock()->GetRadius(), nearColliders);
-
 
             // Check collision with near colliders
             for (auto& anotherCollider : nearColliders) {
