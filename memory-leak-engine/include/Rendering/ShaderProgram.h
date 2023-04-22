@@ -10,6 +10,8 @@ namespace mlg {
         std::shared_ptr<class ShaderAsset> fragmentShader;
         std::shared_ptr<class ShaderAsset> geometryShader;
 
+        mutable std::unordered_map<std::string, int32_t> uniformCache;
+
     public:
         ShaderProgram(const std::shared_ptr<ShaderAsset>& vertexShader,
                       const std::shared_ptr<ShaderAsset>& fragmentShader);
