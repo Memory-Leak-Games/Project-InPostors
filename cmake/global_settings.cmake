@@ -8,6 +8,10 @@ set(CMAKE_DEBUG_POSTFIX "_d")
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
 set(BUILD_SHARED_LIBS                       OFF CACHE INTERNAL "Build package with shared libraries.")
 set(ASSIMP_BUILD_ASSIMP_TOOLS               OFF CACHE INTERNAL "If the supplementary tools for Assimp are built in addition to the library.")
 set(ASSIMP_NO_EXPORT                        ON CACHE INTERNAL  "Disable Assimp export")
