@@ -15,7 +15,7 @@ namespace mlg {
 
         //TODO: Load font resolution?
         int fontSize = 256;
-        std::map<char8_t, Character> characters;
+        std::vector<Character> characters;
 
         explicit FontAsset(const std::string& path);
         void Load() override;

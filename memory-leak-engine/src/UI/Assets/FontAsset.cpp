@@ -25,7 +25,9 @@ void mlg::FontAsset::Load() {
 
     FT_GlyphSlot slot = face->glyph; // <-- This is new
 
-    for (uint8_t c = 0; c < 128; c++) {
+    characters.reserve(95);
+
+    for (uint8_t c = 32; c < 127; c++) {
         // Load character glyph
         if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
             SPDLOG_ERROR("Failed to load Glyph");
@@ -63,7 +65,7 @@ void mlg::FontAsset::Load() {
                 face->glyph->advance.x
         };
 
-        characters.insert(std::pair<char8_t, Character>(c, character));
+        characters.push_back(character);
 
     }
 
