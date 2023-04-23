@@ -40,16 +40,16 @@ namespace mlg {
         soloud->stopAll();
     }
 
-    void Audio::SetVolume(float volume) {
-        sound.setVolume(volume);
+    void Audio::SetVolume(SoLoud::Soloud* soloud, float volume) {
+        soloud->setVolume(handle, volume);
     }
 
     void Audio::SetLooping() {
-        sound.setLooping(false);
+        sound.setLooping(1);
     }
 
     void Audio::SetSingleInstance() {
-        sound.setSingleInstance(false);
+        sound.setSingleInstance(1);
     }
 
     void Audio::SetFilter(uint32_t filterID, SoLoud::Filter* filter) {

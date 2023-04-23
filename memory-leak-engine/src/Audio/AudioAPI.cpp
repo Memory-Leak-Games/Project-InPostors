@@ -3,6 +3,8 @@
 #include <iostream>
 #include <soloud.h>
 
+#include "Core/Settings/SettingsManager.h"
+
 #include "Macros.h"
 
 namespace mlg {
@@ -18,6 +20,7 @@ namespace mlg {
         instance->soloud = new SoLoud::Soloud();
 
         instance->soloud->init();
+        instance->soloud->setGlobalVolume(mlg::SettingsManager::Get<float>(mlg::SettingsType::Audio, "volume"));
 
         std::cout << "\n    SoLoud Version: " << SOLOUD_VERSION << "\n\n";
 

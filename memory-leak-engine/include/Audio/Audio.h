@@ -42,11 +42,9 @@ namespace mlg {
         void Stop();
         static void StopAll(SoLoud::Soloud* soloud);
 
-        // TODO: This doesn't work
-        void SetVolume(float volume);
-        // TODO: This also doesn't work :(
+        void SetVolume(SoLoud::Soloud* soloud, float volume);
         void SetLooping();
-        // TODO: Same here :(
+        // TODO: Check if these two work
         void SetSingleInstance();
         void SetFilter(uint32_t filterID, SoLoud::Filter* filter);
 

@@ -43,8 +43,8 @@ namespace mlg {
         audio->StopAll(soloud);
     }
 
-    void AudioAsset::SetVolume(float volume) {
-        audio->SetVolume(volume);
+    void AudioAsset::SetVolume(SoLoud::Soloud* soloud, float volume) {
+        audio->SetVolume(soloud, volume);
     }
 
     void AudioAsset::SetLooping() {
