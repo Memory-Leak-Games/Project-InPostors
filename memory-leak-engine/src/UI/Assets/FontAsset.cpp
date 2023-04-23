@@ -7,6 +7,7 @@
 mlg::FontAsset::FontAsset(const std::string& path) : Asset(path) {}
 
 void mlg::FontAsset::Load() {
+    ZoneScopedN("Load FontAsset");
 
     SPDLOG_DEBUG("Loading Font at path: {}", GetPath());
 
@@ -24,7 +25,9 @@ void mlg::FontAsset::Load() {
 
     FT_GlyphSlot slot = face->glyph; // <-- This is new
 
-    for (uint8_t c = 0; c < 128; c++) {
+    characters.reserve(95);
+
+    for (uint8_t c = 32; c < 127; c++) {
         // Load character glyph
         if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
             SPDLOG_ERROR("Failed to load Glyph");
@@ -37,10 +40,10 @@ void mlg::FontAsset::Load() {
         uint32_t texture;
         glCreateTextures(GL_TEXTURE_2D, 1, &texture);
 
-        glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         auto width = (int32_t) face->glyph->bitmap.width;
         auto height = (int32_t) face->glyph->bitmap.rows;
@@ -62,7 +65,7 @@ void mlg::FontAsset::Load() {
                 face->glyph->advance.x
         };
 
-        characters.insert(std::pair<char8_t, Character>(c, character));
+        characters.push_back(character);
 
     }
 

@@ -49,6 +49,7 @@ namespace mlg {
     }
 
     void Image::Draw(const Renderer2D* renderer) {
+        ZoneScopedN("Draw Image");
         UIComponent::Draw(renderer);
 
         material->Activate();

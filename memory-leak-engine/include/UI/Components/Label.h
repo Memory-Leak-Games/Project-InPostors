@@ -4,6 +4,9 @@
 
 namespace mlg {
     class Label : public UIComponent {
+
+        static float glyphQuad[];
+
         std::shared_ptr<class FontAsset> font;
 
         uint32_t vao{}, vbo{};

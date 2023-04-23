@@ -13,9 +13,9 @@ namespace mlg {
             int64_t   Advance;    // Offset to advance to next glyph
         };
 
-        //TODO: Load font resolution?
-        int fontSize = 256;
-        std::map<char8_t, Character> characters;
+        //TODO: Load font resolution? Changing this also requires re-tweaking glyph shader!
+        int fontSize = 32;
+        std::vector<Character> characters;
 
         explicit FontAsset(const std::string& path);
         void Load() override;

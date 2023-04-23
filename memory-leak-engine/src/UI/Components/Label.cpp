@@ -7,11 +7,21 @@
 #include "Core/AssetManager/AssetManager.h"
 #include "UI/Assets/FontAsset.h"
 
+#include "Core/Time.h"
 #include "Rendering/Assets/ShaderAsset.h"
 #include "Rendering/ShaderProgram.h"
 #include "UI/Renderer2D.h"
 
 namespace mlg {
+
+    float Label::glyphQuad[] = {
+            0.0, 1.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 1.0,
+            1.0, 0.0, 1.0, 1.0,
+
+            0.0, 1.0, 0.0, 0.0,
+            1.0, 0.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 0.0};
 
     Label::Label(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<class FontAsset>& font)
         : UIComponent(std::move(owner), std::move(name)), font(font) {
@@ -22,7 +32,8 @@ namespace mlg {
         glCreateVertexArrays(1, &vao);
         glCreateBuffers(1, &vbo);
 
-        glNamedBufferData(vbo, sizeof(float) * 6 * 4, nullptr, GL_DYNAMIC_DRAW);
+        glNamedBufferData(vbo, sizeof(float) * 6 * 4, nullptr, GL_STATIC_DRAW);
+        glNamedBufferSubData(vbo, 0, sizeof(glyphQuad), glyphQuad);
 
         glEnableVertexArrayAttrib(vao, 0);
         glVertexArrayAttribBinding(vao, 0, 0);
@@ -32,10 +43,8 @@ namespace mlg {
     }
 
     void Label::Draw(const Renderer2D* renderer) {
+        ZoneScopedN("Draw Label");
         UIComponent::Draw(renderer);
-
-        //TODO: Remove me later
-        text = std::to_string(renderer->GetProjection()[0][0]);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -50,36 +59,45 @@ namespace mlg {
 
         float actualScale = scale * renderer->uiScale;
 
+        FontAsset::Character ch;
+        float xpos, ypos, w, h;
+
         // Iterate through all characters
         float cursor = actualPosition.x * actualScale;
         for (char8_t c : text) {
-            FontAsset::Character ch = font->characters[c];
 
-            float xpos = cursor + ch.Bearing.x * actualScale;
-            float ypos = (actualPosition.y - (float) (ch.Size.y - ch.Bearing.y)) * actualScale;
+            // Skip rendering space
+            if (c == ' ')
+            {
+                ZoneScopedN("Space");
+                cursor += (font->fontSize >> 1) * actualScale;
+            }
+            else
+            {
+                ZoneScopedN("Char");
+                ch = font->characters[c - 33];
 
-            float w = (float) ch.Size.x * actualScale;
-            float h = (float) ch.Size.y * actualScale;
-            // Update vbo for each character
-            float vertices[6][4] = {
-                    {xpos, ypos + h, 0.0, 0.0},
-                    {xpos, ypos, 0.0, 1.0},
-                    {xpos + w, ypos, 1.0, 1.0},
+                // Calculate position and size
+                xpos = cursor + ch.Bearing.x * actualScale;
+                ypos = (actualPosition.y - (float) (ch.Size.y - ch.Bearing.y)) * actualScale;
 
-                    {xpos, ypos + h, 0.0, 0.0},
-                    {xpos + w, ypos, 1.0, 1.0},
-                    {xpos + w, ypos + h, 1.0, 0.0}};
+                w = (float) ch.Size.x * actualScale;
+                h = (float) ch.Size.y * actualScale;
 
-            // Render glyph texture over quad
-            glBindTextureUnit(0, ch.textureID);
-            // Update content of vbo memory
-            glNamedBufferSubData(vbo, 0, sizeof(vertices), vertices);
+                shader->SetVec2F("pos", {xpos, ypos});
+                shader->SetVec2F("size", {w, h});
 
-            // Render quad
-            glBindVertexArray(vao);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-            // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-            cursor += (ch.Advance >> 6) * actualScale;// Bitshift by 6 to get value in pixels (2^6 = 64)
+                // Render glyph texture over quad
+                glBindTextureUnit(0, ch.textureID);
+
+                // Render quad
+                {
+                    ZoneScopedN("Draw call");
+                    glDrawArrays(GL_TRIANGLES, 0, 6);
+                }
+                // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+                cursor += (ch.Advance >> 6) * actualScale;// Bitshift by 6 to get value in pixels (2^6 = 64)
+            }
         }
         glBindVertexArray(0);
         glBindTextureUnit(0, 0);
