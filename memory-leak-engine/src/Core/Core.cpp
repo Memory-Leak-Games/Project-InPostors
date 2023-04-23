@@ -9,28 +9,30 @@
 
 #include "Macros.h"
 
+#include "Core/HID/Input.h"
 #include "Core/Time.h"
 #include "Core/Window.h"
-#include "Core/HID/Input.h"
 
-#include "Rendering/RenderingAPI.h"
-#include "Rendering/Renderer.h"
 #include "Rendering/CommonUniformBuffer.h"
+#include "Rendering/Renderer.h"
+#include "Rendering/RenderingAPI.h"
 
-#include "Rendering/FrameBuffers/GBuffer.h"
-#include "Rendering/FrameBuffers/SSAOFrameBuffer.h"
 #include "Rendering/FrameBuffers/BlurPass.h"
+#include "Rendering/FrameBuffers/GBuffer.h"
 #include "Rendering/FrameBuffers/PostProcess.h"
+#include "Rendering/FrameBuffers/SSAOFrameBuffer.h"
 
 #include "Events/WindowEvent.h"
 
+#include "Core/Settings/SettingsManager.h"
 #include "Gameplay/ComponentManager.h"
 #include "Gameplay/EntityManager.h"
+#include "Physics/CollisionManager.h"
+#include "Physics/Physics.h"
 #include "Rendering/DirectionalLight.h"
 #include "Rendering/Gizmos/Gizmos.h"
 #include "SceneGraph/SceneGraph.h"
 #include "UI/Renderer2D.h"
-#include "Physics/Physics.h"
 
 using namespace mlg;
 
@@ -70,6 +72,10 @@ void Core::MainLoop() {
         {
             ZoneScopedN("ImGui Render");
             RenderImGUI();
+        }
+
+        if (SettingsManager::Get<bool>(SettingsType::Debug, "showSpacialGrid")) {
+            CollisionManager::DrawSpacialGrid();
         }
 #endif
 
@@ -116,8 +122,34 @@ void Core::TickRendering() const {
 
 void Core::RenderImGUI() const {
     ImGui::Begin("FPS");
-    ImGui::Text("Framerate: %.3f (%.1f FPS)", Time::GetTrueDeltaSeconds(), 1 / Time::GetTrueDeltaSeconds());
+    ImGui::Text("True Framerate: %.3f (%.1f FPS)", Time::GetTrueDeltaSeconds(), 1 / Time::GetTrueDeltaSeconds());
+    ImGui::Text("Logic Framerate: %.3f (%.1f FPS)", Time::GetDeltaSeconds(), 1 / Time::GetDeltaSeconds());
     ImGui::Text("Time: %.3f", Time::GetSeconds());
+
+    static float timeAccumulator;
+    static std::deque<float> frameTimes;
+
+    timeAccumulator += Time::GetDeltaSeconds();
+    if (timeAccumulator > 1/30.f) {
+        timeAccumulator = 0.f;
+
+        frameTimes.push_back(Time::GetDeltaSeconds());
+    }
+
+    if (frameTimes.size() > 100)
+        frameTimes.pop_front();
+
+    std::vector<float> frameTimeArray (frameTimes.begin(), frameTimes.end());
+    ImGui::PlotLines("Framerate", &frameTimeArray[0], frameTimeArray.size());
+
+    ImGui::End();
+
+    static glm::ivec2 dimensions;
+    ImGui::Begin("Spacial Hash Grid");
+    ImGui::DragInt2("Dimensions", (int*) &dimensions, 1.f, 1, 100);
+    if (ImGui::Button("Update")) {
+        CollisionManager::SetBounds(glm::vec2{-50.f}, glm::vec2{50.f}, dimensions);
+    }
     ImGui::End();
 
     ImGui::Render();

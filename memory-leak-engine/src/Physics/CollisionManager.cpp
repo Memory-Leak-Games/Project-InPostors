@@ -3,8 +3,10 @@
 #include "Physics/Colliders/Collider.h"
 #include "Physics/Rigidbody.h"
 
-#include "Macros.h"
+#include "Physics/SpacialHashGrid.h"
+
 #include "Core/Math.h"
+#include "Macros.h"
 
 namespace mlg {
     CollisionManager* CollisionManager::instance;
@@ -16,6 +18,8 @@ namespace mlg {
         instance = new CollisionManager();
 
         SPDLOG_INFO("Initializing CollisionManager");
+
+        SetBounds(glm::vec2{-50.f, -50.f}, glm::vec2{50.f, 50.f}, glm::ivec2{100, 100});
     }
 
     void CollisionManager::Stop() {
@@ -28,11 +32,18 @@ namespace mlg {
         SPDLOG_INFO("Stopping CollisionManager");
     }
 
-    CollisionManager *CollisionManager::GetInstance() {
+    CollisionManager* CollisionManager::GetInstance() {
         return instance;
     }
 
-// TODO: Hash grid table
+    void CollisionManager::UpdateSpacialGrid() {
+        ZoneScopedC(tracy::Color::ColorType::Green);
+
+        for (auto& collider : instance->colliders) {
+            instance->spacialHashGrid->Update(collider.lock());
+        }
+    }
+
     void CollisionManager::DetectCollisions() {
         ZoneScopedC(tracy::Color::ColorType::Green);
 
@@ -45,18 +56,17 @@ namespace mlg {
             if (sharedCollider->GetOwner()->GetIsKinematic())
                 continue;
 
-            // Check collision with every other collider
-            for (auto& anotherCollider : instance->colliders) {
-                if (anotherCollider.expired())
-                    return;
+            std::vector<std::shared_ptr<Collider>> nearColliders;
+            instance->spacialHashGrid->FindNear(collider.lock()->GetPosition(),
+                                               collider.lock()->GetRadius(), nearColliders);
 
-                auto sharedAnotherCollider = anotherCollider.lock();
-
+            // Check collision with near colliders
+            for (auto& anotherCollider : nearColliders) {
                 // But not with self
-                if (sharedCollider->GetOwner() == sharedAnotherCollider->GetOwner())
+                if (sharedCollider->GetOwner() == anotherCollider->GetOwner())
                     continue;
 
-                if (sharedCollider->DetectCollision(sharedAnotherCollider.get())) {
+                if (sharedCollider->DetectCollision(anotherCollider.get())) {
                     instance->collisionsThisTick.push_back({collider, anotherCollider});
                 }
             }
@@ -84,15 +94,33 @@ namespace mlg {
         instance->collisionsThisTick.clear();
     }
 
-    void CollisionManager::AddCollider(std::weak_ptr<Collider> collider) {
+    void CollisionManager::AddCollider(const std::weak_ptr<Collider>& collider) {
         instance->colliders.push_back(collider);
+        instance->spacialHashGrid->AddClient(collider.lock());
     }
 
     void CollisionManager::RemoveCollider(std::weak_ptr<Collider> collider) {
         instance->colliders.erase(std::remove_if(instance->colliders.begin(), instance->colliders.end(),
-                                         [&collider](const std::weak_ptr<Collider>& entry) {
-                                             return collider.lock().get() == entry.lock().get();
-                                         }), instance->colliders.end());
+                                                 [&collider](const std::weak_ptr<Collider>& entry) {
+                                                     return collider.lock().get() == entry.lock().get();
+                                                 }),
+                                  instance->colliders.end());
+
+        instance->spacialHashGrid->RemoveClient(collider.lock());
     }
 
-} // mlg
+    CollisionManager::CollisionManager() { }
+
+    void CollisionManager::SetBounds(const glm::vec2& start, const glm::vec2& end, const glm::ivec2& dimensions) {
+        instance->spacialHashGrid = std::make_unique<SpacialHashGrid>(start, end, dimensions);
+        for (const auto & collider : instance->colliders) {
+            instance->spacialHashGrid->AddClient(collider.lock());
+        }
+    }
+
+    void CollisionManager::DrawSpacialGrid() {
+        instance->spacialHashGrid->DebugDraw();
+    }
+
+
+}// namespace mlg

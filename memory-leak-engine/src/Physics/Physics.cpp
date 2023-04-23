@@ -46,15 +46,16 @@ namespace mlg {
     }
 
     void Physics::TickFixedTimeSteps() {
-        ZoneScopedNC("Tick Physics", tracy::Color::ColorType::Green);
-
         float deltaTime = Time::GetTrueDeltaSeconds();
 
         instance->timeAccumulator += deltaTime;
 
         while (instance->timeAccumulator >= Time::GetFixedTimeStep()) {
+            ZoneScopedNC("Tick Physics", tracy::Color::ColorType::Green);
             instance->OnFixedUpdate();
             instance->SolveDynamics();
+
+            CollisionManager::UpdateSpacialGrid();
             CollisionManager::DetectCollisions();
             CollisionManager::SolveCollisions();
 
@@ -63,8 +64,13 @@ namespace mlg {
     }
 
     void Physics::SolveDynamics() {
+        ZoneScopedC(tracy::Color::ColorType::Green);
+
         for (auto& rigidbody : states) {
             if (rigidbody.expired())
+                continue;
+
+            if (rigidbody.lock()->isKinematic)
                 continue;
 
             rigidbody.lock()->Integrate();

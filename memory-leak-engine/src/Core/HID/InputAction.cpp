@@ -15,8 +15,6 @@ namespace mlg {
         std::vector<InputAction::MappingValue> results;
 
         for (const std::unique_ptr<ActionMapping>& actionMapping : actionMappingsVector) {
-            auto test = actionMapping.get();
-
             Device::Type deviceType = actionMapping->GetDeviceType();
 
             if (deviceType == Device::Type::Keyboard) {

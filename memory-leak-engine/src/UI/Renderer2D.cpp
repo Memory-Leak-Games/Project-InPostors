@@ -47,7 +47,7 @@ namespace mlg {
 
     void Renderer2D::Draw() {
         ZoneScopedN("Draw UI");
-        TracyGpuZone("Draw UI");
+        TracyGpuZone("Draw UI")
 
         frameBuffer->Activate();
         frameBuffer->Clear();

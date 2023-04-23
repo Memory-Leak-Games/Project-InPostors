@@ -22,9 +22,7 @@ namespace mlg {
         void RenderImGUI() const;
 
         void TickRendering() const;
-
         void TickGameplay() const;
-
         void TickWindow() const;
     };
 }// namespace mlg

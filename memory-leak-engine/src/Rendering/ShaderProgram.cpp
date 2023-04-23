@@ -11,81 +11,85 @@
 using namespace mlg;
 
 void ShaderProgram::SetFloat(const std::string& name, float value) const {
-    GLint UniformLocation = GetUniformLocation(name);
-    if (UniformLocation == -1) {
+    GLint uniformLocation = GetUniformLocation(name);
+    if (uniformLocation == -1) {
         SPDLOG_WARN(name + " not found");
     }
-    glUniform1f(UniformLocation, value);
+    glUniform1f(uniformLocation, value);
 }
 
 void ShaderProgram::SetInt(const std::string& name, int value) const {
-    GLint UniformLocation = GetUniformLocation(name);
-    if (UniformLocation == -1) {
+    GLint uniformLocation = GetUniformLocation(name);
+    if (uniformLocation == -1) {
         SPDLOG_WARN(name + " not found");
     }
-    glUniform1i(UniformLocation, value);
+    glUniform1i(uniformLocation, value);
 }
 
 void ShaderProgram::SetIntArray(const std::string& name, int* values, uint32_t count) const {
-    GLint UniformLocation = GetUniformLocation(name);
-    if (UniformLocation == -1) {
+    GLint uniformLocation = GetUniformLocation(name);
+    if (uniformLocation == -1) {
         SPDLOG_WARN(name + " not found");
     }
-    glUniform1iv(UniformLocation, count, values);
+    glUniform1iv(uniformLocation, count, values);
 }
 
 void ShaderProgram::SetBool(const std::string& name, bool value) const {
-    GLint UniformLocation = GetUniformLocation(name);
-    if (UniformLocation == -1) {
+    GLint uniformLocation = GetUniformLocation(name);
+    if (uniformLocation == -1) {
         SPDLOG_WARN(name + " not found");
     }
-    glUniform1i(UniformLocation, static_cast<GLint>(value));
+    glUniform1i(uniformLocation, static_cast<GLint>(value));
 }
 
 void ShaderProgram::SetVec2F(const std::string& name, glm::vec2 value) const {
-    GLint UniformLocation = GetUniformLocation(name);
-    if (UniformLocation == -1) {
+    GLint uniformLocation = GetUniformLocation(name);
+    if (uniformLocation == -1) {
         SPDLOG_WARN(name + " not found");
     }
-    glUniform2f(UniformLocation, value.x, value.y);
+    glUniform2f(uniformLocation, value.x, value.y);
 }
 
 void ShaderProgram::SetVec3F(const std::string& name, glm::vec3 value) const {
-    GLint UniformLocation = GetUniformLocation(name);
-    if (UniformLocation == -1) {
+    GLint uniformLocation = GetUniformLocation(name);
+    if (uniformLocation == -1) {
         SPDLOG_WARN(name + " not found");
     }
-    glUniform3f(UniformLocation, value.x, value.y, value.z);
+    glUniform3f(uniformLocation, value.x, value.y, value.z);
 }
 
 void ShaderProgram::SetVec4F(const std::string& name, glm::vec4 value) const {
-    GLint UniformLocation = GetUniformLocation(name);
-    if (UniformLocation == -1) {
+    GLint uniformLocation = GetUniformLocation(name);
+    if (uniformLocation == -1) {
         SPDLOG_WARN(name + " not found");
     }
-    glUniform4f(UniformLocation, value.x, value.y, value.z, value.w);
+    glUniform4f(uniformLocation, value.x, value.y, value.z, value.w);
 }
 
 void ShaderProgram::SetMat4F(const std::string& name, glm::mat4 value) const {
-    GLint UniformLocation = GetUniformLocation(name);
-    if (UniformLocation == -1) {
+    GLint uniformLocation = GetUniformLocation(name);
+    if (uniformLocation == -1) {
         SPDLOG_WARN(name + " not found");
     }
-    glUniformMatrix4fv(UniformLocation, 1, GL_FALSE, glm::value_ptr(value));
+    glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(value));
 }
 
 void ShaderProgram::SetMat3F(const std::string& name, glm::mat3 value) const {
-    GLint UniformLocation = GetUniformLocation(name);
-    if (UniformLocation == -1) {
+    GLint uniformLocation = GetUniformLocation(name);
+    if (uniformLocation == -1) {
         SPDLOG_WARN(name + " not found");
     }
-    glUniformMatrix3fv(UniformLocation, 1, GL_FALSE, glm::value_ptr(value));
+    glUniformMatrix3fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(value));
 }
 
-GLint ShaderProgram::GetUniformLocation(const std::string& name) const {
-    GLint UniformLocation = glGetUniformLocation(shaderProgramId, name.c_str());
+int32_t ShaderProgram::GetUniformLocation(const std::string& name) const {
+    if (uniformCache.find(name) != uniformCache.end())
+        return uniformCache[name];
 
-    return UniformLocation;
+    int32_t uniformLocation = glGetUniformLocation(shaderProgramId, name.c_str());
+    uniformCache[name] = uniformLocation;
+
+    return uniformLocation;
 }
 
 void ShaderProgram::Activate() const {
@@ -122,20 +126,20 @@ void ShaderProgram::LinkProgram(uint32_t vShader, uint32_t fShader, uint32_t gSh
 
     glLinkProgram(shaderProgramId);
 
-    GLint ProgramLinkingResult;
-    glGetProgramiv(shaderProgramId, GL_LINK_STATUS, &ProgramLinkingResult);
-    if (!ProgramLinkingResult) {
-        char Log[512];
-        glGetProgramInfoLog(shaderProgramId, 512, nullptr, Log);
-        SPDLOG_ERROR("Program linking failed: " + std::string(Log));
-        MLG_ASSERT(ProgramLinkingResult);
+    int32_t programLinkingResult;
+    glGetProgramiv(shaderProgramId, GL_LINK_STATUS, &programLinkingResult);
+    if (!programLinkingResult) {
+        char _log[512];
+        glGetProgramInfoLog(shaderProgramId, 512, nullptr, _log);
+        SPDLOG_ERROR("Program linking failed: " + std::string(_log));
+        MLG_ASSERT(programLinkingResult);
     }
 }
 
-GLint ShaderProgram::TrySetVec4f(const std::string& name, glm::vec4 value) const {
-    GLint UniformLocation = glGetUniformLocation(shaderProgramId, name.c_str());
-    glUniformMatrix4fv(UniformLocation, 1, GL_FALSE, glm::value_ptr(value));
-    return UniformLocation;
+int32_t ShaderProgram::TrySetVec4f(const std::string& name, glm::vec4 value) const {
+    int32_t uniformLocation = glGetUniformLocation(shaderProgramId, name.c_str());
+    glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(value));
+    return uniformLocation;
 }
 
 

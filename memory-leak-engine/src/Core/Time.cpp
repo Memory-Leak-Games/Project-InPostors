@@ -18,11 +18,21 @@ namespace mlg {
     }
 
     float Time::GetDeltaSeconds() {
-        float result = GetTrueDeltaSeconds();
+        instance->lastFramesDeltaSeconds[instance->frameCount % AVERAGED_FRAMES] = GetTrueDeltaSeconds();
+
+        float result = 0.f;
+        for (double& deltaSeconds : instance->lastFramesDeltaSeconds) {
+            if (deltaSeconds < 0.f)
+                continue;
+
+            result += (float) deltaSeconds;
+        }
+
+        result /= AVERAGED_FRAMES;
 
         // To prevent strange behaviour
-        if (result > 1. / 15.)
-            result = 1. / 15.;
+        if (result > 1.)
+            result = 1.;
 
         return result;
     }
@@ -35,6 +45,11 @@ namespace mlg {
 
         instance->fpsCap = SettingsManager::Get<int>(SettingsType::Engine, "fpsCAP");
         instance->physicsTickRate = SettingsManager::Get<int>(SettingsType::Engine, "physicsTickRate");
+
+        instance->frameCount = 0;
+        for (double& deltaTime : instance->lastFramesDeltaSeconds) {
+            deltaTime = -1.;
+        }
     }
 
     void Time::Stop() {
@@ -47,6 +62,7 @@ namespace mlg {
     void Time::UpdateStartFrameTime() {
         instance->lastFrameStart = instance->frameStart;
         instance->frameStart = glfwGetTime();
+        instance->frameCount++;
     }
 
     void Time::Sleep(double seconds) {

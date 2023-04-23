@@ -9,7 +9,6 @@ namespace mlg {
     bool CollisionDetection::CircleCircleCollision(const ColliderShape::Circle* circleOne,
                                                    const ColliderShape::Circle* circleTwo) {
         const float radiusSum = circleOne->radius + circleTwo->radius;
-        bool test = glm::length2(circleOne->position - circleTwo->position) <= radiusSum * radiusSum;
         return glm::length2(circleOne->position - circleTwo->position) <= radiusSum * radiusSum;
     }
 
