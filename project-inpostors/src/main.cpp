@@ -105,7 +105,6 @@ public:
         mlg::Renderer2D::Stop();
         mlg::Renderer::Stop();
         mlg::RenderingAPI::Stop();
-        mlg::AudioAPI::Stop();
         mlg::Window::Stop();
         mlg::AssetManager::Stop();
         mlg::Time::Stop();
