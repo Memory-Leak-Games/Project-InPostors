@@ -13,24 +13,24 @@ namespace mlg {
         AudioComponent(const std::weak_ptr<Entity>& owner, const std::string& name,
                        const std::shared_ptr<AudioAsset>& audio);
 
-        void Play(SoLoud::Soloud* soloud, float volume = 1.f, float pan = 0.f,
+        void Play(float volume = 1.f, float pan = 0.f,
                                  uint32_t paused = 0, uint32_t bus = 0);
 
-        void PlayBackgroundMusic(SoLoud::Soloud* soloud, float volume = 1.f,
+        void PlayBackgroundMusic(float volume = 1.f,
                                  uint32_t paused = 0, uint32_t bus = 0);
 
-        void PlayClocked(SoLoud::Soloud* soloud, float delay, float volume = 1.f,
+        void PlayClocked(float delay, float volume = 1.f,
                          float pan = 0.f, uint32_t bus = 0);
 
-        void Pause(SoLoud::Soloud* soloud);
-        void UnPause(SoLoud::Soloud* soloud);
+        void Pause();
+        void UnPause();
 
-        void Seek(SoLoud::Soloud* soloud, float time);
+        void Seek(float time);
 
         void SoundStop();
-        void StopAll(SoLoud::Soloud* soloud);
+        void StopAll();
 
-        void SetVolume(SoLoud::Soloud* soloud, float volume);
+        void SetVolume(float volume);
         void SetLooping();
     };
 

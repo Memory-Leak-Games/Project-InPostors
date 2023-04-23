@@ -10,40 +10,40 @@ namespace mlg {
 
     AudioAsset::~AudioAsset() = default;
 
-    void AudioAsset::Play(SoLoud::Soloud* soloud, float volume, float pan, uint32_t paused, uint32_t bus) {
-        audio->Play(soloud, volume, pan, paused, bus);
+    void AudioAsset::Play(float volume, float pan, uint32_t paused, uint32_t bus) {
+        audio->Play(volume, pan, paused, bus);
     }
 
-    void AudioAsset::PlayBackgroundMusic(SoLoud::Soloud* soloud, float volume, uint32_t paused, uint32_t bus) {
-        audio->PlayBackgroundMusic(soloud, volume, paused, bus);
+    void AudioAsset::PlayBackgroundMusic(float volume, uint32_t paused, uint32_t bus) {
+        audio->PlayBackgroundMusic(volume, paused, bus);
     }
 
-    void AudioAsset::PlayClocked(SoLoud::Soloud* soloud, float delay, float volume, float pan, uint32_t bus) {
-        audio->PlayClocked(soloud, delay, volume, pan, bus);
+    void AudioAsset::PlayClocked(float delay, float volume, float pan, uint32_t bus) {
+        audio->PlayClocked(delay, volume, pan, bus);
     }
 
-    void AudioAsset::Pause(SoLoud::Soloud* soloud) const {
-        audio->Pause(soloud);
+    void AudioAsset::Pause() const {
+        audio->Pause();
     }
 
-    void AudioAsset::UnPause(SoLoud::Soloud* soloud) const {
-        audio->UnPause(soloud);
+    void AudioAsset::UnPause() const {
+        audio->UnPause();
     }
 
-    void AudioAsset::Seek(SoLoud::Soloud* soloud, float time) {
-        audio->Seek(soloud, time);
+    void AudioAsset::Seek(float time) {
+        audio->Seek(time);
     }
 
     void AudioAsset::Stop() {
         audio->Stop();
     }
 
-    void AudioAsset::StopAll(SoLoud::Soloud* soloud) {
-        audio->StopAll(soloud);
+    void AudioAsset::StopAll() {
+        audio->StopAll();
     }
 
-    void AudioAsset::SetVolume(SoLoud::Soloud* soloud, float volume) {
-        audio->SetVolume(soloud, volume);
+    void AudioAsset::SetVolume(float volume) {
+        audio->SetVolume(volume);
     }
 
     void AudioAsset::SetLooping() {

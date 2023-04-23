@@ -14,34 +14,31 @@ namespace mlg {
         ~AudioAsset() override;
 
         // Normal play
-        void Play(SoLoud::Soloud* soloud,
-                  float volume = 1.f,
+        void Play(float volume = 1.f,
                   float pan = 0.f,
                   uint32_t paused = 0,
                   uint32_t bus = 0);
 
         // Play without panning
-        void PlayBackgroundMusic(SoLoud::Soloud* soloud,
-                                 float volume = 1.f,
+        void PlayBackgroundMusic(float volume = 1.f,
                                  uint32_t paused = 0,
                                  uint32_t bus = 0);
 
         // Play with delay (time in sec)
-        void PlayClocked(SoLoud::Soloud* soloud,
-                         float delay,
+        void PlayClocked(float delay,
                          float volume = 1.f,
                          float pan = 0.f,
                          uint32_t bus = 0);
 
-        void Pause(SoLoud::Soloud* soloud) const;
-        void UnPause(SoLoud::Soloud* soloud) const;
+        void Pause() const;
+        void UnPause() const;
 
-        void Seek(SoLoud::Soloud* soloud, float time);
+        void Seek(float time);
 
         void Stop();
-        void StopAll(SoLoud::Soloud* soloud);
+        void StopAll();
 
-        void SetVolume(SoLoud::Soloud* soloud, float volume);
+        void SetVolume(float volume);
         void SetLooping();
         void SetSingleInstance();
         void SetFilter(uint32_t filterID, SoLoud::Filter* filter);

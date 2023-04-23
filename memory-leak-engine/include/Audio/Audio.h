@@ -14,35 +14,32 @@ namespace mlg {
         ~Audio();
 
         // Normal play
-        void Play(SoLoud::Soloud* soloud,
-                  float volume = 1.f,
+        void Play(float volume = 1.f,
                   float pan = 0.f,
                   uint32_t paused = 0,
                   uint32_t bus = 0);
 
         // Play without panning
-        void PlayBackgroundMusic(SoLoud::Soloud* soloud,
-                                 float volume = 1.f,
+        void PlayBackgroundMusic(float volume = 1.f,
                                  uint32_t paused = 0,
                                  uint32_t bus = 0);
 
         // TODO: Plays without a delay
         // Play with delay (time in sec)
-        void PlayClocked(SoLoud::Soloud* soloud,
-                         float delay,
+        void PlayClocked(float delay,
                          float volume = 1.f,
                          float pan = 0.f,
                          uint32_t bus = 0);
 
-        void Pause(SoLoud::Soloud* soloud) const;
-        void UnPause(SoLoud::Soloud* soloud) const;
+        void Pause() const;
+        void UnPause() const;
 
-        void Seek(SoLoud::Soloud* soloud, float time) const;
+        void Seek(float time) const;
 
         void Stop();
-        static void StopAll(SoLoud::Soloud* soloud);
+        static void StopAll();
 
-        void SetVolume(SoLoud::Soloud* soloud, float volume);
+        void SetVolume(float volume);
         void SetLooping();
         // TODO: Check if these two work
         void SetSingleInstance();

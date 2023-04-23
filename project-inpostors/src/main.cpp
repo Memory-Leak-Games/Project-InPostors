@@ -131,8 +131,8 @@ public:
         music = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/Crushin.ogg");
         auto audioComponent = cameraEntity.lock()->AddComponent<mlg::AudioComponent>("AudioComponent", music);
         audioComponent.lock()->SetLooping();
-        audioComponent.lock()->Play(mlg::AudioAPI::GetSoLoud());
-        //        music->Seek(mlg::AudioAPI::GetSoLoud(), 250.f);
+        audioComponent.lock()->Play();
+        //        music->Seek(250.f);
 
         auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
         auto redMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/red_material.json");
