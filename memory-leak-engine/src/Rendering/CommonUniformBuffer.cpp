@@ -31,12 +31,12 @@ namespace mlg {
         glDeleteBuffers(1, &instance->ubo);
 
         delete instance;
-        instance = 0;
+        instance = nullptr;
     }
 
     void CommonUniformBuffer::UpdateAndSendToGPU() {
         ZoneScopedN("Common UBO update");
-        TracyGpuZone("Common UBO update");
+        TracyGpuZone("Common UBO update")
 
         using Random = effolkronium::random_static;
 
@@ -62,5 +62,5 @@ namespace mlg {
 
     void CommonUniformBuffer::SetView(const glm::mat4& view) {
         instance->uniforms.view = view;
-    };
+    }
 } // mlg
