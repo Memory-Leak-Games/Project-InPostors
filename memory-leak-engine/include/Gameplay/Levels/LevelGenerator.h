@@ -4,9 +4,11 @@
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
 #include "MapObject.h"
+#include "effolkronium/random.hpp"
 
 namespace mlg {
     using json = nlohmann::json;
+    using Random = effolkronium::random_static;
 
     class LevelGenerator {
     public:
@@ -21,8 +23,11 @@ namespace mlg {
 
     private:
         static LevelGenerator* instance;
+        static int levelWidth;
+        static int levelHeight;
         static std::vector<std::vector<char>> levelLayout;
-        static std::unique_ptr<std::unordered_map<std::string, std::shared_ptr<MapObject>>> mapObjects;
+        static std::unique_ptr<std::unordered_map<std::string,
+                std::vector<std::shared_ptr<MapObject>>>> mapObjects;
 
         LevelGenerator() = default;
         //~LevelGenerator() = default;

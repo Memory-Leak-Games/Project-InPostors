@@ -11,8 +11,11 @@
 
 namespace mlg {
     LevelGenerator* LevelGenerator::instance;
+    int LevelGenerator::levelWidth;
+    int LevelGenerator::levelHeight;
     std::vector<std::vector<char>> LevelGenerator::levelLayout;
-    std::unique_ptr<std::unordered_map<std::string, std::shared_ptr<MapObject>>> LevelGenerator::mapObjects;
+    std::unique_ptr<std::unordered_map<std::string,
+            std::vector<std::shared_ptr<MapObject>>>> LevelGenerator::mapObjects;
 
     void LevelGenerator::Initialize() {
         if (instance != nullptr) return;
@@ -44,44 +47,59 @@ namespace mlg {
             }
             levelLayout.push_back(layoutString);
         }
+        levelWidth = 5; //levelJson["width"].get<int>();
+        levelHeight = 5; // levelJson["height"].get<int>();
 
-        mapObjects = std::make_unique<std::unordered_map<std::string, std::shared_ptr<MapObject>>>();
+        mapObjects = std::make_unique<std::unordered_map<std::string,
+                std::vector<std::shared_ptr<MapObject>>>>();
 
         for (const auto& jsonTile : levelJson["tiles"]) {
             std::string tileSymbol = jsonTile["symbol"].get<std::string>();
-            std::string modelPath = jsonTile["model"].get<std::string>();
-            std::string materialPath = jsonTile["material"].get<std::string>();
-            float yRot = jsonTile.contains("rotation") ? jsonTile["rotation"].get<float>() : 0.0f;
+            std::vector<std::shared_ptr<MapObject>> mapObjectPool;
 
-            mlg::MapObject mapObj(modelPath, materialPath, yRot);
-            if (jsonTile.contains("collision-type")) {
-                std::string cType = jsonTile["collision-type"].get<std::string>();
-                float cSize = jsonTile.contains("collision-size") ? jsonTile["collision-size"].get<float>() : 1.0f;
-                float cOffset = jsonTile.contains("collision-offset") ? jsonTile["collision-offset"].get<float>(): 0.0f;
-                mapObj.AddCollision(cType, cSize, cOffset);
+            for (const auto& jsonMapObject : jsonTile["objects"])
+            {
+                std::string modelPath = jsonMapObject["model"].get<std::string>();
+                std::string materialPath = jsonMapObject["material"].get<std::string>();
+                float yRot = jsonMapObject.contains("rotation") ? jsonMapObject["rotation"].get<float>() : 0.0f;
+
+                mlg::MapObject mapObj(modelPath, materialPath, yRot);
+                if (jsonMapObject.contains("collision-type")) {
+                    std::string cType = jsonMapObject["collision-type"].get<std::string>();
+                    float cSize = jsonMapObject.contains("collision-size") ? jsonMapObject["collision-size"].get<float>() : 1.0f;
+                    float cOffset = jsonMapObject.contains("collision-offset") ? jsonMapObject["collision-offset"].get<float>(): 0.0f;
+                    mapObj.AddCollision(cType, cSize, cOffset);
+                }
+                //float hOffset = jsonTile.contains("position-offset-h") ? jsonTile["position-offset-h"].get<float>() : 0.0f;
+                //float vOffset = jsonTile.contains("position-offset-v") ? jsonTile["position-offset-v"].get<float>() : 0.0f;
+                //mapObj.SetPositionOffset(hOffset, vOffset);
+
+                auto newMapObj = std::make_shared<MapObject>(mapObj);
+                mapObjectPool.push_back(newMapObj);
             }
-            //float hOffset = jsonTile.contains("position-offset-h") ? jsonTile["position-offset-h"].get<float>() : 0.0f;
-            //float vOffset = jsonTile.contains("position-offset-v") ? jsonTile["position-offset-v"].get<float>() : 0.0f;
-            //mapObj.SetPositionOffset(hOffset, vOffset);
-
-            auto newMapObj = std::make_shared<MapObject>(mapObj);
-            SPDLOG_DEBUG("{}", tileSymbol);
-            mapObjects->insert({tileSymbol, std::move(newMapObj)});
+            mapObjects->insert({tileSymbol, std::move(mapObjectPool)});
         }
     }
 
+
     void LevelGenerator::GenerateLevel(float tileSize) {
-        // Assuming all cities are square. Otherwise... suffering awaits.
         float citySize = tileSize * static_cast<float>(levelLayout.size());
-        for (unsigned int i = 0; i < levelLayout.size(); i++)
+        for (unsigned int i = 0; i < levelWidth; i++)
         {
-            for (unsigned int k = 0; k < levelLayout[i].size(); k++)
+            for (unsigned int k = 0; k < levelHeight; k++)
             {
                 try {
-                    std::string symbol(1, levelLayout[k][i]);
+                    std::string symbol(1, levelLayout[i][k]);
                     if (symbol == " ")
                         continue;
-                    auto mapObj = mapObjects->at(symbol);
+                    auto mapObjPool = mapObjects->at(symbol);
+                    // Get random MapObject from pool
+                    int rand = 0;
+                    int poolSize = (int)mapObjPool.size();
+                    if (poolSize > 1) // If there is only one object in the pool, skip random pick
+                        rand = Random::get(0, poolSize - 1);
+
+                    auto mapObj = mapObjPool[rand];
                     glm::vec3 objectPos{0.0f};
                     objectPos.x = static_cast<float>(i) * tileSize - citySize * 0.5f;
                     objectPos.y = -0.5f;

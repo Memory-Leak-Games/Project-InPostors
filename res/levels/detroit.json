@@ -1,5 +1,7 @@
 {
   "name": "Detroit",
+  "width": 5,
+  "height": 5,
   "layout": [
     "T|T|T",
     "-TTT-",
@@ -10,27 +12,53 @@
   "tiles": [
     {
       "symbol": "T",
-      "model": "res/models/Buildings/House_1.obj",
-      "material": "res/models/Primitives/white_material.json",
-      "collision-type": "rectangle",
-      "collision-size": 4.0,
-      "collision-offset": 0.0
+      "objects": [
+        {
+          "model": "res/models/Buildings/House_1.obj",
+          "material": "res/models/Primitives/white_material.json",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "collision-offset": 0.0
+        },
+        {
+          "model": "res/models/Buildings/House_1.obj",
+          "material": "res/models/Primitives/blue_material.json",
+          "rotation": 0.0,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        },
+        {
+          "model": "res/models/Buildings/House_1.obj",
+          "material": "res/models/Primitives/red_material.json",
+          "rotation": 0.0,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        }
+      ]
     },
     {
       "symbol": "|",
-      "model": "res/models/Buildings/House_2.obj",
-      "material": "res/models/Primitives/blue_material.json",
-      "rotation": 0.0,
-      "collision-size": 4.0,
-      "collision-type": "rectangle"
+      "objects": [
+        {
+          "model": "res/models/Buildings/House_2.obj",
+          "material": "res/models/Primitives/blue_material.json",
+          "rotation": 0.0,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        }
+      ]
     },
     {
       "symbol": "-",
-      "model": "res/models/Buildings/House_3.obj",
-      "material": "res/models/Primitives/red_material.json",
-      "rotation": 0.0,
-      "collision-size": 4.0,
-      "collision-type": "rectangle"
+      "objects": [
+        {
+          "model": "res/models/Buildings/House_3.obj",
+          "material": "res/models/Primitives/red_material.json",
+          "rotation": 0.0,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        }
+      ]
     }
   ]
 }
