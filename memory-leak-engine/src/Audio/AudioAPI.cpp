@@ -31,8 +31,6 @@ namespace mlg {
 
         instance->soloud->deinit();
 
-        delete instance->soloud;
-
         delete instance;
         instance = nullptr;
     }

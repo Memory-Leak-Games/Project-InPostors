@@ -5,8 +5,7 @@ namespace mlg {
         sound.load(path.c_str());
     }
 
-    Audio::~Audio() {
-    }
+    Audio::~Audio() = default;
 
     void Audio::Play(SoLoud::Soloud* soloud, float volume, float pan, uint32_t paused, uint32_t bus) {
         handle = soloud->play(sound, volume, pan, paused, bus);

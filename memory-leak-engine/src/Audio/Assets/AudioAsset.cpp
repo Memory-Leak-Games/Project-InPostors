@@ -8,8 +8,7 @@ namespace mlg {
     AudioAsset::AudioAsset(const std::string& path) : Asset(path) {
     }
 
-    AudioAsset::~AudioAsset() {
-    }
+    AudioAsset::~AudioAsset() = default;
 
     void AudioAsset::Play(SoLoud::Soloud* soloud, float volume, float pan, uint32_t paused, uint32_t bus) {
         audio->Play(soloud, volume, pan, paused, bus);
