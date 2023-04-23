@@ -1,7 +1,7 @@
 {
   "name": "Detroit",
   "max-width": 5,
-  "max-height": 5,
+  "max-height": 6,
   "layout": [
     "T|T|T",
     "-TTT-",

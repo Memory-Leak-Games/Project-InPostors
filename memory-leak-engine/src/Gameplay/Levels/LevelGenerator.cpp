@@ -86,30 +86,31 @@ namespace mlg {
         float citySize = tileSize * static_cast<float>(levelLayout.size());
         for (unsigned int i = 0; i < levelHeight; i++)
         {
+            if (i > levelLayout.size() - 1) // We have reached end of this layout
+                break;
+
             for (unsigned int k = 0; k < levelWidth; k++)
             {
-                try {
-                    std::string symbol(1, levelLayout[i][k]);
-                    if (symbol == " ")
-                        continue;
-                    auto mapObjPool = mapObjects->at(symbol);
-                    // Get random MapObject from pool
-                    int rand = 0;
-                    int poolSize = (int)mapObjPool.size();
-                    if (poolSize > 1) // If there is only one object in the pool, skip random pick
-                        rand = Random::get(0, poolSize - 1);
-
-                    auto mapObj = mapObjPool[rand];
-                    glm::vec3 objectPos{0.0f};
-                    objectPos.x = static_cast<float>(k) * tileSize - citySize * 0.5f;
-                    objectPos.y = -0.5f;
-                    objectPos.z = static_cast<float>(i) * tileSize - citySize * 0.5f;
-                    PutObject(mapObj, objectPos);
-                }
-                catch (const std::out_of_range &e) {
-                    // We have reached the end of this layout line; go to next one.
+                if (k > levelLayout[i].size() - 1) // We have reached end of this layout line
                     break;
-                }
+
+                std::string symbol(1, levelLayout[i][k]);
+                if (symbol == " ") // We do not put any map object here
+                    continue;
+
+                auto mapObjPool = mapObjects->at(symbol);
+                // Get random MapObject from pool
+                int rand = 0;
+                int poolSize = (int)mapObjPool.size();
+                if (poolSize > 1) // If there is only one object in the pool, skip random pick
+                    rand = Random::get(0, poolSize - 1);
+
+                auto mapObj = mapObjPool[rand];
+                glm::vec3 objectPos{0.0f};
+                objectPos.x = static_cast<float>(k) * tileSize - citySize * 0.5f;
+                objectPos.y = -0.5f;
+                objectPos.z = static_cast<float>(i) * tileSize - citySize * 0.5f;
+                PutObject(mapObj, objectPos);
             }
         }
     }
