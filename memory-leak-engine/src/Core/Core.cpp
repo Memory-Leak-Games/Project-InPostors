@@ -49,44 +49,67 @@ void Core::MainLoop() {
     EntityManager::Start();
 
     while (!shouldClose) {
+        ZoneScoped;
+
         Time::UpdateStartFrameTime();
         RenderingAPI::GetInstance()->Clear();
 
 #ifdef DEBUG
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+        {
+            ZoneScopedN("ImGui NewFrame");
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+        }
 #endif
-
-        ComponentManager::ProcessComponents();
-        EntityManager::ProcessEntities();
-
-        Input::Update();
-
-        Physics::TickFixedTimeSteps();
-
-        ComponentManager::Update();
-        EntityManager::Update();
-        ComponentManager::LateUpdate();
-        EntityManager::LateUpdate();
-
+        TickGameplay();
         SceneGraph::CalculateGlobalTransforms();
-        CommonUniformBuffer::UpdateAndSendToGPU();
-
-        Renderer::GetInstance()->DrawFrame();
-
-        Gizmos::DrawGizmos();
-        Renderer2D::GetInstance()->Draw();
+        TickRendering();
 
 #ifdef DEBUG
-        RenderImGUI();
+        {
+            ZoneScopedN("ImGui Render");
+            RenderImGUI();
+        }
 #endif
 
-        Window::GetInstance()->SwapBuffers();
-        Window::GetInstance()->PollEvents();
+        TickWindow();
 
         Time::CapFPS();
+        FrameMark;
+        TracyGpuCollect;
     }
+}
+
+void Core::TickWindow() const {
+    ZoneScopedN("Window Update");
+    Window::GetInstance()->SwapBuffers();
+    Window::GetInstance()->PollEvents();
+}
+
+void Core::TickGameplay() const {
+    ZoneScopedN("Tick Gameplay");
+    ComponentManager::ProcessComponents();
+    EntityManager::ProcessEntities();
+
+    Input::Update();
+
+    Physics::TickFixedTimeSteps();
+
+    ComponentManager::Update();
+    EntityManager::Update();
+    ComponentManager::LateUpdate();
+    EntityManager::LateUpdate();
+}
+
+void Core::TickRendering() const {
+    ZoneScopedN("Tick Rendering");
+    CommonUniformBuffer::UpdateAndSendToGPU();
+
+    Renderer::GetInstance()->DrawFrame();
+
+    Gizmos::DrawGizmos();
+    Renderer2D::GetInstance()->Draw();
 }
 
 #ifdef DEBUG

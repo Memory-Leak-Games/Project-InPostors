@@ -17,8 +17,6 @@ add_library(stb_image STATIC ${STB_IMAGE_DIR}/stb_image.cpp)
 target_include_directories(stb_image PRIVATE ${STB_IMAGE_DIR})
 
 
-
-
 # assimp
 find_package(Assimp QUIET)
 if (${Assimp_FOUND})
@@ -44,6 +42,7 @@ CPMAddPackage("gh:wqking/eventpp@0.1.2")
 CPMAddPackage("gh:nlohmann/json@3.11.2")
 CPMAddPackage("gh:Neargye/magic_enum@0.8.2")
 CPMAddPackage("gh:freetype/freetype#VER-2-13-0")
+CPMAddPackage("gh:wolfpld/tracy@0.9.1")
 
 
 set_target_properties(glad
@@ -54,6 +53,7 @@ set_target_properties(glad
         nlohmann_json
         magic_enum
         freetype
+        TracyClient
         spdlog PROPERTIES FOLDER "thirdparty")
 
 if (TARGET zlibstatic)

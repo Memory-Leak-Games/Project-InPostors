@@ -4,7 +4,8 @@
 namespace mlg {
     std::unique_ptr<std::unordered_map<std::string, std::unique_ptr<InputAction>>>
     InputConfigParser::LoadConfig(const std::string& path) {
-        auto inputActionsMap = std::make_unique<std::unordered_map<std::string, std::unique_ptr<InputAction>>>();
+        auto inputActionsMap = std::make_unique<
+                std::unordered_map<std::string, std::unique_ptr<InputAction>>>();
 
         std::ifstream configFile{path};
         json configJson = json::parse(configFile);

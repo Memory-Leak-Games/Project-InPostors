@@ -4,6 +4,7 @@
 #include "Physics/Rigidbody.h"
 
 #include "Macros.h"
+#include "Core/Math.h"
 
 namespace mlg {
     CollisionManager* CollisionManager::instance;
@@ -33,6 +34,8 @@ namespace mlg {
 
 // TODO: Hash grid table
     void CollisionManager::DetectCollisions() {
+        ZoneScopedC(tracy::Color::ColorType::Green);
+
         for (auto& collider : instance->colliders) {
             if (collider.expired())
                 continue;
@@ -61,6 +64,8 @@ namespace mlg {
     }
 
     void CollisionManager::SolveCollisions() {
+        ZoneScopedC(tracy::Color::ColorType::Green);
+
         for (auto& collision : instance->collisionsThisTick) {
             if (collision.collider.lock()->GetOwner()->GetIsKinematic())
                 continue;
@@ -72,7 +77,8 @@ namespace mlg {
             collider->Separate(anotherCollider.get(), separationVector);
 
             glm::vec2 collisionPoint = collider->FindCollisionPoint(anotherCollider->GetOwner()->GetPosition());
-            collider->OnCollisionEnter({collisionPoint, separationVector, anotherCollider->GetOwner()});
+            glm::vec2 normal = Math::SafeNormal(collider->GetPosition() - collisionPoint);
+            collider->OnCollisionEnter({collisionPoint, separationVector, normal, anotherCollider->GetOwner()});
         }
 
         instance->collisionsThisTick.clear();

@@ -1,4 +1,7 @@
-#include "include/Car/Equipment.h"
+#include "Car/Equipment.h"
+
+#include "Utils/Product.h"
+#include "Utils/Blueprint.h"
 
 bool Equipment::AddProduct(const std::shared_ptr<Product>& product) {
     if (equipment.size() >= size)

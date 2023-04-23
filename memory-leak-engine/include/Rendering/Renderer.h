@@ -38,6 +38,12 @@ namespace mlg {
 
     private:
         void SSAOPass();
+
+        void DrawShadowMap();
+
+        void DrawRenderables(FrameBuffer *currentFramebuffer);
+
+        void GeometryPass();
     };
 
 } // mlg

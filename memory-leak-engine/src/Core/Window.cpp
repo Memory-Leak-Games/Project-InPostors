@@ -2,6 +2,8 @@
 
 #include <utility>
 
+#include "Core/Settings/SettingsManager.h"
+
 #include "Macros.h"
 
 #ifdef DEBUG
@@ -29,11 +31,14 @@ void Window::WindowErrorCallback(int error, const char* description) {
     SPDLOG_ERROR("GLFW: {}: {}", error, description);
 }
 
-void Window::Initialize(std::string title, int32_t width, int32_t height) {
+void Window::Initialize(std::string title) {
     SPDLOG_INFO("Initializing GLFW");
     glfwSetErrorCallback(Window::WindowErrorCallback);
 
     MLG_ASSERT_MSG(glfwInit(), "Failed to initialize GLFW");
+
+    auto width = SettingsManager::Get<int32_t>(SettingsType::Video, "ResolutionWidth");
+    auto height = SettingsManager::Get<int32_t>(SettingsType::Video, "ResolutionHeight");
 
     SPDLOG_INFO("Creating GLFW Window: {} {}x{}", title, width, height);
 
@@ -47,15 +52,17 @@ void Window::Initialize(std::string title, int32_t width, int32_t height) {
 
 int32_t Window::SetupWindow() {
     SPDLOG_INFO("Window Setup");
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, false);
+    SetWindowContext();
 
     SPDLOG_INFO("Creating Window");
-    glfwWindow = glfwCreateWindow(windowData.width, windowData.height, windowData.title.c_str(), 0, nullptr);
+
+    GLFWmonitor* monitor = GetMonitor();
+
+    glfwWindow = glfwCreateWindow(windowData.width, windowData.height, windowData.title.c_str(), monitor, nullptr);
+
     MLG_ASSERT_MSG(glfwWindow != nullptr, "Failed to crate window");
+
+    SetWindowSettings();
 
     glfwMakeContextCurrent(glfwWindow);
     glfwSetWindowUserPointer(glfwWindow, (void*) &windowData);
@@ -66,6 +73,32 @@ int32_t Window::SetupWindow() {
     glfwSwapInterval(false);
 
     return 0;
+}
+
+void Window::SetWindowContext() const {
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, false);
+}
+
+void Window::SetWindowSettings() const {
+    auto windowType = SettingsManager::Get<std::string>(SettingsType::Video, "WindowType");
+    if (windowType == "borderless")
+        glfwSetWindowAttrib(glfwWindow, GLFW_DECORATED, GLFW_FALSE);
+
+    if (SettingsManager::Get<bool>(SettingsType::Video, "LockSize"))
+        glfwSetWindowSizeLimits(glfwWindow, windowData.width, windowData.height, windowData.width, windowData.height);
+    else
+        glfwSetWindowSizeLimits(glfwWindow, windowData.width, windowData.height, GLFW_DONT_CARE, GLFW_DONT_CARE);
+}
+
+GLFWmonitor *Window::GetMonitor() {
+    auto windowType = SettingsManager::Get<std::string>(SettingsType::Video, "WindowType");
+    if (windowType == "fullscreen")
+        return glfwGetPrimaryMonitor();
+    else
+        return nullptr;
 }
 
 void Window::SetupCallbacks() {

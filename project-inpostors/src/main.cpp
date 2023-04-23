@@ -19,6 +19,7 @@
 #include "Player.h"
 #include "Core/Settings/SettingsManager.h"
 #include "Gameplay/Components/CameraComponent.h"
+#include "Gameplay/Levels/LevelGenerator.h"
 
 #include <Gameplay/ComponentManager.h>
 #include <Gameplay/Components/StaticMeshComponent.h>
@@ -68,8 +69,7 @@ public:
 
         mlg::Time::Initialize();
         mlg::AssetManager::Initialize();
-        mlg::Window::Initialize("Memory Leak Engine", 1280, 720);
-        mlg::AudioAPI::Initialize();
+        mlg::Window::Initialize("Memory Leak Engine");
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
         mlg::Renderer2D::Initialize();
@@ -131,37 +131,41 @@ public:
         audioComponent.lock()->Play(mlg::AudioAPI::GetSoLoud());
 //        music->Seek(mlg::AudioAPI::GetSoLoud(), 250.f);
 
-
-        auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
-                "res/models/Primitives/white_material.json");
+        auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
         auto redMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/red_material.json");
         auto blueMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/blue_material.json");
 
+        auto groundMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Ground/ground_material.json");
         auto planeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/plane.obj");
+
         auto cubeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Cube.obj");
         auto sphereModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Sphere.obj");
 
         auto ground = mlg::EntityManager::SpawnEntity<mlg::Entity>("Ground", true, mlg::SceneGraph::GetRoot());
-        ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, whiteMaterial);
+        ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, groundMaterial);
         ground.lock()->GetTransform().SetPosition({0.f, -0.5f, 0.f});
         ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
 
         auto ui = mlg::EntityManager::SpawnEntity<mlg::Entity>("ui", true, mlg::SceneGraph::GetRoot());
 
-        auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/comic.ttf");
+        auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/ARLRDBD.ttf");
         auto label = ui.lock()->AddComponent<mlg::Label>("Label", font);
-        label.lock()->SetPosition({10, 10});
+        label.lock()->SetPosition({500, 100});
+        label.lock()->SetTextColor({1, 1, 1});
+        label.lock()->SetSize(64);
 
         auto imageMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/cat_UI_material.json");
         auto image = ui.lock()->AddComponent<mlg::Image>("Image", imageMaterial);
         image.lock()->SetSize(glm::vec2{256.f});
-        image.lock()->SetPosition({50.f, 50.f});
+        image.lock()->SetPosition({1280.f-128.f, 720.f-128.f});
+        image.lock()->SetAnchor({1, 1});
 
         auto progressBarMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
                 "res/materials/UI/progressBar_material.json");
         auto progressBar = ui.lock()->AddComponent<mlg::ProgressBar>("ProgressBar", progressBarMaterial);
         progressBar.lock()->SetSize(glm::vec2{256.f, 32.f});
-        progressBar.lock()->SetPosition({50.f, 400.f});
+        progressBar.lock()->SetPosition({150.f, 600.f});
+        progressBar.lock()->SetAnchor({0, 1});
 
         mlg::Renderer2D::GetInstance()->AddRenderable(label);
         mlg::Renderer2D::GetInstance()->AddRenderable(image);
@@ -193,7 +197,9 @@ public:
 
         auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot());
 
-        SpawnHouses();
+//        SpawnHouses();
+        mlg::LevelGenerator::LoadJson("res/levels/detroit.json");
+        mlg::LevelGenerator::GenerateLevel(7.0f);
     }
 
     void SpawnHouses() {
@@ -229,6 +235,7 @@ public:
                 building.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", model, whiteMaterial);
                 auto rigidbody = building.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
                 rigidbody.lock()->AddCollider<mlg::ColliderShape::Rectangle>(glm::vec2(0.f), glm::vec2(4.f));
+                rigidbody.lock()->SetBounciness(0.2f);
             }
         }
     }
