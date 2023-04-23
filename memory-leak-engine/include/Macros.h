@@ -40,11 +40,9 @@ namespace LoggingMacros {
 #else
 #define MLG_ASSERT_MSG(condition, message) \
     do {                               \
-        condition;                     \
     } while (false)
 #define MLG_ASSERT(condition) \
     do {                               \
-        condition;                     \
     } while (false)
 #define MLG_UNIMPLEMENTED \
     do {                  \

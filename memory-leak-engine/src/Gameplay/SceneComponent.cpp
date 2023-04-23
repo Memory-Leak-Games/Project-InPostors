@@ -13,5 +13,5 @@ namespace mlg {
         ownerPtr->GetTransform().AddChild(transform);
     }
 
-    SceneComponent::~SceneComponent() noexcept {}
+    SceneComponent::~SceneComponent() = default;
 } // mlg

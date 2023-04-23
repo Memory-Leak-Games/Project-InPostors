@@ -29,6 +29,7 @@ target_link_libraries(${PROJECT_NAME} magic_enum)
 target_link_libraries(${PROJECT_NAME} freetype)
 target_link_libraries(${PROJECT_NAME} soloud)
 target_link_libraries(${PROJECT_NAME} Tracy::TracyClient)
+target_link_libraries(${PROJECT_NAME} stdc++)
 
 if (${CMAKE_BUILD_TYPE} MATCHES Debug)
     target_link_libraries(${PROJECT_NAME} imgui)

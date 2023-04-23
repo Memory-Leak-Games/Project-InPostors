@@ -35,7 +35,9 @@ void Window::Initialize(std::string title) {
     SPDLOG_INFO("Initializing GLFW");
     glfwSetErrorCallback(Window::WindowErrorCallback);
 
-    MLG_ASSERT_MSG(glfwInit(), "Failed to initialize GLFW");
+    bool glfwInitResult = glfwInit();
+
+    MLG_ASSERT_MSG(glfwInitResult, "Failed to initialize GLFW");
 
     auto width = SettingsManager::Get<int32_t>(SettingsType::Video, "ResolutionWidth");
     auto height = SettingsManager::Get<int32_t>(SettingsType::Video, "ResolutionHeight");

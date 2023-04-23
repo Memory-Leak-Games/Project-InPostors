@@ -14,8 +14,9 @@ namespace mlg {
 
         bool isSSAOActive = false;
 
-        GBuffer() = default;
     public:
+        GBuffer() = delete;
+
         GBuffer(int32_t width, int32_t height);
         ~GBuffer() override;
 
