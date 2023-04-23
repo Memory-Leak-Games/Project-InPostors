@@ -9,7 +9,8 @@ namespace mlg {
     enum class SettingsType {
         Debug,
         Engine,
-        Video
+        Video,
+        Audio
     };
 
     class SettingsManager {
@@ -19,6 +20,7 @@ namespace mlg {
         nlohmann::json debugSettings;
         nlohmann::json engineSettings;
         nlohmann::json videoSettings;
+        nlohmann::json audioSettings;
 
     public:
         static void Initialize();
@@ -35,6 +37,8 @@ namespace mlg {
                     return instance->engineSettings[id].get<T>();
                 case SettingsType::Video:
                     return instance->videoSettings[id].get<T>();
+                case SettingsType::Audio:
+                    return instance->audioSettings[id].get<T>();
             }
 
             MLG_ASSERT_MSG(false, "Unknown settings type");

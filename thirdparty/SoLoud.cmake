@@ -24,6 +24,7 @@ set(TARGET_HEADERS
         ${HEADER_PATH}/soloud_flangerfilter.h
         ${HEADER_PATH}/soloud_internal.h
         ${HEADER_PATH}/soloud_lofifilter.h
+        ${HEADER_PATH}/soloud_misc.h
         ${HEADER_PATH}/soloud_monotone.h
         ${HEADER_PATH}/soloud_openmpt.h
         ${HEADER_PATH}/soloud_queue.h
@@ -60,6 +61,7 @@ set(CORE_SOURCES
         ${CORE_PATH}/soloud_filter.cpp
         ${CORE_PATH}/soloud_queue.cpp
         ${CORE_PATH}/soloud_thread.cpp
+        ${CORE_PATH}/soloud_misc.cpp
         )
 
 

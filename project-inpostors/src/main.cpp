@@ -1,8 +1,10 @@
-// This is not allowed in Game layer
 #include "Rendering/Model.h"
 #include "Rendering/Renderer.h"
 
 #include <Rendering/RenderingAPI.h>
+
+#include <Audio/Assets/AudioAsset.h>
+#include <Audio/AudioAPI.h>
 
 #include <Rendering/Assets/MaterialAsset.h>
 #include <Rendering/Assets/ModelAsset.h>
@@ -27,6 +29,7 @@
 #include <Physics/Physics.h>
 #include <Core/Math.h>
 #include <Gameplay/Components/RigidbodyComponent.h>
+#include <Gameplay/Components/AudioComponent.h>
 
 #include <UI/Assets/FontAsset.h>
 #include <UI/Components/Image.h>
@@ -56,6 +59,8 @@ public:
 };
 
 class ProjectInpostors {
+    std::shared_ptr<mlg::AudioAsset> sound;
+    std::shared_ptr<mlg::AudioAsset> music;
 public:
     ProjectInpostors() = default;
 
@@ -71,6 +76,9 @@ public:
         mlg::Gizmos::Initialize();
         mlg::CommonUniformBuffer::Initialize();
         mlg::SceneGraph::Initialize();
+        mlg::AudioAPI::Initialize();
+
+        mlg::AudioAPI::GetSoLoud()->setGlobalVolume(mlg::SettingsManager::Get<float>(mlg::SettingsType::Audio, "volume"));
 
         mlg::Physics::Initialize();
 
@@ -89,6 +97,7 @@ public:
 
         mlg::Physics::Stop();
 
+        mlg::AudioAPI::Stop();
         mlg::SceneGraph::Stop();
         mlg::Input::Stop();
         mlg::Core::Stop();
@@ -100,7 +109,7 @@ public:
         mlg::AssetManager::Stop();
         mlg::Time::Stop();
 
-        mlg::SettingsManager::Initialize();
+        mlg::SettingsManager::Stop();
 
         return 0;
     }
@@ -113,6 +122,13 @@ public:
 
         cameraComponent.lock()->GetTransform().SetPosition({-10.f, 15.f, -10.f});
         cameraComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{60.f, 45.f, 0.f}));
+
+        sound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/SFX/mario_coin.ogg");
+        music = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/Crushin.ogg");
+        auto audioComponent = cameraEntity.lock()->AddComponent<mlg::AudioComponent>("AudioComponent", music);
+        audioComponent.lock()->SetLooping();
+        audioComponent.lock()->Play(mlg::AudioAPI::GetSoLoud());
+//        music->Seek(mlg::AudioAPI::GetSoLoud(), 250.f);
 
         auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
         auto redMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/red_material.json");
@@ -186,7 +202,7 @@ public:
     }
 
     void SpawnHouses() {
-        using Random = effolkronium::random_static;
+        using ERandom = effolkronium::random_static;
 
         std::vector<std::shared_ptr<mlg::ModelAsset>> models;
         models.push_back(mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Buildings/House_1.obj"));
@@ -200,7 +216,7 @@ public:
         for (int i = 0; i < city_size; ++i) {
             for (int j = 0; j < city_size; ++j) {
                 if (i % 3)
-                    Random::shuffle(models);
+                    ERandom::shuffle(models);
 
                 auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
                         "res/models/Primitives/white_material.json");
