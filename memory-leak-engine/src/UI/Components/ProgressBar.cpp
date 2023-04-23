@@ -15,13 +15,15 @@ namespace mlg {
 
     // TODO: Do przemyślenia czy ta klasa powinna dziedziczyć z obrazka a jeżeli tak to wypadało by korzystać z jej kodu
     void ProgressBar::Draw(const Renderer2D* renderer) {
+        UIComponent::Draw(renderer);
+
         material->Activate();
 
         // TODO: To oczywiście wyrzucić
         percentage = std::sin(Time::GetSeconds()) * 0.5 + 0.5;
 
-        material->GetShaderProgram()->SetVec2F("size", GetSize());
-        material->GetShaderProgram()->SetVec2F("screenPosition", GetPosition());
+        material->GetShaderProgram()->SetVec2F("size", GetSize() * renderer->uiScale);
+        material->GetShaderProgram()->SetVec2F("screenPosition", actualPosition);
         material->GetShaderProgram()->SetMat4F("projection", renderer->GetProjection());
 
         material->GetShaderProgram()->SetFloat("percentage", percentage);

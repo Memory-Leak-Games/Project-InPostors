@@ -5,6 +5,10 @@ set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "CMake")
 
 CMAKE_POLICY(SET CMP0012 NEW)
 
+if (CMAKE_BUILD_TYPE MATCHES Debug)
+    add_definitions(-DDEBUG)
+endif()
+
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_DEBUG_POSTFIX "_d")
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
@@ -28,17 +32,4 @@ set(ASSIMP_BUILD_OBJ_IMPORTER ON)
 #set(ASSIMP_BUILD_COLLADA_IMPORTER ON) // DAE
 #set(ASSIMP_BUILD_FBX_IMPORTER ON)
 
-#if (UNIX)
-#    execute_process(COMMAND bash -c "loginctl show-session $(loginctl | grep $(whoami) | awk '{print $1}') -p Type"
-#                    OUTPUT_VARIABLE result_display_server
-#                    OUTPUT_STRIP_TRAILING_WHITESPACE)
-#    cmake_print_variables(result_display_server)
-#
-#    if ("${result_display_server}" STREQUAL "Type=wayland")
-#        message(Using Wayland)
-#        set(GLFW_USE_WAYLAND ON)
-#    else ()
-#        message(Using X11)
-        set(GLFW_USE_WAYLAND OFF)
-#    endif ()
-#endif ()
+set(GLFW_USE_WAYLAND OFF)

@@ -44,5 +44,10 @@ namespace mlg {
 
         settingsFile.open("res/config/settings/video.json");
         videoSettings = json::parse(settingsFile);
+        settingsFile.close();
+
+        settingsFile.open("res/config/settings/audio.json");
+        audioSettings = json::parse(settingsFile);
+        settingsFile.close();
     }
 } // mlg

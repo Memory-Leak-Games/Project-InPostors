@@ -1,8 +1,10 @@
-// This is not allowed in Game layer
 #include "Rendering/Model.h"
 #include "Rendering/Renderer.h"
 
 #include <Rendering/RenderingAPI.h>
+
+#include <Audio/Assets/AudioAsset.h>
+#include <Audio/AudioAPI.h>
 
 #include <Rendering/Assets/MaterialAsset.h>
 #include <Rendering/Assets/ModelAsset.h>
@@ -27,6 +29,11 @@
 #include <Physics/Physics.h>
 #include <Rendering/CommonUniformBuffer.h>
 #include <Rendering/Gizmos/Gizmos.h>
+
+#include <Core/Math.h>
+#include <Gameplay/Components/AudioComponent.h>
+#include <Gameplay/Components/RigidbodyComponent.h>
+#include <Physics/Physics.h>
 
 #include <UI/Assets/FontAsset.h>
 #include <UI/Components/Image.h>
@@ -55,6 +62,9 @@ public:
 };
 
 class ProjectInpostors {
+    std::shared_ptr<mlg::AudioAsset> sound;
+    std::shared_ptr<mlg::AudioAsset> music;
+
 public:
     ProjectInpostors() = default;
 
@@ -70,6 +80,9 @@ public:
         mlg::Gizmos::Initialize();
         mlg::CommonUniformBuffer::Initialize();
         mlg::SceneGraph::Initialize();
+        mlg::AudioAPI::Initialize();
+
+        mlg::AudioAPI::GetSoLoud()->setGlobalVolume(mlg::SettingsManager::Get<float>(mlg::SettingsType::Audio, "volume"));
 
         mlg::Physics::Initialize();
 
@@ -88,6 +101,7 @@ public:
 
         mlg::Physics::Stop();
 
+        mlg::AudioAPI::Stop();
         mlg::SceneGraph::Stop();
         mlg::Input::Stop();
         mlg::Core::Stop();
@@ -99,7 +113,7 @@ public:
         mlg::AssetManager::Stop();
         mlg::Time::Stop();
 
-        mlg::SettingsManager::Initialize();
+        mlg::SettingsManager::Stop();
 
         return 0;
     }
@@ -112,6 +126,13 @@ public:
 
         cameraComponent.lock()->GetTransform().SetPosition({-10.f, 15.f, -10.f});
         cameraComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{60.f, 45.f, 0.f}));
+
+        sound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/SFX/mario_coin.ogg");
+        music = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/Crushin.ogg");
+        auto audioComponent = cameraEntity.lock()->AddComponent<mlg::AudioComponent>("AudioComponent", music);
+        audioComponent.lock()->SetLooping();
+        audioComponent.lock()->Play(mlg::AudioAPI::GetSoLoud());
+        //        music->Seek(mlg::AudioAPI::GetSoLoud(), 250.f);
 
         auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
         auto redMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/red_material.json");
@@ -130,19 +151,23 @@ public:
 
         auto ui = mlg::EntityManager::SpawnEntity<mlg::Entity>("ui", true, mlg::SceneGraph::GetRoot());
 
-        auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/comic.ttf");
+        auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/ARLRDBD.TTF");
         auto label = ui.lock()->AddComponent<mlg::Label>("Label", font);
-        label.lock()->SetPosition({10, 10});
+        label.lock()->SetPosition({500, 100});
+        label.lock()->SetTextColor({1, 1, 1});
+        label.lock()->SetSize(64);
 
         auto imageMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/cat_UI_material.json");
         auto image = ui.lock()->AddComponent<mlg::Image>("Image", imageMaterial);
         image.lock()->SetSize(glm::vec2{256.f});
-        image.lock()->SetPosition({50.f, 50.f});
+        image.lock()->SetPosition({1280.f - 128.f, 720.f - 128.f});
+        image.lock()->SetAnchor({1, 1});
 
         auto progressBarMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/progressBar_material.json");
         auto progressBar = ui.lock()->AddComponent<mlg::ProgressBar>("ProgressBar", progressBarMaterial);
         progressBar.lock()->SetSize(glm::vec2{256.f, 32.f});
-        progressBar.lock()->SetPosition({50.f, 400.f});
+        progressBar.lock()->SetPosition({150.f, 600.f});
+        progressBar.lock()->SetAnchor({0, 1});
 
         mlg::Renderer2D::GetInstance()->AddRenderable(label);
         mlg::Renderer2D::GetInstance()->AddRenderable(image);

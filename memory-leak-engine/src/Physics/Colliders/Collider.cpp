@@ -18,9 +18,6 @@ namespace mlg {
     }
 
     bool Collider::DetectCollision(Collider* anotherCollider) {
-        if (!DetectCollisionBoundingCircle(anotherCollider))
-            return false;
-
         if (shape->GetType() == ColliderShape::ColliderShapeType::Circle) {
             return DetectCollisionAsCircle(anotherCollider);
         } else {
