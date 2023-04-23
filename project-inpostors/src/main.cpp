@@ -127,7 +127,7 @@ public:
         sound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/SFX/mario_coin.ogg");
         music = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/Crushin.ogg");
         auto audioComponent = cameraEntity.lock()->AddComponent<mlg::AudioComponent>("AudioComponent", music);
-        music->SetLooping();
+        audioComponent.lock()->SetLooping();
         audioComponent.lock()->Play(mlg::AudioAPI::GetSoLoud());
 //        music->Seek(mlg::AudioAPI::GetSoLoud(), 250.f);
 
