@@ -47,8 +47,8 @@ namespace mlg {
             }
             levelLayout.push_back(layoutString);
         }
-        levelWidth = 5; //levelJson["width"].get<int>();
-        levelHeight = 5; // levelJson["height"].get<int>();
+        levelWidth = levelJson["max-width"].get<int>();
+        levelHeight = levelJson["max-height"].get<int>();
 
         mapObjects = std::make_unique<std::unordered_map<std::string,
                 std::vector<std::shared_ptr<MapObject>>>>();
@@ -84,9 +84,9 @@ namespace mlg {
 
     void LevelGenerator::GenerateLevel(float tileSize) {
         float citySize = tileSize * static_cast<float>(levelLayout.size());
-        for (unsigned int i = 0; i < levelWidth; i++)
+        for (unsigned int i = 0; i < levelHeight; i++)
         {
-            for (unsigned int k = 0; k < levelHeight; k++)
+            for (unsigned int k = 0; k < levelWidth; k++)
             {
                 try {
                     std::string symbol(1, levelLayout[i][k]);
@@ -101,13 +101,14 @@ namespace mlg {
 
                     auto mapObj = mapObjPool[rand];
                     glm::vec3 objectPos{0.0f};
-                    objectPos.x = static_cast<float>(i) * tileSize - citySize * 0.5f;
+                    objectPos.x = static_cast<float>(k) * tileSize - citySize * 0.5f;
                     objectPos.y = -0.5f;
-                    objectPos.z = static_cast<float>(k) * tileSize - citySize * 0.5f;
+                    objectPos.z = static_cast<float>(i) * tileSize - citySize * 0.5f;
                     PutObject(mapObj, objectPos);
                 }
                 catch (const std::out_of_range &e) {
-                    SPDLOG_CRITICAL("Exception at {}", e.what());
+                    // We have reached the end of this layout line; go to next one.
+                    break;
                 }
             }
         }
