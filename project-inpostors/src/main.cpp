@@ -28,6 +28,7 @@
 #include <Physics/Physics.h>
 #include <Core/Math.h>
 #include <Gameplay/Components/RigidbodyComponent.h>
+#include <Gameplay/Components/AudioComponent.h>
 
 #include <UI/Assets/FontAsset.h>
 #include <UI/Components/Image.h>
@@ -77,6 +78,8 @@ public:
         mlg::SceneGraph::Initialize();
         mlg::AudioAPI::Initialize();
 
+        mlg::AudioAPI::GetSoLoud()->setGlobalVolume(mlg::SettingsManager::Get<float>(mlg::SettingsType::Audio, "volume"));
+
         mlg::Physics::Initialize();
 
         mlg::ComponentManager::Initialize();
@@ -120,6 +123,13 @@ public:
 
         cameraComponent.lock()->GetTransform().SetPosition({-10.f, 15.f, -10.f});
         cameraComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{60.f, 45.f, 0.f}));
+
+        sound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/SFX/mario_coin.ogg");
+        music = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/Crushin.ogg");
+        auto audioComponent = cameraEntity.lock()->AddComponent<mlg::AudioComponent>("AudioComponent", music);
+        music->SetLooping();
+        audioComponent.lock()->Play(mlg::AudioAPI::GetSoLoud());
+//        music->Seek(mlg::AudioAPI::GetSoLoud(), 250.f);
 
 
         auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
@@ -182,22 +192,8 @@ public:
         sphereRigidbody.lock()->SetAngularDrag(2.f);
 
         auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot());
-        sound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/SFX/mario_coin.ogg");
-        music = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/Crushin.ogg");
 
         SpawnHouses();
-
-        music->PlayBackgroundMusic(mlg::AudioAPI::GetSoLoud(), 1.f);
-        mlg::Time::Sleep(5);
-        mlg::AudioAPI::GetSoLoud()->setGlobalVolume(mlg::SettingsManager::Get<float>(mlg::SettingsType::Audio, "volume"));
-//        music->SetVolume(0.05f);
-//        music->SetSingleInstance();
-//        music->PlayBackgroundMusic(mlg::AudioAPI::GetSoLoud());
-//        music->SetLooping();
-//        music->Pause(mlg::AudioAPI::GetSoLoud());
-//        music->Seek(mlg::AudioAPI::GetSoLoud(), 240.f);
-//        music->UnPause(mlg::AudioAPI::GetSoLoud());
-//        sound->Play(mlg::AudioAPI::GetSoLoud());
     }
 
     void SpawnHouses() {
