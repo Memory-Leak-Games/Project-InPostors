@@ -50,6 +50,8 @@ void Core::MainLoop() {
     ComponentManager::Start();
     EntityManager::Start();
 
+    Time::UpdateStartFrameTime();
+
     while (!shouldClose) {
         ZoneScoped;
 

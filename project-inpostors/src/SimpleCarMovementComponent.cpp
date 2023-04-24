@@ -19,6 +19,8 @@ void CarMovementComponent::Start() {
     rigidbodyComponent.lock()->SetAngularDrag(5.f);
 
     staticMeshComponent = GetOwner().lock()->GetComponentByClass<mlg::StaticMeshComponent>();
+
+    currentAccelerationForce = 0.f;
 }
 
 CarMovementComponent::CarMovementComponent(const std::weak_ptr<mlg::Entity> &owner, const std::string &name)
@@ -85,6 +87,7 @@ void CarMovementComponent::HandleEngineAndBraking() {
 
     // TODO: this is quick hack not solution :3
     currentAccelerationForce = mlg::Math::Lerp(currentAccelerationForce, targetAccelerationForce, 10.f * mlg::Time::GetFixedTimeStep());
+    currentAccelerationForce = glm::clamp(currentAccelerationForce, -100.f, 100.f);
     rigidbodyComponent.lock()->AddForce(currentAccelerationForce * forwardVector2D);
 }
 

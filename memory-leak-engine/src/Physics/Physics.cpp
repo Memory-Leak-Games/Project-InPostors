@@ -46,7 +46,7 @@ namespace mlg {
     }
 
     void Physics::TickFixedTimeSteps() {
-        float deltaTime = Time::GetTrueDeltaSeconds();
+        float deltaTime = Time::GetDeltaSeconds();
 
         instance->timeAccumulator += deltaTime;
 

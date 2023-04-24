@@ -28,6 +28,9 @@ namespace mlg {
 
         for (int x = gridCoordMin.x; x <= gridCoordMax.x; ++x) {
             for (int y = gridCoordMin.y; y <= gridCoordMax.y; ++y) {
+                if (x > dimensions.x || y > dimensions.y || x < 0 || y < 0)
+                    continue;
+
                 hashGrid[GetHashIndex({x, y})].push_back(client);
             }
         }
@@ -67,6 +70,9 @@ namespace mlg {
 
         for (int x = gridCoordMin.x; x <= gridCoordMax.x; ++x) {
             for (int y = gridCoordMin.y; y <= gridCoordMax.y; ++y) {
+                if (x > dimensions.x || y > dimensions.y || x < 0 || y < 0)
+                    continue;
+
                 for (auto& client : hashGrid[GetHashIndex({x, y})]) {
                     if (client->queryID != queryID) {
                         client->queryID = queryID;
