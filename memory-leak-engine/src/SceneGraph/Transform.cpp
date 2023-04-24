@@ -156,6 +156,7 @@ namespace mlg {
 
     void Transform::SetDirtyRecursive() {
         isDirty = true;
+        onTransformationChange();
 
         for (const std::shared_ptr<Transform>& child : children) {
             child->SetDirtyRecursive();
@@ -188,6 +189,10 @@ namespace mlg {
         const glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0.f, 1.f, 0.f), front));
         const glm::vec3 up = glm::normalize(glm::cross(front, right));
         rotation = glm::quatLookAt(front, up);
+    }
+
+    bool Transform::GetIsDirty() const {
+        return isDirty;
     }
 
 
