@@ -95,8 +95,7 @@ namespace mlg {
 
         glCullFace(GL_FRONT);
         for (auto &renderable: renderables) {
-            renderable.lock()->DrawShadowMap(this,
-                                             DirectionalLight::GetInstance()->GetShadowShaderProgram().lock().get());
+            renderable.lock()->DrawShadowMap(this, DirectionalLight::GetInstance()->GetShadowShaderProgram().lock().get());
         }
         glCullFace(GL_BACK);
     }
@@ -191,6 +190,14 @@ namespace mlg {
         ssaoBlurPass->Draw();
 
         gBuffer->BindTextures(ssaoBlurPass->GetBlurredTexture());
+    }
+
+    void* Renderer::GetCurrentCamera() const {
+        return currentCamera;
+    }
+
+    void Renderer::SetCurrentCamera(void* currentCamera) {
+        Renderer::currentCamera = currentCamera;
     }
 
 } // mlg

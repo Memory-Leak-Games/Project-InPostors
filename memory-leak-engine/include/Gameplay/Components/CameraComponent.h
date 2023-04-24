@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Gameplay/SceneComponent.h"
+#include "Rendering/Renderable.h"
 
+//TODO: Create abstract rendering camera;
 namespace mlg {
 
     class CameraComponent : public SceneComponent {
@@ -33,6 +35,12 @@ namespace mlg {
 
         std::unique_ptr<Projection> projection;
 
+        bool isProjectionDirty;
+        bool isViewDirty;
+
+        bool wasProjectionDirty;
+        bool wasViewDirty;
+
     public:
         CameraComponent() = delete;
 
@@ -44,9 +52,17 @@ namespace mlg {
         void Update() override;
         void OnWindowResize(const class Event& event);
 
+        void SetActive();
+
+        bool GetWasProjectionDirty() const;
+        bool GetWasViewDirty() const;
+
 #ifdef DEBUG
         void UpdateImGUI();
 #endif
+    private:
+        void CalculateProjection();
+        void CalculateView();
     };
 
 } // mlg

@@ -16,6 +16,8 @@ namespace mlg {
         std::vector<std::shared_ptr<Transform>> children;
         Transform* parent = nullptr;
     public:
+        eventpp::CallbackList<void()> onTransformationChange;
+
         Transform();
         Transform(const Transform& another) = delete;
 
@@ -34,6 +36,8 @@ namespace mlg {
         [[nodiscard]] glm::vec3 GetForwardVector();
         [[nodiscard]] glm::vec3 GetRightVector();
         [[nodiscard]] glm::vec3 GetUpVector();
+
+        [[nodiscard]] bool GetIsDirty() const;
 
         void SetPosition(const glm::vec3& position);
         void SetRotation(const glm::quat& rotation);

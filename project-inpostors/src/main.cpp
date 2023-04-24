@@ -126,6 +126,7 @@ public:
 
         cameraComponent.lock()->GetTransform().SetPosition({-10.f, 15.f, -10.f});
         cameraComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{60.f, 45.f, 0.f}));
+        cameraComponent.lock()->SetActive();
 
         sound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/SFX/mario_coin.ogg");
         music = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/Crushin.ogg");

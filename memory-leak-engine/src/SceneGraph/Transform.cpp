@@ -11,6 +11,9 @@ namespace mlg {
     }
 
     void Transform::SetPosition(const glm::vec3& position) {
+        if (position == this->position)
+            return;
+
         SetDirtyRecursive();
         Transform::position = position;
     }
@@ -20,6 +23,9 @@ namespace mlg {
     }
 
     void Transform::SetScale(const glm::vec3& scale) {
+        if (scale == this->scale)
+            return;
+
         SetDirtyRecursive();
         Transform::scale = scale;
     }
@@ -33,13 +39,21 @@ namespace mlg {
     }
 
     void Transform::SetRotation(const glm::quat& rotation) {
+        if (rotation == this->rotation)
+            return;
+
         SetDirtyRecursive();
         Transform::rotation = rotation;
     }
 
     void Transform::SetEulerRotation(const glm::vec3& rotation) {
+        glm::quat rotationQuat {rotation};
+
+        if (rotationQuat == this->rotation)
+            return;
+
         SetDirtyRecursive();
-        Transform::rotation = {rotation};
+        Transform::rotation = rotationQuat;
     }
 
     const glm::mat4& Transform::GetWorldMatrix() {
@@ -142,6 +156,7 @@ namespace mlg {
 
     void Transform::SetDirtyRecursive() {
         isDirty = true;
+        onTransformationChange();
 
         for (const std::shared_ptr<Transform>& child : children) {
             child->SetDirtyRecursive();
@@ -174,6 +189,10 @@ namespace mlg {
         const glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0.f, 1.f, 0.f), front));
         const glm::vec3 up = glm::normalize(glm::cross(front, right));
         rotation = glm::quatLookAt(front, up);
+    }
+
+    bool Transform::GetIsDirty() const {
+        return isDirty;
     }
 
 
