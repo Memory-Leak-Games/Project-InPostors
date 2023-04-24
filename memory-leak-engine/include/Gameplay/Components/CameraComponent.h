@@ -3,6 +3,7 @@
 #include "Gameplay/SceneComponent.h"
 #include "Rendering/Renderable.h"
 
+//TODO: Create abstract rendering camera;
 namespace mlg {
 
     class CameraComponent : public SceneComponent {
@@ -50,6 +51,8 @@ namespace mlg {
 
         void Update() override;
         void OnWindowResize(const class Event& event);
+
+        void SetActive();
 
         bool GetWasProjectionDirty() const;
         bool GetWasViewDirty() const;

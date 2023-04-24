@@ -8,13 +8,18 @@
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/ShaderProgram.h"
 
+#include "Gameplay/Components/CameraComponent.h"
+
 #include "Macros.h"
 
 namespace mlg {
     StaticMeshComponent::StaticMeshComponent(const std::weak_ptr<Entity>& owner, const std::string& name,
                                              const std::shared_ptr<ModelAsset>& model,
                                              const std::shared_ptr<MaterialAsset>& material)
-            : SceneComponent(owner, name), model(model), material(material) {
+            : SceneComponent(owner, name), model(model), material(material), wasDirty(true) {
+        GetTransform().onTransformationChange.append([this]() {
+            this->wasDirty = true;
+        });
     }
 
     void StaticMeshComponent::Start() {
@@ -25,19 +30,34 @@ namespace mlg {
     }
 
     void StaticMeshComponent::Draw(struct Renderer* renderer) {
-        material->Activate();
+        ZoneScopedN("Draw StaticMesh");
+        auto* camera = (CameraComponent*) renderer->GetCurrentCamera();
 
-        glm::mat4 worldMatrix = GetTransform().GetWorldMatrix();
-        glm::mat4 modelToView = CommonUniformBuffer::GetUniforms().view * worldMatrix;
-        glm::mat4 modelToScreen = CommonUniformBuffer::GetUniforms().projection * modelToView;
+        if (camera->GetWasViewDirty() || camera->GetWasProjectionDirty() || wasDirty)
+        {
+            ZoneScopedN("Calculate Matrices");
+            worldMatrix = GetTransform().GetWorldMatrix();
+            modelToView = CommonUniformBuffer::GetUniforms().view * worldMatrix;
+            modelToScreen = CommonUniformBuffer::GetUniforms().projection * modelToView;
 
-        glm::mat3 modelToViewNormals = glm::mat3(glm::transpose(glm::inverse(modelToView)));
+            modelToViewNormals = glm::mat3(glm::transpose(glm::inverse(modelToView)));
+        }
 
-//        material->GetShaderProgram()->SetMat4F("world", worldMatrix);
-        material->GetShaderProgram()->SetMat4F("modelToView", modelToView);
-        material->GetShaderProgram()->SetMat4F("modelToScreen", modelToScreen);
-        material->GetShaderProgram()->SetMat3F("modelToViewNormals", modelToViewNormals);
-        renderer->DrawModel(model.get());
+        {
+            ZoneScopedN("Send Matrices");
+            material->Activate();
+            //        material->GetShaderProgram()->SetMat4F("world", worldMatrix);
+            material->GetShaderProgram()->SetMat4F("modelToView", modelToView);
+            material->GetShaderProgram()->SetMat4F("modelToScreen", modelToScreen);
+            material->GetShaderProgram()->SetMat3F("modelToViewNormals", modelToViewNormals);
+        }
+
+        {
+            ZoneScopedN("Draw Model");
+            renderer->DrawModel(model.get());
+        }
+
+        wasDirty = false;
     }
 
     void StaticMeshComponent::DrawShadowMap(struct Renderer* renderer, struct ShaderProgram* shaderProgram) {

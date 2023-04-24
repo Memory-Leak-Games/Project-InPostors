@@ -16,6 +16,8 @@ namespace mlg {
         std::unique_ptr<class FrameBuffer> fxaa;
 
         Renderer() = default;
+
+        void* currentCamera;
     public:
         ~Renderer();
 
@@ -36,13 +38,13 @@ namespace mlg {
         void AddRenderable(const std::weak_ptr<Renderable>& renderable);
         void RemoveRenderable(std::weak_ptr<Renderable> renderable);
 
+        [[nodiscard]] void* GetCurrentCamera() const;
+        void SetCurrentCamera(void* currentCamera);
+
     private:
         void SSAOPass();
-
         void DrawShadowMap();
-
         void DrawRenderables(FrameBuffer *currentFramebuffer);
-
         void GeometryPass();
     };
 

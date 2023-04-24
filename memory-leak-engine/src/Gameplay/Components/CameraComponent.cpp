@@ -3,6 +3,7 @@
 #include "Core/Window.h"
 #include "Events/WindowEvent.h"
 #include "Rendering/CommonUniformBuffer.h"
+#include "Rendering/Renderer.h"
 
 namespace mlg {
 
@@ -54,6 +55,9 @@ namespace mlg {
     }
 
     void CameraComponent::Update() {
+        if ((CameraComponent*) Renderer::GetInstance()->GetCurrentCamera() != this)
+            return;
+
 #ifdef DEBUG
         UpdateImGUI();
 #endif
@@ -75,6 +79,8 @@ namespace mlg {
         glm::mat4 viewMatrix = glm::lookAt(position, position + forward, up);
 
         CommonUniformBuffer::SetView(viewMatrix);
+        
+        isViewDirty = false;
         wasViewDirty = true;
     }
 
@@ -129,6 +135,10 @@ namespace mlg {
 
     bool CameraComponent::GetWasViewDirty() const {
         return wasViewDirty;
+    }
+
+    void CameraComponent::SetActive() {
+        Renderer::GetInstance()->SetCurrentCamera((void*) this);
     }
 
 #endif
