@@ -120,7 +120,7 @@ namespace mlg {
         return glm::normalize(result);
     }
 
-    const std::vector<std::shared_ptr<Transform>>& Transform::GetChildren() {
+    const std::vector<std::weak_ptr<Transform>>& Transform::GetChildren() {
         return children;
     }
 
@@ -149,8 +149,11 @@ namespace mlg {
             isDirty = false;
         }
 
-        for (const std::shared_ptr<Transform>& child : children) {
-            child->Calculate(worldMatrix, isDirtyLocal);
+        for (const auto& child : children) {
+            if (child.expired())
+                continue;
+
+            child.lock()->Calculate(worldMatrix, isDirtyLocal);
         }
     }
 
@@ -158,8 +161,11 @@ namespace mlg {
         isDirty = true;
         onTransformationChange();
 
-        for (const std::shared_ptr<Transform>& child : children) {
-            child->SetDirtyRecursive();
+        for (const auto& child : children) {
+            if (child.expired())
+                continue;
+
+            child.lock()->SetDirtyRecursive();
         }
     }
 
@@ -180,7 +186,10 @@ namespace mlg {
 
     Transform::~Transform() {
         for (auto& child : children) {
-            child->parent = this->parent;
+            if (child.expired())
+                continue;
+
+            child.lock()->parent = this->parent;
         }
     }
 

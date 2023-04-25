@@ -13,7 +13,7 @@ namespace mlg {
 
         bool isDirty;
 
-        std::vector<std::shared_ptr<Transform>> children;
+        std::vector<std::weak_ptr<Transform>> children;
         Transform* parent = nullptr;
     public:
         eventpp::CallbackList<void()> onTransformationChange;
@@ -46,7 +46,7 @@ namespace mlg {
 
         void LookAt(const glm::vec3& lookAtPosition);
 
-        const std::vector<std::shared_ptr<Transform>>& GetChildren();
+        const std::vector<std::weak_ptr<Transform>>& GetChildren();
         Transform* GetParent();
 
         void AddChild(const std::shared_ptr<Transform>& newChild);
