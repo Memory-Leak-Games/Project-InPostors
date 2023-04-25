@@ -64,29 +64,20 @@ namespace mlg {
         void RemoveComponent(Component *component);
 
         virtual void Start();
-
         virtual void PhysicsUpdate();
-
         virtual void Update();
-
         virtual void LateUpdate();
-
         virtual void Stop();
 
         void QueueForDeletion();
-
         [[nodiscard]] bool IsQueuedForDeletion() const;
 
         [[nodiscard]] bool IsStatic() const;
-
         Transform &GetTransform();
-
         const std::string &GetName() const;
-
         const std::string &GetTag() const;
 
         void SetName(const std::string &name);
-
         void SetTag(const std::string &tag);
     };
 

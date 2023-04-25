@@ -31,7 +31,7 @@ namespace mlg {
 
     void StaticMeshComponent::Draw(struct Renderer* renderer) {
         ZoneScopedN("Draw StaticMesh");
-        auto* camera = (CameraComponent*) renderer->GetCurrentCamera();
+        Camera* camera = renderer->GetCurrentCamera();
 
         if (camera->GetWasViewDirty() || camera->GetWasProjectionDirty() || wasDirty)
         {
