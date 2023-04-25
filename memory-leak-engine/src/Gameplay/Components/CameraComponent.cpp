@@ -35,13 +35,14 @@ namespace mlg {
         });
 
         GetTransform().onTransformationChange.append([this](){
-            this->wasViewDirty = true;
+            this->isViewDirty = true;
         });
     }
 
     void CameraComponent::OnWindowResize(const Event& event) {
         auto& windowResizeEvent = (WindowResizeEvent&) event;
         CommonUniformBuffer::SetProjection(projection->CalculateProjection(windowResizeEvent.GetAspectRatio()));
+        isProjectionDirty = true;
     }
 
     void CameraComponent::SetOrtho(float size, float nearPlane, float farPlane) {
@@ -71,6 +72,8 @@ namespace mlg {
 
         if (!isViewDirty)
             return;
+
+        SPDLOG_WARN("View Changed");
 
         const glm::vec3 position = GetTransform().GetPosition();
         const glm::vec3 forward = GetTransform().GetForwardVector();
@@ -118,12 +121,16 @@ namespace mlg {
 
         if (orthoProjection) {
             float size = orthoProjection->size;
-            if (ImGui::DragFloat("Ortho Size", &size, 0.1))
+            if (ImGui::DragFloat("Ortho Size", &size, 0.1)) {
                 orthoProjection->size = size;
+                isProjectionDirty = true;
+            }
         } else if (perspectiveProjection) {
             float fow = perspectiveProjection->fov;
-            if (ImGui::DragFloat("Fow", &fow, 0.1))
+            if (ImGui::DragFloat("Fow", &fow, 0.1)) {
                 perspectiveProjection->fov = fow;
+                isProjectionDirty = true;
+            }
         }
 
         ImGui::End();

@@ -154,5 +154,21 @@ namespace mlg {
         rigidbody->angularVelocity = newAngularVelocity;
     }
 
+    void RigidbodyComponent::SetPosition(const glm::vec2 &position) {
+        rigidbody->position = position;
+    }
+
+    const glm::vec2 &RigidbodyComponent::GetPosition() {
+        return rigidbody->position;
+    }
+
+    void RigidbodyComponent::SetRotation(float rotation) {
+        rigidbody->rotation = rotation;
+    }
+
+    float RigidbodyComponent::GetRotation() {
+        return rigidbody->rotation;
+    }
+
 
 } // mlg

@@ -1,13 +1,13 @@
 {
   "ShadowMapSize": 60.0,
-  "ShadowMapResolution": 2048,
+  "ShadowMapResolution": 512,
   "VSync": false,
   "SSAO": true,
-  "SSAOSamples": 16,
+  "SSAOSamples": 8,
   "FXAA": true,
 
-  "ResolutionWidth": 1280,
-  "ResolutionHeight": 720,
+  "ResolutionWidth": 640,
+  "ResolutionHeight": 480,
   "WindowType": "windowed",
-  "LockSize": true
+  "LockSize": false
 }

@@ -37,6 +37,12 @@ namespace mlg {
         float GetAngularSpeed();
         float GetAngularAcceleration();
 
+        void SetPosition(const glm::vec2& position);
+        void SetRotation(float rotation);
+
+        const glm::vec2& GetPosition();
+        float GetRotation();
+
         template<typename T, typename ... Args>
         void AddCollider(Args&& ... args) {
             auto shape = std::make_unique<T>(glm::vec2(0.f), std::forward<Args>(args) ...);
