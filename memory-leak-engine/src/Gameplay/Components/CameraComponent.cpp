@@ -99,6 +99,18 @@ namespace mlg {
         wasProjectionDirty = true;
     }
 
+    bool CameraComponent::GetWasProjectionDirty() const {
+        return wasProjectionDirty;
+    }
+
+    bool CameraComponent::GetWasViewDirty() const {
+        return wasViewDirty;
+    }
+
+    void CameraComponent::SetActive() {
+        Renderer::GetInstance()->SetCurrentCamera((void*) this);
+    }
+
 #ifdef DEBUG
 
     void CameraComponent::UpdateImGUI() {
@@ -134,18 +146,6 @@ namespace mlg {
         }
 
         ImGui::End();
-    }
-
-    bool CameraComponent::GetWasProjectionDirty() const {
-        return wasProjectionDirty;
-    }
-
-    bool CameraComponent::GetWasViewDirty() const {
-        return wasViewDirty;
-    }
-
-    void CameraComponent::SetActive() {
-        Renderer::GetInstance()->SetCurrentCamera((void*) this);
     }
 
 #endif
