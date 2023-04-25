@@ -180,7 +180,7 @@ public:
         SpawnSpheres();
 
         mlg::LevelGenerator::LoadJson("res/levels/detroit.json");
-        mlg::LevelGenerator::GenerateLevel(7.0f);
+        mlg::LevelGenerator::GenerateLevel();
     }
 
     void SpawnSpheres() {

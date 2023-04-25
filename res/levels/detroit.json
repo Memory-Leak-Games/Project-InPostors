@@ -2,6 +2,7 @@
   "name": "Detroit",
   "max-width": 5,
   "max-height": 6,
+  "tile-size": 7.0,
   "layout": [
     "T|T|T",
     "-TTT-",

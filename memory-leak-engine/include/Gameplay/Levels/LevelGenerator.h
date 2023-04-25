@@ -18,13 +18,14 @@ namespace mlg {
         static LevelGenerator* GetInstance();
 
         static void LoadJson(const std::string& path);
-        static void GenerateLevel(float tileSize = 10.0f);
+        static void GenerateLevel();
         static bool GenerateTestLevel();
 
     private:
         static LevelGenerator* instance;
         static int levelWidth;
         static int levelHeight;
+        static float tileSize;
         static std::vector<std::vector<char>> levelLayout;
         static std::unique_ptr<std::unordered_map<std::string,
                 std::vector<std::shared_ptr<MapObject>>>> mapObjects;

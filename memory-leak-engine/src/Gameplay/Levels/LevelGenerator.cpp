@@ -13,9 +13,11 @@ namespace mlg {
     LevelGenerator* LevelGenerator::instance;
     int LevelGenerator::levelWidth;
     int LevelGenerator::levelHeight;
+    float LevelGenerator::tileSize;
     std::vector<std::vector<char>> LevelGenerator::levelLayout;
     std::unique_ptr<std::unordered_map<std::string,
             std::vector<std::shared_ptr<MapObject>>>> LevelGenerator::mapObjects;
+
 
     void LevelGenerator::Initialize() {
         if (instance != nullptr) return;
@@ -24,15 +26,18 @@ namespace mlg {
         instance = new LevelGenerator;
     }
 
+
     void LevelGenerator::Stop() {
         SPDLOG_INFO("Stopping LevelGenerator");
         delete instance;
         instance = nullptr;
     }
 
+
     LevelGenerator* LevelGenerator::GetInstance() {
         return LevelGenerator::instance;
     }
+
 
     void LevelGenerator::LoadJson(const std::string &path) {
 
@@ -49,6 +54,7 @@ namespace mlg {
         }
         levelWidth = levelJson["max-width"].get<int>();
         levelHeight = levelJson["max-height"].get<int>();
+        tileSize = levelJson.contains("tile-size") ? levelJson["tile-size"].get<float>() : 10.0f;
 
         mapObjects = std::make_unique<std::unordered_map<std::string,
                 std::vector<std::shared_ptr<MapObject>>>>();
@@ -82,7 +88,7 @@ namespace mlg {
     }
 
 
-    void LevelGenerator::GenerateLevel(float tileSize) {
+    void LevelGenerator::GenerateLevel() {
         float citySize = tileSize * static_cast<float>(levelLayout.size());
         for (unsigned int i = 0; i < levelHeight; i++)
         {
