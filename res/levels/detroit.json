@@ -1,12 +1,10 @@
 {
   "name": "Detroit",
-  "max-width": 5,
-  "max-height": 6,
   "layout": [
     "T|T|T",
     "-TTT-",
-    "T   T",
-    "-TTT-",
+    "T   T  T",
+    "-TuT-",
     "T|T|T"
   ],
   "tiles": [
@@ -43,6 +41,16 @@
           "rotation": 0.0,
           "collision-size": 4.0,
           "collision-type": "rectangle"
+        }
+      ]
+    },
+    {
+      "symbol": "u",
+      "objects": [
+        {
+          "model": "res/models/Roads/road.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "rotation": 0.0
         }
       ]
     }

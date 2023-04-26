@@ -9,7 +9,19 @@
 #include "Physics/Colliders/ColliderShapes.h"
 #include <fstream>
 
+#include "Rendering/Model.h"
+#include "Rendering/Assets/MaterialAsset.h"
+#include "Rendering/Assets/ModelAsset.h"
+#include "effolkronium/random.hpp"
+#include "nlohmann/json.hpp"
+
+#include "Gameplay/Levels/MapObject.h"
+
+using json = nlohmann::json;
+using Random = effolkronium::random_static;
+
 namespace mlg {
+
     LevelGenerator* LevelGenerator::instance;
     int LevelGenerator::levelWidth;
     int LevelGenerator::levelHeight;
@@ -34,6 +46,7 @@ namespace mlg {
         return LevelGenerator::instance;
     }
 
+    //TODO: please split these methods to smaller ones :3
     void LevelGenerator::LoadJson(const std::string &path) {
 
         std::ifstream levelFile{path};
@@ -47,8 +60,12 @@ namespace mlg {
             }
             levelLayout.push_back(layoutString);
         }
-        levelWidth = levelJson["max-width"].get<int>();
-        levelHeight = levelJson["max-height"].get<int>();
+
+        // Search the longest row
+        for (const auto& row : levelJson["layout"]) {
+            levelWidth = std::max(levelWidth, (int) row.get<std::string>().size());
+        }
+        levelHeight = (int) levelJson["layout"].size();
 
         mapObjects = std::make_unique<std::unordered_map<std::string,
                 std::vector<std::shared_ptr<MapObject>>>>();

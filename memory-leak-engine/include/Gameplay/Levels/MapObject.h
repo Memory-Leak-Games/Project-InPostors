@@ -1,8 +1,5 @@
 #pragma once
 
-#include "Rendering/Assets/ModelAsset.h"
-#include "Rendering/Assets/MaterialAsset.h"
-
 namespace mlg {
     class MapObject {
     public:
@@ -17,8 +14,8 @@ namespace mlg {
 
         // ==== GETTERS ====
         glm::vec3 GetRotation() { return worldRot; }
-        std::weak_ptr<ModelAsset> GetModel() { return model; }
-        std::weak_ptr<MaterialAsset> GetMaterial() { return material; }
+        std::weak_ptr<class ModelAsset> GetModel() { return model; }
+        std::weak_ptr<class MaterialAsset> GetMaterial() { return material; }
         [[nodiscard]] bool HasCollision() const { return hasCollision; }
         [[nodiscard]] std::string GetColliderType() const { return colliderType; }
         [[nodiscard]] float GetColliderSize() const { return colliderSize; }
