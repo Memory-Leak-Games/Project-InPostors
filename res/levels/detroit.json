@@ -1,11 +1,9 @@
 {
   "name": "Detroit",
   "layout": [
-    "T|T|T",
-    "-TTT-",
-    "T   T  T",
-    "-TuT-",
-    "T|T|T"
+    "T  ",
+    " T ",
+    "  u"
   ],
   "tiles": [
     {
