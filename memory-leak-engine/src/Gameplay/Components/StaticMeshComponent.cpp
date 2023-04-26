@@ -17,9 +17,6 @@ namespace mlg {
                                              const std::shared_ptr<ModelAsset>& model,
                                              const std::shared_ptr<MaterialAsset>& material)
             : SceneComponent(owner, name), model(model), material(material), wasDirty(true) {
-        GetTransform().onTransformationChange.append([this]() {
-            this->wasDirty = true;
-        });
     }
 
     void StaticMeshComponent::Start() {
@@ -31,32 +28,16 @@ namespace mlg {
 
     void StaticMeshComponent::Draw(struct Renderer* renderer) {
         ZoneScopedN("Draw StaticMesh");
-        Camera* camera = renderer->GetCurrentCamera();
-
-        {
-            ZoneScopedN("Calculate Matrices");
-            worldMatrix = GetTransform().GetWorldMatrix();
-            modelToView = CommonUniformBuffer::GetUniforms().view * worldMatrix;
-            modelToScreen = CommonUniformBuffer::GetUniforms().projection * modelToView;
-
-            modelToViewNormals = glm::mat3(glm::transpose(glm::inverse(modelToView)));
-        }
-
         {
             ZoneScopedN("Send Matrices");
             material->Activate();
-            //        material->GetShaderProgram()->SetMat4F("world", worldMatrix);
-            material->GetShaderProgram()->SetMat4F("modelToView", modelToView);
-            material->GetShaderProgram()->SetMat4F("modelToScreen", modelToScreen);
-            material->GetShaderProgram()->SetMat3F("modelToViewNormals", modelToViewNormals);
+            material->GetShaderProgram()->SetMat4F("world", GetTransform().GetWorldMatrix());
         }
 
         {
             ZoneScopedN("Draw Model");
             renderer->DrawModel(model.get());
         }
-
-        wasDirty = false;
     }
 
     void StaticMeshComponent::DrawShadowMap(struct Renderer* renderer, struct ShaderProgram* shaderProgram) {
