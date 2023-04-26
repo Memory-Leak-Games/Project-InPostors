@@ -65,7 +65,7 @@ namespace mlg {
             { // TODO: i leave this, but use ctrl + alt + shift + l before commit :3
                 std::string modelPath = jsonMapObject["model"].get<std::string>();
                 std::string materialPath = jsonMapObject["material"].get<std::string>();
-                float yRot = jsonMapObject.contains("rotation") ? jsonMapObject["rotation"].get<float>() : 0.0f;
+                float yRot = jsonMapObject.contains("rotation") ? jsonMapObject["rotation"].get<float>() + 90.f : 0.0f;
 
                 mlg::MapObject mapObj(modelPath, materialPath, yRot);
                 if (jsonMapObject.contains("collision-type")) {
@@ -117,9 +117,9 @@ namespace mlg {
 
                 auto mapObj = mapObjPool[rand];
                 glm::vec3 objectPos{0.0f};
-                objectPos.x = -static_cast<float>(i) * tileSize + citySize.x * 0.5f;
+                objectPos.z = static_cast<float>(i) * tileSize - citySize.x * 0.5f;
                 objectPos.y = -0.5f;
-                objectPos.z = static_cast<float>(j-1) * tileSize - citySize.y * 0.5f;
+                objectPos.x = -static_cast<float>(j-1) * tileSize + citySize.y * 0.5f;
                 PutObject(mapObj, objectPos);
 
             }

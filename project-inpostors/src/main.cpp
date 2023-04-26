@@ -146,7 +146,7 @@ public:
 
         auto ground = mlg::EntityManager::SpawnEntity<mlg::Entity>("Ground", true, mlg::SceneGraph::GetRoot());
         ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, groundMaterial);
-        ground.lock()->GetTransform().SetPosition({0.f, -0.5f, 0.f});
+        ground.lock()->GetTransform().SetPosition({0.f, -0.51f, 0.f});
         ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
 
         auto ui = mlg::EntityManager::SpawnEntity<mlg::Entity>("ui", true, mlg::SceneGraph::GetRoot());
@@ -179,7 +179,7 @@ public:
         SpawnSpheres();
 
         mlg::LevelGenerator::LoadJson("res/levels/detroit.json");
-        mlg::LevelGenerator::GenerateLevel(4.5f);
+        mlg::LevelGenerator::GenerateLevel(4.0f);
     }
 
     void SpawnSpheres() {

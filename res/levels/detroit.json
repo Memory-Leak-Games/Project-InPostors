@@ -1,9 +1,15 @@
 {
   "name": "Detroit",
   "layout": [
-    "T  ",
-    " T ",
-    "  u"
+    "           vv ",
+    "           vv ",
+    "          TvvT",
+    "hhhhhhhhhhhxxhhhhhhhhhhhhh",
+    "hhhhhhhhhhhxxhhhhhhhhhhhhh",
+    "           vv ",
+    "           vv ",
+    "           vv ",
+    "           vv "
   ],
   "tiles": [
     {
@@ -43,10 +49,30 @@
       ]
     },
     {
-      "symbol": "u",
+      "symbol": "v",
       "objects": [
         {
           "model": "res/models/Roads/road.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "rotation": 0.0
+        }
+      ]
+    },
+    {
+      "symbol": "h",
+      "objects": [
+        {
+          "model": "res/models/Roads/road.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "rotation": 90.0
+        }
+      ]
+    },
+    {
+      "symbol": "x",
+      "objects": [
+        {
+          "model": "res/models/Roads/road_cross.obj",
           "material": "res/models/Buildings/buildings_material.json",
           "rotation": 0.0
         }

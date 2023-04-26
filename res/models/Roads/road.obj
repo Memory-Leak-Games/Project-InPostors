@@ -1,6 +1,5 @@
 # Blender 3.5.1
 # www.blender.org
-mtllib droga.mtl
 o droga
 v 2.040668 0.000002 -2.044125
 v -2.033820 0.000002 -2.044125
