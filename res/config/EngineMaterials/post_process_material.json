@@ -10,7 +10,7 @@
     {
       "type": "float",
       "name": "Brightness",
-      "value": -0.2
+      "value": -0.1
     },
     {
       "type": "float",
@@ -20,7 +20,7 @@
     {
       "type": "float",
       "name": "Saturation",
-      "value": 1.0
+      "value": 1.4
     }
   ],
   "textures": [

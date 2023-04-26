@@ -14,8 +14,8 @@
       "symbol": "T",
       "objects": [
         {
-          "model": "res/models/Buildings/House_1.obj",
-          "material": "res/models/Primitives/white_material.json",
+          "model": "res/models/Buildings/building_1.obj",
+          "material": "res/models/Buildings/buildings_material.json",
           "collision-type": "rectangle",
           "collision-size": 4.0,
           "collision-offset": 0.0
@@ -26,8 +26,8 @@
       "symbol": "|",
       "objects": [
         {
-          "model": "res/models/Buildings/House_2.obj",
-          "material": "res/models/Primitives/blue_material.json",
+          "model": "res/models/Buildings/building_2.obj",
+          "material": "res/models/Buildings/buildings_material.json",
           "rotation": 0.0,
           "collision-size": 4.0,
           "collision-type": "rectangle"
@@ -38,8 +38,8 @@
       "symbol": "-",
       "objects": [
         {
-          "model": "res/models/Buildings/House_3.obj",
-          "material": "res/models/Primitives/red_material.json",
+          "model": "res/models/Buildings/building_3.obj",
+          "material": "res/models/Buildings/buildings_material.json",
           "rotation": 0.0,
           "collision-size": 4.0,
           "collision-type": "rectangle"
