@@ -3,7 +3,7 @@
 namespace mlg {
     Transform::Transform()
             : position(0.f), rotation(glm::vec3(0.f)), scale(1.f),
-              isDirty(true), worldMatrix(1.f), localMatrix(1.f) {
+              isDirty(true), isDirtyLocal(true), worldMatrix(1.f), localMatrix(1.f) {
     }
 
     const glm::vec3& Transform::GetPosition() const {
@@ -14,7 +14,10 @@ namespace mlg {
         if (position == this->position)
             return;
 
+        onTransformationChange();
+        isDirtyLocal = true;
         SetDirtyRecursive();
+
         Transform::position = position;
     }
 
@@ -26,7 +29,10 @@ namespace mlg {
         if (scale == this->scale)
             return;
 
+        onTransformationChange();
+        isDirtyLocal = true;
         SetDirtyRecursive();
+
         Transform::scale = scale;
     }
 
@@ -42,7 +48,10 @@ namespace mlg {
         if (rotation == this->rotation)
             return;
 
+        onTransformationChange();
+        isDirtyLocal = true;
         SetDirtyRecursive();
+
         Transform::rotation = rotation;
     }
 
@@ -52,7 +61,10 @@ namespace mlg {
         if (rotationQuat == this->rotation)
             return;
 
+        onTransformationChange();
+        isDirtyLocal = true;
         SetDirtyRecursive();
+
         Transform::rotation = rotationQuat;
     }
 
@@ -64,10 +76,21 @@ namespace mlg {
     }
 
     const glm::mat4& Transform::GetLocalMatrix() {
-        if (isDirty) {
-            glm::mat4 translation = glm::translate(glm::mat4(1.f), position);
-            glm::mat4 scaleMat = glm::scale(glm::mat4(1.f), scale);
+        if (isDirtyLocal) {
+            ZoneScopedN("Calculate Local Matrix");
+
+            glm::mat4 translation {1.f};
+            translation[3][0] = position.x;
+            translation[3][1] = position.y;
+            translation[3][2] = position.z;
+
+            glm::mat4 scaleMat {1.f};
+            scaleMat[0][0] = scale.x;
+            scaleMat[1][1] = scale.y;
+            scaleMat[2][2] = scale.z;
+
             localMatrix = translation * glm::toMat4(rotation) * scaleMat;
+            isDirtyLocal = false;
         }
 
         return localMatrix;
@@ -120,7 +143,7 @@ namespace mlg {
         return glm::normalize(result);
     }
 
-    const std::vector<std::shared_ptr<Transform>>& Transform::GetChildren() {
+    const std::vector<std::weak_ptr<Transform>>& Transform::GetChildren() {
         return children;
     }
 
@@ -141,25 +164,30 @@ namespace mlg {
         Calculate(GetLocalMatrix(), isDirty);
     }
 
-    void Transform::Calculate(const glm::mat4& parentMatrix, bool isDirtyLocal) {
-        isDirtyLocal |= isDirty;
+    void Transform::Calculate(const glm::mat4& parentMatrix, bool isParentDirty) {
+        isParentDirty |= isDirty;
 
-        if (isDirtyLocal) {
+        if (isParentDirty) {
             worldMatrix = parentMatrix * GetLocalMatrix();
             isDirty = false;
         }
 
-        for (const std::shared_ptr<Transform>& child : children) {
-            child->Calculate(worldMatrix, isDirtyLocal);
+        for (const auto& child : children) {
+            if (child.expired())
+                continue;
+
+            child.lock()->Calculate(worldMatrix, isParentDirty);
         }
     }
 
     void Transform::SetDirtyRecursive() {
         isDirty = true;
-        onTransformationChange();
 
-        for (const std::shared_ptr<Transform>& child : children) {
-            child->SetDirtyRecursive();
+        for (const auto& child : children) {
+            if (child.expired())
+                continue;
+
+            child.lock()->SetDirtyRecursive();
         }
     }
 
@@ -180,7 +208,10 @@ namespace mlg {
 
     Transform::~Transform() {
         for (auto& child : children) {
-            child->parent = this->parent;
+            if (child.expired())
+                continue;
+
+            child.lock()->parent = this->parent;
         }
     }
 

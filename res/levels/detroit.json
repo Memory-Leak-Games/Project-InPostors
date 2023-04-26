@@ -1,33 +1,44 @@
 {
   "name": "Detroit",
-  "max-width": 5,
-  "max-height": 6,
   "layout": [
-    "T|T|T",
-    "-TTT-",
-    "T   T",
-    "-TTT-",
-    "T|T|T"
+    "          SvvB ",
+    "          SvvB",
+    "sssssssssslvvLbbbbbbbbbbb",
+    "hhhhhhhhhhhxxhhhhhhhhhhhhh",
+    "hhhhhhhhhhhxxhhhhhhhhhhhhh",
+    "           vvB",
+    "           vvB",
+    "           vvB",
+    "           vvB"
   ],
   "tiles": [
     {
-      "symbol": "T",
+      "symbol": "B",
       "objects": [
         {
-          "model": "res/models/Buildings/House_1.obj",
-          "material": "res/models/Primitives/white_material.json",
+          "model": "res/models/Buildings/building_big_1.obj",
+          "material": "res/models/Buildings/buildings_material.json",
           "collision-type": "rectangle",
           "collision-size": 4.0,
           "collision-offset": 0.0
-        }
-      ]
-    },
-    {
-      "symbol": "|",
-      "objects": [
+        },
         {
-          "model": "res/models/Buildings/House_2.obj",
-          "material": "res/models/Primitives/blue_material.json",
+          "model": "res/models/Buildings/building_big_2.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "collision-offset": 0.0
+        },
+        {
+          "model": "res/models/Buildings/building_big_3.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "collision-offset": 0.0
+        },
+        {
+          "model": "res/models/Buildings/building_big_4.obj",
+          "material": "res/models/Buildings/buildings_material.json",
           "rotation": 0.0,
           "collision-size": 4.0,
           "collision-type": "rectangle"
@@ -35,14 +46,146 @@
       ]
     },
     {
-      "symbol": "-",
+      "symbol": "b",
       "objects": [
         {
-          "model": "res/models/Buildings/House_3.obj",
-          "material": "res/models/Primitives/red_material.json",
-          "rotation": 0.0,
+          "model": "res/models/Buildings/building_big_1.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "rotation": 90.0,
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "collision-offset": 0.0
+        },
+        {
+          "model": "res/models/Buildings/building_big_2.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "rotation": 90.0,
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "collision-offset": 0.0
+        },
+        {
+          "model": "res/models/Buildings/building_big_3.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "rotation": 90.0,
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "collision-offset": 0.0
+        },
+        {
+          "model": "res/models/Buildings/building_big_4.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "rotation": 90.0,
           "collision-size": 4.0,
           "collision-type": "rectangle"
+        }
+      ]
+    },
+    {
+      "symbol": "s",
+      "objects": [
+        {
+          "model": "res/models/Buildings/building_small_1.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "rotation": 90.0,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        },
+        {
+          "model": "res/models/Buildings/building_small_2.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "rotation": 90.0,
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "collision-offset": 0.0
+        },
+        {
+          "model": "res/models/Buildings/building_small_3.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "rotation": 90.0,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        }
+      ]
+    },
+    {
+      "symbol": "S",
+      "objects": [
+        {
+          "model": "res/models/Buildings/building_small_1.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "rotation": -180.0,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        },
+        {
+          "model": "res/models/Buildings/building_small_2.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "rotation": 180.0,
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "collision-offset": 0.0
+        },
+        {
+          "model": "res/models/Buildings/building_small_3.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "rotation": 179.0,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        }
+      ]
+    },
+    {
+      "symbol": "L",
+      "objects": [
+        {
+          "model": "res/models/Buildings/building_corrner_big.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "rotation": -90.0,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        }
+      ]
+    },
+    {
+      "symbol": "l",
+      "objects": [
+        {
+          "model": "res/models/Buildings/building_corrner_small.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "rotation": -90.0,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        }
+      ]
+    },
+    {
+      "symbol": "v",
+      "objects": [
+        {
+          "model": "res/models/Roads/road.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "rotation": 90.0
+        }
+      ]
+    },
+    {
+      "symbol": "h",
+      "objects": [
+        {
+          "model": "res/models/Roads/road.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "rotation": 0.0
+        }
+      ]
+    },
+    {
+      "symbol": "x",
+      "objects": [
+        {
+          "model": "res/models/Roads/road_cross.obj",
+          "material": "res/models/Buildings/buildings_material.json",
+          "rotation": 0.0
         }
       ]
     }

@@ -192,11 +192,11 @@ namespace mlg {
         gBuffer->BindTextures(ssaoBlurPass->GetBlurredTexture());
     }
 
-    void* Renderer::GetCurrentCamera() const {
+    Camera* Renderer::GetCurrentCamera() {
         return currentCamera;
     }
 
-    void Renderer::SetCurrentCamera(void* currentCamera) {
+    void Renderer::SetCurrentCamera(Camera* currentCamera) {
         Renderer::currentCamera = currentCamera;
     }
 
