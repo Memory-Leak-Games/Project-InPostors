@@ -11,6 +11,7 @@ namespace mlg {
         glm::mat4 worldMatrix;
         glm::mat4 localMatrix;
 
+        bool isDirtyLocal;
         bool isDirty;
 
         std::vector<std::weak_ptr<Transform>> children;
@@ -54,7 +55,7 @@ namespace mlg {
         void Calculate();
 
     private:
-        void Calculate(const glm::mat4&, bool isDirty) ;
+        void Calculate(const glm::mat4&, bool isParentDirty);
         void SetDirtyRecursive();
         void ReCalculateParentRecursive() ;
     };

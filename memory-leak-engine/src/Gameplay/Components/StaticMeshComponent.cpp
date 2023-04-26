@@ -33,7 +33,6 @@ namespace mlg {
         ZoneScopedN("Draw StaticMesh");
         Camera* camera = renderer->GetCurrentCamera();
 
-        if (camera->GetWasViewDirty() || camera->GetWasProjectionDirty() || wasDirty)
         {
             ZoneScopedN("Calculate Matrices");
             worldMatrix = GetTransform().GetWorldMatrix();
