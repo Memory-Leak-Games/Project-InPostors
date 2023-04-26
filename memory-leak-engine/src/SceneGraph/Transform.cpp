@@ -65,8 +65,18 @@ namespace mlg {
 
     const glm::mat4& Transform::GetLocalMatrix() {
         if (isDirty) {
-            glm::mat4 translation = glm::translate(glm::mat4(1.f), position);
-            glm::mat4 scaleMat = glm::scale(glm::mat4(1.f), scale);
+            ZoneScopedN("Calculate Local Matrix");
+
+            glm::mat4 translation {1.f};
+            translation[3][0] = position.x;
+            translation[3][1] = position.y;
+            translation[3][2] = position.z;
+
+            glm::mat4 scaleMat {1.f};
+            scaleMat[0][0] = scale.x;
+            scaleMat[1][1] = scale.y;
+            scaleMat[2][2] = scale.z;
+
             localMatrix = translation * glm::toMat4(rotation) * scaleMat;
         }
 
