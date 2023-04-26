@@ -41,9 +41,7 @@ namespace mlg {
     }
 
     void StaticMeshComponent::DrawShadowMap(struct Renderer* renderer, struct ShaderProgram* shaderProgram) {
-        glm::mat4 worldMatrix = GetTransform().GetWorldMatrix();
-        glm::mat4 modelToLight = DirectionalLight::GetInstance()->GetSun().lightSpaceMatrix * worldMatrix;
-
+        const glm::mat4 modelToLight = DirectionalLight::GetInstance()->GetSun().lightSpaceMatrix * GetTransform().GetWorldMatrix();
         shaderProgram->SetMat4F("modelToLight", modelToLight);
         renderer->DrawModel(model.get());
     }
