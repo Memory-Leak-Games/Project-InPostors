@@ -24,8 +24,7 @@ namespace mlg {
 
     LevelGenerator *LevelGenerator::instance;
     std::vector<std::string> LevelGenerator::levelLayout;
-    std::unique_ptr<std::unordered_map<char,
-            std::vector<std::shared_ptr<MapObject>>>> LevelGenerator::mapObjects;
+    std::unique_ptr<std::unordered_map<char, LevelGenerator::MapEntry>> LevelGenerator::mapObjects;
 
     void LevelGenerator::Initialize() {
         if (instance != nullptr) return;
@@ -54,8 +53,7 @@ namespace mlg {
             levelLayout.push_back(jsonLayoutString.get<std::string>());
         }
 
-        mapObjects = std::make_unique<std::unordered_map<char,
-                std::vector<std::shared_ptr<MapObject>>>>();
+        mapObjects = std::make_unique<std::unordered_map<char, LevelGenerator::MapEntry>>();
 
         for (const auto &jsonTile: levelJson["tiles"]) {
             const char tileSymbol = jsonTile["symbol"].get<std::string>()[0];
@@ -65,7 +63,7 @@ namespace mlg {
             { // TODO: i leave this, but use ctrl + alt + shift + l before commit :3
                 std::string modelPath = jsonMapObject["model"].get<std::string>();
                 std::string materialPath = jsonMapObject["material"].get<std::string>();
-                float yRot = jsonMapObject.contains("rotation") ? jsonMapObject["rotation"].get<float>() + 90.f : 0.0f;
+                float yRot = jsonMapObject.contains("rotation") ? jsonMapObject["rotation"].get<float>(): 0.0f;
 
                 mlg::MapObject mapObj(modelPath, materialPath, yRot);
                 if (jsonMapObject.contains("collision-type")) {
@@ -83,7 +81,7 @@ namespace mlg {
                 auto newMapObj = std::make_shared<MapObject>(mapObj);
                 mapObjectPool.push_back(newMapObj);
             }
-            mapObjects->insert({tileSymbol, std::move(mapObjectPool)});
+            mapObjects->insert({tileSymbol, {std::move(mapObjectPool), 0}});
         }
     }
 
@@ -104,18 +102,23 @@ namespace mlg {
             for (const char &character: row) {
                 ++i;
 
-                if (mapObjects->find(character) == mapObjects->end()) // We do not put any map object here
+                if (character == ' ')
                     continue;
 
-                // TODO: There i can't easily guess so auto is not good choice
-                auto mapObjPool = mapObjects->at(character);
-                // Get random MapObject from pool
-                int rand = 0;
-                int poolSize = (int) mapObjPool.size();
-                if (poolSize > 1) // If there is only one object in the pool, skip random pick
-                    rand = Random::get(0, poolSize - 1);
+                MLG_ASSERT_MSG(mapObjects->find(character) != mapObjects->end(), "Unknown character in tile map");
 
-                auto mapObj = mapObjPool[rand];
+                // TODO: There i can't easily guess so auto is not good idea
+                auto mapObjPool = mapObjects->at(character).object;
+                int useCount = (mapObjects->at(character).useCount)++;
+
+                if (useCount > mapObjPool.size() - 1) {
+                    useCount = 0;
+                    Random::shuffle(mapObjPool);
+                }
+
+                auto mapObj = mapObjPool[useCount];
+
+
                 glm::vec3 objectPos{0.0f};
                 objectPos.z = static_cast<float>(i) * tileSize - citySize.x * 0.5f;
                 objectPos.y = -0.5f;
@@ -196,6 +199,7 @@ namespace mlg {
             rigidbody.lock()->AddCollider<mlg::ColliderShape::Circle>(
                     glm::vec2(glm::vec2(obj->GetColliderSize())), obj->GetColliderOffset());
         }
+        rigidbody.lock()->SetRotation(obj->GetRotation().y);
     }
 
     std::string LevelGenerator::Hash(const std::string &hashString, float posX, float posY) {

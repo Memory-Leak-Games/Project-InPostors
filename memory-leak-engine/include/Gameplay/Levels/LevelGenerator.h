@@ -27,8 +27,12 @@ namespace mlg {
         // TODO: And does it have to be a member of the class?
         static std::vector<std::string> levelLayout;
 
-        static std::unique_ptr<std::unordered_map<char,
-            std::vector<std::shared_ptr<class MapObject>>>> mapObjects;
+        struct MapEntry {
+            std::vector<std::shared_ptr<class MapObject>> object;
+            int useCount = 0;
+        };
+
+        static std::unique_ptr<std::unordered_map<char, MapEntry>> mapObjects;
 
         LevelGenerator() = default;
         //~LevelGenerator() = default;

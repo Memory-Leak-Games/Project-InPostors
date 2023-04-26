@@ -176,7 +176,7 @@ public:
 
         auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot());
 
-        SpawnSpheres();
+//        SpawnSpheres();
 
         mlg::LevelGenerator::LoadJson("res/levels/detroit.json");
         mlg::LevelGenerator::GenerateLevel(4.0f);
