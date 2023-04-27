@@ -82,7 +82,7 @@ namespace mlg {
 
         aspectRatio = (float) windowWidth / (float) windowHeight;
 
-        projection = glm::ortho(0.0f, 720.f * aspectRatio, 0.0f, 720.f);
+        projection = glm::ortho(0.0f, (float)windowWidth, 0.0f, (float)windowHeight);
     }
 
     glm::mat4 Renderer2D::GetProjection() const {

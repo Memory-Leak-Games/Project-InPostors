@@ -15,24 +15,28 @@ layout(std140, binding = 0) uniform CommonUnifomrs {
     float randFloat;
 };
 
-uniform mat4 modelToView;
-uniform mat4 modelToScreen;
-uniform mat3 modelToViewNormals;
+uniform mat4 world;
 
 out VS_OUT {
     vec3 position;
     vec3 normal;
     vec2 uv;
+
+
 } vs_out;
 
 void main() {
-    vec4 positionInViewSpace = modelToView * vec4(position, 1.0f);
+    mat4 model2View = view * world;
+    mat3 model2ViewNormals = mat3(transpose(inverse(model2View)));
+    mat4 model2Screen = projection * model2View;
+
+    vec4 positionInViewSpace = model2View * vec4(position, 1.0f);
 
     // Send data to Fragment shader
     vs_out.uv = uv;
     vs_out.position = vec3(positionInViewSpace);
-    vs_out.normal = normalize(modelToViewNormals * normal);
+    vs_out.normal = normalize(model2ViewNormals * normal);
 
     // Set vertex position
-    gl_Position = modelToScreen * vec4(position, 1.0f);
+    gl_Position = model2Screen * vec4(position, 1.0f);
 }

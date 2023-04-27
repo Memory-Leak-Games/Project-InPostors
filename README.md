@@ -12,6 +12,13 @@
 * Szymon Świędrych
 
 ## Changelog
+
+* Rendering
+  * posterization
+  * film grain
+
+### 24.04.2023
+
 * Profiler
 * Rendering
   * Advanced Camera

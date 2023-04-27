@@ -11,9 +11,10 @@ namespace mlg {
         glm::mat4 worldMatrix;
         glm::mat4 localMatrix;
 
+        bool isDirtyLocal;
         bool isDirty;
 
-        std::vector<std::shared_ptr<Transform>> children;
+        std::vector<std::weak_ptr<Transform>> children;
         Transform* parent = nullptr;
     public:
         eventpp::CallbackList<void()> onTransformationChange;
@@ -46,7 +47,7 @@ namespace mlg {
 
         void LookAt(const glm::vec3& lookAtPosition);
 
-        const std::vector<std::shared_ptr<Transform>>& GetChildren();
+        const std::vector<std::weak_ptr<Transform>>& GetChildren();
         Transform* GetParent();
 
         void AddChild(const std::shared_ptr<Transform>& newChild);
@@ -54,7 +55,7 @@ namespace mlg {
         void Calculate();
 
     private:
-        void Calculate(const glm::mat4&, bool isDirty) ;
+        void Calculate(const glm::mat4&, bool isParentDirty);
         void SetDirtyRecursive();
         void ReCalculateParentRecursive() ;
     };

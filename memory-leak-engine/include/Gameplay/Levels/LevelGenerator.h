@@ -1,16 +1,15 @@
 #pragma once
-#include "pch.h"
-#include "Rendering/Model.h"
-#include "Rendering/Assets/MaterialAsset.h"
-#include "Rendering/Assets/ModelAsset.h"
-#include "MapObject.h"
-#include "effolkronium/random.hpp"
+
+// TODO: HINT do not add includes in header, because when you change one, you need to
+//  recompile every other file that includes these
+
+// TODO: This class should be a singleton not a static class
+//      Static classes are used for set of methods (like math lib) rather than Super class
 
 namespace mlg {
-    using json = nlohmann::json;
-    using Random = effolkronium::random_static;
 
     class LevelGenerator {
+
     public:
 
         static void Initialize();
@@ -22,17 +21,24 @@ namespace mlg {
 
     private:
         static LevelGenerator* instance;
-        static int levelWidth;
-        static int levelHeight;
-        static float tileSize;
-        static std::vector<std::vector<char>> levelLayout;
-        static std::unique_ptr<std::unordered_map<std::string,
-                std::vector<std::shared_ptr<MapObject>>>> mapObjects;
+
+        // TODO: I changed type to string to simplify typing (string is fancy class for vector of characters)
+        // TODO: And does it have to be a member of the class?
+        static std::vector<std::string> levelLayout;
+
+        struct MapEntry {
+            std::vector<std::shared_ptr<class MapObject>> object;
+            int useCount = 0;
+        };
+
+        static std::unique_ptr<std::unordered_map<char, MapEntry>> mapObjects;
 
         LevelGenerator() = default;
         //~LevelGenerator() = default;
-        
-        static void PutObject(const std::shared_ptr<MapObject>& obj, glm::vec3 pos);
+
+        static void PutObject(std::shared_ptr<class ModelAsset>& modelAsset, std::shared_ptr<class MaterialAsset>& materialAsset,
+                              glm::vec3 pos, float rotation = 0.0f);
+        static void PutObject(const std::shared_ptr<class MapObject>& obj, glm::vec3 pos);
         static std::string Hash(const std::string& hashString, float posX, float posY);
     };
 

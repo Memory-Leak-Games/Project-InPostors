@@ -1,21 +1,37 @@
 #version 440 core
 
-layout (binding=0) uniform sampler2D colorTexture;
+layout (binding = 0) uniform sampler2D colorTexture;
 uniform sampler2D whiteNoise;
 
 out vec4 fragColor;
 
-uniform float Gamma = 2.2;
-uniform float Brightness = 0.0;
-uniform float Contrast = 1.0;
-uniform float Saturation = 1.0;
+uniform float gamma = 2.2;
+uniform float brightness = 0.0;
+uniform float contrast = 1.0;
+uniform float saturation = 1.0;
+uniform float filmGrain = 0.1;
+
+in VS_OUT {
+    vec2 uv;
+} fs_in;
+
+layout (std140, binding = 0) uniform CommonUnifomrs {
+    mat4 projection;
+    mat4 view;
+
+    double seconds;
+    float deltaSeconds;
+
+    int randInt;
+    float randFloat;
+};
 
 mat4 BrightnessMatrix(float brightness)
 {
     return mat4(1, 0, 0, 0,
-    0, 1, 0, 0,
-    0, 0, 1, 0,
-    brightness, brightness, brightness, 1);
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                brightness, brightness, brightness, 1);
 }
 
 mat4 ContrastMatrix(float contrast)
@@ -23,9 +39,9 @@ mat4 ContrastMatrix(float contrast)
     float t = (1.0 - contrast) / 2.0;
 
     return mat4(contrast, 0, 0, 0,
-    0, contrast, 0, 0,
-    0, 0, contrast, 0,
-    t, t, t, 1);
+                0, contrast, 0, 0,
+                0, 0, contrast, 0,
+                t, t, t, 1);
 
 }
 
@@ -36,7 +52,7 @@ mat4 SaturationMatrix(float saturation)
     float oneMinusSat = 1.0 - saturation;
 
     vec3 red = vec3(luminance.x * oneMinusSat);
-    red+= vec3(saturation, 0, 0);
+    red += vec3(saturation, 0, 0);
 
     vec3 green = vec3(luminance.y * oneMinusSat);
     green += vec3(0, saturation, 0);
@@ -45,25 +61,30 @@ mat4 SaturationMatrix(float saturation)
     blue += vec3(0, 0, saturation);
 
     return mat4(red, 0,
-    green, 0,
-    blue, 0,
-    0, 0, 0, 1);
+                green, 0,
+                blue, 0,
+                0, 0, 0, 1);
 }
 
-in VS_OUT {
-    vec2 uv;
-} fs_in;
-
 vec4 GammaCorection(vec4 color) {
-    color.rgb = pow(color.rgb, vec3(1.0/Gamma));
+    color.rgb = pow(color.rgb, vec3(1.0 / gamma));
     return color;
+}
+
+#define TO_RADIANS 3.14f / 180.f
+
+vec4 FilmGrain() {
+    float randomIntensity = fract(10000.f * sin((gl_FragCoord.x + gl_FragCoord.y * float(seconds)) * TO_RADIANS));
+    randomIntensity *= filmGrain;
+    return vec4(vec3(randomIntensity), 1.f);
 }
 
 void main() {
     vec4 textureColor = texture(colorTexture, fs_in.uv);
 
-    fragColor = BrightnessMatrix(Brightness) *
-    ContrastMatrix(Contrast) *
-    SaturationMatrix(Saturation) *
-    GammaCorection(textureColor);
+    fragColor = BrightnessMatrix(brightness) *
+    ContrastMatrix(contrast) *
+    SaturationMatrix(saturation) *
+    GammaCorection(textureColor) +
+    FilmGrain();
 }

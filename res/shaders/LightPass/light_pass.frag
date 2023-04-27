@@ -36,6 +36,7 @@ layout (std140, binding = 1) uniform light {
 
 uniform mat4 viewToLight;
 uniform float fressnelPower = 5.f;
+uniform float posterizationLevels = 6;
 
 uniform bool isSSAOActive = false;
 
@@ -87,10 +88,10 @@ vec3 CalculateDirectionalLight() {
     fresnelFactor = pow(fresnelFactor, fressnelPower);
 
     vec3 materialSpecular = mix(albedo, vec3(1.f), fresnelFactor);
-
     // specular light
     vec3 reflectDirection = reflect(-lightDirection, normal);
     float calculated_specular = pow(max(dot(viewDirection, reflectDirection), 0.0), specular);
+    calculated_specular = clamp(0.f, 1.f, calculated_specular);
 
     float shadow = CalculateShadow();
 
@@ -102,8 +103,21 @@ vec3 CalculateDirectionalLight() {
     return ambientColor + diffuseColor + specularColor;
 }
 
-void main()
-{
+vec3 Posterization(vec3 color) {
+    float levels = posterizationLevels;
+    float greyScale = max(color.r, max(color.g, color.b));
 
-    fragColor = vec4(CalculateDirectionalLight(), 1.0);
+    float lower = floor(greyScale * levels) / levels;
+    float lowerDiff = abs(greyScale - lower);
+
+    float upper     = ceil(greyScale * levels) / levels;
+    float upperDiff = abs(upper - greyScale);
+
+    float level = mix(upper, lower, float(lowerDiff <= upperDiff));
+    float adjustment = level / greyScale;
+    return color * adjustment;
+}
+
+void main() {
+    fragColor = vec4(Posterization(CalculateDirectionalLight()), 1.0);
 }
