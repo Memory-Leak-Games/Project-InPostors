@@ -14,11 +14,31 @@ namespace mlg {
 
     void CameraComponent::Update() {
         camera->Update();
-
 #ifdef DEBUG
         UpdateImGUI();
 #endif
     }
+
+    void CameraComponent::SetOrtho(float size, float nearPlane, float farPlane) {
+        camera->SetOrtho(size, nearPlane, farPlane);
+    }
+
+    void CameraComponent::SetPerspective(float fov, float nearPlane, float farPlane) {
+        camera->SetPerspective(fov, nearPlane, farPlane);
+    }
+
+    void CameraComponent::SetActive() {
+        camera->SetActive();
+    }
+
+    bool CameraComponent::IsActive() {
+        return camera->IsActive();
+    }
+
+    Transform& CameraComponent::GetTransform() {
+        return camera->GetTransform();
+    }
+
 
 #ifdef DEBUG
 
@@ -56,26 +76,6 @@ namespace mlg {
         }
 
         ImGui::End();
-    }
-
-    void CameraComponent::SetOrtho(float size, float nearPlane, float farPlane) {
-        camera->SetOrtho(size, nearPlane, farPlane);
-    }
-
-    void CameraComponent::SetPerspective(float fov, float nearPlane, float farPlane) {
-        camera->SetPerspective(fov, nearPlane, farPlane);
-    }
-
-    void CameraComponent::SetActive() {
-        camera->SetActive();
-    }
-
-    bool CameraComponent::IsActive() {
-        return camera->IsActive();
-    }
-
-    Transform& CameraComponent::GetTransform() {
-        return camera->GetTransform();
     }
 
 #endif
