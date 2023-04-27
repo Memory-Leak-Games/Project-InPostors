@@ -4,23 +4,28 @@
   "uniforms": [
     {
       "type": "float",
-      "name": "Gamma",
+      "name": "gamma",
       "value": 2.2
     },
     {
       "type": "float",
-      "name": "Brightness",
-      "value": -0.2
+      "name": "brightness",
+      "value": -0.1
     },
     {
       "type": "float",
-      "name": "Contrast",
+      "name": "contrast",
       "value": 1.0
     },
     {
       "type": "float",
-      "name": "Saturation",
-      "value": 1.0
+      "name": "saturation",
+      "value": 1.4
+    },
+    {
+      "type": "float",
+      "name": "filmGrain",
+      "value": 0.05
     }
   ],
   "textures": [

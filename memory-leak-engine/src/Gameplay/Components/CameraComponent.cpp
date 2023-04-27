@@ -1,147 +1,77 @@
 #include "Gameplay/Components/CameraComponent.h"
 
-#include "Core/Window.h"
 #include "Events/WindowEvent.h"
-#include "Rendering/CommonUniformBuffer.h"
-#include "Rendering/Renderer.h"
+
+#include "Gameplay/Entity.h"
 
 namespace mlg {
 
-    CameraComponent::Projection::Projection(float nearPlane, float farPlane)
-        : nearPlane(nearPlane), farPlane(farPlane) {}
-
-    CameraComponent::OrthoProjection::OrthoProjection(float size, float nearPlane, float farPlane)
-        : size(size), Projection(nearPlane, farPlane) {}
-
-    glm::mat4 CameraComponent::OrthoProjection::CalculateProjection(float aspectRatio) {
-        float halfHeight = size * 0.5f;
-        float halfWidth = (size * aspectRatio) * 0.5f;
-        return glm::ortho(-halfWidth, halfWidth, -halfHeight, halfHeight, nearPlane, farPlane);
-    }
-
-    CameraComponent::PerspectiveProjection::PerspectiveProjection(float fov, float nearPlane, float farPlane)
-        : fov(fov), Projection(nearPlane, farPlane) {}
-
-    glm::mat4 CameraComponent::PerspectiveProjection::CalculateProjection(float aspectRatio) {
-        return glm::perspective(fov, aspectRatio, nearPlane, farPlane);
-    }
 
     CameraComponent::CameraComponent(const std::weak_ptr<Entity>& owner, const std::string& name)
-        : SceneComponent(owner, name), isProjectionDirty(true), isViewDirty(true), wasProjectionDirty(true),
-          wasViewDirty(true) {
-
-        Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, [this](const Event& event) {
-            this->OnWindowResize(event);
-        });
-
-        GetTransform().onTransformationChange.append([this](){
-            this->isViewDirty = true;
-        });
-    }
-
-    void CameraComponent::OnWindowResize(const Event& event) {
-        auto& windowResizeEvent = (WindowResizeEvent&) event;
-        CommonUniformBuffer::SetProjection(projection->CalculateProjection(windowResizeEvent.GetAspectRatio()));
-        isProjectionDirty = true;
-    }
-
-    void CameraComponent::SetOrtho(float size, float nearPlane, float farPlane) {
-        isProjectionDirty = true;
-        projection = std::make_unique<OrthoProjection>(size, nearPlane, farPlane);
-    }
-
-    void CameraComponent::SetPerspective(float fov, float nearPlane, float farPlane) {
-        isProjectionDirty = true;
-        projection = std::make_unique<PerspectiveProjection>(fov, nearPlane, farPlane);
+        : Component(owner, name), camera(std::make_unique<Camera>()) {
+        owner.lock()->GetTransform().AddChild(camera->transform);
     }
 
     void CameraComponent::Update() {
-        if ((CameraComponent*) Renderer::GetInstance()->GetCurrentCamera() != this)
-            return;
-
+        camera->Update();
 #ifdef DEBUG
         UpdateImGUI();
 #endif
-
-        CalculateView();
-        CalculateProjection();
     }
 
-    void CameraComponent::CalculateView() {
-        wasViewDirty = false;
-
-        if (!isViewDirty)
-            return;
-
-        SPDLOG_WARN("View Changed");
-
-        const glm::vec3 position = GetTransform().GetPosition();
-        const glm::vec3 forward = GetTransform().GetForwardVector();
-        const glm::vec3 up = GetTransform().GetUpVector();
-
-        glm::mat4 viewMatrix = glm::lookAt(position, position + forward, up);
-
-        CommonUniformBuffer::SetView(viewMatrix);
-        
-        isViewDirty = false;
-        wasViewDirty = true;
+    void CameraComponent::SetOrtho(float size, float nearPlane, float farPlane) {
+        camera->SetOrtho(size, nearPlane, farPlane);
     }
 
-    void CameraComponent::CalculateProjection() {
-        wasProjectionDirty = false;
-
-        if (!isProjectionDirty)
-            return;
-
-        float aspectRatio = Window::GetInstance()->GetAspectRatio();
-        CommonUniformBuffer::SetProjection(projection->CalculateProjection(aspectRatio));
-        isProjectionDirty = false;
-        wasProjectionDirty = true;
-    }
-
-    bool CameraComponent::GetWasProjectionDirty() const {
-        return wasProjectionDirty;
-    }
-
-    bool CameraComponent::GetWasViewDirty() const {
-        return wasViewDirty;
+    void CameraComponent::SetPerspective(float fov, float nearPlane, float farPlane) {
+        camera->SetPerspective(fov, nearPlane, farPlane);
     }
 
     void CameraComponent::SetActive() {
-        Renderer::GetInstance()->SetCurrentCamera((void*) this);
+        camera->SetActive();
     }
+
+    bool CameraComponent::IsActive() {
+        return camera->IsActive();
+    }
+
+    Transform& CameraComponent::GetTransform() {
+        return camera->GetTransform();
+    }
+
 
 #ifdef DEBUG
 
     void CameraComponent::UpdateImGUI() {
+        if (!camera->IsActive())
+            return;
+
         ImGui::Begin("Camera");
 
-        glm::vec3 position = GetTransform().GetWorldPosition();
-        glm::vec3 rotation = glm::degrees(GetTransform().GetEulerRotation());
+        glm::vec3 position = camera->GetTransform().GetWorldPosition();
+        glm::vec3 rotation = glm::degrees(camera->GetTransform().GetEulerRotation());
 
         bool isViewChanged = false;
         isViewChanged |= ImGui::DragFloat3("Camera Position", (float*) &position, 0.1f);
         isViewChanged |= ImGui::DragFloat3("Camera Rotation", (float*) &rotation, 1.f);
 
         if (isViewChanged) {
-            GetTransform().SetPosition(position);
-            GetTransform().SetRotation({glm::radians(rotation)});
+            camera->GetTransform().SetPosition(position);
+            camera->GetTransform().SetRotation({glm::radians(rotation)});
         }
 
-        auto* orthoProjection = dynamic_cast<OrthoProjection*>(projection.get());
-        auto* perspectiveProjection = dynamic_cast<PerspectiveProjection*>(projection.get());
+        auto* orthoProjection = dynamic_cast<Camera::OrthoProjection*>(camera->GetProjection());
+        auto* perspectiveProjection = dynamic_cast<Camera::PerspectiveProjection*>(camera->GetProjection());
 
         if (orthoProjection) {
             float size = orthoProjection->size;
             if (ImGui::DragFloat("Ortho Size", &size, 0.1)) {
-                orthoProjection->size = size;
-                isProjectionDirty = true;
+                camera->SetOrtho(size, orthoProjection->nearPlane, orthoProjection->farPlane);
             }
         } else if (perspectiveProjection) {
             float fow = perspectiveProjection->fov;
             if (ImGui::DragFloat("Fow", &fow, 0.1)) {
-                perspectiveProjection->fov = fow;
-                isProjectionDirty = true;
+                camera->SetOrtho(fow, perspectiveProjection->nearPlane, perspectiveProjection->farPlane);
             }
         }
 

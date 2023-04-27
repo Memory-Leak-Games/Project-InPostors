@@ -3,6 +3,9 @@
 #include "Gameplay/Levels/MapObject.h"
 #include "Core/AssetManager/AssetManager.h"
 
+#include "Rendering/Assets/ModelAsset.h"
+#include "Rendering/Assets/MaterialAsset.h"
+
 mlg::MapObject::MapObject(const std::string &modelPath, const std::string &materialPath, float rot) :
         model(mlg::AssetManager::GetAsset<mlg::ModelAsset>(modelPath)),
         material(mlg::AssetManager::GetAsset<mlg::MaterialAsset>(materialPath)),

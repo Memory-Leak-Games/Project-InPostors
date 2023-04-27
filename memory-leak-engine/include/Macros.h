@@ -15,7 +15,7 @@ namespace LoggingMacros {
 // Assertions
 
 #ifdef DEBUG
-#define MLG_ASSERT_MSG(condition, message)                                     \
+#define MLG_ASSERT_MSG(condition, message)                                 \
     do {                                                                   \
         if (!(condition)) {                                                \
             SPDLOG_ERROR("Assertion `" #condition "` failed {}", message); \
@@ -23,15 +23,15 @@ namespace LoggingMacros {
         }                                                                  \
     } while (false)
 
-#define MLG_ASSERT(condition)                                     \
-    do {                                                                   \
-        if (!(condition)) {                                                \
+#define MLG_ASSERT(condition)                                  \
+    do {                                                       \
+        if (!(condition)) {                                    \
             SPDLOG_ERROR("Assertion `" #condition "` failed"); \
-            std::terminate();                                              \
-        }                                                                  \
+            std::terminate();                                  \
+        }                                                      \
     } while (false)
 
-#define MLG_UNIMPLEMENTED                      \
+#define MLG_UNIMPLEMENTED                        \
     do {                                         \
         SPDLOG_ERROR("Unimplemented Assertion"); \
         std::terminate();                        \
@@ -39,10 +39,10 @@ namespace LoggingMacros {
 
 #else
 #define MLG_ASSERT_MSG(condition, message) \
-    do {                               \
+    do {                                   \
     } while (false)
 #define MLG_ASSERT(condition) \
-    do {                               \
+    do {                      \
     } while (false)
 #define MLG_UNIMPLEMENTED \
     do {                  \
@@ -53,11 +53,21 @@ namespace LoggingMacros {
 #undef TRACY_ENABLE
 #endif
 
+#include "common/TracyColor.hpp"
 #include "glad/glad.h"
 #include "tracy/Tracy.hpp"
 #include "tracy/TracyOpenGL.hpp"
-#include "common/TracyColor.hpp"
-
 
 // Get x bit
 #define MLG_BIT(x) (1 << x)
+#define MLG_READBIT(x, n) ((x >> n) & 1)
+#define MLG_SETBIT(x, n) (x |= (1 << n))
+#define MLG_UNSETBIT(x, n) (x &= ~(1 << n))
+#define MLG_TOGGLEBIT(x, n) (x ^= 1 << n)
+
+#define MLG_READFLAG(x, flag) ((x & flag) == flag)
+
+#define MLG_READMASK(x, mask) (x & mask)
+#define MLG_SETMASK(x, mask) x |= mask
+#define MLG_UNSETMASK(x, mask) x &= ~mask
+#define MLG_TOGGLEMASK(x, mask) x ^= mask

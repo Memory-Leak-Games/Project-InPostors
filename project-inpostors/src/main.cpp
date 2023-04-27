@@ -130,10 +130,9 @@ public:
 
         sound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/SFX/mario_coin.ogg");
         music = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/Crushin.ogg");
-        auto audioComponent = cameraEntity.lock()->AddComponent<mlg::AudioComponent>("AudioComponent", music);
-        audioComponent.lock()->SetLooping();
-        audioComponent.lock()->Play();
-        //        music->Seek(250.f);
+//        auto audioComponent = cameraEntity.lock()->AddComponent<mlg::AudioComponent>("AudioComponent", music);
+//        audioComponent.lock()->SetLooping();
+//        audioComponent.lock()->Play();
 
         auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
         auto redMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/red_material.json");
@@ -147,7 +146,7 @@ public:
 
         auto ground = mlg::EntityManager::SpawnEntity<mlg::Entity>("Ground", true, mlg::SceneGraph::GetRoot());
         ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, groundMaterial);
-        ground.lock()->GetTransform().SetPosition({0.f, -0.5f, 0.f});
+        ground.lock()->GetTransform().SetPosition({0.f, -0.51f, 0.f});
         ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
 
         auto ui = mlg::EntityManager::SpawnEntity<mlg::Entity>("ui", true, mlg::SceneGraph::GetRoot());
@@ -177,10 +176,10 @@ public:
 
         auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot());
 
-        SpawnSpheres();
+//        SpawnSpheres();
 
         mlg::LevelGenerator::LoadJson("res/levels/detroit.json");
-        mlg::LevelGenerator::GenerateLevel();
+        mlg::LevelGenerator::GenerateLevel(4.0f);
     }
 
     void SpawnSpheres() {

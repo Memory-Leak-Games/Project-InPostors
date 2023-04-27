@@ -100,8 +100,8 @@ namespace mlg {
 
     void RigidbodyComponent::Start() {
         const glm::vec3 ownerPosition = GetOwner().lock()->GetTransform().GetPosition();
-        rigidbody->position.x = ownerPosition.x;
-        rigidbody->position.y = ownerPosition.z;
+        glm::quat ownerQuat = GetOwner().lock()->GetTransform().GetRotation();
+        glm::vec3 ownerRotation = GetOwner().lock()->GetTransform().GetEulerRotation();
 
         SetKinematic(GetOwner().lock()->IsStatic());
     }
