@@ -12,8 +12,6 @@ namespace mlg {
         float randFloat;       // 144 - 148
         uint32_t offset;         // 148 - 152
         glm::ivec2 resolution; // 152 - 160
-
-
     };
 
     class CommonUniformBuffer {

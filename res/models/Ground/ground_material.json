@@ -6,6 +6,11 @@
       "type": "vec4",
       "name": "color",
       "value": [0.835, 0.886, 0.424, 1.0]
+    },
+    {
+      "type": "float",
+      "name": "shininess",
+      "value": 0.0
     }
   ],
   "textures": []
