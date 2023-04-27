@@ -1,5 +1,6 @@
 {
   "name": "Detroit",
+  "tile-size": 7.0,
   "layout": [
     "          SvvB ",
     "          SvvB",

@@ -42,15 +42,35 @@ namespace mlg {
     }
 
 
-    //TODO: split these methods to smaller ones :3
     void LevelGenerator::LoadJson(const std::string &path) {
+        LoadLayout(path);
+        LoadMapObjects(path);
+    }
 
+
+    void LevelGenerator::LoadLayout(const std::string &path) {
         std::ifstream levelFile{path};
         json levelJson = json::parse(levelFile);
+
+        if (!levelLayout.empty())
+            levelLayout.clear();
 
         for (const auto &jsonLayoutString: levelJson["layout"]) {
             levelLayout.push_back(jsonLayoutString.get<std::string>());
         }
+        tileSize = levelJson.contains("tile-size")
+                   ? levelJson["tile"].get<float>() : 10.0f;
+    }
+
+
+    void LevelGenerator::LoadMapObjects(const std::string &path) {
+        std::ifstream levelFile{path};
+        json levelJson = json::parse(levelFile);
+        // TODO: Kris here - for now I have no idea how to prevent loading JSON twice.
+        //  If you have any idea how to do it without including json hpp in header file, hit me up :)
+
+        if (!mapObjects->empty())
+            mapObjects->clear();
 
         mapObjects = std::make_unique<std::unordered_map<char, LevelGenerator::MapEntry>>();
 
@@ -58,6 +78,7 @@ namespace mlg {
             const char tileSymbol = jsonTile["symbol"].get<std::string>()[0];
             std::vector<std::shared_ptr<MapObject>> mapObjectPool;
 
+            //TODO: move this to a separate function maybe?
             for (const auto &jsonMapObject: jsonTile["objects"]) {
                 std::string modelPath = jsonMapObject["model"].get<std::string>();
                 std::string materialPath = jsonMapObject["material"].get<std::string>();
@@ -82,7 +103,7 @@ namespace mlg {
     }
 
 
-    void LevelGenerator::GenerateLevel(float tileSize) {
+    void LevelGenerator::GenerateLevel() {
         glm::vec2 citySize{0.f};
         citySize.y = static_cast<float>(levelLayout.size());
 

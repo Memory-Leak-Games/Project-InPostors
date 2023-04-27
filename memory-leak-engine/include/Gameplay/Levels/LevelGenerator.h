@@ -1,8 +1,5 @@
 #pragma once
 
-// TODO: This class should be a singleton not a static class
-//      Static classes are used for set of methods (like math lib) rather than Super class
-
 namespace mlg {
 
     class LevelGenerator {
@@ -14,7 +11,9 @@ namespace mlg {
         static LevelGenerator* GetInstance();
 
         void LoadJson(const std::string& path);
-        void GenerateLevel(float tileSize = 10.0f);
+        void LoadLayout(const std::string& path);
+        void LoadMapObjects(const std::string &path);
+        void GenerateLevel();
 
     private:
         struct MapEntry {
@@ -26,8 +25,8 @@ namespace mlg {
 
         // TODO: Does it have to be a member of the class?
         std::vector<std::string> levelLayout;
-
         std::unique_ptr<std::unordered_map<char, MapEntry>> mapObjects;
+        float tileSize = 10.0f;
 
         LevelGenerator() = default;
         //~LevelGenerator() = default;
