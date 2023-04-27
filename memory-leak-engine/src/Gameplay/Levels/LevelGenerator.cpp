@@ -73,11 +73,6 @@ namespace mlg {
                                     ? jsonMapObject["collision-offset"].get<float>() : 0.0f;
                     mapObj.AddCollision(cType, cSize, cOffset);
                 }
-                float hOffset = jsonTile.contains("position-offset-h")
-                                ? jsonTile["position-offset-h"].get<float>() : 0.0f;
-                float vOffset = jsonTile.contains("position-offset-v")
-                                ? jsonTile["position-offset-v"].get<float>() : 0.0f;
-                mapObj.SetPositionOffset(hOffset, vOffset);
 
                 auto newMapObj = std::make_shared<MapObject>(mapObj);
                 mapObjectPool.push_back(newMapObj);
@@ -97,7 +92,7 @@ namespace mlg {
 
         citySize *= tileSize;
 
-        int i = 0, j = 0; //todo: improve readability?
+        int i = 0, j = 0;
         for (const std::string &row: levelLayout) {
             ++j;
             for (const char &character: row) {
@@ -122,7 +117,7 @@ namespace mlg {
 
                 glm::vec3 objectPos{0.0f};
                 objectPos.z = static_cast<float>(i) * tileSize - citySize.x * 0.5f;
-                objectPos.y = -0.5f;
+                objectPos.y = 0.0f;//-0.5f;
                 objectPos.x = -static_cast<float>(j - 1) * tileSize + citySize.y * 0.5f;
                 PutObject(mapObj, objectPos);
             }
@@ -135,9 +130,9 @@ namespace mlg {
         auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>(
                 Hash("MapObject", pos.x, pos.z),
                 true, mlg::SceneGraph::GetRoot());
-        modelEntity.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", obj->GetModel().lock(),
-                                                                   obj->GetMaterial().lock());
-        modelEntity.lock()->GetTransform().SetPosition(pos + obj->GetPositionOffset());
+        modelEntity.lock()->AddComponent<mlg::StaticMeshComponent>(
+                "StaticMesh", obj->GetModel().lock(), obj->GetMaterial().lock());
+        modelEntity.lock()->GetTransform().SetPosition(pos);
         modelEntity.lock()->GetTransform().SetEulerRotation(obj->GetRotation());
 
         // add collider if needed

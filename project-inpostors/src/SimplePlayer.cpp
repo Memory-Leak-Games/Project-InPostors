@@ -29,7 +29,7 @@ std::shared_ptr<Player> Player::Create(const std::string& name, bool isStatic, m
     auto staticMeshComponent = newPlayer->AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
     newPlayer->AddComponent<CarMovementComponent>("MovementComponent");
 
-    staticMeshComponent.lock()->GetTransform().SetPosition({0.f, -0.2f, 0.f});
+    staticMeshComponent.lock()->GetTransform().SetPosition({0.f, 0.3f, 0.f});
 
     return newPlayer;
 }
