@@ -20,12 +20,12 @@ namespace mlg {
         [[nodiscard]] std::string GetColliderType() const { return colliderType; }
         [[nodiscard]] float GetColliderSize() const { return colliderSize; }
         [[nodiscard]] float GetColliderOffset() const { return colliderOffset; }
-        //[[nodiscard]] glm::vec2 GetPositionOffset() const { return positonOffset; }
+        [[nodiscard]] glm::vec3 GetPositionOffset() const { return posOffset; }
 
         // ==== SETTERS ====
         void SetRotation(float rot) { worldRot = glm::vec3({0.0f, glm::radians(rot), 0.0f});};
         void SetRotation(glm::vec3 rot) { worldRot = rot; }
-        //void SetPositionOffset(const float offsetH, const float offsetV);
+        void SetPositionOffset(const float offsetH, const float offsetV) { posOffset = {offsetH, 0.0f, offsetV}; }
         //void SetPositionOffset(glm::vec2 posOffset);
 
 
@@ -37,7 +37,7 @@ namespace mlg {
         std::string colliderType;
         float colliderSize = 1.0f;
         float colliderOffset = 0.0f;
-        //glm::vec2 positonOffset;
+        glm::vec3 posOffset;
     };
 } // mlg
 

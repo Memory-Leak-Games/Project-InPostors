@@ -19,29 +19,25 @@
           "model": "res/models/Buildings/building_big_1.obj",
           "material": "res/models/Buildings/buildings_material.json",
           "collision-type": "rectangle",
-          "collision-size": 4.0,
-          "collision-offset": 0.0
+          "collision-size": 4.0
         },
         {
           "model": "res/models/Buildings/building_big_2.obj",
           "material": "res/models/Buildings/buildings_material.json",
           "collision-type": "rectangle",
-          "collision-size": 4.0,
-          "collision-offset": 0.0
+          "collision-size": 4.0
         },
         {
           "model": "res/models/Buildings/building_big_3.obj",
           "material": "res/models/Buildings/buildings_material.json",
           "collision-type": "rectangle",
-          "collision-size": 4.0,
-          "collision-offset": 0.0
+          "collision-size": 4.0
         },
         {
           "model": "res/models/Buildings/building_big_4.obj",
           "material": "res/models/Buildings/buildings_material.json",
-          "rotation": 0.0,
-          "collision-size": 4.0,
-          "collision-type": "rectangle"
+          "collision-type": "rectangle",
+          "collision-size": 4.0
         }
       ]
     },
@@ -53,31 +49,27 @@
           "material": "res/models/Buildings/buildings_material.json",
           "rotation": 90.0,
           "collision-type": "rectangle",
-          "collision-size": 4.0,
-          "collision-offset": 0.0
+          "collision-size": 4.0
         },
         {
           "model": "res/models/Buildings/building_big_2.obj",
           "material": "res/models/Buildings/buildings_material.json",
           "rotation": 90.0,
           "collision-type": "rectangle",
-          "collision-size": 4.0,
-          "collision-offset": 0.0
+          "collision-size": 4.0
         },
         {
           "model": "res/models/Buildings/building_big_3.obj",
           "material": "res/models/Buildings/buildings_material.json",
           "rotation": 90.0,
           "collision-type": "rectangle",
-          "collision-size": 4.0,
-          "collision-offset": 0.0
+          "collision-size": 4.0
         },
         {
           "model": "res/models/Buildings/building_big_4.obj",
           "material": "res/models/Buildings/buildings_material.json",
           "rotation": 90.0,
-          "collision-size": 4.0,
-          "collision-type": "rectangle"
+          "collision-size": 4.0
         }
       ]
     },
@@ -88,23 +80,22 @@
           "model": "res/models/Buildings/building_small_1.obj",
           "material": "res/models/Buildings/buildings_material.json",
           "rotation": 90.0,
-          "collision-size": 4.0,
-          "collision-type": "rectangle"
+          "collision-type": "rectangle",
+          "collision-size": 4.0
         },
         {
           "model": "res/models/Buildings/building_small_2.obj",
           "material": "res/models/Buildings/buildings_material.json",
           "rotation": 90.0,
           "collision-type": "rectangle",
-          "collision-size": 4.0,
-          "collision-offset": 0.0
+          "collision-size": 4.0
         },
         {
           "model": "res/models/Buildings/building_small_3.obj",
           "material": "res/models/Buildings/buildings_material.json",
           "rotation": 90.0,
-          "collision-size": 4.0,
-          "collision-type": "rectangle"
+          "collision-type": "rectangle",
+          "collision-size": 4.0
         }
       ]
     },
@@ -115,23 +106,22 @@
           "model": "res/models/Buildings/building_small_1.obj",
           "material": "res/models/Buildings/buildings_material.json",
           "rotation": -180.0,
-          "collision-size": 4.0,
-          "collision-type": "rectangle"
+          "collision-type": "rectangle",
+          "collision-size": 4.0
         },
         {
           "model": "res/models/Buildings/building_small_2.obj",
           "material": "res/models/Buildings/buildings_material.json",
           "rotation": 180.0,
           "collision-type": "rectangle",
-          "collision-size": 4.0,
-          "collision-offset": 0.0
+          "collision-size": 4.0
         },
         {
           "model": "res/models/Buildings/building_small_3.obj",
           "material": "res/models/Buildings/buildings_material.json",
           "rotation": 179.0,
-          "collision-size": 4.0,
-          "collision-type": "rectangle"
+          "collision-type": "rectangle",
+          "collision-size": 4.0
         }
       ]
     },

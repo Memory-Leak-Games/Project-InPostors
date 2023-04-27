@@ -89,12 +89,16 @@ public:
         mlg::ComponentManager::Initialize();
         mlg::EntityManager::Initialize();
 
+        mlg::LevelGenerator::Initialize();
+
         mlg::Core::Initialize();
         mlg::Input::Initialize();
 
         mlg::Core* engine = mlg::Core::GetInstance();
         PrepareScene();
         engine->MainLoop();
+
+        mlg::LevelGenerator::Stop();
 
         mlg::EntityManager::Stop();
         mlg::ComponentManager::Stop();
@@ -178,8 +182,9 @@ public:
 
 //        SpawnSpheres();
 
-        mlg::LevelGenerator::LoadJson("res/levels/detroit.json");
-        mlg::LevelGenerator::GenerateLevel(4.0f);
+        auto levelGen = mlg::LevelGenerator::GetInstance();
+        levelGen->LoadJson("res/levels/detroit.json");
+        levelGen->GenerateLevel(4.0f);
     }
 
     void SpawnSpheres() {
