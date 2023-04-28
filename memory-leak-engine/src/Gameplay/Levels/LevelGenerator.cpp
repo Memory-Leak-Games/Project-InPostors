@@ -81,7 +81,9 @@ namespace mlg {
             //TODO: move this to a separate function maybe?
             for (const auto &jsonMapObject: jsonTile["objects"]) {
                 std::string modelPath = jsonMapObject["model"].get<std::string>();
-                std::string materialPath = jsonMapObject["material"].get<std::string>();
+                std::string materialPath = jsonMapObject.contains("material")
+                                           ? jsonMapObject["material"].get<std::string>()
+                                           : "res/models/Buildings/buildings_material.json";
                 float yRot = jsonMapObject.contains("rotation")
                              ? jsonMapObject["rotation"].get<float>() : 0.0f;
 
