@@ -184,7 +184,7 @@ public:
 
         auto levelGen = mlg::LevelGenerator::GetInstance();
         levelGen->LoadJson("res/levels/detroit.json");
-        levelGen->GenerateLevel(4.0f);
+        levelGen->GenerateLevel();
     }
 
     void SpawnSpheres() {

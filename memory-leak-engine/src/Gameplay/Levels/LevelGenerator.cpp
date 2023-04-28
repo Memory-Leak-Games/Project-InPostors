@@ -59,7 +59,7 @@ namespace mlg {
             levelLayout.push_back(jsonLayoutString.get<std::string>());
         }
         tileSize = levelJson.contains("tile-size")
-                   ? levelJson["tile"].get<float>() : 10.0f;
+                   ? levelJson["tile-size"].get<float>() : 10.0f;
     }
 
 
@@ -68,9 +68,6 @@ namespace mlg {
         json levelJson = json::parse(levelFile);
         // TODO: Kris here - for now I have no idea how to prevent loading JSON twice.
         //  If you have any idea how to do it without including json hpp in header file, hit me up :)
-
-        if (!mapObjects->empty())
-            mapObjects->clear();
 
         mapObjects = std::make_unique<std::unordered_map<char, LevelGenerator::MapEntry>>();
 
