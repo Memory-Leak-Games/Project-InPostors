@@ -24,7 +24,7 @@ void CarMovementComponent::Start() {
 }
 
 CarMovementComponent::CarMovementComponent(const std::weak_ptr<mlg::Entity> &owner, const std::string &name)
-        : Component(owner, name) {}
+    : Component(owner, name) {}
 
 void CarMovementComponent::PhysicsUpdate() {
     forward = mlg::Input::GetActionStrength("forward_one");
@@ -60,18 +60,10 @@ void CarMovementComponent::HandleEngineAndBraking() {
     auto linearVelocity2D = rigidbodyComponent.lock()->GetLinearVelocity();
     glm::vec3 linearVelocityTransformed(linearVelocity2D.x, 0.f, linearVelocity2D.y);
     auto localVelocity = glm::inverse((glm::mat3(owner->GetTransform().GetLocalMatrix()))) * linearVelocityTransformed;
-    float speed = glm::length(localVelocity);
 
-    float targetAccelerationForce = 0.f;
-
-    // accelerating forward
-    if (speed < maxSpeed && forward > 0.1) {
-        targetAccelerationForce += acceleration * forward * mlg::Time::GetFixedTimeStep();
-    }
-
-    if (speed > -backwardMaxSpeed && forward < -0.1) {
-        targetAccelerationForce += acceleration * forward * mlg::Time::GetFixedTimeStep();
-    }
+    float targetAccelerationForce = acceleration * forward * mlg::Time::GetFixedTimeStep();
+    targetAccelerationForce = mlg::Math::Lerp(targetAccelerationForce, std::copysign(maxSpeed, forward), forward > 0 ? forward : -forward);
+    targetAccelerationForce = mlg::Math::Lerp(targetAccelerationForce, std::copysign(backwardMaxSpeed, forward), forward < 0 ? forward : -forward);
 
     // engine handling
     if (glm::abs(forward) < 0.1f) {
@@ -102,10 +94,10 @@ void CarMovementComponent::HandleSteering() {
     }
 
     float steeringInput = -right;
-    auto steeringSpeedFactor = std::clamp(localVelocity.z / rotationRadius, -1.f, 1.f);
-    auto steeringTorque = steeringInput * rotationSpeed * steeringSpeedFactor * mlg::Time::GetFixedTimeStep();
+    float steeringSpeedFactor = std::clamp(localVelocity.z / rotationRadius, -1.f, 1.f);
+    float steeringTorque = steeringInput * rotationSpeed * steeringSpeedFactor * mlg::Time::GetFixedTimeStep();
 
-    auto angularVelocity = rigidbodyComponent.lock()->GetAngularSpeed();
+    float angularVelocity = rigidbodyComponent.lock()->GetAngularSpeed();
 
     if (glm::abs(angularVelocity) < glm::abs(steeringTorque)) {
         angularVelocity = steeringTorque;
@@ -121,7 +113,7 @@ void CarMovementComponent::HandleSideDrag() {
     glm::vec3 linearVelocityTransformed(linearVelocity2D.x, 0, linearVelocity2D.y);
     auto localVelocity = glm::inverse((glm::mat3(owner->GetTransform().GetLocalMatrix()))) * linearVelocityTransformed;
 
-    auto sideDragStrength = localVelocity.x * sideDrag * mlg::Time::GetFixedTimeStep();
+    float sideDragStrength = localVelocity.x * sideDrag * mlg::Time::GetFixedTimeStep();
     rigidbodyComponent.lock()->AddForce(rightVector * sideDragStrength);
 }
 
