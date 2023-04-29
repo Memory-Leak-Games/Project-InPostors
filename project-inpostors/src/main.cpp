@@ -20,6 +20,7 @@
 #include "Gameplay/Levels/LevelGenerator.h"
 #include "Player.h"
 #include "SceneGraph/SceneGraph.h"
+#include "Car/PlayerOneInput.h"
 
 #include <Core/Math.h>
 #include <Gameplay/ComponentManager.h>
@@ -174,6 +175,7 @@ public:
         mlg::Renderer2D::GetInstance()->AddRenderable(progressBar);
 
         auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot());
+        player.lock()->AddComponent<PlayerOneInput>("PlayerInput");
 
         mlg::LevelGenerator::LoadJson("res/levels/detroit.json");
         mlg::LevelGenerator::GenerateLevel(4.0f);
