@@ -17,7 +17,7 @@ private:
     //Driving
     float acceleration = 2400;
     float maxSpeed = 15;
-    float backwardMaxSpeed = 10;
+    float backwardMaxSpeed = 5;
     float engineHandling = 100;
     float handling = 4000;
 
@@ -26,8 +26,6 @@ private:
     float rotationRadius = 3;
     float sideDrag = 40;
     float counterTorque = 5;
-
-    float currentAccelerationForce;
 
 public:
     CarMovementComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name);
