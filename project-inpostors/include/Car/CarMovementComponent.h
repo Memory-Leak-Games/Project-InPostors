@@ -10,8 +10,8 @@ namespace mlg {
 
 class CarMovementComponent : public mlg::Component {
 private:
-    std::weak_ptr<mlg::RigidbodyComponent> rigidbodyComponent;
-    std::weak_ptr<mlg::StaticMeshComponent> staticMeshComponent;
+    std::shared_ptr<mlg::RigidbodyComponent> rigidbodyComponent;
+    std::shared_ptr<mlg::StaticMeshComponent> staticMeshComponent;
     std::shared_ptr<class CarInput> carInput;
 
     //Driving
