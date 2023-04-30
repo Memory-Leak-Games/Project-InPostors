@@ -21,6 +21,7 @@
 #include "Player.h"
 #include "SceneGraph/SceneGraph.h"
 #include "Car/PlayerOneInput.h"
+#include "Car/PlayerTwoInput.h"
 
 #include <Core/Math.h>
 #include <Gameplay/ComponentManager.h>
@@ -176,6 +177,9 @@ public:
 
         auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot());
         player.lock()->AddComponent<PlayerOneInput>("PlayerInput");
+
+        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false, mlg::SceneGraph::GetRoot());
+        playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
 
         mlg::LevelGenerator::LoadJson("res/levels/detroit.json");
         mlg::LevelGenerator::GenerateLevel(4.0f);

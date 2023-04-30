@@ -23,6 +23,8 @@ std::shared_ptr<Player> Player::Create(const std::string &name, bool isStatic, m
     rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f, -0.5f), 0.5f);
     rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f, 0.5f), 0.5f);
 
+    rigidbodyComponent.lock()->SetBounciness(0.5f);
+
     auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Cars/car_one.obj");
     auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/cyan_material.json");
 

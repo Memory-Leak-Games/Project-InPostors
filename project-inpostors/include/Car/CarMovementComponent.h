@@ -14,6 +14,7 @@ private:
     std::shared_ptr<mlg::StaticMeshComponent> staticMeshComponent;
     std::shared_ptr<class CarInput> carInput;
 
+    // TODO: extract parameters to json
     //Driving
     float acceleration = 2400;
     float maxSpeed = 25;

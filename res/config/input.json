@@ -3,14 +3,14 @@
     "name": "forward_one",
     "mappings": [
       {
-        "deviceType" : "Keyboard",
-        "code" : 87
+        "deviceType": "Keyboard",
+        "code": 87
       },
       {
-        "deviceType" : "Gamepad",
-        "deviceIndex" : 0,
-        "isAxis" : false,
-        "code" : 2
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": false,
+        "code": 2
       }
     ]
   },
@@ -18,14 +18,14 @@
     "name": "backward_one",
     "mappings": [
       {
-        "deviceType" : "Keyboard",
-        "code" : 83
+        "deviceType": "Keyboard",
+        "code": 83
       },
       {
-        "deviceType" : "Gamepad",
-        "deviceIndex" : 0,
-        "isAxis" : false,
-        "code" : 1
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": false,
+        "code": 1
       }
     ]
   },
@@ -33,17 +33,17 @@
     "name": "left_one",
     "mappings": [
       {
-        "deviceType" : "Keyboard",
-        "code" : 65
+        "deviceType": "Keyboard",
+        "code": 65
       },
       {
-        "deviceType" : "Gamepad",
-        "deviceIndex" : 0,
-        "isAxis" : true,
-        "isPositive" : false,
-        "triggerZone" : 0.5,
-        "deadZone" : 0.2,
-        "code" : 0
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": true,
+        "isPositive": false,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 0
       }
     ]
   },
@@ -51,17 +51,83 @@
     "name": "right_one",
     "mappings": [
       {
-        "deviceType" : "Keyboard",
-        "code" : 68
+        "deviceType": "Keyboard",
+        "code": 68
       },
       {
-        "deviceType" : "Gamepad",
-        "deviceIndex" : 0,
-        "isAxis" : true,
-        "isPositive" : true,
-        "triggerZone" : 0.5,
-        "deadZone" : 0.2,
-        "code" : 0
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": true,
+        "isPositive": true,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 0
+      }
+    ]
+  },
+  {
+    "name": "forward_two",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 265
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": false,
+        "code": 2
+      }
+    ]
+  },
+  {
+    "name": "backward_two",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 264
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": false,
+        "code": 1
+      }
+    ]
+  },
+  {
+    "name": "left_two",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 263
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": true,
+        "isPositive": false,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 0
+      }
+    ]
+  },
+  {
+    "name": "right_two",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 262
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": true,
+        "isPositive": true,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 0
       }
     ]
   }
