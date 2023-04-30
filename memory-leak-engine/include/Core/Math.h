@@ -29,7 +29,7 @@ namespace mlg {
 
         template<typename T>
         static constexpr T Sat(const T& x) {
-            return Clamp(x, (T) 0, (T) 1);
+            return Clamp(x, (T) -1, (T) 1);
         }
 
         template<typename T>

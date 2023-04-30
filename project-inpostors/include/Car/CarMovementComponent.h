@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Gameplay/Component.h>
+#include "Gameplay/Component.h"
 
 namespace mlg {
     class RigidbodyComponent;
@@ -10,12 +10,14 @@ namespace mlg {
 
 class CarMovementComponent : public mlg::Component {
 private:
-    std::weak_ptr<mlg::RigidbodyComponent> rigidbodyComponent;
-    std::weak_ptr<mlg::StaticMeshComponent> staticMeshComponent;
+    std::shared_ptr<mlg::RigidbodyComponent> rigidbodyComponent;
+    std::shared_ptr<mlg::StaticMeshComponent> staticMeshComponent;
+    std::shared_ptr<class CarInput> carInput;
 
+    // TODO: extract parameters to json
     //Driving
     float acceleration = 2400;
-    float maxSpeed = 15;
+    float maxSpeed = 25;
     float backwardMaxSpeed = 10;
     float engineHandling = 100;
     float handling = 4000;
@@ -23,13 +25,8 @@ private:
     //Rotation and drifting
     float rotationSpeed = 200;
     float rotationRadius = 3;
-    float sideDrag = 40;
+    float sideDrag = 80;
     float counterTorque = 5;
-
-    float currentAccelerationForce;
-
-    float forward;
-    float right;
 
 public:
     CarMovementComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name);
