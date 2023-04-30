@@ -16,15 +16,15 @@ private:
 
     //Driving
     float acceleration = 2400;
-    float maxSpeed = 15;
-    float backwardMaxSpeed = 5;
+    float maxSpeed = 25;
+    float backwardMaxSpeed = 10;
     float engineHandling = 100;
     float handling = 4000;
 
     //Rotation and drifting
     float rotationSpeed = 200;
     float rotationRadius = 3;
-    float sideDrag = 40;
+    float sideDrag = 80;
     float counterTorque = 5;
 
 public:

@@ -32,7 +32,10 @@ namespace mlg {
         void SetAngularVelocity(float newAngularVelocity);
 
         glm::vec2 GetLinearVelocity();
+        glm::vec3 GetLinearVelocity3D();
         glm::vec2 GetLinearAcceleration();
+
+        glm::vec3 GetLocalVelocity();
 
         float GetAngularSpeed();
         float GetAngularAcceleration();

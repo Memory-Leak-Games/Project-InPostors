@@ -1,7 +1,10 @@
 #pragma once
 
 #include "glad/glad.h"
+
 #include <SceneGraph/Transform.h>
+
+#include "Core/RGBA.h"
 
 namespace mlg {
 

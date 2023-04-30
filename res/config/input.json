@@ -9,11 +9,8 @@
       {
         "deviceType" : "Gamepad",
         "deviceIndex" : 0,
-        "isAxis" : true,
-        "isPositive" : false,
-        "triggerZone" : 0.5,
-        "deadZone" : 0.2,
-        "code" : 1
+        "isAxis" : false,
+        "code" : 2
       }
     ]
   },
@@ -27,10 +24,7 @@
       {
         "deviceType" : "Gamepad",
         "deviceIndex" : 0,
-        "isAxis" : true,
-        "isPositive" : true,
-        "triggerZone" : 0.5,
-        "deadZone" : 0.2,
+        "isAxis" : false,
         "code" : 1
       }
     ]
