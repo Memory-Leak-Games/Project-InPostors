@@ -1,5 +1,8 @@
 #include "Player.h"
 
+#include <nlohmann/json.hpp>
+#include <fstream>
+
 #include "Gameplay/Components/RigidbodyComponent.h"
 #include "Gameplay/Components/StaticMeshComponent.h"
 
@@ -10,29 +13,30 @@
 
 #include "SceneGraph/Transform.h"
 
-#include "include/Car/CarMovementComponent.h"
+#include "Car/CarMovementComponent.h"
+
+using json = nlohmann::json;
 
 Player::Player(const std::string &name, bool isStatic, mlg::Transform *parent)
         : mlg::Entity(name, isStatic, parent) {}
 
-std::shared_ptr<Player> Player::Create(const std::string &name, bool isStatic, mlg::Transform *parent) {
+std::shared_ptr<Player> Player::Create(const std::string &name, bool isStatic, mlg::Transform *parent,
+                                       const std::string& configPath) {
     auto newPlayer = std::shared_ptr<Player>(new Player(name, isStatic, parent));
 
     auto rigidbodyComponent = newPlayer->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
-
     rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f, -0.5f), 0.5f);
     rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f, 0.5f), 0.5f);
-
     rigidbodyComponent.lock()->SetBounciness(0.5f);
 
-    auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Cars/car_one.obj");
-    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/cyan_material.json");
-
-    auto staticMeshComponent = newPlayer->AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model,
-                                                                                 material);
-    newPlayer->AddComponent<CarMovementComponent>("MovementComponent");
-
+    std::ifstream configFile{configPath};
+    json configJson = json::parse(configFile);
+    auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>(configJson["model"].get<std::string>());
+    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(configJson["material"].get<std::string>());
+    auto staticMeshComponent = newPlayer->AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
     staticMeshComponent.lock()->GetTransform().SetPosition({0.f, -0.2f, 0.f});
+
+    newPlayer->AddComponent<CarMovementComponent>("MovementComponent", configPath);
 
     return newPlayer;
 }
