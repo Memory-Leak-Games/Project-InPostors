@@ -89,6 +89,9 @@ namespace mlg {
 
         for (int x = gridCoordMin.x; x <= gridCoordMax.x; ++x) {
             for (int y = gridCoordMin.y; y <= gridCoordMax.y; ++y) {
+                if (y < 0 || x < 0)
+                    continue;
+
                 auto& clientVector = hashGrid[GetHashIndex({x, y})];
                 std::erase(clientVector, client);
             }

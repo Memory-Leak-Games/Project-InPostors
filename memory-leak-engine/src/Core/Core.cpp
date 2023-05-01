@@ -146,14 +146,6 @@ void Core::RenderImGUI() const {
 
     ImGui::End();
 
-    static glm::ivec2 dimensions;
-    ImGui::Begin("Spacial Hash Grid");
-    ImGui::DragInt2("Dimensions", (int*) &dimensions, 1.f, 1, 100);
-    if (ImGui::Button("Update")) {
-        CollisionManager::SetBounds(glm::vec2{-50.f}, glm::vec2{50.f}, dimensions);
-    }
-    ImGui::End();
-
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

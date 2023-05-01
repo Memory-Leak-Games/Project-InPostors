@@ -1,5 +1,7 @@
 #include "SceneGraph/Transform.h"
 
+#include "Core/Math.h"
+
 namespace mlg {
     Transform::Transform()
             : position(0.f), rotation(glm::vec3(0.f)), scale(1.f),
@@ -56,7 +58,7 @@ namespace mlg {
     }
 
     void Transform::SetEulerRotation(const glm::vec3& rotation) {
-        glm::quat rotationQuat {rotation};
+        glm::quat rotationQuat{rotation};
 
         if (rotationQuat == this->rotation)
             return;
@@ -79,12 +81,12 @@ namespace mlg {
         if (isDirtyLocal) {
             ZoneScopedN("Calculate Local Matrix");
 
-            glm::mat4 translation {1.f};
+            glm::mat4 translation{1.f};
             translation[3][0] = position.x;
             translation[3][1] = position.y;
             translation[3][2] = position.z;
 
-            glm::mat4 scaleMat {1.f};
+            glm::mat4 scaleMat{1.f};
             scaleMat[0][0] = scale.x;
             scaleMat[1][1] = scale.y;
             scaleMat[2][2] = scale.z;
@@ -94,6 +96,11 @@ namespace mlg {
         }
 
         return localMatrix;
+    }
+
+    glm::vec3 Transform::InverseDirection(const glm::vec3& direction) {
+        const glm::mat4 worldMatrix = GetWorldMatrix();
+        return glm::inverse((glm::mat3(worldMatrix))) * direction;
     }
 
     glm::vec3 Transform::GetWorldPosition() {
@@ -172,7 +179,7 @@ namespace mlg {
             isDirty = false;
         }
 
-        for (const auto& child : children) {
+        for (const auto& child: children) {
             if (child.expired())
                 continue;
 
@@ -183,7 +190,7 @@ namespace mlg {
     void Transform::SetDirtyRecursive() {
         isDirty = true;
 
-        for (const auto& child : children) {
+        for (const auto& child: children) {
             if (child.expired())
                 continue;
 
@@ -192,8 +199,7 @@ namespace mlg {
     }
 
     void Transform::ReCalculateParentRecursive() {
-        if (parent == nullptr)
-        {
+        if (parent == nullptr) {
             Calculate();
             return;
         }
@@ -207,7 +213,7 @@ namespace mlg {
     }
 
     Transform::~Transform() {
-        for (auto& child : children) {
+        for (auto& child: children) {
             if (child.expired())
                 continue;
 

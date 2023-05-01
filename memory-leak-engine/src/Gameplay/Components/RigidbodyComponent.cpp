@@ -10,7 +10,6 @@
 #include "Gameplay/Entity.h"
 
 #include "Rendering/Gizmos/Gizmos.h"
-#include "Core/RGBA.h"
 
 namespace mlg {
     RigidbodyComponent::RigidbodyComponent(const std::weak_ptr<Entity>& owner, const std::string& name)
@@ -168,6 +167,15 @@ namespace mlg {
 
     float RigidbodyComponent::GetRotation() {
         return rigidbody->rotation;
+    }
+
+    glm::vec3 RigidbodyComponent::GetLinearVelocity3D() {
+        const glm::vec2 linearVelocity2D = GetLinearVelocity();
+        return {linearVelocity2D.x, 0, linearVelocity2D.y};
+    }
+
+    glm::vec3 RigidbodyComponent::GetLocalVelocity() {
+        return GetOwner().lock()->GetTransform().InverseDirection(GetLinearVelocity3D());
     }
 
 

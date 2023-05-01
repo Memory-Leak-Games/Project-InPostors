@@ -22,6 +22,8 @@ namespace mlg {
         void Activate() const;
         void DeActivate() const;
 
+        bool IsUniformExist(const std::string& name) const;
+
         void SetBool(const std::string& name, bool value) const;
         void SetInt(const std::string& name, int value) const;
         void SetIntArray(const std::string& name, int* values, uint32_t count) const;
@@ -34,7 +36,7 @@ namespace mlg {
 
         [[nodiscard]] int32_t TrySetVec4f(const std::string& name, glm::vec4 value) const;
 
-        [[nodiscard]] int32_t GetUniformLocation(const std::string& name) const;
+        [[nodiscard]] int32_t GetUniformLocation(const std::string& name, bool isShowingError = true) const;
 
     private:
         void LinkProgram(uint32_t vShader, uint32_t fShader, uint32_t gShader);

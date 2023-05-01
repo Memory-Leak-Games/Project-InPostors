@@ -128,7 +128,7 @@
       "objects": [
         {
           "model": "res/models/Buildings/building_corrner_small.obj",
-          "rotation": -90.0,
+          "rotation": 90.0,
           "collision-size": 4.0,
           "collision-type": "rectangle"
         }

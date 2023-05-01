@@ -20,8 +20,9 @@
 #include "Gameplay/Levels/LevelGenerator.h"
 #include "Player.h"
 #include "SceneGraph/SceneGraph.h"
+#include "Car/PlayerOneInput.h"
+#include "Car/PlayerTwoInput.h"
 
-#include <Core/Math.h>
 #include <Gameplay/ComponentManager.h>
 #include <Gameplay/Components/RigidbodyComponent.h>
 #include <Gameplay/Components/StaticMeshComponent.h>
@@ -30,10 +31,7 @@
 #include <Rendering/CommonUniformBuffer.h>
 #include <Rendering/Gizmos/Gizmos.h>
 
-#include <Core/Math.h>
 #include <Gameplay/Components/AudioComponent.h>
-#include <Gameplay/Components/RigidbodyComponent.h>
-#include <Physics/Physics.h>
 
 #include <UI/Assets/FontAsset.h>
 #include <UI/Components/Image.h>
@@ -125,15 +123,14 @@ public:
     void PrepareScene() {
         auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
         auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
-        //        cameraComponent.lock()->SetPerspective(glm::radians(90.f), 0.1, 100.f);
         cameraComponent.lock()->SetOrtho(40.f, 0.1, 100.f);
 
         cameraComponent.lock()->GetTransform().SetPosition({-10.f, 15.f, -10.f});
         cameraComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{60.f, 45.f, 0.f}));
         cameraComponent.lock()->SetActive();
 
-        sound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/SFX/mario_coin.ogg");
-        music = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/Crushin.ogg");
+//        sound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/SFX/mario_coin.ogg");
+//        music = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/Crushin.ogg");
 //        auto audioComponent = cameraEntity.lock()->AddComponent<mlg::AudioComponent>("AudioComponent", music);
 //        audioComponent.lock()->SetLooping();
 //        audioComponent.lock()->Play();
@@ -178,44 +175,20 @@ public:
         mlg::Renderer2D::GetInstance()->AddRenderable(image);
         mlg::Renderer2D::GetInstance()->AddRenderable(progressBar);
 
-        auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot());
+        PlayerData firstPlayerData = {0, mlg::RGBA::red};
+        PlayerData secondPlayerData = {0, mlg::RGBA::cyan};
 
-//        SpawnSpheres();
+        auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot(),
+                                                              firstPlayerData);
+        player.lock()->AddComponent<PlayerOneInput>("PlayerInput");
+
+        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false, mlg::SceneGraph::GetRoot(),
+                                                                 secondPlayerData);
+        playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
 
         auto levelGen = mlg::LevelGenerator::GetInstance();
         levelGen->LoadJson("res/levels/detroit.json");
         levelGen->GenerateLevel();
-    }
-
-    void SpawnSpheres() {
-        const int size = 350;
-        const int sizeX = std::floor(std::sqrt(size));
-        const int sizeY = size / sizeX;
-
-        const float distance = 3.f;
-
-        auto sphereModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Sphere.obj");
-        auto blueMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/blue_material.json");
-
-        for (int i = 0; i < sizeX; ++i) {
-            for (int j = 0; j < sizeY; ++j) {
-                glm::vec2 offset = {sizeX * distance / 2.f, sizeY * distance / 2.f};
-
-                auto sphere = mlg::EntityManager::SpawnEntity<mlg::Entity>("Sphere", false, mlg::SceneGraph::GetRoot());
-                sphere.lock()->GetTransform().SetPosition({(float) i * distance - offset.x, 0.f, (float) j * distance - offset.y});
-
-                auto sphereMesh = sphere.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", sphereModel, blueMaterial);
-                sphereMesh.lock()->GetTransform().SetScale(glm::vec3{2.f});
-
-                auto sphereRigidbody = sphere.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
-                sphereRigidbody.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f), 1.f);
-                sphereRigidbody.lock()->SetLinearDrag(1.f);
-                sphereRigidbody.lock()->SetAngularDrag(1.f);
-                sphereRigidbody.lock()->SetMass(0.2);
-            }
-        }
-
-        SPDLOG_WARN("Number of colliders: {}", sizeX * sizeY);
     }
 
     virtual ~ProjectInpostors() {

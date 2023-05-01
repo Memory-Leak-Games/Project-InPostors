@@ -24,6 +24,7 @@ namespace mlg {
 
         ~Transform();
 
+
         [[nodiscard]] const glm::vec3& GetPosition() const;
         [[nodiscard]] const glm::quat& GetRotation() const;
         [[nodiscard]] const glm::vec3 GetEulerRotation() const;
@@ -37,6 +38,8 @@ namespace mlg {
         [[nodiscard]] glm::vec3 GetForwardVector();
         [[nodiscard]] glm::vec3 GetRightVector();
         [[nodiscard]] glm::vec3 GetUpVector();
+
+        [[nodiscard]] glm::vec3 InverseDirection(const glm::vec3& direction);
 
         [[nodiscard]] bool GetIsDirty() const;
 
