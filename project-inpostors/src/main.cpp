@@ -23,7 +23,6 @@
 #include "Car/PlayerOneInput.h"
 #include "Car/PlayerTwoInput.h"
 
-#include <Core/Math.h>
 #include <Gameplay/ComponentManager.h>
 #include <Gameplay/Components/RigidbodyComponent.h>
 #include <Gameplay/Components/StaticMeshComponent.h>
@@ -32,10 +31,7 @@
 #include <Rendering/CommonUniformBuffer.h>
 #include <Rendering/Gizmos/Gizmos.h>
 
-#include <Core/Math.h>
 #include <Gameplay/Components/AudioComponent.h>
-#include <Gameplay/Components/RigidbodyComponent.h>
-#include <Physics/Physics.h>
 
 #include <UI/Assets/FontAsset.h>
 #include <UI/Components/Image.h>
@@ -129,8 +125,8 @@ public:
         cameraComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{60.f, 45.f, 0.f}));
         cameraComponent.lock()->SetActive();
 
-        sound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/SFX/mario_coin.ogg");
-        music = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/Crushin.ogg");
+//        sound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/SFX/mario_coin.ogg");
+//        music = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/Crushin.ogg");
 //        auto audioComponent = cameraEntity.lock()->AddComponent<mlg::AudioComponent>("AudioComponent", music);
 //        audioComponent.lock()->SetLooping();
 //        audioComponent.lock()->Play();
@@ -175,10 +171,15 @@ public:
         mlg::Renderer2D::GetInstance()->AddRenderable(image);
         mlg::Renderer2D::GetInstance()->AddRenderable(progressBar);
 
-        auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot());
+        PlayerData firstPlayerData = {0, mlg::RGBA::red};
+        PlayerData secondPlayerData = {0, mlg::RGBA::cyan};
+
+        auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot(),
+                                                              firstPlayerData);
         player.lock()->AddComponent<PlayerOneInput>("PlayerInput");
 
-        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false, mlg::SceneGraph::GetRoot());
+        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false, mlg::SceneGraph::GetRoot(),
+                                                                 secondPlayerData);
         playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
 
         mlg::LevelGenerator::LoadJson("res/levels/detroit.json");

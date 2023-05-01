@@ -21,6 +21,7 @@ Player::Player(const std::string &name, bool isStatic, mlg::Transform *parent)
         : mlg::Entity(name, isStatic, parent) {}
 
 std::shared_ptr<Player> Player::Create(const std::string &name, bool isStatic, mlg::Transform *parent,
+                                       const PlayerData& playerData,
                                        const std::string& configPath) {
     auto newPlayer = std::shared_ptr<Player>(new Player(name, isStatic, parent));
 
@@ -33,6 +34,10 @@ std::shared_ptr<Player> Player::Create(const std::string &name, bool isStatic, m
     json configJson = json::parse(configFile);
     auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>(configJson["model"].get<std::string>());
     auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(configJson["material"].get<std::string>());
+    material = material->CreateDynamicInstance();
+
+    material->SetVec4("color", playerData.color);
+
     auto staticMeshComponent = newPlayer->AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
     staticMeshComponent.lock()->GetTransform().SetPosition({0.f, -0.2f, 0.f});
 
