@@ -20,7 +20,7 @@ using json = nlohmann::json;
 using Random = effolkronium::random_static;
 
 namespace mlg {
-    LevelGenerator *LevelGenerator::instance;
+    LevelGenerator* LevelGenerator::instance;
 
 
     void LevelGenerator::Initialize() {
@@ -37,25 +37,25 @@ namespace mlg {
         instance = nullptr;
     }
 
-    LevelGenerator *LevelGenerator::GetInstance() {
+    LevelGenerator* LevelGenerator::GetInstance() {
         return instance;
     }
 
 
-    void LevelGenerator::LoadJson(const std::string &path) {
+    void LevelGenerator::LoadJson(const std::string& path) {
         LoadLayout(path);
         LoadMapObjects(path);
     }
 
 
-    void LevelGenerator::LoadLayout(const std::string &path) {
+    void LevelGenerator::LoadLayout(const std::string& path) {
         std::ifstream levelFile{path};
         json levelJson = json::parse(levelFile);
 
         if (!levelLayout.empty())
             levelLayout.clear();
 
-        for (const auto &jsonLayoutString: levelJson["layout"]) {
+        for (const auto& jsonLayoutString: levelJson["layout"]) {
             levelLayout.push_back(jsonLayoutString.get<std::string>());
         }
         tileSize = levelJson.contains("tile-size")
@@ -63,26 +63,31 @@ namespace mlg {
     }
 
 
-    void LevelGenerator::LoadMapObjects(const std::string &path) {
+    void LevelGenerator::LoadMapObjects(const std::string& path) {
         std::ifstream levelFile{path};
         json levelJson = json::parse(levelFile);
         // TODO: Kris here - for now I have no idea how to prevent loading JSON twice.
         //  If you have any idea how to do it without including json hpp in header file, hit me up :)
 
+        // TODO: Szymon here - If you know that header is library header and it would not change too often
+        //  you can include it in header. However always better to have includes in source files :3
+
         mapObjects = std::make_unique<std::unordered_map<char, LevelGenerator::MapEntry>>();
 
-        for (const auto &jsonTile: levelJson["tiles"]) {
+        for (const auto& jsonTile: levelJson["tiles"]) {
             const char tileSymbol = jsonTile["symbol"].get<std::string>()[0];
             std::vector<std::shared_ptr<MapObject>> mapObjectPool;
 
             //TODO: move this to a separate function maybe?
-            for (const auto &jsonMapObject: jsonTile["objects"]) {
+            for (const auto& jsonMapObject: jsonTile["objects"]) {
                 std::string modelPath = jsonMapObject["model"].get<std::string>();
                 std::string materialPath = jsonMapObject.contains("material")
                                            ? jsonMapObject["material"].get<std::string>()
                                            : "res/models/Buildings/buildings_material.json";
                 float yRot = jsonMapObject.contains("rotation")
-                             ? jsonMapObject["rotation"].get<float>() : 0.0f;
+                             ? jsonMapObject["rotation"].get<float>() : 0.f;
+                float scale = jsonMapObject.contains("scale")
+                              ? jsonMapObject["scale"].get<float>() : 1.f;
 
                 mlg::MapObject mapObj(modelPath, materialPath, yRot);
                 if (jsonMapObject.contains("collision-type")) {
@@ -93,6 +98,8 @@ namespace mlg {
                                     ? jsonMapObject["collision-offset"].get<float>() : 0.0f;
                     mapObj.AddCollision(cType, cSize, cOffset);
                 }
+
+                mapObj.SetScale(scale);
 
                 auto newMapObj = std::make_shared<MapObject>(mapObj);
                 mapObjectPool.push_back(newMapObj);
@@ -106,16 +113,16 @@ namespace mlg {
         glm::vec2 citySize{0.f};
         citySize.y = static_cast<float>(levelLayout.size());
 
-        for (const std::string &row: levelLayout) {
+        for (const std::string& row: levelLayout) {
             citySize.x = std::max(citySize.x, static_cast<float>(row.size()));
         }
 
         citySize *= tileSize;
 
         int i = 0, j = 0;
-        for (const std::string &row: levelLayout) {
+        for (const std::string& row: levelLayout) {
             ++j;
-            for (const char &character: row) {
+            for (const char& character: row) {
                 ++i;
 
                 if (character == ' ')
@@ -146,12 +153,15 @@ namespace mlg {
     }
 
 
-    void LevelGenerator::PutObject(const std::shared_ptr<MapObject> &obj, glm::vec3 pos) {
+    void LevelGenerator::PutObject(const std::shared_ptr<MapObject>& obj, glm::vec3 pos) {
         auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>(
                 Hash("MapObject", pos.x, pos.z),
                 true, mlg::SceneGraph::GetRoot());
-        modelEntity.lock()->AddComponent<mlg::StaticMeshComponent>(
+        auto staticMesh = modelEntity.lock()->AddComponent<mlg::StaticMeshComponent>(
                 "StaticMesh", obj->GetModel().lock(), obj->GetMaterial().lock());
+
+        staticMesh.lock()->GetTransform().SetScale(glm::vec3{obj->GetScale()});
+
         modelEntity.lock()->GetTransform().SetPosition(pos);
         modelEntity.lock()->GetTransform().SetEulerRotation(obj->GetRotation());
 
@@ -174,7 +184,7 @@ namespace mlg {
     }
 
 
-    std::string LevelGenerator::Hash(const std::string &hashString, float posX, float posY) {
+    std::string LevelGenerator::Hash(const std::string& hashString, float posX, float posY) {
         std::size_t h1 = std::hash<std::string>{}(hashString);
         auto h2 = static_cast<size_t>(posX * posY + posX);
         std::stringstream ss;

@@ -19,22 +19,26 @@
         {
           "model": "res/models/Buildings/building_big_1.obj",
           "collision-type": "rectangle",
-          "collision-size": 4.0
+          "collision-size": 4.0,
+          "scale": 0.85
         },
         {
           "model": "res/models/Buildings/building_big_2.obj",
           "collision-type": "rectangle",
-          "collision-size": 4.0
+          "collision-size": 4.0,
+          "scale": 0.85
         },
         {
           "model": "res/models/Buildings/building_big_3.obj",
           "collision-type": "rectangle",
-          "collision-size": 4.0
+          "collision-size": 4.0,
+          "scale": 0.85
         },
         {
           "model": "res/models/Buildings/building_big_4.obj",
           "collision-type": "rectangle",
-          "collision-size": 4.0
+          "collision-size": 4.0,
+          "scale": 0.85
         }
       ]
     },
@@ -44,24 +48,28 @@
         {
           "model": "res/models/Buildings/building_big_1.obj",
           "rotation": 90.0,
+          "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
         },
         {
           "model": "res/models/Buildings/building_big_2.obj",
           "rotation": 90.0,
+          "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
         },
         {
           "model": "res/models/Buildings/building_big_3.obj",
           "rotation": 90.0,
+          "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
         },
         {
           "model": "res/models/Buildings/building_big_4.obj",
           "rotation": 90.0,
+          "scale": 0.85,
           "collision-size": 4.0
         }
       ]
@@ -72,18 +80,21 @@
         {
           "model": "res/models/Buildings/building_small_1.obj",
           "rotation": 90.0,
+          "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
         },
         {
           "model": "res/models/Buildings/building_small_2.obj",
           "rotation": 90.0,
+          "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
         },
         {
           "model": "res/models/Buildings/building_small_3.obj",
           "rotation": 90.0,
+          "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
         }
@@ -95,18 +106,21 @@
         {
           "model": "res/models/Buildings/building_small_1.obj",
           "rotation": -180.0,
+          "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
         },
         {
           "model": "res/models/Buildings/building_small_2.obj",
           "rotation": 180.0,
+          "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
         },
         {
           "model": "res/models/Buildings/building_small_3.obj",
           "rotation": 179.0,
+          "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
         }
@@ -118,6 +132,7 @@
         {
           "model": "res/models/Buildings/building_corrner_big.obj",
           "rotation": -90.0,
+          "scale": 0.85,
           "collision-size": 4.0,
           "collision-type": "rectangle"
         }
@@ -129,6 +144,7 @@
         {
           "model": "res/models/Buildings/building_corrner_small.obj",
           "rotation": 90.0,
+          "scale": 0.85,
           "collision-size": 4.0,
           "collision-type": "rectangle"
         }
