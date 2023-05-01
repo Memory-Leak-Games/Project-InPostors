@@ -23,7 +23,6 @@
 #include "Car/PlayerOneInput.h"
 #include "Car/PlayerTwoInput.h"
 
-#include <Core/Math.h>
 #include <Gameplay/ComponentManager.h>
 #include <Gameplay/Components/RigidbodyComponent.h>
 #include <Gameplay/Components/StaticMeshComponent.h>
@@ -32,10 +31,7 @@
 #include <Rendering/CommonUniformBuffer.h>
 #include <Rendering/Gizmos/Gizmos.h>
 
-#include <Core/Math.h>
 #include <Gameplay/Components/AudioComponent.h>
-#include <Gameplay/Components/RigidbodyComponent.h>
-#include <Physics/Physics.h>
 
 #include <UI/Assets/FontAsset.h>
 #include <UI/Components/Image.h>
@@ -91,12 +87,16 @@ public:
         mlg::ComponentManager::Initialize();
         mlg::EntityManager::Initialize();
 
+        mlg::LevelGenerator::Initialize();
+
         mlg::Core::Initialize();
         mlg::Input::Initialize();
 
         mlg::Core* engine = mlg::Core::GetInstance();
         PrepareScene();
         engine->MainLoop();
+
+        mlg::LevelGenerator::Stop();
 
         mlg::EntityManager::Stop();
         mlg::ComponentManager::Stop();
@@ -129,8 +129,8 @@ public:
         cameraComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{60.f, 45.f, 0.f}));
         cameraComponent.lock()->SetActive();
 
-        sound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/SFX/mario_coin.ogg");
-        music = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/Crushin.ogg");
+//        sound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/SFX/mario_coin.ogg");
+//        music = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/Crushin.ogg");
 //        auto audioComponent = cameraEntity.lock()->AddComponent<mlg::AudioComponent>("AudioComponent", music);
 //        audioComponent.lock()->SetLooping();
 //        audioComponent.lock()->Play();
@@ -147,7 +147,7 @@ public:
 
         auto ground = mlg::EntityManager::SpawnEntity<mlg::Entity>("Ground", true, mlg::SceneGraph::GetRoot());
         ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, groundMaterial);
-        ground.lock()->GetTransform().SetPosition({0.f, -0.51f, 0.f});
+        ground.lock()->GetTransform().SetPosition({0.f, -0.01f, 0.f});
         ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
 
         auto ui = mlg::EntityManager::SpawnEntity<mlg::Entity>("ui", true, mlg::SceneGraph::GetRoot());
@@ -175,14 +175,20 @@ public:
         mlg::Renderer2D::GetInstance()->AddRenderable(image);
         mlg::Renderer2D::GetInstance()->AddRenderable(progressBar);
 
-        auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot());
+        PlayerData firstPlayerData = {0, mlg::RGBA::red};
+        PlayerData secondPlayerData = {0, mlg::RGBA::cyan};
+
+        auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot(),
+                                                              firstPlayerData);
         player.lock()->AddComponent<PlayerOneInput>("PlayerInput");
 
-        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false, mlg::SceneGraph::GetRoot());
+        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false, mlg::SceneGraph::GetRoot(),
+                                                                 secondPlayerData);
         playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
 
-        mlg::LevelGenerator::LoadJson("res/levels/detroit.json");
-        mlg::LevelGenerator::GenerateLevel(4.0f);
+        auto levelGen = mlg::LevelGenerator::GetInstance();
+        levelGen->LoadJson("res/levels/detroit.json");
+        levelGen->GenerateLevel();
     }
 
     virtual ~ProjectInpostors() {

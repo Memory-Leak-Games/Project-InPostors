@@ -1,18 +1,21 @@
 #include "Car/CarMovementComponent.h"
 
+#include <nlohmann/json.hpp>
+#include <fstream>
+
 #include "Gameplay/Entity.h"
 #include "Gameplay/Components/RigidbodyComponent.h"
 #include "Gameplay/Components/StaticMeshComponent.h"
 
 #include "Core/HID/Input.h"
-#include "Rendering/Gizmos/Gizmos.h"
 #include "Core/Time.h"
+#include "Core/Math.h"
 
 #include "Physics/Colliders/ColliderShapes.h"
 
 #include "Car/CarInput.h"
 
-#include "Core/Math.h"
+using json = nlohmann::json;
 
 void CarMovementComponent::Start() {
     rigidbodyComponent = GetOwner().lock()->GetComponentByClass<mlg::RigidbodyComponent>().lock();
@@ -25,8 +28,11 @@ void CarMovementComponent::Start() {
     carInput = GetOwner().lock()->GetComponentByClass<CarInput>().lock();
 }
 
-CarMovementComponent::CarMovementComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name)
-        : Component(owner, name) {}
+CarMovementComponent::CarMovementComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
+                                           const std::string& configPath)
+        : Component(owner, name) {
+    LoadParameters(configPath);
+}
 
 void CarMovementComponent::PhysicsUpdate() {
     HandleEngineAndBraking();
@@ -113,3 +119,22 @@ void CarMovementComponent::CounterTorque() {
     const float torqueStrength = std::clamp(-rotationVelocity, -1.f, 1.f) * counterTorque;
     rigidbodyComponent->AddTorque(torqueStrength);
 }
+
+void CarMovementComponent::LoadParameters(const std::string& path = "res/config/cars/testing.json") {
+    std::ifstream configFile{path};
+    json configJson = json::parse(configFile);
+
+    auto parameters = configJson["parameters"];
+
+    acceleration = parameters["acceleration"];
+    maxSpeed = parameters["maxSpeed"];
+    backwardMaxSpeed = parameters["backwardMaxSpeed"];
+    engineHandling = parameters["engineHandling"];
+    handling = parameters["handling"];
+
+    rotationSpeed = parameters["rotationSpeed"];
+    rotationRadius = parameters["rotationRadius"];
+    sideDrag = parameters["sideDrag"];
+    counterTorque = parameters["counterTorque"];
+}
+

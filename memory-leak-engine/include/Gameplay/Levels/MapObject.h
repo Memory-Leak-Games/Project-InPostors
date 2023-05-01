@@ -20,24 +20,23 @@ namespace mlg {
         [[nodiscard]] std::string GetColliderType() const { return colliderType; }
         [[nodiscard]] float GetColliderSize() const { return colliderSize; }
         [[nodiscard]] float GetColliderOffset() const { return colliderOffset; }
-        //[[nodiscard]] glm::vec2 GetPositionOffset() const { return positonOffset; }
+        [[nodiscard]] float GetScale() const { return scale; }
 
         // ==== SETTERS ====
-        void SetRotation(float rot) { worldRot = glm::vec3({0.0f, glm::radians(rot), 0.0f});};
-        void SetRotation(glm::vec3 rot) { worldRot = rot; }
-        //void SetPositionOffset(const float offsetH, const float offsetV);
-        //void SetPositionOffset(glm::vec2 posOffset);
+        void SetRotation(const float rot) { worldRot = glm::vec3({0.0f, glm::radians(rot), 0.0f});};
+        void SetRotation(const glm::vec3 rot) { worldRot = rot; }
 
+        void SetScale(float scale) {this->scale = scale;}
 
     private:
         std::shared_ptr<ModelAsset> model;
         std::shared_ptr<MaterialAsset> material;
         glm::vec3 worldRot;
-        bool hasCollision;
+        float scale;
         std::string colliderType;
         float colliderSize = 1.0f;
         float colliderOffset = 0.0f;
-        //glm::vec2 positonOffset;
+        bool hasCollision;
     };
 } // mlg
 
