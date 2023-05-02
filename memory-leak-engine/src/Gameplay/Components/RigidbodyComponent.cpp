@@ -12,9 +12,14 @@
 #include "Rendering/Gizmos/Gizmos.h"
 
 namespace mlg {
+    std::unordered_map<Rigidbody*, RigidbodyComponent*> RigidbodyComponent::rigidbodies;
+
     RigidbodyComponent::RigidbodyComponent(const std::weak_ptr<Entity>& owner, const std::string& name)
     : Component(owner, name) {
         rigidbody = std::make_shared<Rigidbody>();
+
+        rigidbodies[rigidbody.get()] = this;
+
         Physics::AddRigidbody(rigidbody);
 
         const glm::vec3 ownerPosition = GetOwner().lock()->GetTransform().GetPosition();
@@ -25,6 +30,7 @@ namespace mlg {
     }
 
     RigidbodyComponent::~RigidbodyComponent() {
+        rigidbodies.erase(rigidbody.get());
         Physics::RemoveRigidbody(rigidbody);
     }
 

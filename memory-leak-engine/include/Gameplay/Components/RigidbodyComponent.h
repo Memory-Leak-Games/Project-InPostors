@@ -15,6 +15,8 @@ namespace mlg {
     private:
         std::shared_ptr<Rigidbody> rigidbody;
 
+        static std::unordered_map<Rigidbody*, RigidbodyComponent*> rigidbodies;
+
     public:
         RigidbodyComponent(const std::weak_ptr<Entity>& owner, const std::string& name);
 
