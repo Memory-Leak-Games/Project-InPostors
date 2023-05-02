@@ -112,36 +112,44 @@ namespace mlg {
         rigidbody->isKinematic = isKinematic;
     }
 
-    void RigidbodyComponent::AddCollider(std::unique_ptr<ColliderShape::Shape> shape) {
+    std::weak_ptr<Collider> RigidbodyComponent::AddCollider(std::unique_ptr<ColliderShape::Shape> shape) {
         auto collider = rigidbody->AddCollider(std::move(shape)).lock();
+
+        collider->OnCollisionEnter.append(OnCollisionEnter);
 
 #ifdef DEBUG
         if (!SettingsManager::Get<bool>(SettingsType::Debug, "showColliders"))
-            return;
+            return collider;
 
-        collider->OnCollisionEnter.append([](CollisionEvent event) {
+        collider->OnCollisionEnter.append([](const CollisionEvent& event) {
             glm::vec3 position {0.f};
             position.x = event.position.x;
             position.z = event.position.y;
             Gizmos::DrawPoint(position, RGBA::red, true, 0.016);
         });
 #endif
+        return collider;
     }
 
-    void RigidbodyComponent::AddTrigger(std::unique_ptr<ColliderShape::Shape> shape) {
+    std::weak_ptr<Collider> RigidbodyComponent::AddTrigger(std::unique_ptr<ColliderShape::Shape> shape) {
         auto trigger = rigidbody->AddTrigger(std::move(shape)).lock();
+
+        trigger->OnCollisionEnter.append([this](const CollisionEvent& event) {
+            OnTriggerEnter(event);
+        });
 
 #ifdef DEBUG
         if (!SettingsManager::Get<bool>(SettingsType::Debug, "showColliders"))
-            return;
+            return trigger;
 
-        trigger->OnCollisionEnter.append([](CollisionEvent event) {
+        trigger->OnCollisionEnter.append([](const CollisionEvent& event) {
             glm::vec3 position {0.f};
             position.x = event.position.x;
             position.z = event.position.y;
             Gizmos::DrawPoint(position, RGBA::yellow, true, 0.016);
         });
 #endif
+        return trigger;
     }
 
     glm::vec2 RigidbodyComponent::GetLinearVelocity() {
