@@ -3,13 +3,14 @@
 #include "Physics/CollisionDetection.h"
 #include "Physics/Colliders/ColliderShapes.h"
 
-#include "Core/Math.h"
-
-#include "Macros.h"
-
 namespace mlg {
     Collider::Collider(Rigidbody* owner, std::unique_ptr<ColliderShape::Shape> shape)
             : owner(owner), shape(std::move(shape)) {}
+
+    Collider::Collider(Rigidbody* owner, bool isTrigger, std::unique_ptr<ColliderShape::Shape> shape)
+        : Collider(owner, std::move(shape)) {
+        this->isTrigger = isTrigger;
+    }
 
     Collider::~Collider() = default;
 
@@ -107,6 +108,10 @@ namespace mlg {
 
     float Collider::GetRadius() const {
         return shape->GetRadius();
+    }
+
+    bool Collider::GetIsTrigger() const {
+        return isTrigger;
     }
 
 }

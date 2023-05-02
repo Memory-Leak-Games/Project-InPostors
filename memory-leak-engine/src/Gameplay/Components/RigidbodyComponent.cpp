@@ -70,9 +70,12 @@ namespace mlg {
             position.x = collider->shape->position.x;
             position.z = collider->shape->position.y;
 
-            glm::vec4 gizmoColor {0.f, 1.f, 0.f, 1.f};
+            glm::vec4 gizmoColor = RGBA::green;
             if (rigidbody->GetIsKinematic())
-                gizmoColor = {0.f, 0.f, 1.f, 1.f};
+                gizmoColor = RGBA::blue;
+
+            if (collider->isTrigger)
+                gizmoColor = RGBA::yellow;
 
             switch (collider->shape->GetType()) {
                 case ColliderShape::ColliderShapeType::Circle: {
@@ -121,6 +124,22 @@ namespace mlg {
             position.x = event.position.x;
             position.z = event.position.y;
             Gizmos::DrawPoint(position, RGBA::red, true, 0.016);
+        });
+#endif
+    }
+
+    void RigidbodyComponent::AddTrigger(std::unique_ptr<ColliderShape::Shape> shape) {
+        auto trigger = rigidbody->AddTrigger(std::move(shape)).lock();
+
+#ifdef DEBUG
+        if (!SettingsManager::Get<bool>(SettingsType::Debug, "showColliders"))
+            return;
+
+        trigger->OnCollisionEnter.append([](CollisionEvent event) {
+            glm::vec3 position {0.f};
+            position.x = event.position.x;
+            position.z = event.position.y;
+            Gizmos::DrawPoint(position, RGBA::yellow, true, 0.016);
         });
 #endif
     }

@@ -52,6 +52,12 @@ namespace mlg {
             AddCollider(std::move(shape));
         }
 
+        template<typename T, typename ... Args>
+        void AddTrigger(Args&& ... args) {
+            auto shape = std::make_unique<T>(glm::vec2(0.f), std::forward<Args>(args) ...);
+            AddTrigger(std::move(shape));
+        }
+
         void SetKinematic(bool isKinematic);
         void SetMass(float mass);
         void SetBounciness(float bounciness);
@@ -60,6 +66,7 @@ namespace mlg {
 
     private:
         void AddCollider(std::unique_ptr<ColliderShape::Shape> shape);
+        void AddTrigger(std::unique_ptr<ColliderShape::Shape> shape);
     };
 
 } // mlg
