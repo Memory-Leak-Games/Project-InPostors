@@ -39,6 +39,8 @@
 #include <UI/Components/ProgressBar.h>
 #include <UI/Renderer2D.h>
 
+#include <Physics/Colliders/Collider.h>
+
 class ComponentTest : public mlg::Component {
 public:
     ComponentTest(const std::weak_ptr<mlg::Entity>& owner, const std::string& name) : Component(owner, name) {}
@@ -185,6 +187,14 @@ public:
         auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false, mlg::SceneGraph::GetRoot(),
                                                                  secondPlayerData);
         playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
+
+        auto trigger = mlg::EntityManager::SpawnEntity<mlg::Entity>("Trigger", false, mlg::SceneGraph::GetRoot());
+        trigger.lock()->GetTransform().SetPosition(glm::vec3{5.f, 0.f, -2.f});
+        auto rigidbodyComponent = trigger.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
+        rigidbodyComponent.lock()->AddTrigger<mlg::ColliderShape::Circle>(glm::vec2(0.f, 0.0f), 1.f);
+        rigidbodyComponent.lock()->OnTriggerEnter.append([](const mlg::CollisionEvent& event) {
+            SPDLOG_INFO("Trigger");
+        });
 
         auto levelGen = mlg::LevelGenerator::GetInstance();
         levelGen->LoadJson("res/levels/detroit.json");

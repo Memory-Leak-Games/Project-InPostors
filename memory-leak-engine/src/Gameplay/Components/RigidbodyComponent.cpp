@@ -10,11 +10,19 @@
 #include "Gameplay/Entity.h"
 
 #include "Rendering/Gizmos/Gizmos.h"
+#include "Physics/CollisionManager.h"
+
+#include "Gameplay/Entity.h"
 
 namespace mlg {
+    std::unordered_map<Rigidbody*, RigidbodyComponent*> RigidbodyComponent::rigidbodies;
+
     RigidbodyComponent::RigidbodyComponent(const std::weak_ptr<Entity>& owner, const std::string& name)
     : Component(owner, name) {
         rigidbody = std::make_shared<Rigidbody>();
+
+        rigidbodies[rigidbody.get()] = this;
+
         Physics::AddRigidbody(rigidbody);
 
         const glm::vec3 ownerPosition = GetOwner().lock()->GetTransform().GetPosition();
@@ -25,6 +33,7 @@ namespace mlg {
     }
 
     RigidbodyComponent::~RigidbodyComponent() {
+        rigidbodies.erase(rigidbody.get());
         Physics::RemoveRigidbody(rigidbody);
     }
 
@@ -70,9 +79,12 @@ namespace mlg {
             position.x = collider->shape->position.x;
             position.z = collider->shape->position.y;
 
-            glm::vec4 gizmoColor {0.f, 1.f, 0.f, 1.f};
+            glm::vec4 gizmoColor = RGBA::green;
             if (rigidbody->GetIsKinematic())
-                gizmoColor = {0.f, 0.f, 1.f, 1.f};
+                gizmoColor = RGBA::blue;
+
+            if (collider->isTrigger)
+                gizmoColor = RGBA::yellow;
 
             switch (collider->shape->GetType()) {
                 case ColliderShape::ColliderShapeType::Circle: {
@@ -109,20 +121,44 @@ namespace mlg {
         rigidbody->isKinematic = isKinematic;
     }
 
-    void RigidbodyComponent::AddCollider(std::unique_ptr<ColliderShape::Shape> shape) {
+    std::weak_ptr<Collider> RigidbodyComponent::AddCollider(std::unique_ptr<ColliderShape::Shape> shape) {
         auto collider = rigidbody->AddCollider(std::move(shape)).lock();
+
+        collider->OnCollisionEnter.append(OnCollisionEnter);
 
 #ifdef DEBUG
         if (!SettingsManager::Get<bool>(SettingsType::Debug, "showColliders"))
-            return;
+            return collider;
 
-        collider->OnCollisionEnter.append([](CollisionEvent event) {
+        collider->OnCollisionEnter.append([](const CollisionEvent& event) {
             glm::vec3 position {0.f};
             position.x = event.position.x;
             position.z = event.position.y;
             Gizmos::DrawPoint(position, RGBA::red, true, 0.016);
         });
 #endif
+        return collider;
+    }
+
+    std::weak_ptr<Collider> RigidbodyComponent::AddTrigger(std::unique_ptr<ColliderShape::Shape> shape) {
+        auto trigger = rigidbody->AddTrigger(std::move(shape)).lock();
+
+        trigger->OnCollisionEnter.append([this](const CollisionEvent& event) {
+            OnTriggerEnter(event);
+        });
+
+#ifdef DEBUG
+        if (!SettingsManager::Get<bool>(SettingsType::Debug, "showColliders"))
+            return trigger;
+
+        trigger->OnCollisionEnter.append([](const CollisionEvent& event) {
+            glm::vec3 position {0.f};
+            position.x = event.position.x;
+            position.z = event.position.y;
+            Gizmos::DrawPoint(position, RGBA::yellow, true, 0.016);
+        });
+#endif
+        return trigger;
     }
 
     glm::vec2 RigidbodyComponent::GetLinearVelocity() {
@@ -176,6 +212,25 @@ namespace mlg {
 
     glm::vec3 RigidbodyComponent::GetLocalVelocity() {
         return GetOwner().lock()->GetTransform().InverseDirection(GetLinearVelocity3D());
+    }
+
+    void RigidbodyComponent::OverlapCircle(float radius, std::vector<std::weak_ptr<Entity>>& output) {
+        std::vector<Collider*> overlappedColliders;
+        CollisionManager::OverlapCircle(rigidbody->position, radius, overlappedColliders);
+
+        std::unordered_set<std::weak_ptr<Entity>, Entity::WeakHash> outputSet;
+
+        for (auto& collider : overlappedColliders) {
+            auto* rigidbody = (Rigidbody*) collider->GetOwner();
+
+            if (rigidbody == this->rigidbody.get())
+                continue;
+
+            std::weak_ptr<Entity> entity = rigidbodies[rigidbody]->GetOwner();
+            outputSet.insert(entity);
+        }
+
+        output.assign(outputSet.begin(), outputSet.end());
     }
 
 

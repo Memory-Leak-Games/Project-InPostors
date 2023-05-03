@@ -33,6 +33,8 @@ namespace mlg {
 
         static void SetBounds(const glm::vec2& start, const glm::vec2& end, const glm::ivec2& dimensions);
 
+        static void OverlapCircle(const glm::vec2& position, float radius, std::vector<Collider*>& output);
+
         static void DrawSpacialGrid();
     };
 

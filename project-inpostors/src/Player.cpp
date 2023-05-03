@@ -15,20 +15,23 @@
 
 #include "Car/CarMovementComponent.h"
 
+//TODO: Only for test
+#include "Car/PlayerTwoInput.h"
+
 using json = nlohmann::json;
 
-Player::Player(const std::string &name, bool isStatic, mlg::Transform *parent)
-        : mlg::Entity(name, isStatic, parent) {}
+Player::Player(uint64_t id, const std::string &name, bool isStatic, mlg::Transform *parent)
+        : mlg::Entity(id, name, isStatic, parent) {}
 
-std::shared_ptr<Player> Player::Create(const std::string &name, bool isStatic, mlg::Transform *parent,
-                                       const PlayerData& playerData,
-                                       const std::string& configPath) {
-    auto newPlayer = std::shared_ptr<Player>(new Player(name, isStatic, parent));
+std::shared_ptr<Player> Player::Create(uint64_t id, const std::string &name, bool isStatic,
+                                       mlg::Transform *parent, const PlayerData &playerData,
+                                       const std::string &configPath) {
+    auto newPlayer = std::shared_ptr<Player>(new Player(id, name, isStatic, parent));
 
-    auto rigidbodyComponent = newPlayer->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
-    rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f, -0.5f), 0.5f);
-    rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f, 0.5f), 0.5f);
-    rigidbodyComponent.lock()->SetBounciness(0.5f);
+    newPlayer->rigidbodyComponent = newPlayer->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
+    newPlayer->rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f, -0.5f), 0.5f);
+    newPlayer->rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f, 0.5f), 0.5f);
+    newPlayer->rigidbodyComponent.lock()->SetBounciness(0.5f);
 
     std::ifstream configFile{configPath};
     json configJson = json::parse(configFile);
@@ -46,4 +49,18 @@ std::shared_ptr<Player> Player::Create(const std::string &name, bool isStatic, m
     newPlayer->AddComponent<CarMovementComponent>("MovementComponent", configPath);
 
     return newPlayer;
+}
+
+void Player::Update() {
+    std::vector<std::weak_ptr<mlg::Entity>> found;
+    rigidbodyComponent.lock()->OverlapCircle(2.f, found);
+
+    for (const auto& entity: found) {
+        std::weak_ptr<PlayerTwoInput> result = entity.lock()->GetComponentByClass<PlayerTwoInput>();
+
+        if (result.expired())
+            continue;
+
+        SPDLOG_WARN("Hello Second Player!");
+    }
 }

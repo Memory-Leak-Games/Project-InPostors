@@ -11,6 +11,7 @@ namespace mlg {
 
     class Entity : public std::enable_shared_from_this<Entity> {
     private:
+        uint64_t id;
         std::string name;
         std::string tag;
         std::shared_ptr<Transform> transform;
@@ -23,10 +24,10 @@ namespace mlg {
         Entity() = delete;
 
     protected:
-        explicit Entity(std::string name, bool isStatic, Transform *parent);
+        explicit Entity(uint64_t id, std::string name, bool isStatic, Transform *parent);
 
     public:
-        static std::shared_ptr<Entity> Create(const std::string &name, bool isStatic, Transform *parent);
+        static std::shared_ptr<Entity> Create(uint64_t id, const std::string &name, bool isStatic, Transform *parent);
 
         template<typename T, typename ... Args>
         std::weak_ptr<T> AddComponent(Args &&... args) {
@@ -76,9 +77,30 @@ namespace mlg {
         Transform &GetTransform();
         const std::string &GetName() const;
         const std::string &GetTag() const;
+        uint64_t GetId() const;
 
         void SetName(const std::string &name);
         void SetTag(const std::string &tag);
+
+        bool operator==(const Entity &rhs) const;
+        bool operator!=(const Entity &rhs) const;
+
+        struct Hash {
+            size_t operator () (const Entity& entity) const {
+                return entity.id;
+            }
+        };
+
+        struct WeakHash {
+            size_t operator () (const std::weak_ptr<Entity>& entity) const {
+                return entity.lock()->id;
+            }
+        };
+
     };
 
-} // mlg
+    inline bool operator == (const std::weak_ptr<Entity>& lhs, const std::weak_ptr<Entity>& rhs) {
+        return lhs.lock()->GetId() == rhs.lock()->GetId();
+    }
+
+    } // mlg

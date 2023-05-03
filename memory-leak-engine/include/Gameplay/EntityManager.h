@@ -11,6 +11,7 @@ namespace mlg {
         static EntityManager* instance;
 
         std::vector<std::shared_ptr<Entity>> entities;
+        uint64_t entitiesIndex = 0;
 
         EntityManager() = default;
     public:
@@ -20,8 +21,9 @@ namespace mlg {
 
         template<typename T, typename ... Args>
         static std::weak_ptr<T> SpawnEntity(Args&& ... args) {
-            std::shared_ptr<Entity> newEntity = T::Create(std::forward<Args>(args) ...);
+            std::shared_ptr<Entity> newEntity = T::Create(instance->entitiesIndex, std::forward<Args>(args) ...);
             instance->entities.push_back(newEntity);
+            instance->entitiesIndex++;
             return std::static_pointer_cast<T>(newEntity);
         }
 

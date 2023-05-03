@@ -8,8 +8,14 @@
 namespace mlg {
 
     class RigidbodyComponent : public Component {
+    public:
+        eventpp::CallbackList<void(CollisionEvent)> OnCollisionEnter;
+        eventpp::CallbackList<void(CollisionEvent)> OnTriggerEnter;
+
     private:
         std::shared_ptr<Rigidbody> rigidbody;
+
+        static std::unordered_map<Rigidbody*, RigidbodyComponent*> rigidbodies;
 
     public:
         RigidbodyComponent(const std::weak_ptr<Entity>& owner, const std::string& name);
@@ -47,10 +53,18 @@ namespace mlg {
         float GetRotation();
 
         template<typename T, typename ... Args>
-        void AddCollider(Args&& ... args) {
+        std::weak_ptr<Collider> AddCollider(Args&& ... args) {
             auto shape = std::make_unique<T>(glm::vec2(0.f), std::forward<Args>(args) ...);
-            AddCollider(std::move(shape));
+            return AddCollider(std::move(shape));
         }
+
+        template<typename T, typename ... Args>
+        std::weak_ptr<Collider> AddTrigger(Args&& ... args) {
+            auto shape = std::make_unique<T>(glm::vec2(0.f), std::forward<Args>(args) ...);
+            return AddTrigger(std::move(shape));
+        }
+
+        void OverlapCircle(float radius, std::vector<std::weak_ptr<Entity>>& output);
 
         void SetKinematic(bool isKinematic);
         void SetMass(float mass);
@@ -59,7 +73,8 @@ namespace mlg {
         ~RigidbodyComponent() override;
 
     private:
-        void AddCollider(std::unique_ptr<ColliderShape::Shape> shape);
+        std::weak_ptr<Collider> AddCollider(std::unique_ptr<ColliderShape::Shape> shape);
+        std::weak_ptr<Collider> AddTrigger(std::unique_ptr<ColliderShape::Shape> shape);
     };
 
 } // mlg

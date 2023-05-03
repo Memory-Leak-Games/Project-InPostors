@@ -181,6 +181,7 @@ namespace mlg {
                     obj->GetColliderOffset());
         }
         rb.lock()->SetRotation(obj->GetRotation().y);
+        rb.lock()->SetKinematic(true);
     }
 
 

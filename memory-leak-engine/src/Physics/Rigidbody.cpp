@@ -126,7 +126,20 @@ namespace mlg {
         return collider;
     }
 
+    std::weak_ptr<Collider> Rigidbody::AddTrigger(std::unique_ptr<ColliderShape::Shape> shape) {
+        auto trigger = std::make_shared<Collider>(this, true, std::move(shape));
+        colliders.push_back(trigger);
+
+        CalculateColliderPosition(trigger);
+        CollisionManager::AddCollider(trigger);
+
+        return trigger;
+    }
+
     void Rigidbody::ApplyCollisionForce(const CollisionEvent &collision) {
+        if (collision.isTrigger)
+            return;
+
         if (collision.collidedRigidbody->isKinematic)
             ApplyCollisionForceWithKinematic(collision);
         else

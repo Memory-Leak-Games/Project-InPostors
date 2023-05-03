@@ -77,18 +77,24 @@ namespace mlg {
         ZoneScopedC(tracy::Color::ColorType::Green);
 
         for (auto& collision : instance->collisionsThisTick) {
-            if (collision.collider.lock()->GetOwner()->GetIsKinematic())
+            auto collider = collision.collider.lock();
+
+            if (collider->GetOwner()->GetIsKinematic())
                 continue;
 
-            auto collider = collision.collider.lock();
             auto anotherCollider = collision.anotherCollider.lock();
 
             glm::vec2 separationVector = collider->CalculateSeparation(anotherCollider.get());
-            collider->Separate(anotherCollider.get(), separationVector);
+
+            bool isTrigger = collider->GetIsTrigger() || anotherCollider->GetIsTrigger();
+
+            if (!isTrigger)
+                collider->Separate(anotherCollider.get(), separationVector);
 
             glm::vec2 collisionPoint = collider->FindCollisionPoint(anotherCollider->GetOwner()->GetPosition());
             glm::vec2 normal = Math::SafeNormal(collider->GetPosition() - collisionPoint);
-            collider->OnCollisionEnter({collisionPoint, separationVector, normal, anotherCollider->GetOwner()});
+            collider->OnCollisionEnter({collisionPoint, separationVector, normal,
+                                        anotherCollider->GetOwner(), isTrigger});
         }
 
         instance->collisionsThisTick.clear();
@@ -120,6 +126,18 @@ namespace mlg {
 
     void CollisionManager::DrawSpacialGrid() {
         instance->spacialHashGrid->DebugDraw();
+    }
+
+    void CollisionManager::OverlapCircle(const glm::vec2& position, float radius, std::vector<Collider*>& output) {
+        std::vector<std::shared_ptr<Collider>> result;
+        instance->spacialHashGrid->FindNear(position, radius, result);
+
+        for (const auto& collider: result) {
+            if (glm::length(position - collider->GetPosition()) > radius)
+                continue;
+
+            output.push_back(collider.get());
+        }
     }
 
 

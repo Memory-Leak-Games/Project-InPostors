@@ -14,6 +14,7 @@ namespace mlg {
         glm::vec2 separationVector;
         glm::vec2 normal;
         const class Rigidbody* collidedRigidbody;
+        bool isTrigger;
     };
 
     class Collider {
@@ -24,6 +25,8 @@ namespace mlg {
         Rigidbody* owner;
         std::unique_ptr<ColliderShape::Shape> shape;
 
+        bool isTrigger = false;
+
         // HashGridClient
         glm::ivec2 minCoord;
         glm::ivec2 maxCoord;
@@ -32,6 +35,7 @@ namespace mlg {
 
     public:
         Collider(Rigidbody* owner, std::unique_ptr<ColliderShape::Shape> shape);
+        Collider(Rigidbody* owner, bool isTrigger, std::unique_ptr<ColliderShape::Shape> shape);
         ~Collider();
 
         bool DetectCollision(Collider* anotherCollider);
@@ -44,6 +48,7 @@ namespace mlg {
         const Rigidbody* GetOwner() const;
         glm::vec2 GetPosition() const;
         float GetRadius() const;
+        bool GetIsTrigger() const;
 
         friend class RigidbodyComponent;
         friend class Rigidbody;
