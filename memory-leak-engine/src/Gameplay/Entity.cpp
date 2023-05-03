@@ -65,4 +65,16 @@ namespace mlg {
         return std::shared_ptr<Entity>(new Entity(id, name, isStatic, parent));
     }
 
+    uint64_t Entity::GetId() const {
+        return id;
+    }
+
+    bool Entity::operator==(const Entity &rhs) const {
+        return id == rhs.id;
+    }
+
+    bool Entity::operator!=(const Entity &rhs) const {
+        return !(rhs == *this);
+    }
+
 } // mlg

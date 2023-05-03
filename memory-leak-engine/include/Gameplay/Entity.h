@@ -77,9 +77,30 @@ namespace mlg {
         Transform &GetTransform();
         const std::string &GetName() const;
         const std::string &GetTag() const;
+        uint64_t GetId() const;
 
         void SetName(const std::string &name);
         void SetTag(const std::string &tag);
+
+        bool operator==(const Entity &rhs) const;
+        bool operator!=(const Entity &rhs) const;
+
+        struct Hash {
+            size_t operator () (const Entity& entity) const {
+                return entity.id;
+            }
+        };
+
+        struct WeakHash {
+            size_t operator () (const std::weak_ptr<Entity>& entity) const {
+                return entity.lock()->id;
+            }
+        };
+
     };
 
-} // mlg
+    inline bool operator == (const std::weak_ptr<Entity>& lhs, const std::weak_ptr<Entity>& rhs) {
+        return lhs.lock()->GetId() == rhs.lock()->GetId();
+    }
+
+    } // mlg

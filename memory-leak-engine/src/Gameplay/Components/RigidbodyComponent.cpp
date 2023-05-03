@@ -218,15 +218,19 @@ namespace mlg {
         std::vector<Collider*> overlappedColliders;
         CollisionManager::OverlapCircle(rigidbody->position, radius, overlappedColliders);
 
-//        std::unordered_set<std::weak_ptr<Entity>> outputSet{};
+        std::unordered_set<std::weak_ptr<Entity>, Entity::WeakHash> outputSet;
 
-//        for (auto& collider : overlappedColliders) {
-//            auto* rigidbody = (Rigidbody*) collider->GetOwner();
-//            outputSet.insert(rigidbodies[rigidbody]->GetOwner());
-//        }
+        for (auto& collider : overlappedColliders) {
+            auto* rigidbody = (Rigidbody*) collider->GetOwner();
 
-//        output.assign(outputSet.begin(), outputSet.end());
-        MLG_UNIMPLEMENTED;
+            if (rigidbody == this->rigidbody.get())
+                continue;
+
+            std::weak_ptr<Entity> entity = rigidbodies[rigidbody]->GetOwner();
+            outputSet.insert(entity);
+        }
+
+        output.assign(outputSet.begin(), outputSet.end());
     }
 
 
