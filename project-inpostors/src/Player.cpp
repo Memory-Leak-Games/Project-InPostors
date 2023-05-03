@@ -17,13 +17,13 @@
 
 using json = nlohmann::json;
 
-Player::Player(const std::string &name, bool isStatic, mlg::Transform *parent)
-        : mlg::Entity(name, isStatic, parent) {}
+Player::Player(uint64_t id, const std::string &name, bool isStatic, mlg::Transform *parent)
+        : mlg::Entity(id, name, isStatic, parent) {}
 
-std::shared_ptr<Player> Player::Create(const std::string &name, bool isStatic, mlg::Transform *parent,
+std::shared_ptr<Player> Player::Create(uint64_t id, const std::string &name, bool isStatic, mlg::Transform *parent,
                                        const PlayerData& playerData,
                                        const std::string& configPath) {
-    auto newPlayer = std::shared_ptr<Player>(new Player(name, isStatic, parent));
+    auto newPlayer = std::shared_ptr<Player>(new Player(id, name, isStatic, parent));
 
     auto rigidbodyComponent = newPlayer->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
     rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f, -0.5f), 0.5f);

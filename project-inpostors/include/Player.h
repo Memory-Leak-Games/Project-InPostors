@@ -9,11 +9,11 @@ struct PlayerData {
 
 class Player : public mlg::Entity {
 private:
-    Player(const std::string& name, bool isStatic, mlg::Transform* parent);
+    Player(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent);
 
 public:
-    static std::shared_ptr<Player> Create(const std::string& name, bool isStatic, mlg::Transform* parent,
-                                          const PlayerData& playerData,
+    static std::shared_ptr<Player> Create(uint64_t id, const std::string& name, bool isStatic,
+                                          mlg::Transform* parent, const PlayerData& playerData,
                                           const std::string& configPath = "res/config/cars/testing.json");
 
     ~Player() = default;

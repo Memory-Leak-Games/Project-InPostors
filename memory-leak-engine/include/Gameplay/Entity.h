@@ -11,6 +11,7 @@ namespace mlg {
 
     class Entity : public std::enable_shared_from_this<Entity> {
     private:
+        uint64_t id;
         std::string name;
         std::string tag;
         std::shared_ptr<Transform> transform;
@@ -23,10 +24,10 @@ namespace mlg {
         Entity() = delete;
 
     protected:
-        explicit Entity(std::string name, bool isStatic, Transform *parent);
+        explicit Entity(uint64_t id, std::string name, bool isStatic, Transform *parent);
 
     public:
-        static std::shared_ptr<Entity> Create(const std::string &name, bool isStatic, Transform *parent);
+        static std::shared_ptr<Entity> Create(uint64_t id, const std::string &name, bool isStatic, Transform *parent);
 
         template<typename T, typename ... Args>
         std::weak_ptr<T> AddComponent(Args &&... args) {

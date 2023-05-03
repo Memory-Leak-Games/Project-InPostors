@@ -10,6 +10,9 @@
 #include "Gameplay/Entity.h"
 
 #include "Rendering/Gizmos/Gizmos.h"
+#include "Physics/CollisionManager.h"
+
+#include "Gameplay/Entity.h"
 
 namespace mlg {
     std::unordered_map<Rigidbody*, RigidbodyComponent*> RigidbodyComponent::rigidbodies;
@@ -209,6 +212,21 @@ namespace mlg {
 
     glm::vec3 RigidbodyComponent::GetLocalVelocity() {
         return GetOwner().lock()->GetTransform().InverseDirection(GetLinearVelocity3D());
+    }
+
+    void RigidbodyComponent::OverlapCircle(float radius, std::vector<std::weak_ptr<Entity>>& output) {
+        std::vector<Collider*> overlappedColliders;
+        CollisionManager::OverlapCircle(rigidbody->position, radius, overlappedColliders);
+
+//        std::unordered_set<std::weak_ptr<Entity>> outputSet{};
+
+//        for (auto& collider : overlappedColliders) {
+//            auto* rigidbody = (Rigidbody*) collider->GetOwner();
+//            outputSet.insert(rigidbodies[rigidbody]->GetOwner());
+//        }
+
+//        output.assign(outputSet.begin(), outputSet.end());
+        MLG_UNIMPLEMENTED;
     }
 
 

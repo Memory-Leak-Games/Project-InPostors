@@ -128,5 +128,17 @@ namespace mlg {
         instance->spacialHashGrid->DebugDraw();
     }
 
+    void CollisionManager::OverlapCircle(const glm::vec2& position, float radius, std::vector<Collider*>& output) {
+        std::vector<std::shared_ptr<Collider>> result;
+        instance->spacialHashGrid->FindNear(position, radius, result);
+
+        for (const auto& collider: result) {
+            if (glm::length(position - collider->GetPosition()) > radius)
+                continue;
+
+            output.push_back(collider.get());
+        }
+    }
+
 
 }// namespace mlg

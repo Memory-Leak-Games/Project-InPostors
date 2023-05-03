@@ -4,8 +4,9 @@
 
 
 namespace mlg {
-    Entity::Entity(std::string  name, bool isStatic, Transform* parent)
-            : name(std::move(name)), isStatic(isStatic), transform(std::make_shared<Transform>()) {
+    Entity::Entity(uint64_t id, std::string  name, bool isStatic, Transform* parent)
+            : name(std::move(name)), isStatic(isStatic), transform(std::make_shared<Transform>()),
+            id(id) {
         parent->AddChild(transform);
     }
 
@@ -60,8 +61,8 @@ namespace mlg {
         component->QueueForDeletion();
     }
 
-    std::shared_ptr<Entity> Entity::Create(const std::string& name, bool isStatic, Transform* parent) {
-        return std::shared_ptr<Entity>(new Entity(name, isStatic, parent));
+    std::shared_ptr<Entity> Entity::Create(uint64_t id, const std::string& name, bool isStatic, Transform* parent) {
+        return std::shared_ptr<Entity>(new Entity(id, name, isStatic, parent));
     }
 
 } // mlg

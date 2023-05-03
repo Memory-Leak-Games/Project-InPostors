@@ -64,6 +64,8 @@ namespace mlg {
             return AddTrigger(std::move(shape));
         }
 
+        void OverlapCircle(float radius, std::vector<std::weak_ptr<Entity>>& output);
+
         void SetKinematic(bool isKinematic);
         void SetMass(float mass);
         void SetBounciness(float bounciness);
