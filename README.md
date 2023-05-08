@@ -20,6 +20,8 @@
 * Rendering
   * posterization
   * film grain
+  * DSA
+  * AZDO (approaching zero driver overhead)
 
 ### 24.04.2023
 

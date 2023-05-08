@@ -20,7 +20,7 @@ namespace mlg {
         glCreateVertexArrays(1, &vao);
         glCreateBuffers(1, &vbo);
 
-        glNamedBufferData(vbo, quadVertices.size() * sizeof(float), &quadVertices[0], GL_STATIC_DRAW);
+        glNamedBufferStorage(vbo, quadVertices.size() * sizeof(float), &quadVertices[0], 0);
 
         glEnableVertexArrayAttrib(vao, 0);
         glVertexArrayAttribBinding(vao, 0, 0);

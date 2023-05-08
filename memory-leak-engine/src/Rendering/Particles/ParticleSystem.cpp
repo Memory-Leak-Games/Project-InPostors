@@ -34,7 +34,7 @@ namespace mlg {
 
         glCreateBuffers(1, &particlesVbo);
 
-        glNamedBufferData(particlesVbo, maxParticlesCount * sizeof(GPUParticle), nullptr, GL_DYNAMIC_DRAW);
+        glNamedBufferStorage(particlesVbo, maxParticlesCount * sizeof(GPUParticle), nullptr, GL_DYNAMIC_STORAGE_BIT);
 
         // position
         glEnableVertexArrayAttrib(rectVao, 3);

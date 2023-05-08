@@ -12,8 +12,8 @@ void Mesh::SetupBuffers() {
     glCreateBuffers(1, &vbo);
     glCreateBuffers(1, &ebo);
 
-    glNamedBufferData(vbo, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
-    glNamedBufferData(ebo, indices.size() * sizeof(uint32_t), &indices[0], GL_STATIC_DRAW);
+    glNamedBufferStorage(vbo, vertices.size() * sizeof(Vertex), &vertices[0], 0);
+    glNamedBufferStorage(ebo, indices.size() * sizeof(uint32_t), &indices[0], 0);
 
     // Positions
     glEnableVertexArrayAttrib(vao, 0);
