@@ -61,6 +61,6 @@ void Player::Update() {
         if (result.expired())
             continue;
 
-        SPDLOG_WARN("Hello Second Player!");
+//        SPDLOG_WARN("Hello Second Player!");
     }
 }

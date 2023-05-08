@@ -18,7 +18,6 @@ namespace mlg {
         void Draw() override;
 
         void Resize(int32_t width, int32_t height) override;
-        void CopyDepthBuffer(uint32_t fbo = 0);
 
     private:
         void GenerateAndBindTextures() ;

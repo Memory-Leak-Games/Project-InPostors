@@ -6,6 +6,8 @@ namespace mlg {
     class RigidbodyComponent;
     class StaticMeshComponent;
     class Entity;
+
+    class ParticleSystem;
 }
 
 class CarMovementComponent : public mlg::Component {
@@ -27,9 +29,12 @@ private:
     float sideDrag;
     float counterTorque;
 
+    //TODO: TEST
+    std::shared_ptr<mlg::ParticleSystem> particleSystem;
 public:
     CarMovementComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
                          const std::string& configPath = "res/config/cars/testing.json");
+    ~CarMovementComponent() override;
 
     void Start() override;
 

@@ -23,15 +23,15 @@ namespace mlg {
     void QuadRenderer::Initialize() {
         // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
         static const std::vector<float> quadVertices({
-                                                             // positions   // texCoords
-                                                             -1.0f, 1.0f, 0.0f, 1.0f,
-                                                             -1.0f, -1.0f, 0.0f, 0.0f,
-                                                             1.0f, -1.0f, 1.0f, 0.0f,
+                // positions   // texCoords
+                -1.0f, 1.0f, 0.0f, 1.0f,
+                -1.0f, -1.0f, 0.0f, 0.0f,
+                1.0f, -1.0f, 1.0f, 0.0f,
 
-                                                             -1.0f, 1.0f, 0.0f, 1.0f,
-                                                             1.0f, -1.0f, 1.0f, 0.0f,
-                                                             1.0f, 1.0f, 1.0f, 1.0f
-                                                     });
+                -1.0f, 1.0f, 0.0f, 1.0f,
+                1.0f, -1.0f, 1.0f, 0.0f,
+                1.0f, 1.0f, 1.0f, 1.0f
+        });
 
         glCreateVertexArrays(1, &vao);
         glCreateBuffers(1, &vbo);

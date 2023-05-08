@@ -32,17 +32,17 @@ void ShaderProgram::SetBool(const std::string& name, bool value) const {
 
 void ShaderProgram::SetVec2F(const std::string& name, glm::vec2 value) const {
     GLint uniformLocation = GetUniformLocation(name);
-    glUniform2f(uniformLocation, value.x, value.y);
+    glUniform2fv(uniformLocation, 1, glm::value_ptr(value));
 }
 
 void ShaderProgram::SetVec3F(const std::string& name, glm::vec3 value) const {
     GLint uniformLocation = GetUniformLocation(name);
-    glUniform3f(uniformLocation, value.x, value.y, value.z);
+    glUniform3fv(uniformLocation, 1, glm::value_ptr(value));
 }
 
 void ShaderProgram::SetVec4F(const std::string& name, glm::vec4 value) const {
     GLint uniformLocation = GetUniformLocation(name);
-    glUniform4f(uniformLocation, value.x, value.y, value.z, value.w);
+    glUniform4fv(uniformLocation, 1, glm::value_ptr(value));
 }
 
 void ShaderProgram::SetMat4F(const std::string& name, glm::mat4 value) const {

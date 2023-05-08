@@ -93,9 +93,17 @@ namespace mlg {
         MLG_ASSERT_MSG(materialJson.find("vertexShader") != materialJson.end(), "Material Loading Error");
         MLG_ASSERT_MSG(materialJson.find("fragmentShader") != materialJson.end(), "Material Loading Error");
 
-        shaderProgram = std::make_shared<ShaderProgram>(
-                AssetManager::GetAsset<ShaderAsset>(materialJson["vertexShader"]),
-                AssetManager::GetAsset<ShaderAsset>(materialJson["fragmentShader"]));
+        if (materialJson.find("geometryShader") == materialJson.end()) {
+            shaderProgram = std::make_shared<ShaderProgram>(
+                    AssetManager::GetAsset<ShaderAsset>(materialJson["vertexShader"]),
+                    AssetManager::GetAsset<ShaderAsset>(materialJson["fragmentShader"]));
+        } else {
+            shaderProgram = std::make_shared<ShaderProgram>(
+                    AssetManager::GetAsset<ShaderAsset>(materialJson["vertexShader"]),
+                    AssetManager::GetAsset<ShaderAsset>(materialJson["fragmentShader"]),
+                    AssetManager::GetAsset<ShaderAsset>(materialJson["geometryShader"]));
+        }
+
         ParseUniforms(materialJson);
         ParseTextures(materialJson);
     }
