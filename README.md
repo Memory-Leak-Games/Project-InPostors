@@ -13,6 +13,10 @@
 
 ## Changelog
 
+* Physics
+  * Triggers and overlap methods
+* Gameplay
+  * Second player
 * Rendering
   * posterization
   * film grain
