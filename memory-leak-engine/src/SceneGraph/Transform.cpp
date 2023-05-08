@@ -70,14 +70,14 @@ namespace mlg {
         Transform::rotation = rotationQuat;
     }
 
-    const glm::mat4& Transform::GetWorldMatrix() {
+    const glm::mat4& Transform::GetWorldMatrix() const {
         if (isDirty)
             ReCalculateParentRecursive();
 
         return worldMatrix;
     }
 
-    const glm::mat4& Transform::GetLocalMatrix() {
+    const glm::mat4& Transform::GetLocalMatrix() const {
         if (isDirtyLocal) {
             ZoneScopedN("Calculate Local Matrix");
 
@@ -98,12 +98,12 @@ namespace mlg {
         return localMatrix;
     }
 
-    glm::vec3 Transform::InverseDirection(const glm::vec3& direction) {
+    glm::vec3 Transform::InverseDirection(const glm::vec3& direction) const {
         const glm::mat4 worldMatrix = GetWorldMatrix();
         return glm::inverse((glm::mat3(worldMatrix))) * direction;
     }
 
-    glm::vec3 Transform::GetWorldPosition() {
+    glm::vec3 Transform::GetWorldPosition() const {
         if (isDirty)
             ReCalculateParentRecursive();
 
@@ -114,7 +114,7 @@ namespace mlg {
         return {x, y, z};
     }
 
-    glm::vec3 Transform::GetForwardVector() {
+    glm::vec3 Transform::GetForwardVector() const {
         if (isDirty)
             ReCalculateParentRecursive();
 
@@ -126,7 +126,7 @@ namespace mlg {
         return glm::normalize(result);
     }
 
-    glm::vec3 Transform::GetRightVector() {
+    glm::vec3 Transform::GetRightVector() const {
         if (isDirty)
             ReCalculateParentRecursive();
 
@@ -138,7 +138,7 @@ namespace mlg {
         return glm::normalize(result);
     }
 
-    glm::vec3 Transform::GetUpVector() {
+    glm::vec3 Transform::GetUpVector() const {
         if (isDirty)
             ReCalculateParentRecursive();
 
@@ -167,11 +167,11 @@ namespace mlg {
         newChild->isDirty = true;
     }
 
-    void Transform::Calculate() {
+    void Transform::Calculate() const {
         Calculate(GetLocalMatrix(), isDirty);
     }
 
-    void Transform::Calculate(const glm::mat4& parentMatrix, bool isParentDirty) {
+    void Transform::Calculate(const glm::mat4& parentMatrix, bool isParentDirty) const {
         isParentDirty |= isDirty;
 
         if (isParentDirty) {
@@ -198,7 +198,7 @@ namespace mlg {
         }
     }
 
-    void Transform::ReCalculateParentRecursive() {
+    void Transform::ReCalculateParentRecursive() const {
         if (parent == nullptr) {
             Calculate();
             return;

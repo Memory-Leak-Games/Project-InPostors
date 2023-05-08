@@ -1,22 +1,28 @@
-#include "Rendering/ParticleSystem.h"
+#include "include/Rendering/Particles/ParticleSystem.h"
 #include "Rendering/Primitives/Rect.h"
 
 #include "Rendering/Renderer.h"
 
 #include "Rendering/Assets/MaterialAsset.h"
+#include "Rendering/Camera.h"
+
+#include "SceneGraph/Transform.h"
 
 #include "Core/Math.h"
 #include "Core/Time.h"
 
 namespace mlg {
-    ParticleSystem::ParticleSystem(const std::shared_ptr<MaterialAsset>& material, uint32_t maxParticlesCount)
+    ParticleSystem::ParticleSystem(uint32_t maxParticlesCount)
     : maxParticlesCount(maxParticlesCount), poolIndex(maxParticlesCount - 1) {
         particlesPool.resize(maxParticlesCount);
         rect = std::make_unique<Rect>();
 
-        this->material = material;
-
         InitializeVao();
+    }
+
+    ParticleSystem::ParticleSystem(const std::shared_ptr<MaterialAsset>& material, uint32_t maxParticlesCount)
+    : ParticleSystem(maxParticlesCount) {
+        this->material = material;
     }
 
     ParticleSystem::~ParticleSystem() {
@@ -55,8 +61,22 @@ namespace mlg {
     }
 
     void ParticleSystem::LateDraw(struct Renderer *renderer) {
+        ZoneScopedN("Draw Particles");
+        TracyGpuZone("Draw Particles");
+
         if (particlesToRender.empty())
             return;
+
+        const glm::vec3 cameraPosition = Renderer::GetInstance()->GetCurrentCamera()->GetTransform().GetWorldPosition();
+        auto sortByDistance = [cameraPosition](const GPUParticle& particle, const GPUParticle& anotherParticle) -> bool {
+            return glm::length(particle.position - cameraPosition)
+                < glm::length(anotherParticle.position - cameraPosition);
+        };
+
+        {
+            ZoneScopedN("Sort Particles");
+            std::sort(particlesToRender.begin(), particlesToRender.end(), sortByDistance);
+        }
 
         glNamedBufferSubData(particlesVbo, 0, particlesToRender.size() * sizeof(GPUParticle), &particlesToRender.front());
 
@@ -66,7 +86,10 @@ namespace mlg {
         glDrawArraysInstanced(GL_TRIANGLES, 0, rect->GetSize(), particlesToRender.size());
     }
 
-    void ParticleSystem::OnUpdate() {
+    void ParticleSystem::Update(const Transform& transform) {
+        ZoneScopedN("Update Particle System");
+
+        UpdateSystem(transform);
         particlesToRender.clear();
 
         float deltaSeconds = Time::GetDeltaSeconds();
@@ -84,20 +107,38 @@ namespace mlg {
 
             float life = 1 - particle.lifeRemaining / particle.lifeTime;
 
-            glm::vec3 velocity = Math::Lerp(particle.beginVelocity, particle.endVelocity, life);
-
-            glm::vec3 position = particle.position + velocity * (particle.lifeTime - particle.lifeRemaining);
-            glm::vec4 color = Math::Lerp(particle.beginColor, particle.endColor, life);
-            glm::vec2 size = Math::Lerp(particle.beginSize, particle.endSize, life);
-            float rotation = Math::Lerp(particle.beginRotation, particle.endRotation, life);
-
-            GPUParticle gpuParticle {position, size, color, rotation};
-            particlesToRender.push_back(gpuParticle);
+            particlesToRender.push_back(UpdateParticle(particle, life));
         }
+    }
+
+    GPUParticle ParticleSystem::UpdateParticle(const Particle& particle, float life) {
+        glm::vec3 velocity = Math::Lerp(particle.beginVelocity, particle.endVelocity, life);
+
+        glm::vec3 position = particle.position + velocity * (particle.lifeTime - particle.lifeRemaining);
+        glm::vec4 color = Math::Lerp(particle.beginColor, particle.endColor, life);
+        glm::vec2 size = Math::Lerp(particle.beginSize, particle.endSize, life);
+        float rotation = Math::Lerp(particle.beginRotation, particle.endRotation, life);
+
+        return {position, size, color, rotation};
     }
 
     void ParticleSystem::Emit(const ParticleProps& particleProps) {
         Particle& particle = particlesPool[poolIndex];
+
+        for (int i = 0; i < maxParticlesCount; ++i) {
+            if (!particle.isActive) {
+                break;
+            }
+
+            poolIndex = --poolIndex % maxParticlesCount;
+            particle = particlesPool[poolIndex];
+        }
+
+        if (particle.isActive) {
+            SPDLOG_WARN("Particle pool is too small");
+            return;
+        }
+
         particle.isActive = true;
 
         particle.position = particleProps.position;
@@ -115,8 +156,11 @@ namespace mlg {
 
         particle.lifeTime = particleProps.lifeTime;
         particle.lifeRemaining = particleProps.lifeTime;
-
-        poolIndex = --poolIndex % maxParticlesCount;
     }
+
+    void ParticleSystem::SetMaterial(const std::shared_ptr<MaterialAsset>& material) {
+        this->material = material;
+    }
+
 
 } // mlg

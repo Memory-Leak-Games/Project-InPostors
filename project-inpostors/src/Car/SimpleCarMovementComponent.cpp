@@ -15,12 +15,6 @@
 
 #include "Car/CarInput.h"
 
-// todo: test
-#include "Rendering/ParticleSystem.h"
-#include "Core/AssetManager/AssetManager.h"
-#include "Rendering/Assets/MaterialAsset.h"
-#include "Rendering/Renderer.h"
-
 using json = nlohmann::json;
 
 void CarMovementComponent::Start() {
@@ -32,12 +26,6 @@ void CarMovementComponent::Start() {
     staticMeshComponent = GetOwner().lock()->GetComponentByClass<mlg::StaticMeshComponent>().lock();
 
     carInput = GetOwner().lock()->GetComponentByClass<CarInput>().lock();
-
-    //todo: test
-    auto particleMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/Particles/smokeFX.json");
-    particleSystem = std::make_shared<mlg::ParticleSystem>(particleMaterial, 100);
-
-    mlg::Renderer::GetInstance()->AddLateRenderable(particleSystem);
 }
 
 CarMovementComponent::CarMovementComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
@@ -53,42 +41,9 @@ void CarMovementComponent::PhysicsUpdate() {
     CounterTorque();
 }
 
-using Random = effolkronium::random_static;
 
 void CarMovementComponent::Update() {
     std::shared_ptr<mlg::Entity> owner = GetOwner().lock();
-
-    // TODO: test
-    static float timeAccumulator;
-    timeAccumulator += mlg::Time::GetDeltaSeconds();
-
-    if (timeAccumulator > 0.1)
-    {
-        mlg::ParticleProps particleProps {};
-        particleProps.lifeTime = 0.5f;
-        particleProps.position = owner->GetTransform().GetWorldPosition()
-                - owner->GetTransform().GetForwardVector() * 1.f;
-        particleProps.position += glm::vec3 {
-            Random::get(-1.f, 1.f),
-            1.f,
-            Random::get(-1.f, 1.f)
-        } * 0.2f;
-
-        particleProps.beginSize = glm::vec2(0.35) * Random::get(0.5f, 1.f);
-        particleProps.endSize = glm::vec2(0.05);
-        particleProps.beginColor = glm::vec4(1.f);
-        particleProps.endColor = glm::vec4(0.f);
-
-        particleProps.beginVelocity = glm::vec3(Random::get(-1.f, 1.f)) * 4.f;
-        particleProps.beginVelocity.y = 0.f;
-        particleProps.endVelocity = glm::vec3(0.f);
-
-        particleSystem->Emit(particleProps);
-
-        timeAccumulator = 0.f;
-    }
-
-    particleSystem->OnUpdate();
 
     float angularSpeed = glm::degrees(rigidbodyComponent->GetAngularSpeed());
     float bodySkew = mlg::Math::Clamp(-angularSpeed / 10.f, -15.f, 15.f);
