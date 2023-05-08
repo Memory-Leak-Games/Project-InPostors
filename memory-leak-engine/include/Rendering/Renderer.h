@@ -38,6 +38,9 @@ namespace mlg {
         void AddRenderable(const std::weak_ptr<Renderable>& renderable);
         void RemoveRenderable(std::weak_ptr<Renderable> renderable);
 
+        void AddLateRenderable(const std::weak_ptr<LateRenderable>& lateRenderable);
+        void RemoveLateRenderable(std::weak_ptr<LateRenderable> lateRenderable);
+
         Camera* GetCurrentCamera();
         void SetCurrentCamera(Camera* currentCamera);
 

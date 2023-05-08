@@ -47,11 +47,6 @@ namespace mlg {
         glDeleteTextures(1, &colorTexture);
     }
 
-    void PostProcess::CopyDepthBuffer(uint32_t fbo) {
-        glBlitNamedFramebuffer(GetFbo(), fbo, 0, 0, GetWidth(), GetHeight(), 0, 0, GetWidth(), GetHeight(),
-                               GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-    }
-
     void PostProcess::Draw() {
         glBindTextureUnit(0, colorTexture);
         FrameBuffer::Draw();

@@ -33,7 +33,7 @@ namespace mlg {
         }
 
         template<typename T>
-        static constexpr T Lerp(const T& a, const T& b, const T& t) {
+        static constexpr T Lerp(const T& a, const T& b, float t) {
             return a + (b - a) * t;
         }
 

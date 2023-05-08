@@ -8,11 +8,11 @@ namespace mlg {
         glm::vec3 scale;
         glm::quat rotation;
 
-        glm::mat4 worldMatrix;
-        glm::mat4 localMatrix;
+        mutable glm::mat4 worldMatrix;
+        mutable glm::mat4 localMatrix;
 
-        bool isDirtyLocal;
-        bool isDirty;
+        mutable bool isDirtyLocal;
+        mutable bool isDirty;
 
         std::vector<std::weak_ptr<Transform>> children;
         Transform* parent = nullptr;
@@ -30,16 +30,16 @@ namespace mlg {
         [[nodiscard]] const glm::vec3 GetEulerRotation() const;
         [[nodiscard]] const glm::vec3& GetScale() const;
 
-        [[nodiscard]] const glm::mat4& GetLocalMatrix();
-        [[nodiscard]] const glm::mat4& GetWorldMatrix();
+        [[nodiscard]] const glm::mat4& GetLocalMatrix() const;
+        [[nodiscard]] const glm::mat4& GetWorldMatrix() const;
 
-        [[nodiscard]] glm::vec3 GetWorldPosition();
+        [[nodiscard]] glm::vec3 GetWorldPosition() const;
 
-        [[nodiscard]] glm::vec3 GetForwardVector();
-        [[nodiscard]] glm::vec3 GetRightVector();
-        [[nodiscard]] glm::vec3 GetUpVector();
+        [[nodiscard]] glm::vec3 GetForwardVector() const;
+        [[nodiscard]] glm::vec3 GetRightVector() const;
+        [[nodiscard]] glm::vec3 GetUpVector() const;
 
-        [[nodiscard]] glm::vec3 InverseDirection(const glm::vec3& direction);
+        [[nodiscard]] glm::vec3 InverseDirection(const glm::vec3& direction) const;
 
         [[nodiscard]] bool GetIsDirty() const;
 
@@ -55,12 +55,12 @@ namespace mlg {
 
         void AddChild(const std::shared_ptr<Transform>& newChild);
 
-        void Calculate();
+        void Calculate() const;
 
     private:
-        void Calculate(const glm::mat4&, bool isParentDirty);
+        void Calculate(const glm::mat4&, bool isParentDirty) const;
         void SetDirtyRecursive();
-        void ReCalculateParentRecursive() ;
+        void ReCalculateParentRecursive() const;
     };
 
 } // mlg

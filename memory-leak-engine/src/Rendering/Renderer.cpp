@@ -117,11 +117,22 @@ namespace mlg {
         renderables.push_back(renderable);
     }
 
+    void Renderer::AddLateRenderable(const std::weak_ptr<LateRenderable> &lateRenderable) {
+        lateRenderables.push_back(lateRenderable);
+    }
+
     void Renderer::RemoveRenderable(std::weak_ptr<Renderable> renderable) {
         renderables.erase(std::remove_if(renderables.begin(), renderables.end(),
                                          [&renderable](const std::weak_ptr<Renderable> &entry) {
                                              return renderable.lock().get() == entry.lock().get();
                                          }), renderables.end());
+    }
+
+    void Renderer::RemoveLateRenderable(std::weak_ptr<LateRenderable> lateRenderable) {
+        lateRenderables.erase(std::remove_if(lateRenderables.begin(), lateRenderables.end(),
+                                         [&lateRenderable](const std::weak_ptr<LateRenderable> &entry) {
+                                             return lateRenderable.lock().get() == entry.lock().get();
+                                         }), lateRenderables.end());
     }
 
     Renderer *Renderer::GetInstance() {
@@ -139,13 +150,19 @@ namespace mlg {
         bool isFXAAActive = SettingsManager::Get<bool>(SettingsType::Video, "FXAA");
 
         if (isFXAAActive) {
+            gBuffer->CopyDepthBuffer(fxaa->GetFbo());
             fxaa->Activate();
         } else {
+            gBuffer->CopyDepthBuffer(postProcess->GetFbo());
             postProcess->Activate();
         }
 
         gBuffer->Draw();
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
         Renderer::GetInstance()->LateDraw();
+        glDisable(GL_BLEND);
+        glDisable(GL_DEPTH_TEST);
 
         if (isFXAAActive) {
             ZoneScopedN("FXAA");
@@ -159,7 +176,7 @@ namespace mlg {
             TracyGpuZone("PostProcess");
             RenderingAPI::SetDefaultFrameBuffer();
             postProcess->Draw();
-            postProcess->CopyDepthBuffer(0);
+//            postProcess->CopyDepthBuffer(0);
         }
     }
 
@@ -172,7 +189,6 @@ namespace mlg {
 
         GetInstance()->Draw(gBuffer.get());
 
-        gBuffer->CopyDepthBuffer(postProcess->GetFbo());
     }
 
     void Renderer::SSAOPass() {

@@ -41,6 +41,7 @@ void CarMovementComponent::PhysicsUpdate() {
     CounterTorque();
 }
 
+
 void CarMovementComponent::Update() {
     std::shared_ptr<mlg::Entity> owner = GetOwner().lock();
 
@@ -137,4 +138,6 @@ void CarMovementComponent::LoadParameters(const std::string& path = "res/config/
     sideDrag = parameters["sideDrag"];
     counterTorque = parameters["counterTorque"];
 }
+
+CarMovementComponent::~CarMovementComponent() = default;
 

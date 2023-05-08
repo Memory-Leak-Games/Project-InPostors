@@ -30,6 +30,7 @@ private:
 public:
     CarMovementComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
                          const std::string& configPath = "res/config/cars/testing.json");
+    ~CarMovementComponent() override;
 
     void Start() override;
 

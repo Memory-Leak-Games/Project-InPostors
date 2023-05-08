@@ -26,6 +26,8 @@ namespace mlg {
 
         virtual void Resize(int32_t width, int32_t height);
 
+        void CopyDepthBuffer(uint32_t fbo = 0);
+
         uint32_t GetFbo();
     protected:
         int32_t GetWidth();

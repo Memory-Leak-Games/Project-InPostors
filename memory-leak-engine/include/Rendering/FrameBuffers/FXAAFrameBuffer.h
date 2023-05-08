@@ -8,6 +8,8 @@
 namespace mlg {
 
     class FXAAFrameBuffer : public SingleTextureFrameBuffer {
+    private:
+        uint32_t rboDepth = 0;
     public:
         FXAAFrameBuffer(int32_t width, int32_t height);
     };

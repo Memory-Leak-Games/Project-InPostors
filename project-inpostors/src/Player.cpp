@@ -14,8 +14,9 @@
 #include "SceneGraph/Transform.h"
 
 #include "Car/CarMovementComponent.h"
+#include "Gameplay/Components/ParticleSystemComponent.h"
 
-//TODO: Only for test
+#include "Car/FX/SmokeFX.h"
 #include "Car/PlayerTwoInput.h"
 
 using json = nlohmann::json;
@@ -47,6 +48,9 @@ std::shared_ptr<Player> Player::Create(uint64_t id, const std::string &name, boo
     staticMeshComponent.lock()->GetTransform().SetPosition({0.f, 0.3f, 0.f});
 
     newPlayer->AddComponent<CarMovementComponent>("MovementComponent", configPath);
+
+    auto smoke = std::make_shared<SmokeFX>();
+    auto smokeComponent = newPlayer->AddComponent<mlg::ParticleSystemComponent>("SmokeFX", smoke);
 
     return newPlayer;
 }

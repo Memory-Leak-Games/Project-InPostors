@@ -54,4 +54,11 @@ namespace mlg {
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
+    void FrameBuffer::CopyDepthBuffer(uint32_t fbo) {
+        glBlitNamedFramebuffer(GetFbo(), fbo,
+                               0, 0, GetWidth(), GetHeight(),
+                               0, 0, GetWidth(), GetHeight(),
+                               GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+    }
+
 } // mlg
