@@ -1,6 +1,7 @@
 {
   "name": "Detroit",
   "tile-size": 4.0,
+  "default-material": "res/models/Buildings/buildings_material.json",
   "layout": [
     "          SvvB ",
     "          SvvB",

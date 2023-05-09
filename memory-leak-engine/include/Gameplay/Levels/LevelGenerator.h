@@ -24,6 +24,7 @@ namespace mlg {
         static LevelGenerator* instance;
 
         // TODO: Does it have to be a member of the class?
+        std::string defaultLevelMaterial;
         std::vector<std::string> levelLayout;
         std::unique_ptr<std::unordered_map<char, MapEntry>> mapObjects;
         float tileSize = 10.0f;

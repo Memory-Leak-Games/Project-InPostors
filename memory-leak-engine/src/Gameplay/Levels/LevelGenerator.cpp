@@ -58,8 +58,10 @@ namespace mlg {
         for (const auto& jsonLayoutString: levelJson["layout"]) {
             levelLayout.push_back(jsonLayoutString.get<std::string>());
         }
+
         tileSize = levelJson.contains("tile-size")
                    ? levelJson["tile-size"].get<float>() : 10.0f;
+        defaultLevelMaterial = levelJson["default-material"].get<std::string>();
     }
 
 
@@ -83,7 +85,7 @@ namespace mlg {
                 std::string modelPath = jsonMapObject["model"].get<std::string>();
                 std::string materialPath = jsonMapObject.contains("material")
                                            ? jsonMapObject["material"].get<std::string>()
-                                           : "res/models/Buildings/buildings_material.json";
+                                           : defaultLevelMaterial;
                 float yRot = jsonMapObject.contains("rotation")
                              ? jsonMapObject["rotation"].get<float>() : 0.f;
                 float scale = jsonMapObject.contains("scale")
