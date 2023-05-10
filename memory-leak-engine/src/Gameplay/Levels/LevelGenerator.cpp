@@ -5,7 +5,6 @@
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
 
-#include "Gameplay/Levels/MapObject.h"
 #include "Gameplay/Levels/LevelGenerator.h"
 
 #include "Gameplay/EntityManager.h"
@@ -56,8 +55,7 @@ namespace mlg {
             levelLayout.push_back(jsonLayoutString.get<std::string>());
         }
 
-        tileSize = levelJson.contains("tile-size")
-                   ? levelJson["tile-size"].get<float>() : 10.0f;
+        tileSize = levelJson.contains("tile-size") ? levelJson["tile-size"].get<float>() : 10.0f;
         defaultLevelMaterial = levelJson["default-material"].get<std::string>();
     }
 
@@ -65,43 +63,42 @@ namespace mlg {
         std::ifstream levelFile{path};
         json levelJson = json::parse(levelFile);
 
-        mapObjects = std::make_unique<std::unordered_map<char, LevelGenerator::MapEntry>>();
+        mapObjects.clear();
 
         for (const auto& jsonTile: levelJson["tiles"]) {
             const char tileSymbol = jsonTile["symbol"].get<std::string>()[0];
-            std::vector<std::shared_ptr<MapObject>> mapObjectPool;
+            std::vector<MapObject> mapObjectPool;
 
             for (const auto& jsonMapObject: jsonTile["objects"]) {
-                mapObjectPool.push_back(ParseObject(jsonMapObject));
+                mapObjectPool.push_back(std::move(ParseObject(jsonMapObject)));
             }
 
-            mapObjects->insert({tileSymbol, {std::move(mapObjectPool), 0}});
+            mapObjects.insert({tileSymbol, MapEntry{mapObjectPool, 0}});
         }
     }
 
-    std::shared_ptr<MapObject> LevelGenerator::ParseObject(nlohmann::json jsonMapObject) {
+    LevelGenerator::MapObject LevelGenerator::ParseObject(nlohmann::json jsonMapObject) {
         std::string modelPath = jsonMapObject["model"].get<std::string>();
         std::string materialPath = jsonMapObject.contains("material")
                                    ? jsonMapObject["material"].get<std::string>()
                                    : defaultLevelMaterial;
 
-        auto mapObj = std::make_shared<MapObject>();
-        mapObj->model = AssetManager::GetAsset<ModelAsset>(modelPath);
-        mapObj->material = AssetManager::GetAsset<MaterialAsset>(materialPath);
+        MapObject mapObj;
+        mapObj.model = AssetManager::GetAsset<ModelAsset>(modelPath);
+        mapObj.material = AssetManager::GetAsset<MaterialAsset>(materialPath);
 
-        mapObj->worldRot = jsonMapObject.contains("rotation")
-                           ? jsonMapObject["rotation"].get<float>() : 0.f;
-        mapObj->worldRot = glm::radians(mapObj->worldRot);
+        mapObj.worldRot = jsonMapObject.contains("rotation") ? jsonMapObject["rotation"].get<float>() : 0.f;
+        mapObj.worldRot = glm::radians(mapObj.worldRot);
 
-        mapObj->scale = jsonMapObject.contains("scale")
+        mapObj.scale = jsonMapObject.contains("scale")
                         ? jsonMapObject["scale"].get<float>() : 1.f;
 
         if (jsonMapObject.contains("collision-type")) {
-            mapObj->hasCollision = true;
-            mapObj->colliderType = jsonMapObject["collision-type"].get<std::string>();
-            mapObj->colliderSize = jsonMapObject.contains("collision-size")
+            mapObj.hasCollision = true;
+            mapObj.colliderType = jsonMapObject["collision-type"].get<std::string>();
+            mapObj.colliderSize = jsonMapObject.contains("collision-size")
                                    ? jsonMapObject["collision-size"].get<float>() : 1.0f;
-            mapObj->colliderOffset = jsonMapObject.contains("collision-offset")
+            mapObj.colliderOffset = jsonMapObject.contains("collision-offset")
                                      ? jsonMapObject["collision-offset"].get<float>() : 0.0f;
         }
 
@@ -127,58 +124,55 @@ namespace mlg {
                 if (character == ' ')
                     continue;
 
-                MLG_ASSERT_MSG(mapObjects->find(character) != mapObjects->end(),
+                MLG_ASSERT_MSG(mapObjects.find(character) != mapObjects.end(),
                                "Unknown character in tile map");
 
-                //mapObjPool is std::vector<std::shared_ptr<MapObject>>
-                auto mapObjPool = mapObjects->at(character).object;
-                int useCount = (mapObjects->at(character).useCount)++;
+                auto mapObjPool = mapObjects.at(character).object;
+                int useCount = (mapObjects.at(character).useCount)++;
 
                 if (useCount > mapObjPool.size() - 1) {
                     useCount = 0;
                     Random::shuffle(mapObjPool);
                 }
 
-                auto mapObj = mapObjPool[useCount];
-
                 glm::vec3 objectPos{0.0f};
                 objectPos.z = static_cast<float>(i) * tileSize - citySize.x * 0.5f;
-                objectPos.y = 0.0f;//-0.5f;
+                objectPos.y = 0.0f;
                 objectPos.x = -static_cast<float>(j - 1) * tileSize + citySize.y * 0.5f;
-                PutObject(mapObj, objectPos);
+                PutObject(mapObjPool[useCount], objectPos);
             }
             i = 0;
         }
     }
 
-    void LevelGenerator::PutObject(const std::shared_ptr<MapObject>& obj, glm::vec3 pos) {
+    void LevelGenerator::PutObject(const MapObject& obj, glm::vec3 pos) {
         auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>(
                 Hash("MapObject", pos.x, pos.z), true, mlg::SceneGraph::GetRoot());
 
         auto staticMesh = modelEntity.lock()->AddComponent<mlg::StaticMeshComponent>(
-                "StaticMesh", obj->model, obj->material);
+                "StaticMesh", obj.model, obj.material);
 
-        staticMesh.lock()->GetTransform().SetScale(glm::vec3{obj->scale});
+        staticMesh.lock()->GetTransform().SetScale(glm::vec3{obj.scale});
 
         modelEntity.lock()->GetTransform().SetPosition(pos);
-        modelEntity.lock()->GetTransform().SetEulerRotation({0.f, obj->worldRot, 0.f});
+        modelEntity.lock()->GetTransform().SetEulerRotation({0.f, obj.worldRot, 0.f});
 
-        // add collider if needed
-        if (!obj->hasCollision)
+        if (!obj.hasCollision)
             return;
 
+        // add collider if needed
         auto rb = modelEntity.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
-        std::string colType = obj->colliderType;
+        std::string colType = obj.colliderType;
         if (colType == "rectangle") {
             rb.lock()->AddCollider<mlg::ColliderShape::Rectangle>(
-                    glm::vec2(glm::vec2(obj->colliderOffset)),
-                    glm::vec2(obj->colliderSize));
+                    glm::vec2(glm::vec2(obj.colliderOffset)),
+                    glm::vec2(obj.colliderSize));
         } else if (colType == "circle") {
             rb.lock()->AddCollider<mlg::ColliderShape::Circle>(
-                    glm::vec2(glm::vec2(obj->colliderSize)),
-                    obj->colliderOffset);
+                    glm::vec2(glm::vec2(obj.colliderSize)),
+                    obj.colliderOffset);
         }
-        rb.lock()->SetRotation(obj->worldRot);
+        rb.lock()->SetRotation(obj.worldRot);
         rb.lock()->SetKinematic(true);
     }
 
