@@ -30,9 +30,10 @@
 #include "effolkronium/random.hpp"
 
 #include "nlohmann/json.hpp"
+#include "magic_enum.hpp"
 
-#include "Macros.h"
 #include "Core/AssetManager/AssetManager.h"
+#include "Macros.h"
 
 #ifdef DEBUG
 #include <imgui.h>

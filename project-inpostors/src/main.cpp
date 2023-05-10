@@ -89,16 +89,12 @@ public:
         mlg::ComponentManager::Initialize();
         mlg::EntityManager::Initialize();
 
-        mlg::LevelGenerator::Initialize();
-
         mlg::Core::Initialize();
         mlg::Input::Initialize();
 
         mlg::Core* engine = mlg::Core::GetInstance();
         PrepareScene();
         engine->MainLoop();
-
-        mlg::LevelGenerator::Stop();
 
         mlg::EntityManager::Stop();
         mlg::ComponentManager::Stop();
@@ -188,9 +184,7 @@ public:
                                                                  secondPlayerData);
         playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
 
-        auto levelGen = mlg::LevelGenerator::GetInstance();
-        levelGen->LoadJson("res/levels/detroit.json");
-        levelGen->GenerateLevel();
+        mlg::LevelGenerator::LoadMap("res/levels/detroit.json");
     }
 
     virtual ~ProjectInpostors() {

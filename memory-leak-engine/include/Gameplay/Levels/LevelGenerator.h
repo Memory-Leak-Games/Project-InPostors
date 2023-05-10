@@ -5,23 +5,24 @@ namespace mlg {
     class LevelGenerator {
 
     public:
-
-        static void Initialize();
-        static void Stop();
-        static LevelGenerator* GetInstance();
-
-        void LoadJson(const std::string& path);
-        void LoadLayout(const std::string& path);
-        void LoadMapObjects(const std::string &path);
-        void GenerateLevel();
+        static void LoadMap(const std::string& path);
 
     private:
+        enum class RoadType {
+            None,
+            Cross,
+            Vertical,
+            Horizontal
+        };
+
         struct MapObject {
             std::shared_ptr<class ModelAsset> model;
             std::shared_ptr<class MaterialAsset> material;
 
             float worldRot;
             float scale;
+
+            bool isCorner = false;
 
             bool hasCollision = false;
             std::string colliderType;
@@ -30,24 +31,31 @@ namespace mlg {
         };
 
         struct MapEntry {
+            RoadType roadType = RoadType::None;
             std::vector<MapObject> objectsPool;
+
             int useCount = 0;
         };
-
-        static LevelGenerator* instance;
-
-        std::string defaultLevelMaterial;
-        std::vector<std::string> levelLayout;
-        std::unordered_map<char, MapEntry> mapObjects;
-        float tileSize = 10.0f;
 
         LevelGenerator() = default;
         ~LevelGenerator() = default;
 
-        void PutObject(const class MapObject& obj, glm::vec3 pos);
-        static std::string Hash(const std::string& hashString, float posX, float posY);
+        nlohmann::json levelJson;
 
-        MapObject ParseObject(nlohmann::json jsonObject);
+        std::vector<std::string> levelLayout;
+        std::unordered_map<char, MapEntry> mapObjects;
+
+        std::string defaultMaterial;
+        float tileSize;
+
+        void LoadLayout();
+        void LoadMapObjects();
+        MapObject ParseObject(const nlohmann::json& jsonObject);
+
+        void GenerateLevel();
+        void PutObject(const MapObject& mapObject, const glm::vec3& position, float rotation);
+
+        float GetSmartRotation(const glm::ivec2& layoutPosition);
     };
 
 } //mlg

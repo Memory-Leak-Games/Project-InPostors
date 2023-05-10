@@ -46,6 +46,7 @@ std::shared_ptr<Player> Player::Create(uint64_t id, const std::string &name, boo
     newPlayer->AddComponent<CarMovementComponent>("MovementComponent");
 
     staticMeshComponent.lock()->GetTransform().SetPosition({0.f, 0.3f, 0.f});
+//    staticMeshComponent.lock()->GetTransform().SetScale(glm::vec3{0.7f});
 
     newPlayer->AddComponent<CarMovementComponent>("MovementComponent", configPath);
 

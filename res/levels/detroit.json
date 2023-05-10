@@ -1,17 +1,17 @@
 {
   "name": "Detroit",
-  "tile-size": 4.0,
-  "default-material": "res/models/Buildings/buildings_material.json",
+  "tileSize": 4.0,
+  "defaultMaterial": "res/models/Buildings/buildings_material.json",
   "layout": [
-    "          SvvB ",
+    "          SvvBB",
     "          SvvB",
-    "sssssssssslvvLbbbbbbbbbbb",
+    "SSSSSSSSSSlvvLBBBBBBBBBBB",
     "hhhhhhhhhhhxxhhhhhhhhhhhhh",
     "hhhhhhhhhhhxxhhhhhhhhhhhhh",
-    "           vvB",
-    "           vvB",
-    "           vvB",
-    "           vvB"
+    "          SvvBBBBBBBBBBBBB",
+    "          SvvB",
+    "          SvvB",
+    "          SvvB"
   ],
   "tiles": [
     {
@@ -44,83 +44,22 @@
       ]
     },
     {
-      "symbol": "b",
-      "objects": [
-        {
-          "model": "res/models/Buildings/building_big_1.obj",
-          "rotation": 90.0,
-          "scale": 0.85,
-          "collision-type": "rectangle",
-          "collision-size": 4.0
-        },
-        {
-          "model": "res/models/Buildings/building_big_2.obj",
-          "rotation": 90.0,
-          "scale": 0.85,
-          "collision-type": "rectangle",
-          "collision-size": 4.0
-        },
-        {
-          "model": "res/models/Buildings/building_big_3.obj",
-          "rotation": 90.0,
-          "scale": 0.85,
-          "collision-type": "rectangle",
-          "collision-size": 4.0
-        },
-        {
-          "model": "res/models/Buildings/building_big_4.obj",
-          "rotation": 90.0,
-          "scale": 0.85,
-          "collision-size": 4.0
-        }
-      ]
-    },
-    {
-      "symbol": "s",
-      "objects": [
-        {
-          "model": "res/models/Buildings/building_small_1.obj",
-          "rotation": 90.0,
-          "scale": 0.85,
-          "collision-type": "rectangle",
-          "collision-size": 4.0
-        },
-        {
-          "model": "res/models/Buildings/building_small_2.obj",
-          "rotation": 90.0,
-          "scale": 0.85,
-          "collision-type": "rectangle",
-          "collision-size": 4.0
-        },
-        {
-          "model": "res/models/Buildings/building_small_3.obj",
-          "rotation": 90.0,
-          "scale": 0.85,
-          "collision-type": "rectangle",
-          "collision-size": 4.0
-        }
-      ]
-    },
-    {
       "symbol": "S",
       "objects": [
         {
           "model": "res/models/Buildings/building_small_1.obj",
-          "rotation": -180.0,
           "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
         },
         {
           "model": "res/models/Buildings/building_small_2.obj",
-          "rotation": 180.0,
           "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
         },
         {
           "model": "res/models/Buildings/building_small_3.obj",
-          "rotation": 179.0,
           "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
@@ -153,6 +92,7 @@
     },
     {
       "symbol": "v",
+      "roadType": "Vertical",
       "objects": [
         {
           "model": "res/models/Roads/road.obj",
@@ -162,6 +102,7 @@
     },
     {
       "symbol": "h",
+      "roadType": "Horizontal",
       "objects": [
         {
           "model": "res/models/Roads/road.obj",
@@ -171,6 +112,7 @@
     },
     {
       "symbol": "x",
+      "roadType": "Cross",
       "objects": [
         {
           "model": "res/models/Roads/road_cross.obj",
