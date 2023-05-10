@@ -127,19 +127,21 @@ namespace mlg {
                 MLG_ASSERT_MSG(mapObjects.find(character) != mapObjects.end(),
                                "Unknown character in tile map");
 
-                auto mapObjPool = mapObjects.at(character).object;
-                int useCount = (mapObjects.at(character).useCount)++;
+                MapEntry& mapEntry = mapObjects.at(character);
+                std::vector<MapObject>& mapObjPool = mapEntry.objectsPool;
 
-                if (useCount > mapObjPool.size() - 1) {
-                    useCount = 0;
+                mapEntry.useCount++;
+
+                if (mapEntry.useCount > mapObjPool.size() - 1) {
+                    mapEntry.useCount = 0;
                     Random::shuffle(mapObjPool);
                 }
 
                 glm::vec3 objectPos{0.0f};
                 objectPos.z = static_cast<float>(i) * tileSize - citySize.x * 0.5f;
-                objectPos.y = 0.0f;
                 objectPos.x = -static_cast<float>(j - 1) * tileSize + citySize.y * 0.5f;
-                PutObject(mapObjPool[useCount], objectPos);
+
+                PutObject(mapObjPool[mapEntry.useCount], objectPos);
             }
             i = 0;
         }
@@ -149,13 +151,11 @@ namespace mlg {
         auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>(
                 Hash("MapObject", pos.x, pos.z), true, mlg::SceneGraph::GetRoot());
 
-        auto staticMesh = modelEntity.lock()->AddComponent<mlg::StaticMeshComponent>(
-                "StaticMesh", obj.model, obj.material);
-
-        staticMesh.lock()->GetTransform().SetScale(glm::vec3{obj.scale});
+        auto staticMesh = modelEntity.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", obj.model, obj.material);
 
         modelEntity.lock()->GetTransform().SetPosition(pos);
         modelEntity.lock()->GetTransform().SetEulerRotation({0.f, obj.worldRot, 0.f});
+        staticMesh.lock()->GetTransform().SetScale(glm::vec3{obj.scale});
 
         if (!obj.hasCollision)
             return;
@@ -172,6 +172,7 @@ namespace mlg {
                     glm::vec2(glm::vec2(obj.colliderSize)),
                     obj.colliderOffset);
         }
+
         rb.lock()->SetRotation(obj.worldRot);
         rb.lock()->SetKinematic(true);
     }

@@ -30,7 +30,7 @@ namespace mlg {
         };
 
         struct MapEntry {
-            const std::vector<MapObject> object;
+            std::vector<MapObject> objectsPool;
             int useCount = 0;
         };
 

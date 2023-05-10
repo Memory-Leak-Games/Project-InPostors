@@ -56,15 +56,4 @@ std::shared_ptr<Player> Player::Create(uint64_t id, const std::string &name, boo
 }
 
 void Player::Update() {
-    std::vector<std::weak_ptr<mlg::Entity>> found;
-    rigidbodyComponent.lock()->OverlapCircle(2.f, found);
-
-    for (const auto& entity: found) {
-        std::weak_ptr<PlayerTwoInput> result = entity.lock()->GetComponentByClass<PlayerTwoInput>();
-
-        if (result.expired())
-            continue;
-
-        SPDLOG_WARN("Hello Second Player!");
-    }
 }
