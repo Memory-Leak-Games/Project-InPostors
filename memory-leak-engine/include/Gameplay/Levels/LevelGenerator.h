@@ -23,17 +23,18 @@ namespace mlg {
 
         static LevelGenerator* instance;
 
-        // TODO: Does it have to be a member of the class?
         std::string defaultLevelMaterial;
         std::vector<std::string> levelLayout;
         std::unique_ptr<std::unordered_map<char, MapEntry>> mapObjects;
         float tileSize = 10.0f;
 
         LevelGenerator() = default;
-        //~LevelGenerator() = default;
+        ~LevelGenerator() = default;
 
         void PutObject(const std::shared_ptr<class MapObject>& obj, glm::vec3 pos);
         static std::string Hash(const std::string& hashString, float posX, float posY);
+
+        std::shared_ptr<MapObject> ParseObject(nlohmann::json jsonObject);
     };
 
 } //mlg

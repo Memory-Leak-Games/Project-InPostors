@@ -1,20 +1,21 @@
-#include "Gameplay/Levels/LevelGenerator.h"
-#include "Gameplay/EntityManager.h"
-#include "Gameplay/Entity.h"
-#include "Gameplay/Components/StaticMeshComponent.h"
-#include "SceneGraph/SceneGraph.h"
-#include "Macros.h"
-#include "Gameplay/Components/RigidbodyComponent.h"
-#include "Physics/Colliders/ColliderShapes.h"
 #include <fstream>
+#include <effolkronium/random.hpp>
 
 #include "Rendering/Model.h"
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
-#include "effolkronium/random.hpp"
-#include "nlohmann/json.hpp"
 
 #include "Gameplay/Levels/MapObject.h"
+#include "Gameplay/Levels/LevelGenerator.h"
+
+#include "Gameplay/EntityManager.h"
+#include "Gameplay/Entity.h"
+
+#include "SceneGraph/SceneGraph.h"
+
+#include "Gameplay/Components/StaticMeshComponent.h"
+#include "Gameplay/Components/RigidbodyComponent.h"
+#include "Physics/Colliders/ColliderShapes.h"
 
 using json = nlohmann::json;
 using Random = effolkronium::random_static;
@@ -22,14 +23,12 @@ using Random = effolkronium::random_static;
 namespace mlg {
     LevelGenerator* LevelGenerator::instance;
 
-
     void LevelGenerator::Initialize() {
         if (instance != nullptr) return;
 
         SPDLOG_INFO("Initializing Level Generator");
         instance = new LevelGenerator;
     }
-
 
     void LevelGenerator::Stop() {
         SPDLOG_INFO("Stopping Level Generator");
@@ -41,12 +40,10 @@ namespace mlg {
         return instance;
     }
 
-
     void LevelGenerator::LoadJson(const std::string& path) {
         LoadLayout(path);
         LoadMapObjects(path);
     }
-
 
     void LevelGenerator::LoadLayout(const std::string& path) {
         std::ifstream levelFile{path};
@@ -64,15 +61,9 @@ namespace mlg {
         defaultLevelMaterial = levelJson["default-material"].get<std::string>();
     }
 
-
     void LevelGenerator::LoadMapObjects(const std::string& path) {
         std::ifstream levelFile{path};
         json levelJson = json::parse(levelFile);
-        // TODO: Kris here - for now I have no idea how to prevent loading JSON twice.
-        //  If you have any idea how to do it without including json hpp in header file, hit me up :)
-
-        // TODO: Szymon here - If you know that header is library header and it would not change too often
-        //  you can include it in header. However always better to have includes in source files :3
 
         mapObjects = std::make_unique<std::unordered_map<char, LevelGenerator::MapEntry>>();
 
@@ -80,36 +71,42 @@ namespace mlg {
             const char tileSymbol = jsonTile["symbol"].get<std::string>()[0];
             std::vector<std::shared_ptr<MapObject>> mapObjectPool;
 
-            //TODO: move this to a separate function maybe?
             for (const auto& jsonMapObject: jsonTile["objects"]) {
-                std::string modelPath = jsonMapObject["model"].get<std::string>();
-                std::string materialPath = jsonMapObject.contains("material")
-                                           ? jsonMapObject["material"].get<std::string>()
-                                           : defaultLevelMaterial;
-                float yRot = jsonMapObject.contains("rotation")
-                             ? jsonMapObject["rotation"].get<float>() : 0.f;
-                float scale = jsonMapObject.contains("scale")
-                              ? jsonMapObject["scale"].get<float>() : 1.f;
-
-                mlg::MapObject mapObj(modelPath, materialPath, yRot);
-                if (jsonMapObject.contains("collision-type")) {
-                    std::string cType = jsonMapObject["collision-type"].get<std::string>();
-                    float cSize = jsonMapObject.contains("collision-size")
-                                  ? jsonMapObject["collision-size"].get<float>() : 1.0f;
-                    float cOffset = jsonMapObject.contains("collision-offset")
-                                    ? jsonMapObject["collision-offset"].get<float>() : 0.0f;
-                    mapObj.AddCollision(cType, cSize, cOffset);
-                }
-
-                mapObj.SetScale(scale);
-
-                auto newMapObj = std::make_shared<MapObject>(mapObj);
-                mapObjectPool.push_back(newMapObj);
+                mapObjectPool.push_back(ParseObject(jsonMapObject));
             }
+
             mapObjects->insert({tileSymbol, {std::move(mapObjectPool), 0}});
         }
     }
 
+    std::shared_ptr<MapObject> LevelGenerator::ParseObject(nlohmann::json jsonMapObject) {
+        std::string modelPath = jsonMapObject["model"].get<std::string>();
+        std::string materialPath = jsonMapObject.contains("material")
+                                   ? jsonMapObject["material"].get<std::string>()
+                                   : defaultLevelMaterial;
+
+        auto mapObj = std::make_shared<MapObject>();
+        mapObj->model = AssetManager::GetAsset<ModelAsset>(modelPath);
+        mapObj->material = AssetManager::GetAsset<MaterialAsset>(materialPath);
+
+        mapObj->worldRot = jsonMapObject.contains("rotation")
+                           ? jsonMapObject["rotation"].get<float>() : 0.f;
+        mapObj->worldRot = glm::radians(mapObj->worldRot);
+
+        mapObj->scale = jsonMapObject.contains("scale")
+                        ? jsonMapObject["scale"].get<float>() : 1.f;
+
+        if (jsonMapObject.contains("collision-type")) {
+            mapObj->hasCollision = true;
+            mapObj->colliderType = jsonMapObject["collision-type"].get<std::string>();
+            mapObj->colliderSize = jsonMapObject.contains("collision-size")
+                                   ? jsonMapObject["collision-size"].get<float>() : 1.0f;
+            mapObj->colliderOffset = jsonMapObject.contains("collision-offset")
+                                     ? jsonMapObject["collision-offset"].get<float>() : 0.0f;
+        }
+
+        return mapObj;
+    }
 
     void LevelGenerator::GenerateLevel() {
         glm::vec2 citySize{0.f};
@@ -154,38 +151,36 @@ namespace mlg {
         }
     }
 
-
     void LevelGenerator::PutObject(const std::shared_ptr<MapObject>& obj, glm::vec3 pos) {
         auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>(
-                Hash("MapObject", pos.x, pos.z),
-                true, mlg::SceneGraph::GetRoot());
-        auto staticMesh = modelEntity.lock()->AddComponent<mlg::StaticMeshComponent>(
-                "StaticMesh", obj->GetModel().lock(), obj->GetMaterial().lock());
+                Hash("MapObject", pos.x, pos.z), true, mlg::SceneGraph::GetRoot());
 
-        staticMesh.lock()->GetTransform().SetScale(glm::vec3{obj->GetScale()});
+        auto staticMesh = modelEntity.lock()->AddComponent<mlg::StaticMeshComponent>(
+                "StaticMesh", obj->model, obj->material);
+
+        staticMesh.lock()->GetTransform().SetScale(glm::vec3{obj->scale});
 
         modelEntity.lock()->GetTransform().SetPosition(pos);
-        modelEntity.lock()->GetTransform().SetEulerRotation(obj->GetRotation());
+        modelEntity.lock()->GetTransform().SetEulerRotation({0.f, obj->worldRot, 0.f});
 
         // add collider if needed
-        if (!obj->HasCollision())
+        if (!obj->hasCollision)
             return;
 
         auto rb = modelEntity.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
-        std::string colType = obj->GetColliderType();
+        std::string colType = obj->colliderType;
         if (colType == "rectangle") {
             rb.lock()->AddCollider<mlg::ColliderShape::Rectangle>(
-                    glm::vec2(glm::vec2(obj->GetColliderOffset())),
-                    glm::vec2(obj->GetColliderSize()));
+                    glm::vec2(glm::vec2(obj->colliderOffset)),
+                    glm::vec2(obj->colliderSize));
         } else if (colType == "circle") {
             rb.lock()->AddCollider<mlg::ColliderShape::Circle>(
-                    glm::vec2(glm::vec2(obj->GetColliderSize())),
-                    obj->GetColliderOffset());
+                    glm::vec2(glm::vec2(obj->colliderSize)),
+                    obj->colliderOffset);
         }
-        rb.lock()->SetRotation(obj->GetRotation().y);
+        rb.lock()->SetRotation(obj->worldRot);
         rb.lock()->SetKinematic(true);
     }
-
 
     std::string LevelGenerator::Hash(const std::string& hashString, float posX, float posY) {
         std::size_t h1 = std::hash<std::string>{}(hashString);
