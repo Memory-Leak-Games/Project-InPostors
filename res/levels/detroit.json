@@ -5,19 +5,19 @@
   "groundColor": [0.898, 0.854, 0.890, 1.0],
   "layout": [
     "          sssssssssss",
-    "          sppppppppps",
-    "          sp#######ps",
-    "          sp#ppppp#ps",
-    "          sp#psssp#ps",
-    "          sp#pbbsp#ps",
-    "sssssssssslp#pLssp#pbbbb",
-    "pppppppppppp#ppppp#ppppp",
+    "    ################s",
+    "    ################s",
+    "    ##    s#########s",
+    "    ##### s###sss###s",
+    "    ##### s###bbs###s",
+    "sssssss##sl###Lss###bbbb",
     "########################",
-    "pppppppppppp#ppppppppppp",
-    "sssssssssssp#pbsssssssss",
-    "          sp#pb",
-    "          sp#pb",
-    "          sp#pb"
+    "########################",
+    "########################",
+    "sssss#sssss###bsssssssss",
+    "     #    s###b",
+    "     #    s###b",
+    "     #########b"
   ],
   "cameraSettings": {
     "position": [-10.0, 30.0, -10.0],
@@ -116,13 +116,13 @@
 
   "road": {
     "symbol": "#",
-    "vertical": {
+    "road": {
       "model": "res/models/Roads/road.obj",
       "rotation": 90.0
     },
-    "horizontal": {
-      "model": "res/models/Roads/road.obj",
-      "rotation": 0.0
+    "edge": {
+      "model": "res/models/Roads/road_edge.obj",
+      "rotation": 90.0
     },
     "cross": {
       "model": "res/models/Roads/road_cross.obj",

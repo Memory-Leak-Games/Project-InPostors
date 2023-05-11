@@ -26,8 +26,8 @@ namespace mlg {
 
         struct Roads {
             char symbol;
-            MapObject vertical;
-            MapObject horizontal;
+            MapObject road;
+            MapObject edge;
             MapObject cross;
             MapObject curve;
         } roadsObjects;
@@ -37,6 +37,13 @@ namespace mlg {
             bool isPathWay = false;
 
             int useCount = 0;
+        };
+
+        struct Neighbours {
+            char left = 0;
+            char down = 0;
+            char right = 0;
+            char up = 0;
         };
 
         LevelGenerator() = default;
@@ -49,6 +56,7 @@ namespace mlg {
 
         std::string defaultMaterial;
         float tileSize;
+        glm::vec2 citySize;
 
         void LoadLayout();
         void LoadMapObjects();
@@ -57,13 +65,19 @@ namespace mlg {
 
         void GenerateLevel();
 
-        void PutTile(const glm::vec2& citySize, int x, int y, const char& character);
-        void PutRoad(const glm::vec2& citySize, int x, int y);
+        void PutTile(int x, int y, const char& character);
+        void PutRoad(int x, int y);
 
-        void PutEntity(const MapObject& mapObject, const glm::vec3& position, float rotation);
+        void PutStraightRoad(int x, int y, bool isVertical);
+        void PutEdgeRoad(int x, int y);
+        void PutCrossRoad(int x, int y);
+        void PutCurveRoad(int x, int y);
+
+        void PutEntity(const MapObject& mapObject, const glm::ivec2& position, float rotation);
         float GetSmartRotation(const glm::ivec2& layoutPosition);
 
         glm::vec2 GetCitySize();
+        Neighbours GetNeighbours(int x, int y);
     };
 
 } //mlg
