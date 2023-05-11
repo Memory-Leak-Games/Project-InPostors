@@ -17,7 +17,7 @@ void SmokeFX::UpdateSystem(const mlg::Transform& transform) {
     while (timeAccumulator > timeToSpawn)
     {
         mlg::ParticleProps particleProps {};
-        particleProps.lifeTime = Random::get(0.5f, 1.f);
+        particleProps.lifeTime = Random::get(0.3f, 0.7f);
         particleProps.position = transform.GetWorldPosition() - transform.GetForwardVector();
         particleProps.position += glm::vec3 {
                 Random::get(-1.f, 1.f),
@@ -25,8 +25,8 @@ void SmokeFX::UpdateSystem(const mlg::Transform& transform) {
                 Random::get(-1.f, 1.f)
         } * 0.2f;
 
-        particleProps.beginSize = glm::vec2(0.35) * Random::get(0.5f, 1.f);
-        particleProps.endSize = glm::vec2(0.05);
+        particleProps.beginSize = glm::vec2(0.35) * Random::get(0.8f, 1.f);
+        particleProps.endSize = glm::vec2(0.5);
         particleProps.beginColor = glm::vec4(1.f);
         particleProps.endColor = glm::vec4(1.f, 1.f, 1.f, 0.f) * 0.5f;
 
