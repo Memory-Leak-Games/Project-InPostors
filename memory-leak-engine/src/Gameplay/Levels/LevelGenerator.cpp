@@ -13,6 +13,8 @@
 
 #include "SceneGraph/SceneGraph.h"
 
+#include "Gameplay/Components/CameraComponent.h"
+
 #include "Gameplay/Components/StaticMeshComponent.h"
 #include "Gameplay/Components/RigidbodyComponent.h"
 #include "Physics/Colliders/ColliderShapes.h"
@@ -21,6 +23,31 @@ using json = nlohmann::json;
 using Random = effolkronium::random_static;
 
 namespace mlg {
+
+    void LevelGenerator::LoadCameraSettings(const std::string& path, struct CameraComponent& cameraComponent) {
+        std::ifstream levelFile{path};
+        json cameraJson = json::parse(levelFile)["cameraSettings"];
+
+        const glm::vec3 position = {
+                cameraJson["position"][0].get<float>(),
+                cameraJson["position"][1].get<float>(),
+                cameraJson["position"][2].get<float>()
+        };
+
+        const glm::vec3 eulerRotation = {
+                cameraJson["rotation"][0].get<float>(),
+                cameraJson["rotation"][1].get<float>(),
+                cameraJson["rotation"][2].get<float>()
+        };
+
+        const float size = cameraJson["size"].get<float>();
+        const float near = cameraJson["near"].get<float>();
+        const float far = cameraJson["far"].get<float>();
+
+        cameraComponent.GetTransform().SetPosition(position);
+        cameraComponent.GetTransform().SetRotation(glm::radians(eulerRotation));
+        cameraComponent.SetOrtho(size, near, far);
+    }
 
     void LevelGenerator::LoadMap(const std::string& path) {
         LevelGenerator levelGenerator;

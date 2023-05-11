@@ -3,16 +3,26 @@
   "tileSize": 4.0,
   "defaultMaterial": "res/models/Buildings/buildings_material.json",
   "layout": [
-    "          SvvBB",
-    "          SvvB",
-    "SSSSSSSSSSlvvLBBBBBBBBBBB",
-    "hhhhhhhhhhhxxhhhhhhhhhhhhh",
-    "hhhhhhhhhhhxxhhhhhhhhhhhhh",
-    "          SvvBBBBBBBBBBBBB",
+    "          SSSSSSSSS",
+    "          SxxhhhxxS",
+    "          SvxhhhxvS",
+    "          SvvBB vvS",
+    "          SvvB  vvS",
+    "SSSSSSSSSSlvvLBBvvBBBBBBB",
+    "hhhhhhhhhhhxxhhhxxhhhhhhhh",
+    "hhhhhhhhhhhxxhhhxxhhhhhhhh",
+    "          SvvBSSSSSSSSSSSS",
     "          SvvB",
     "          SvvB",
     "          SvvB"
   ],
+  "cameraSettings": {
+    "position": [-10.0, 30.0, -10.0],
+    "rotation": [65.0, 45.0, 0.0],
+    "size": 55.0,
+    "near": 0.1,
+    "far": 100.0
+  },
   "tiles": [
     {
       "symbol": "B",

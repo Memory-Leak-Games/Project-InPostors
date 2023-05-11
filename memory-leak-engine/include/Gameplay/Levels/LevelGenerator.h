@@ -6,6 +6,7 @@ namespace mlg {
 
     public:
         static void LoadMap(const std::string& path);
+        static void LoadCameraSettings(const std::string& path, class CameraComponent& cameraComponent);
 
     private:
         enum class RoadType {

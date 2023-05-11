@@ -119,14 +119,6 @@ public:
     }
 
     void PrepareScene() {
-        auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
-        auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
-        cameraComponent.lock()->SetOrtho(40.f, 0.1, 100.f);
-
-        cameraComponent.lock()->GetTransform().SetPosition({-10.f, 15.f, -10.f});
-        cameraComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{60.f, 45.f, 0.f}));
-        cameraComponent.lock()->SetActive();
-
 //        sound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/SFX/mario_coin.ogg");
 //        music = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/Crushin.ogg");
 //        auto audioComponent = cameraEntity.lock()->AddComponent<mlg::AudioComponent>("AudioComponent", music);
@@ -176,15 +168,17 @@ public:
         PlayerData firstPlayerData = {0, mlg::RGBA::red};
         PlayerData secondPlayerData = {0, mlg::RGBA::cyan};
 
-        auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot(),
-                                                              firstPlayerData);
+        auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot(), firstPlayerData);
         player.lock()->AddComponent<PlayerOneInput>("PlayerInput");
 
-        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false, mlg::SceneGraph::GetRoot(),
-                                                                 secondPlayerData);
+        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false, mlg::SceneGraph::GetRoot(), secondPlayerData);
         playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
 
+        auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
+        auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
+
         mlg::LevelGenerator::LoadMap("res/levels/detroit.json");
+        mlg::LevelGenerator::LoadCameraSettings("res/levels/detroit.json", *cameraComponent.lock());
     }
 
     virtual ~ProjectInpostors() {

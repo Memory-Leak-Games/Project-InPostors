@@ -46,6 +46,9 @@ namespace mlg {
         transform->onTransformationChange.append([this]() {
             this->isViewDirty = true;
         });
+
+        if (Renderer::GetInstance()->GetCurrentCamera() == nullptr)
+            SetActive();
     }
 
     void Camera::SetActive() {
