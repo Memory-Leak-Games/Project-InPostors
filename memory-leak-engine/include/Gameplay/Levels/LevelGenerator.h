@@ -7,14 +7,9 @@ namespace mlg {
     public:
         static void LoadMap(const std::string& path);
         static void LoadCameraSettings(const std::string& path, class CameraComponent& cameraComponent);
+        static void SpawnGround(const std::string& path);
 
     private:
-        enum class RoadType {
-            None,
-            Cross,
-            Vertical,
-            Horizontal
-        };
 
         struct MapObject {
             std::shared_ptr<class ModelAsset> model;
@@ -23,17 +18,23 @@ namespace mlg {
             float worldRot;
             float scale;
 
-            bool isCorner = false;
-
             bool hasCollision = false;
             std::string colliderType;
             float colliderSize = 1.0f;
             float colliderOffset = 0.0f;
         };
 
+        struct Roads {
+            char symbol;
+            MapObject vertical;
+            MapObject horizontal;
+            MapObject cross;
+            MapObject curve;
+        } roadsObjects;
+
         struct MapEntry {
-            RoadType roadType = RoadType::None;
             std::vector<MapObject> objectsPool;
+            bool isPathWay = false;
 
             int useCount = 0;
         };
@@ -51,12 +52,18 @@ namespace mlg {
 
         void LoadLayout();
         void LoadMapObjects();
+        void LoadRoads();
         MapObject ParseObject(const nlohmann::json& jsonObject);
 
         void GenerateLevel();
-        void PutObject(const MapObject& mapObject, const glm::vec3& position, float rotation);
 
+        void PutTile(const glm::vec2& citySize, int x, int y, const char& character);
+        void PutRoad(const glm::vec2& citySize, int x, int y);
+
+        void PutEntity(const MapObject& mapObject, const glm::vec3& position, float rotation);
         float GetSmartRotation(const glm::ivec2& layoutPosition);
+
+        glm::vec2 GetCitySize();
     };
 
 } //mlg

@@ -49,6 +49,33 @@ namespace mlg {
         cameraComponent.SetOrtho(size, near, far);
     }
 
+    void LevelGenerator::SpawnGround(const std::string& path) {
+        LevelGenerator levelGenerator;
+        std::ifstream levelFile{path};
+
+        levelGenerator.levelJson = json::parse(levelFile);
+        levelGenerator.LoadLayout();
+
+        const glm::vec2 citySize = levelGenerator.GetCitySize();
+
+        glm::vec4 color {
+            levelGenerator.levelJson["groundColor"][0].get<float>(),
+            levelGenerator.levelJson["groundColor"][1].get<float>(),
+            levelGenerator.levelJson["groundColor"][2].get<float>(),
+            levelGenerator.levelJson["groundColor"][3].get<float>()
+        };
+
+        auto planeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/plane.obj");
+        auto groundMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Ground/ground_material.json");
+        groundMaterial = groundMaterial->CreateDynamicInstance();
+        groundMaterial->SetVec4("color", color);
+
+        auto ground = mlg::EntityManager::SpawnEntity<mlg::Entity>("Ground", true, mlg::SceneGraph::GetRoot());
+        ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, groundMaterial);
+        ground.lock()->GetTransform().SetPosition({0.f, -0.01f, 0.f});
+        ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
+    }
+
     void LevelGenerator::LoadMap(const std::string& path) {
         LevelGenerator levelGenerator;
 
@@ -56,6 +83,8 @@ namespace mlg {
         levelGenerator.levelJson = json::parse(levelFile);
 
         levelGenerator.LoadLayout();
+
+        levelGenerator.LoadRoads();
         levelGenerator.LoadMapObjects();
 
         levelGenerator.GenerateLevel();
@@ -73,19 +102,22 @@ namespace mlg {
     void LevelGenerator::LoadMapObjects() {
         for (const auto& jsonTile: levelJson["tiles"]) {
             const char tileSymbol = jsonTile["symbol"].get<std::string>()[0];
+
+            if (tileSymbol == roadsObjects.symbol)
+                continue;
+
             std::vector<MapObject> mapObjectPool;
 
-            RoadType roadType;
-            if (jsonTile.contains("roadType")) {
-                const std::string roadTypeStr = jsonTile["roadType"].get<std::string>();
-                roadType = magic_enum::enum_cast<RoadType>(roadTypeStr).value_or(RoadType::None);
+            bool isPathWay = false;
+            if (jsonTile.contains("isPathWay")) {
+                isPathWay = jsonTile["isPathWay"].get<bool>();
             }
 
             for (const auto& jsonMapObject: jsonTile["objects"]) {
                 mapObjectPool.push_back(std::move(ParseObject(jsonMapObject)));
             }
 
-            mapObjects.insert({tileSymbol, MapEntry{roadType, mapObjectPool, 0}});
+            mapObjects.insert({tileSymbol, MapEntry{mapObjectPool, isPathWay, 0}});
         }
     }
 
@@ -105,9 +137,6 @@ namespace mlg {
         mapObj.scale = jsonMapObject.contains("scale")
                         ? jsonMapObject["scale"].get<float>() : 1.f;
 
-        if (jsonMapObject.contains("isCorner"))
-            mapObj.isCorner = jsonMapObject["isCorner"].get<bool>();
-
         if (jsonMapObject.contains("collision-type")) {
             mapObj.hasCollision = true;
             mapObj.colliderType = jsonMapObject["collision-type"].get<std::string>();
@@ -120,15 +149,18 @@ namespace mlg {
         return mapObj;
     }
 
+    void LevelGenerator::LoadRoads() {
+        json roadJson = levelJson["road"];
+        roadsObjects.symbol = roadJson["symbol"].get<std::string>()[0];
+
+        roadsObjects.vertical = ParseObject(roadJson["vertical"]);
+        roadsObjects.horizontal = ParseObject(roadJson["horizontal"]);
+        roadsObjects.cross = ParseObject(roadJson["cross"]);
+        roadsObjects.curve = ParseObject(roadJson["curve"]);
+    }
+
     void LevelGenerator::GenerateLevel() {
-        glm::vec2 citySize{0.f};
-        citySize.y = static_cast<float>(levelLayout.size());
-
-        for (const std::string& row: levelLayout) {
-            citySize.x = std::max(citySize.x, static_cast<float>(row.size()));
-        }
-
-        citySize *= tileSize;
+        glm::vec2 citySize = GetCitySize();
 
         int i = 0, j = 0;
         for (const std::string& row: levelLayout) {
@@ -139,34 +171,53 @@ namespace mlg {
                 if (character == ' ')
                     continue;
 
-                MLG_ASSERT_MSG(mapObjects.find(character) != mapObjects.end(),
-                               "Unknown character in tile map");
-
-                MapEntry& mapEntry = mapObjects.at(character);
-                std::vector<MapObject>& mapObjectPool = mapEntry.objectsPool;
-
-                mapEntry.useCount++;
-
-                if (mapEntry.useCount > mapObjectPool.size() - 1) {
-                    mapEntry.useCount = 0;
-                    Random::shuffle(mapObjectPool);
+                if (character == roadsObjects.symbol) {
+                    PutRoad(citySize, j - 1, i - 1);
+                    continue;
                 }
 
-                glm::vec3 objectPosition{0.0f};
-                objectPosition.z = static_cast<float>(i) * tileSize - citySize.x * 0.5f;
-                objectPosition.x = -static_cast<float>(j - 1) * tileSize + citySize.y * 0.5f;
-
-                float smartRotation = 0;
-                if (mapEntry.roadType == RoadType::None)
-                    smartRotation = GetSmartRotation({j - 1, i - 1});
-
-                PutObject(mapObjectPool[mapEntry.useCount], objectPosition, smartRotation);
+                PutTile(citySize, j - 1, i - 1, character);
             }
             i = 0;
         }
     }
 
-    void LevelGenerator::PutObject(const MapObject& mapObject, const glm::vec3& position, float rotation) {
+    glm::vec2 LevelGenerator::GetCitySize() {
+        glm::vec2 citySize;
+        for (const std::string& row: levelLayout) {
+            citySize.x = std::max(citySize.x, static_cast<float>(row.size()));
+        }
+        citySize.y = (float) levelLayout.size();
+
+        citySize *= tileSize;
+        return citySize;
+    }
+
+    void LevelGenerator::PutTile(const glm::vec2& citySize, int x, int y, const char& character) {
+        if (!mapObjects.contains(character)) {
+            SPDLOG_WARN("LevelLoader: unknown character: {}, at ({}, {}).", character, x, y);
+            return;
+        }
+
+        MapEntry& mapEntry = mapObjects.at(character);
+        std::vector<MapObject>& mapObjectPool = mapEntry.objectsPool;
+
+        mapEntry.useCount++;
+
+        if (mapEntry.useCount > mapObjectPool.size() - 1) {
+            mapEntry.useCount = 0;
+            Random::shuffle(mapObjectPool);
+        }
+
+        glm::vec3 objectPosition{0.0f};
+        objectPosition.z = static_cast<float>(y + 1) * tileSize - citySize.x * 0.5f;
+        objectPosition.x = -static_cast<float>(x) * tileSize + citySize.y * 0.5f;
+
+        float smartRotation = GetSmartRotation({x, y});
+        PutEntity(mapObjectPool[mapEntry.useCount], objectPosition, smartRotation);
+    }
+
+    void LevelGenerator::PutEntity(const MapObject& mapObject, const glm::vec3& position, float rotation) {
         auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("MapObject", true, mlg::SceneGraph::GetRoot());
 
         auto staticMesh = modelEntity.lock()->
@@ -219,14 +270,32 @@ namespace mlg {
             if (neighbour == ' ')
                 continue;
 
-            MapEntry& neighbourEntry = mapObjects[neighbour];
+            if (neighbour == roadsObjects.symbol)
+                continue;
 
-            if (neighbourEntry.roadType != RoadType::None)
+            MapEntry& neighbourEntry = mapObjects.at(neighbour);
+
+            if (neighbourEntry.isPathWay)
                 return angle - glm::radians(90.f);
-
         }
 
         return angle;
+    }
+
+    void LevelGenerator::PutRoad(const glm::vec2& citySize, int x, int y) {
+        auto modelEntity = EntityManager::SpawnEntity<mlg::Entity>("MapObject", true, mlg::SceneGraph::GetRoot());
+        auto mapObject = roadsObjects.vertical;
+
+        auto staticMesh = modelEntity.lock()->
+                AddComponent<mlg::StaticMeshComponent>("StaticMesh", mapObject.model, mapObject.material);
+
+        glm::vec3 objectPosition{0.0f};
+        objectPosition.z = static_cast<float>(y + 1) * tileSize - citySize.x * 0.5f;
+        objectPosition.x = -static_cast<float>(x) * tileSize + citySize.y * 0.5f;
+
+        modelEntity.lock()->GetTransform().SetPosition(objectPosition);
+        modelEntity.lock()->GetTransform().SetEulerRotation({0.f, mapObject.worldRot, 0.f});
+        modelEntity.lock()->GetTransform().SetScale(glm::vec3{mapObject.scale});
     }
 
 }

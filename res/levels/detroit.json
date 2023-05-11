@@ -2,30 +2,33 @@
   "name": "Detroit",
   "tileSize": 4.0,
   "defaultMaterial": "res/models/Buildings/buildings_material.json",
+  "groundColor": [0.898, 0.854, 0.890, 1.0],
   "layout": [
-    "          SSSSSSSSS",
-    "          SxxhhhxxS",
-    "          SvxhhhxvS",
-    "          SvvBB vvS",
-    "          SvvB  vvS",
-    "SSSSSSSSSSlvvLBBvvBBBBBBB",
-    "hhhhhhhhhhhxxhhhxxhhhhhhhh",
-    "hhhhhhhhhhhxxhhhxxhhhhhhhh",
-    "          SvvBSSSSSSSSSSSS",
-    "          SvvB",
-    "          SvvB",
-    "          SvvB"
+    "          sssssssssss",
+    "          sppppppppps",
+    "          sp#######ps",
+    "          sp#ppppp#ps",
+    "          sp#psssp#ps",
+    "          sp#pbbsp#ps",
+    "sssssssssslp#pLssp#pbbbb",
+    "pppppppppppp#ppppp#ppppp",
+    "########################",
+    "pppppppppppp#ppppppppppp",
+    "sssssssssssp#pbsssssssss",
+    "          sp#pb",
+    "          sp#pb",
+    "          sp#pb"
   ],
   "cameraSettings": {
     "position": [-10.0, 30.0, -10.0],
     "rotation": [65.0, 45.0, 0.0],
-    "size": 55.0,
+    "size": 100.0,
     "near": 0.1,
     "far": 100.0
   },
   "tiles": [
     {
-      "symbol": "B",
+      "symbol": "b",
       "objects": [
         {
           "model": "res/models/Buildings/building_big_1.obj",
@@ -54,7 +57,7 @@
       ]
     },
     {
-      "symbol": "S",
+      "symbol": "s",
       "objects": [
         {
           "model": "res/models/Buildings/building_small_1.obj",
@@ -101,34 +104,33 @@
       ]
     },
     {
-      "symbol": "v",
-      "roadType": "Vertical",
+      "symbol": "p",
+      "isPathWay": true,
       "objects": [
         {
-          "model": "res/models/Roads/road.obj",
-          "rotation": 90.0
-        }
-      ]
-    },
-    {
-      "symbol": "h",
-      "roadType": "Horizontal",
-      "objects": [
-        {
-          "model": "res/models/Roads/road.obj",
-          "rotation": 0.0
-        }
-      ]
-    },
-    {
-      "symbol": "x",
-      "roadType": "Cross",
-      "objects": [
-        {
-          "model": "res/models/Roads/road_cross.obj",
-          "rotation": 0.0
+          "model": "res/models/Roads/path_way.obj"
         }
       ]
     }
-  ]
+  ],
+
+  "road": {
+    "symbol": "#",
+    "vertical": {
+      "model": "res/models/Roads/road.obj",
+      "rotation": 90.0
+    },
+    "horizontal": {
+      "model": "res/models/Roads/road.obj",
+      "rotation": 0.0
+    },
+    "cross": {
+      "model": "res/models/Roads/road_cross.obj",
+      "rotation": 0.0
+    },
+    "curve": {
+      "model": "res/models/Roads/road_curve.obj",
+      "rotation": 0.0
+    }
+  }
 }
