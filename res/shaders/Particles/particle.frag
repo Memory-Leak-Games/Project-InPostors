@@ -11,7 +11,7 @@ out vec4 fragColor;
 
 void main()
 {
-    if(texture(image, fs_in.uv).a < 0.01f)
+    if(texture(image, fs_in.uv).a == 0.f)
         discard;
 
     fragColor = texture(image, fs_in.uv) * fs_in.color;
