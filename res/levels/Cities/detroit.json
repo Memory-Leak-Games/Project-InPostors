@@ -3,39 +3,30 @@
   "tileSize": 4.0,
   "defaultMaterial": "res/models/Buildings/buildings_material.json",
   "tileset": "res/levels/Tileset/sample_tileset.json",
-  "groundColor": [
-    0.898,
-    0.854,
-    0.890,
-    1.0
-  ],
+
+  "groundColor": [0.898, 0.854, 0.890, 1.0],
+
   "layout": [
     "          sssssssssss",
-    "          sppppppppps",
-    "          sp#######ps",
-    "          sp#ppppp#ps",
-    "          sp#psssp#ps",
-    "          sp#pbbsp#ps",
-    "sssssssssslp#pLssp#pbbbb",
-    "pppppppppppp#ppppp#ppppp",
-    "########################",
-    "pppppppppppp#ppppppppppp",
-    "sssssssssssp#pbsssssssss",
-    "          sp#pb",
-    "          sp#pb",
-    "          sp#pb"
+    "     ###############s",
+    "     #    s#########s",
+    "     #    s#########s",
+    "     #    s###sss###s",
+    "     #    s###bbs###s",
+    "sssss#ssssl###Lss###bbbbb",
+    "#########################",
+    "#########################",
+    "#########################",
+    "ssss##sssss###bssssssssss",
+    "    ##    s###b",
+    "    ##########b",
+    "    ##    s###b"
   ],
+
   "cameraSettings": {
-    "position": [
-      -10.0,
-      30.0,
-      -10.0
-    ],
-    "rotation": [
-      65.0,
-      45.0,
-      0.0
-    ],
+    "position": [-10.0, 30.0, -10.0],
+    "rotation": [65.0, -45.0, 0.0],
+
     "size": 100.0,
     "near": 0.1,
     "far": 100.0

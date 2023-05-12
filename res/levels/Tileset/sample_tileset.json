@@ -89,21 +89,21 @@
 
   "road": {
     "symbol": "#",
-    "vertical": {
+    "road": {
       "model": "res/models/Roads/road.obj",
       "rotation": 90.0
     },
-    "horizontal": {
-      "model": "res/models/Roads/road.obj",
-      "rotation": 0.0
+    "edge": {
+      "model": "res/models/Roads/road_edge.obj"
+    },
+    "corner": {
+      "model": "res/models/Roads/road_corner.obj"
     },
     "cross": {
-      "model": "res/models/Roads/road_cross.obj",
-      "rotation": 0.0
+      "model": "res/models/Roads/road_cross.obj"
     },
     "curve": {
-      "model": "res/models/Roads/road_curve.obj",
-      "rotation": 0.0
+      "model": "res/models/Roads/road_curve.obj"
     }
   }
 }

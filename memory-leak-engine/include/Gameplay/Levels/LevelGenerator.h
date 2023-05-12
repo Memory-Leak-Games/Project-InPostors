@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Neighbours.h"
+
 namespace mlg {
 
     class LevelGenerator {
@@ -39,13 +41,6 @@ namespace mlg {
             int useCount = 0;
         };
 
-        struct Neighbours {
-            char left = 0;
-            char down = 0;
-            char right = 0;
-            char up = 0;
-        };
-
         LevelGenerator() = default;
         ~LevelGenerator() = default;
 
@@ -80,6 +75,7 @@ namespace mlg {
 
         glm::vec2 GetCitySize();
         Neighbours GetNeighbours(int x, int y);
+        char GetTileOrZero(int x, int y);
     };
 
 } //mlg

@@ -83,8 +83,8 @@ namespace mlg {
         levelGenerator.levelJson = json::parse(levelFile);
 
         levelGenerator.LoadLayout();
-
         levelGenerator.LoadMapObjects();
+        levelGenerator.LoadRoads();
 
         levelGenerator.GenerateLevel();
     }
@@ -122,7 +122,6 @@ namespace mlg {
 
             mapObjects.insert({tileSymbol, MapEntry{mapObjectPool, isPathWay, 0}});
         }
-        LoadRoads();
     }
 
 
@@ -166,23 +165,23 @@ namespace mlg {
 
     void LevelGenerator::GenerateLevel() {
 
-        int i = 0, j = 0;
+        int x = 0, y = 0;
         for (const std::string& row: levelLayout) {
-            ++j;
+            ++y;
             for (const char& character: row) {
-                ++i;
+                ++x;
 
                 if (character == ' ')
                     continue;
 
                 if (character == roadsObjects.symbol) {
-                    PutRoad(j - 1, i - 1);
+                    PutRoad(x - 1, y - 1);
                     continue;
                 }
 
-                PutTile(j - 1, i - 1, character);
+                PutTile(x - 1, y - 1, character);
             }
-            i = 0;
+            x = 0;
         }
     }
 
@@ -213,8 +212,10 @@ namespace mlg {
             Random::shuffle(mapObjectPool);
         }
 
+        const MapObject& mapObject = mapObjectPool[mapEntry.useCount];
+
         float smartRotation = GetSmartRotation({x, y});
-        PutEntity(mapObjectPool[mapEntry.useCount], glm::ivec2{x, y}, smartRotation);
+        PutEntity(mapObject, glm::ivec2{x, y},smartRotation);
     }
 
     void LevelGenerator::PutEntity(const MapObject& mapObject, const glm::ivec2& position, float rotation) {
@@ -224,8 +225,8 @@ namespace mlg {
                 AddComponent<mlg::StaticMeshComponent>("StaticMesh", mapObject.model, mapObject.material);
 
         glm::vec3 objectPosition{0.0f};
-        objectPosition.x = -static_cast<float>(position.x) * tileSize + citySize.y * 0.5f;
-        objectPosition.z = static_cast<float>(position.y + 1) * tileSize - citySize.x * 0.5f;
+        objectPosition.x = -static_cast<float>(position.x) * tileSize + 0.5f * citySize.x - 0.5f * tileSize;
+        objectPosition.z = -static_cast<float>(position.y) * tileSize + 0.5f * citySize.y;
 
         modelEntity.lock()->GetTransform().SetPosition(objectPosition);
         modelEntity.lock()->GetTransform().SetEulerRotation({0.f, mapObject.worldRot + rotation, 0.f});
@@ -275,7 +276,7 @@ namespace mlg {
                 continue;
 
             if (neighbour == roadsObjects.symbol)
-                continue;
+                return angle - glm::radians(90.f);
 
             MapEntry& neighbourEntry = mapObjects.at(neighbour);
 
@@ -318,17 +319,7 @@ namespace mlg {
     }
 
     void LevelGenerator::PutCrossRoad(int x, int y) {
-        auto modelEntity = EntityManager::SpawnEntity<mlg::Entity>("MapObject", true, mlg::SceneGraph::GetRoot());
-        auto mapObject = roadsObjects.cross;
-
-        auto staticMesh = modelEntity.lock()->
-                AddComponent<mlg::StaticMeshComponent>("StaticMesh", mapObject.model, mapObject.material);
-
-        glm::vec3 objectPosition{0.0f};
-        objectPosition.z = static_cast<float>(y + 1) * tileSize - citySize.x * 0.5f;
-        objectPosition.x = -static_cast<float>(x) * tileSize + citySize.y * 0.5f;
-
-        modelEntity.lock()->GetTransform().SetPosition(objectPosition);
+        PutEntity(roadsObjects.cross, glm::ivec2{x, y}, 0.f);
     }
 
     void LevelGenerator::PutStraightRoad(int x, int y, bool isHorizontal) {
@@ -354,28 +345,29 @@ namespace mlg {
         PutEntity(roadsObjects.edge, glm::ivec2{x, y}, glm::radians(angle));
     }
 
-    LevelGenerator::Neighbours LevelGenerator::GetNeighbours(int x, int y) {
-        const std::vector<glm::ivec2> directions = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
+    Neighbours LevelGenerator::GetNeighbours(int x, int y) {
         Neighbours result;
-        char* neighbour = (char*) &result - 1;
 
-        for (auto direction : directions) {
-            const glm::ivec2 neighbourPosition = glm::ivec2(x,y) + direction;
-            neighbour++;
-
-            if (neighbourPosition.x < 0 || neighbourPosition.y < 0)
-                continue;
-
-            if (levelLayout.size() - 1 < neighbourPosition.x)
-                continue;
-
-            if (levelLayout[neighbourPosition.x].size() - 1 < neighbourPosition.y)
-                continue;
-
-            *neighbour = levelLayout[neighbourPosition.x][neighbourPosition.y];
+        for (int i = -1; i < 2; ++i) {
+            for (int j = -1; j < 2; ++j) {
+                result.tiles[i + 1][j + 1] = GetTileOrZero(x + j, y + i);
+            }
         }
 
         return result;
+    }
+
+    char LevelGenerator::GetTileOrZero(int x, int y) {
+        if (x < 0 || y < 0)
+            return 0;
+
+        if (y > levelLayout.size() - 1)
+            return 0;
+
+        if (x > levelLayout[y].size() - 1)
+            return 0;
+
+        return levelLayout[y][x];
     }
 
 }
