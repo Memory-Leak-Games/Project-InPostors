@@ -42,7 +42,7 @@ namespace mlg::ColliderShape {
         const float boundingCircleRadius;
 
         Rectangle(const glm::vec2& position, const glm::vec2& offset, const glm::vec2& size)
-        : Shape(position, offset), size(size), boundingCircleRadius(std::sqrt(size.x + size.y)) {}
+        : Shape(position, offset), size(size), boundingCircleRadius(glm::length(size)) {}
         ~Rectangle() override = default;
 
         [[nodiscard]] float GetRadius() const override {
