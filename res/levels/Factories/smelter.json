@@ -1,0 +1,38 @@
+{
+  "type": "Factory",
+
+  "staticMesh": {
+    "model": "res/models/Factories/smelter.obj",
+    "material": "res/models/Buildings/buildings_material.json",
+
+    "position": [0.0, 0.0, 0.0],
+    "rotation": [0.0, 0.0, 0.0],
+    "scale": 1.0
+  },
+
+  "colliders":[
+    {
+      "position": [0.0, 0.0],
+      "size": [1.0, 1.0]
+    }
+  ],
+
+  "blueprintID": "iron",
+
+  "input": {
+    "position": [0.0, 0.0],
+    "size": [1.0, 1.0]
+  },
+
+  "output": {
+    "position": [0.0, 0.0],
+    "size": [1.0, 1.0]
+  },
+
+  "emitters": [
+    {
+      "prefab": "smoke",
+      "position": [0.0, 0.0, 0.0]
+    }
+  ]
+}
