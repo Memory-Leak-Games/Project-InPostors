@@ -67,6 +67,7 @@ namespace mlg {
         glm::vec2 nearestPoint = CalculateNearestPointOnRect(circle->position, rectangle);
 
         auto rectangleAsCircle = std::make_unique<ColliderShape::Circle>(nearestPoint, glm::vec2{0.f}, 0.f);
+
         return CircleCircleSeparation(rectangleAsCircle.get(), circle);
     }
 
@@ -78,8 +79,7 @@ namespace mlg {
 
     glm::vec2 CollisionDetection::FindCollisionPointForRect(const ColliderShape::Rectangle* rectangle,
                                                             const glm::vec2& anotherPosition) {
-        glm::vec2 oneToTwoDirection = -Math::SafeNormal(rectangle->position - anotherPosition);
-        return oneToTwoDirection * rectangle->GetRadius() + rectangle->position;
+        return CollisionDetection::CalculateNearestPointOnRect(anotherPosition, rectangle);
     }
 
 

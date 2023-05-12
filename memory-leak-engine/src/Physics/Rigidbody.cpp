@@ -46,9 +46,6 @@ namespace mlg {
 
     void Rigidbody::UpdateColliders() {
         for (auto &collider: colliders) {
-            if (isKinematic)
-                continue;
-
             CalculateColliderPosition(collider);
         }
     }

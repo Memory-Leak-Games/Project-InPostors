@@ -22,6 +22,7 @@
 #include "SceneGraph/SceneGraph.h"
 #include "Car/PlayerOneInput.h"
 #include "Car/PlayerTwoInput.h"
+#include "Buildings/Factory.h"
 
 #include <Gameplay/ComponentManager.h>
 #include <Gameplay/Components/RigidbodyComponent.h>
@@ -172,6 +173,11 @@ public:
         mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::SpawnGround("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::LoadCameraSettings("res/levels/Cities/detroit.json", *cameraComponent.lock());
+
+        auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
+                                                                    "res/levels/Factories/smelter.json");
+        auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
+        testFactoryRigidBody.lock()->SetPosition({15.f, 8.f});
     }
 
     virtual ~ProjectInpostors() {

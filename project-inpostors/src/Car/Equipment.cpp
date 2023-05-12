@@ -45,3 +45,5 @@ bool Equipment::CheckBlueprint(const Blueprint& blueprint) const {
 bool Equipment::CheckIsFull() const{
     return equipment.size() >= size;
 }
+
+Equipment::~Equipment() = default;
