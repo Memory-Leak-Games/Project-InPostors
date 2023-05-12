@@ -57,7 +57,7 @@ namespace mlg {
                                               });
 
             if (foundIterator != components.end())
-                return *foundIterator;
+                return std::static_pointer_cast<T>(foundIterator->lock());
             else
                 return std::weak_ptr<T>();
         }

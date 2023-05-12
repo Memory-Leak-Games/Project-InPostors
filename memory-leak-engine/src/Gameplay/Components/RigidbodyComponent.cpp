@@ -29,7 +29,8 @@ namespace mlg {
         rigidbody->position.x = ownerPosition.x;
         rigidbody->position.y = ownerPosition.z;
 
-        SetKinematic(GetOwner().lock()->IsStatic());
+        if (GetOwner().lock()->IsStatic())
+            SetKinematic(true);
     }
 
     RigidbodyComponent::~RigidbodyComponent() {
@@ -113,8 +114,6 @@ namespace mlg {
         const glm::vec3 ownerPosition = GetOwner().lock()->GetTransform().GetPosition();
         glm::quat ownerQuat = GetOwner().lock()->GetTransform().GetRotation();
         glm::vec3 ownerRotation = GetOwner().lock()->GetTransform().GetEulerRotation();
-
-        SetKinematic(GetOwner().lock()->IsStatic());
     }
 
     void RigidbodyComponent::SetKinematic(bool isKinematic) {
@@ -191,6 +190,7 @@ namespace mlg {
 
     void RigidbodyComponent::SetPosition(const glm::vec2 &position) {
         rigidbody->position = position;
+        rigidbody->UpdateColliders();
     }
 
     const glm::vec2 &RigidbodyComponent::GetPosition() {

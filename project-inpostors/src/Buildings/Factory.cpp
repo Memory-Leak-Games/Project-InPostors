@@ -26,7 +26,13 @@ std::shared_ptr<Factory> Factory::Create(uint64_t id, const std::string& name, b
     json configJson = json::parse(configFile);
 
     result->AddMesh(configJson["staticMesh"]);
+    auto mainRigidbody = result->AddComponent<mlg::RigidbodyComponent>("MainRigidbody").lock();
 
+    for (const auto& colliderJson: configJson["colliders"]) {
+        result->AddCollider(colliderJson, mainRigidbody.get());
+    }
+
+    mainRigidbody->SetKinematic(true);
     return result;
 }
 
@@ -50,4 +56,18 @@ void Factory::AddMesh(const json& staticMeshJson) {
     staticMeshComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{
             staticMeshJson["scale"].get<float>()
     }));
+}
+
+void Factory::AddCollider(const json& colliderJson, mlg::RigidbodyComponent* rigidbodyComponent) {
+    glm::vec2 offset {
+        colliderJson["offset"][0].get<float>(),
+        colliderJson["offset"][1].get<float>()
+    };
+
+    glm::vec2 size {
+        colliderJson["size"][0].get<float>(),
+        colliderJson["size"][1].get<float>()
+    };
+
+    rigidbodyComponent->AddCollider<mlg::ColliderShape::Rectangle>(offset, size);
 }

@@ -54,13 +54,13 @@ namespace mlg {
 
         template<typename T, typename ... Args>
         std::weak_ptr<Collider> AddCollider(Args&& ... args) {
-            auto shape = std::make_unique<T>(glm::vec2(0.f), std::forward<Args>(args) ...);
+            auto shape = std::make_unique<T>(rigidbody->position, std::forward<Args>(args) ...);
             return AddCollider(std::move(shape));
         }
 
         template<typename T, typename ... Args>
         std::weak_ptr<Collider> AddTrigger(Args&& ... args) {
-            auto shape = std::make_unique<T>(glm::vec2(0.f), std::forward<Args>(args) ...);
+            auto shape = std::make_unique<T>(rigidbody->position, std::forward<Args>(args) ...);
             return AddTrigger(std::move(shape));
         }
 

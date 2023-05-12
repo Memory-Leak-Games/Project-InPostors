@@ -176,11 +176,8 @@ public:
 
         auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
                                                                     "res/levels/Factories/smelter.json");
-        testFactory.lock()->GetTransform().SetPosition(glm::vec3{
-            15.f,
-            0.f,
-            8.f
-        });
+        auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
+        testFactoryRigidBody.lock()->SetPosition({15.f, 8.f});
     }
 
     virtual ~ProjectInpostors() {
