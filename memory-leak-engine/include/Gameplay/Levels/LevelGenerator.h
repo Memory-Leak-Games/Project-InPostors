@@ -32,6 +32,7 @@ namespace mlg {
             MapObject edge;
             MapObject cross;
             MapObject curve;
+            MapObject corner;
         } roadsObjects;
 
         struct MapEntry {
@@ -69,9 +70,10 @@ namespace mlg {
         void PutEdgeRoad(int x, int y);
         void PutCrossRoad(int x, int y);
         void PutCurveRoad(int x, int y);
+        void PutCornerRoad(int x, int y);
 
         void PutEntity(const MapObject& mapObject, const glm::ivec2& position, float rotation);
-        float GetSmartRotation(const glm::ivec2& layoutPosition);
+        float GetSmartRotation(int x, int y);
 
         glm::vec2 GetCitySize();
         Neighbours GetNeighbours(int x, int y);

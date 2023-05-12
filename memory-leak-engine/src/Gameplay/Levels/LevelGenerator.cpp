@@ -57,6 +57,7 @@ namespace mlg {
         levelGenerator.LoadLayout();
 
         const glm::vec2 citySize = levelGenerator.GetCitySize();
+        const float tileSize = levelGenerator.tileSize;
 
         glm::vec4 color {
             levelGenerator.levelJson["groundColor"][0].get<float>(),
@@ -73,7 +74,16 @@ namespace mlg {
         auto ground = mlg::EntityManager::SpawnEntity<mlg::Entity>("Ground", true, mlg::SceneGraph::GetRoot());
         ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, groundMaterial);
         ground.lock()->GetTransform().SetPosition({0.f, -0.01f, 0.f});
-        ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
+
+        glm::vec3 groundScale{1.f};
+        groundScale.x = citySize.x + 2 * tileSize;
+        groundScale.z = citySize.y + 2 * tileSize;
+
+        SPDLOG_DEBUG("Spawning Ground with size: ({}, {})", groundScale.x, groundScale.z);
+        SPDLOG_DEBUG("City size: ({}, {})", citySize.x, citySize.y);
+        SPDLOG_DEBUG("Tile size: {}", tileSize);
+
+        ground.lock()->GetTransform().SetScale(groundScale);
     }
 
     void LevelGenerator::LoadMap(const std::string& path) {
@@ -161,6 +171,7 @@ namespace mlg {
         roadsObjects.edge = ParseObject(roadJson["edge"]);
         roadsObjects.cross = ParseObject(roadJson["cross"]);
         roadsObjects.curve = ParseObject(roadJson["curve"]);
+        roadsObjects.corner = ParseObject(roadJson["corner"]);
     }
 
     void LevelGenerator::GenerateLevel() {
@@ -186,7 +197,7 @@ namespace mlg {
     }
 
     glm::vec2 LevelGenerator::GetCitySize() {
-        glm::vec2 citySize;
+        citySize = glm::vec2 {0.f};
         for (const std::string& row: levelLayout) {
             citySize.x = std::max(citySize.x, static_cast<float>(row.size()));
         }
@@ -214,8 +225,8 @@ namespace mlg {
 
         const MapObject& mapObject = mapObjectPool[mapEntry.useCount];
 
-        float smartRotation = GetSmartRotation({x, y});
-        PutEntity(mapObject, glm::ivec2{x, y},smartRotation);
+        float smartRotation = GetSmartRotation(x, y);
+        PutEntity(mapObject, glm::ivec2{x, y}, glm::radians(smartRotation));
     }
 
     void LevelGenerator::PutEntity(const MapObject& mapObject, const glm::ivec2& position, float rotation) {
@@ -226,7 +237,7 @@ namespace mlg {
 
         glm::vec3 objectPosition{0.0f};
         objectPosition.x = -static_cast<float>(position.x) * tileSize + 0.5f * citySize.x - 0.5f * tileSize;
-        objectPosition.z = -static_cast<float>(position.y) * tileSize + 0.5f * citySize.y;
+        objectPosition.z = -static_cast<float>(position.y) * tileSize + 0.5f * citySize.y - 0.5f * tileSize;
 
         modelEntity.lock()->GetTransform().SetPosition(objectPosition);
         modelEntity.lock()->GetTransform().SetEulerRotation({0.f, mapObject.worldRot + rotation, 0.f});
@@ -252,51 +263,34 @@ namespace mlg {
         rb.lock()->SetKinematic(true);
     }
 
-    float LevelGenerator::GetSmartRotation(const glm::ivec2& layoutPosition) {
-        const std::vector<glm::ivec2> directions = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
+    float LevelGenerator::GetSmartRotation(int x, int y) {
+        const Neighbours neighbours = GetNeighbours(x, y);
 
-        float angle = 0;
-        for (auto direction : directions) {
-            angle += glm::radians(90.f);
+        float angle = 270.f;
 
-            const glm::ivec2 neighbourPosition = layoutPosition + direction;
-
-            if (neighbourPosition.x < 0 || neighbourPosition.y < 0)
-                continue;
-
-            if (levelLayout.size() - 1 < neighbourPosition.x)
-                continue;
-
-            if (levelLayout[neighbourPosition.x].size() - 1 < neighbourPosition.y)
-                continue;
-
-            const char neighbour = levelLayout[neighbourPosition.x][neighbourPosition.y];
-
-            if (neighbour == ' ')
-                continue;
-
-            if (neighbour == roadsObjects.symbol)
-                return angle - glm::radians(90.f);
-
-            MapEntry& neighbourEntry = mapObjects.at(neighbour);
-
-            if (neighbourEntry.isPathWay)
-                return angle - glm::radians(90.f);
-        }
+        if (neighbours.left == roadsObjects.symbol)
+            angle = 270.f;
+        else if (neighbours.down == roadsObjects.symbol)
+            angle = 0.f;
+        else if (neighbours.right == roadsObjects.symbol)
+            angle = 90.f;
+        else if (neighbours.up == roadsObjects.symbol)
+            angle = 180.f;
 
         return angle;
     }
 
     void LevelGenerator::PutRoad(int x, int y) {
-        Neighbours neighbours = GetNeighbours(x, y);
-        int neighboursRoadsCount = 0;
-        neighboursRoadsCount += neighbours.down == roadsObjects.symbol ? 1 : 0;
-        neighboursRoadsCount += neighbours.left == roadsObjects.symbol ? 1 : 0;
-        neighboursRoadsCount += neighbours.right == roadsObjects.symbol ? 1 : 0;
-        neighboursRoadsCount += neighbours.up == roadsObjects.symbol ? 1 : 0;
+        const Neighbours neighbours = GetNeighbours(x, y);
 
-        bool isEdge = neighboursRoadsCount == 3;
-        bool isCross = neighboursRoadsCount == 4;
+        int neighboursRoadsCount = 0;
+        for (auto row : neighbours.tiles)
+            for (auto tile : row)
+                neighboursRoadsCount += tile == roadsObjects.symbol ? 1 : 0;
+
+        bool isEdge = neighboursRoadsCount < 8 && neighboursRoadsCount > 4;
+        bool isCorner = neighboursRoadsCount == 8;
+        bool isCross = neighboursRoadsCount == 9;
 
         bool isVertical = neighbours.up == roadsObjects.symbol || neighbours.down == roadsObjects.symbol;
         isVertical &= neighbours.left != roadsObjects.symbol && neighbours.right != roadsObjects.symbol;
@@ -306,6 +300,8 @@ namespace mlg {
 
         if (isEdge) {
             PutEdgeRoad(x, y);
+        } else if (isCorner) {
+            PutCornerRoad(x, y);
         } else if (isCross) {
             PutCrossRoad(x, y);
         } else if (isVertical) {
@@ -313,7 +309,7 @@ namespace mlg {
         } else if (isHorizontal) {
             PutStraightRoad(x, y, true);
         } else {
-//            PutCurveRoad(x, y);
+            PutCurveRoad(x, y);
         }
 
     }
@@ -331,7 +327,7 @@ namespace mlg {
 
     void LevelGenerator::PutEdgeRoad(int x, int y) {
         float angle;
-        Neighbours neighbours = GetNeighbours(x, y);
+        const Neighbours neighbours = GetNeighbours(x, y);
 
         if (neighbours.left != roadsObjects.symbol)
             angle = 0.f;
@@ -343,6 +339,38 @@ namespace mlg {
             angle = 270.f;
 
         PutEntity(roadsObjects.edge, glm::ivec2{x, y}, glm::radians(angle));
+    }
+
+    void LevelGenerator::PutCornerRoad(int x, int y) {
+        float angle;
+        const Neighbours neighbours = GetNeighbours(x, y);
+
+        if (neighbours.leftUp != roadsObjects.symbol)
+            angle = 0.f;
+        else if (neighbours.leftDown != roadsObjects.symbol)
+            angle = 90.f;
+        else if (neighbours.rightDown != roadsObjects.symbol)
+            angle = 180.f;
+        else
+            angle = 270.f;
+
+        PutEntity(roadsObjects.corner, glm::ivec2{x, y}, glm::radians(angle));
+    }
+
+    void LevelGenerator::PutCurveRoad(int x, int y) {
+        float angle = 45;
+        const Neighbours neighbours = GetNeighbours(x, y);
+
+        if (neighbours.up == neighbours.right && neighbours.up == roadsObjects.symbol)
+            angle = 0.f;
+        else if (neighbours.up == neighbours.left && neighbours.up == roadsObjects.symbol)
+            angle = 90.f;
+        else if (neighbours.down == neighbours.left && neighbours.down == roadsObjects.symbol)
+            angle = 180.f;
+        else
+            angle = 270.f;
+
+        PutEntity(roadsObjects.curve, glm::ivec2{x, y}, glm::radians(angle));
     }
 
     Neighbours LevelGenerator::GetNeighbours(int x, int y) {
