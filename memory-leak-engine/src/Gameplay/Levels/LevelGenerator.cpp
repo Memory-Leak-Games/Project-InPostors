@@ -1,197 +1,401 @@
-#include "Gameplay/Levels/LevelGenerator.h"
-#include "Gameplay/EntityManager.h"
-#include "Gameplay/Entity.h"
-#include "Gameplay/Components/StaticMeshComponent.h"
-#include "SceneGraph/SceneGraph.h"
-#include "Macros.h"
-#include "Gameplay/Components/RigidbodyComponent.h"
-#include "Physics/Colliders/ColliderShapes.h"
 #include <fstream>
+#include <effolkronium/random.hpp>
+#include <utility>
 
 #include "Rendering/Model.h"
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
-#include "effolkronium/random.hpp"
-#include "nlohmann/json.hpp"
 
-#include "Gameplay/Levels/MapObject.h"
+#include "Gameplay/Levels/LevelGenerator.h"
+
+#include "Gameplay/EntityManager.h"
+#include "Gameplay/Entity.h"
+
+#include "SceneGraph/SceneGraph.h"
+
+#include "Gameplay/Components/CameraComponent.h"
+
+#include "Gameplay/Components/StaticMeshComponent.h"
+#include "Gameplay/Components/RigidbodyComponent.h"
+#include "Physics/Colliders/ColliderShapes.h"
 
 using json = nlohmann::json;
 using Random = effolkronium::random_static;
 
 namespace mlg {
-    LevelGenerator* LevelGenerator::instance;
 
-
-    void LevelGenerator::Initialize() {
-        if (instance != nullptr) return;
-
-        SPDLOG_INFO("Initializing Level Generator");
-        instance = new LevelGenerator;
-    }
-
-
-    void LevelGenerator::Stop() {
-        SPDLOG_INFO("Stopping Level Generator");
-        delete instance;
-        instance = nullptr;
-    }
-
-    LevelGenerator* LevelGenerator::GetInstance() {
-        return instance;
-    }
-
-
-    void LevelGenerator::LoadJson(const std::string& path) {
-        LoadLayout(path);
-        LoadMapObjects(path);
-    }
-
-
-    void LevelGenerator::LoadLayout(const std::string& path) {
+    void LevelGenerator::LoadCameraSettings(const std::string& path, struct CameraComponent& cameraComponent) {
         std::ifstream levelFile{path};
-        json levelJson = json::parse(levelFile);
+        json cameraJson = json::parse(levelFile)["cameraSettings"];
 
-        if (!levelLayout.empty())
-            levelLayout.clear();
+        const glm::vec3 position = {
+                cameraJson["position"][0].get<float>(),
+                cameraJson["position"][1].get<float>(),
+                cameraJson["position"][2].get<float>()
+        };
 
+        const glm::vec3 eulerRotation = {
+                cameraJson["rotation"][0].get<float>(),
+                cameraJson["rotation"][1].get<float>(),
+                cameraJson["rotation"][2].get<float>()
+        };
+
+        const float size = cameraJson["size"].get<float>();
+        const float near = cameraJson["near"].get<float>();
+        const float far = cameraJson["far"].get<float>();
+
+        cameraComponent.GetTransform().SetPosition(position);
+        cameraComponent.GetTransform().SetRotation(glm::radians(eulerRotation));
+        cameraComponent.SetOrtho(size, near, far);
+    }
+
+    void LevelGenerator::SpawnGround(const std::string& path) {
+        LevelGenerator levelGenerator;
+        std::ifstream levelFile{path};
+
+        levelGenerator.levelJson = json::parse(levelFile);
+        levelGenerator.LoadLayout();
+
+        const glm::vec2 citySize = levelGenerator.GetCitySize();
+        const float tileSize = levelGenerator.tileSize;
+
+        glm::vec4 color {
+            levelGenerator.levelJson["groundColor"][0].get<float>(),
+            levelGenerator.levelJson["groundColor"][1].get<float>(),
+            levelGenerator.levelJson["groundColor"][2].get<float>(),
+            levelGenerator.levelJson["groundColor"][3].get<float>()
+        };
+
+        auto planeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/plane.obj");
+        auto groundMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Ground/ground_material.json");
+        groundMaterial = groundMaterial->CreateDynamicInstance();
+        groundMaterial->SetVec4("color", color);
+
+        auto ground = mlg::EntityManager::SpawnEntity<mlg::Entity>("Ground", true, mlg::SceneGraph::GetRoot());
+        ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, groundMaterial);
+        ground.lock()->GetTransform().SetPosition({0.f, -0.01f, 0.f});
+
+        glm::vec3 groundScale{1.f};
+        groundScale.x = citySize.x + 2 * tileSize;
+        groundScale.z = citySize.y + 2 * tileSize;
+
+        SPDLOG_DEBUG("Spawning Ground with size: ({}, {})", groundScale.x, groundScale.z);
+        SPDLOG_DEBUG("City size: ({}, {})", citySize.x, citySize.y);
+        SPDLOG_DEBUG("Tile size: {}", tileSize);
+
+        ground.lock()->GetTransform().SetScale(groundScale);
+    }
+
+    void LevelGenerator::LoadMap(const std::string& path) {
+        LevelGenerator levelGenerator;
+
+        std::ifstream levelFile{path};
+        levelGenerator.levelJson = json::parse(levelFile);
+
+        levelGenerator.LoadLayout();
+        levelGenerator.LoadMapObjects();
+        levelGenerator.LoadRoads();
+
+        levelGenerator.GenerateLevel();
+    }
+
+    void LevelGenerator::LoadLayout() {
         for (const auto& jsonLayoutString: levelJson["layout"]) {
             levelLayout.push_back(jsonLayoutString.get<std::string>());
         }
 
-        tileSize = levelJson.contains("tile-size")
-                   ? levelJson["tile-size"].get<float>() : 10.0f;
-        defaultLevelMaterial = levelJson["default-material"].get<std::string>();
+        defaultMaterial = levelJson["defaultMaterial"].get<std::string>();
+        tileSize = levelJson["tileSize"].get<float>();
+        citySize = GetCitySize();
     }
 
+    void LevelGenerator::LoadMapObjects() {
+        std::ifstream tileFile{levelJson["tileset"].get<std::string>()};
+        tileJson = json::parse(tileFile);
 
-    void LevelGenerator::LoadMapObjects(const std::string& path) {
-        std::ifstream levelFile{path};
-        json levelJson = json::parse(levelFile);
-        // TODO: Kris here - for now I have no idea how to prevent loading JSON twice.
-        //  If you have any idea how to do it without including json hpp in header file, hit me up :)
-
-        // TODO: Szymon here - If you know that header is library header and it would not change too often
-        //  you can include it in header. However always better to have includes in source files :3
-
-        mapObjects = std::make_unique<std::unordered_map<char, LevelGenerator::MapEntry>>();
-
-        for (const auto& jsonTile: levelJson["tiles"]) {
+        for (const auto& jsonTile: tileJson["tiles"]) {
             const char tileSymbol = jsonTile["symbol"].get<std::string>()[0];
-            std::vector<std::shared_ptr<MapObject>> mapObjectPool;
 
-            //TODO: move this to a separate function maybe?
-            for (const auto& jsonMapObject: jsonTile["objects"]) {
-                std::string modelPath = jsonMapObject["model"].get<std::string>();
-                std::string materialPath = jsonMapObject.contains("material")
-                                           ? jsonMapObject["material"].get<std::string>()
-                                           : defaultLevelMaterial;
-                float yRot = jsonMapObject.contains("rotation")
-                             ? jsonMapObject["rotation"].get<float>() : 0.f;
-                float scale = jsonMapObject.contains("scale")
-                              ? jsonMapObject["scale"].get<float>() : 1.f;
+            if (tileSymbol == roadsObjects.symbol)
+                continue;
 
-                mlg::MapObject mapObj(modelPath, materialPath, yRot);
-                if (jsonMapObject.contains("collision-type")) {
-                    std::string cType = jsonMapObject["collision-type"].get<std::string>();
-                    float cSize = jsonMapObject.contains("collision-size")
-                                  ? jsonMapObject["collision-size"].get<float>() : 1.0f;
-                    float cOffset = jsonMapObject.contains("collision-offset")
-                                    ? jsonMapObject["collision-offset"].get<float>() : 0.0f;
-                    mapObj.AddCollision(cType, cSize, cOffset);
-                }
+            std::vector<MapObject> mapObjectPool;
 
-                mapObj.SetScale(scale);
-
-                auto newMapObj = std::make_shared<MapObject>(mapObj);
-                mapObjectPool.push_back(newMapObj);
+            bool isPathWay = false;
+            if (jsonTile.contains("isPathWay")) {
+                isPathWay = jsonTile["isPathWay"].get<bool>();
             }
-            mapObjects->insert({tileSymbol, {std::move(mapObjectPool), 0}});
+
+            for (const auto& jsonMapObject: jsonTile["objects"]) {
+                mapObjectPool.push_back(std::move(ParseObject(jsonMapObject)));
+            }
+
+            mapObjects.insert({tileSymbol, MapEntry{mapObjectPool, isPathWay, 0}});
         }
     }
 
+
+    LevelGenerator::MapObject LevelGenerator::ParseObject(const json& jsonMapObject) {
+        std::string modelPath = jsonMapObject["model"].get<std::string>();
+        std::string materialPath = jsonMapObject.contains("material")
+                                   ? jsonMapObject["material"].get<std::string>()
+                                   : defaultMaterial;
+
+        MapObject mapObj;
+        mapObj.model = AssetManager::GetAsset<ModelAsset>(modelPath);
+        mapObj.material = AssetManager::GetAsset<MaterialAsset>(materialPath);
+
+        mapObj.worldRot = jsonMapObject.contains("rotation") ? jsonMapObject["rotation"].get<float>() : 0.f;
+        mapObj.worldRot = glm::radians(mapObj.worldRot);
+
+        mapObj.scale = jsonMapObject.contains("scale")
+                        ? jsonMapObject["scale"].get<float>() : 1.f;
+
+        if (jsonMapObject.contains("collision-type")) {
+            mapObj.hasCollision = true;
+            mapObj.colliderType = jsonMapObject["collision-type"].get<std::string>();
+            mapObj.colliderSize = jsonMapObject.contains("collision-size")
+                                   ? jsonMapObject["collision-size"].get<float>() : 1.0f;
+            mapObj.colliderOffset = jsonMapObject.contains("collision-offset")
+                                     ? jsonMapObject["collision-offset"].get<float>() : 0.0f;
+        }
+
+        return mapObj;
+    }
+
+    void LevelGenerator::LoadRoads() {
+        json roadJson = tileJson["road"];
+        roadsObjects.symbol = roadJson["symbol"].get<std::string>()[0];
+
+        roadsObjects.road = ParseObject(roadJson["road"]);
+        roadsObjects.edge = ParseObject(roadJson["edge"]);
+        roadsObjects.cross = ParseObject(roadJson["cross"]);
+        roadsObjects.curve = ParseObject(roadJson["curve"]);
+        roadsObjects.corner = ParseObject(roadJson["corner"]);
+    }
 
     void LevelGenerator::GenerateLevel() {
-        glm::vec2 citySize{0.f};
-        citySize.y = static_cast<float>(levelLayout.size());
 
+        int x = 0, y = 0;
         for (const std::string& row: levelLayout) {
-            citySize.x = std::max(citySize.x, static_cast<float>(row.size()));
-        }
-
-        citySize *= tileSize;
-
-        int i = 0, j = 0;
-        for (const std::string& row: levelLayout) {
-            ++j;
+            ++y;
             for (const char& character: row) {
-                ++i;
+                ++x;
 
                 if (character == ' ')
                     continue;
 
-                MLG_ASSERT_MSG(mapObjects->find(character) != mapObjects->end(),
-                               "Unknown character in tile map");
-
-                //mapObjPool is std::vector<std::shared_ptr<MapObject>>
-                auto mapObjPool = mapObjects->at(character).object;
-                int useCount = (mapObjects->at(character).useCount)++;
-
-                if (useCount > mapObjPool.size() - 1) {
-                    useCount = 0;
-                    Random::shuffle(mapObjPool);
+                if (character == roadsObjects.symbol) {
+                    PutRoad(x - 1, y - 1);
+                    continue;
                 }
 
-                auto mapObj = mapObjPool[useCount];
-
-                glm::vec3 objectPos{0.0f};
-                objectPos.z = static_cast<float>(i) * tileSize - citySize.x * 0.5f;
-                objectPos.y = 0.0f;//-0.5f;
-                objectPos.x = -static_cast<float>(j - 1) * tileSize + citySize.y * 0.5f;
-                PutObject(mapObj, objectPos);
+                PutTile(x - 1, y - 1, character);
             }
-            i = 0;
+            x = 0;
         }
     }
 
+    glm::vec2 LevelGenerator::GetCitySize() {
+        citySize = glm::vec2 {0.f};
+        for (const std::string& row: levelLayout) {
+            citySize.x = std::max(citySize.x, static_cast<float>(row.size()));
+        }
+        citySize.y = (float) levelLayout.size();
 
-    void LevelGenerator::PutObject(const std::shared_ptr<MapObject>& obj, glm::vec3 pos) {
-        auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>(
-                Hash("MapObject", pos.x, pos.z),
-                true, mlg::SceneGraph::GetRoot());
-        auto staticMesh = modelEntity.lock()->AddComponent<mlg::StaticMeshComponent>(
-                "StaticMesh", obj->GetModel().lock(), obj->GetMaterial().lock());
+        citySize *= tileSize;
+        return citySize;
+    }
 
-        staticMesh.lock()->GetTransform().SetScale(glm::vec3{obj->GetScale()});
+    void LevelGenerator::PutTile(int x, int y, const char& character) {
+        if (!mapObjects.contains(character)) {
+            SPDLOG_WARN("LevelLoader: unknown character: {}, at ({}, {}).", character, x, y);
+            return;
+        }
 
-        modelEntity.lock()->GetTransform().SetPosition(pos);
-        modelEntity.lock()->GetTransform().SetEulerRotation(obj->GetRotation());
+        MapEntry& mapEntry = mapObjects.at(character);
+        std::vector<MapObject>& mapObjectPool = mapEntry.objectsPool;
 
-        // add collider if needed
-        if (!obj->HasCollision())
+        mapEntry.useCount++;
+
+        if (mapEntry.useCount > mapObjectPool.size() - 1) {
+            mapEntry.useCount = 0;
+            Random::shuffle(mapObjectPool);
+        }
+
+        const MapObject& mapObject = mapObjectPool[mapEntry.useCount];
+
+        float smartRotation = GetSmartRotation(x, y);
+        PutEntity(mapObject, glm::ivec2{x, y}, glm::radians(smartRotation));
+    }
+
+    void LevelGenerator::PutEntity(const MapObject& mapObject, const glm::ivec2& position, float rotation) {
+        auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("MapObject", true, mlg::SceneGraph::GetRoot());
+
+        auto staticMesh = modelEntity.lock()->
+                AddComponent<mlg::StaticMeshComponent>("StaticMesh", mapObject.model, mapObject.material);
+
+        glm::vec3 objectPosition{0.0f};
+        objectPosition.x = -static_cast<float>(position.x) * tileSize + 0.5f * citySize.x - 0.5f * tileSize;
+        objectPosition.z = -static_cast<float>(position.y) * tileSize + 0.5f * citySize.y - 0.5f * tileSize;
+
+        modelEntity.lock()->GetTransform().SetPosition(objectPosition);
+        modelEntity.lock()->GetTransform().SetEulerRotation({0.f, mapObject.worldRot + rotation, 0.f});
+        modelEntity.lock()->GetTransform().SetScale(glm::vec3{mapObject.scale});
+
+        if (!mapObject.hasCollision)
             return;
 
+        // add collider if needed
         auto rb = modelEntity.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
-        std::string colType = obj->GetColliderType();
+        std::string colType = mapObject.colliderType;
         if (colType == "rectangle") {
             rb.lock()->AddCollider<mlg::ColliderShape::Rectangle>(
-                    glm::vec2(glm::vec2(obj->GetColliderOffset())),
-                    glm::vec2(obj->GetColliderSize()));
+                    glm::vec2(glm::vec2(mapObject.colliderOffset)),
+                    glm::vec2(mapObject.colliderSize));
         } else if (colType == "circle") {
             rb.lock()->AddCollider<mlg::ColliderShape::Circle>(
-                    glm::vec2(glm::vec2(obj->GetColliderSize())),
-                    obj->GetColliderOffset());
+                    glm::vec2(glm::vec2(mapObject.colliderSize)),
+                    mapObject.colliderOffset);
         }
-        rb.lock()->SetRotation(obj->GetRotation().y);
+
+        rb.lock()->SetRotation(mapObject.worldRot + rotation);
         rb.lock()->SetKinematic(true);
     }
 
+    float LevelGenerator::GetSmartRotation(int x, int y) {
+        const Neighbours neighbours = GetNeighbours(x, y);
 
-    std::string LevelGenerator::Hash(const std::string& hashString, float posX, float posY) {
-        std::size_t h1 = std::hash<std::string>{}(hashString);
-        auto h2 = static_cast<size_t>(posX * posY + posX);
-        std::stringstream ss;
-        ss << (h1 ^ (h2 << 1));
-        return ss.str();
+        float angle = 270.f;
+
+        if (neighbours.left == roadsObjects.symbol)
+            angle = 270.f;
+        else if (neighbours.down == roadsObjects.symbol)
+            angle = 0.f;
+        else if (neighbours.right == roadsObjects.symbol)
+            angle = 90.f;
+        else if (neighbours.up == roadsObjects.symbol)
+            angle = 180.f;
+
+        return angle;
     }
+
+    void LevelGenerator::PutRoad(int x, int y) {
+        const Neighbours neighbours = GetNeighbours(x, y);
+
+        int neighboursRoadsCount = 0;
+        for (auto row : neighbours.tiles)
+            for (auto tile : row)
+                neighboursRoadsCount += tile == roadsObjects.symbol ? 1 : 0;
+
+        bool isEdge = neighboursRoadsCount < 8 && neighboursRoadsCount > 4;
+        bool isCorner = neighboursRoadsCount == 8;
+        bool isCross = neighboursRoadsCount == 9;
+
+        bool isVertical = neighbours.up == roadsObjects.symbol || neighbours.down == roadsObjects.symbol;
+        isVertical &= neighbours.left != roadsObjects.symbol && neighbours.right != roadsObjects.symbol;
+
+        bool isHorizontal = neighbours.left == roadsObjects.symbol || neighbours.right == roadsObjects.symbol;
+        isHorizontal &= neighbours.up != roadsObjects.symbol && neighbours.down != roadsObjects.symbol;
+
+        if (isEdge) {
+            PutEdgeRoad(x, y);
+        } else if (isCorner) {
+            PutCornerRoad(x, y);
+        } else if (isCross) {
+            PutCrossRoad(x, y);
+        } else if (isVertical) {
+            PutStraightRoad(x, y, false);
+        } else if (isHorizontal) {
+            PutStraightRoad(x, y, true);
+        } else {
+            PutCurveRoad(x, y);
+        }
+
+    }
+
+    void LevelGenerator::PutCrossRoad(int x, int y) {
+        PutEntity(roadsObjects.cross, glm::ivec2{x, y}, 0.f);
+    }
+
+    void LevelGenerator::PutStraightRoad(int x, int y, bool isHorizontal) {
+        float angle = isHorizontal ? 90.f : 0.f;
+        auto mapObject = roadsObjects.road;
+
+        PutEntity(roadsObjects.road, glm::ivec2{x, y}, glm::radians(angle));
+    }
+
+    void LevelGenerator::PutEdgeRoad(int x, int y) {
+        float angle;
+        const Neighbours neighbours = GetNeighbours(x, y);
+
+        if (neighbours.left != roadsObjects.symbol)
+            angle = 0.f;
+        else if (neighbours.down != roadsObjects.symbol)
+            angle = 90.f;
+        else if (neighbours.right != roadsObjects.symbol)
+            angle = 180.f;
+        else
+            angle = 270.f;
+
+        PutEntity(roadsObjects.edge, glm::ivec2{x, y}, glm::radians(angle));
+    }
+
+    void LevelGenerator::PutCornerRoad(int x, int y) {
+        float angle;
+        const Neighbours neighbours = GetNeighbours(x, y);
+
+        if (neighbours.leftUp != roadsObjects.symbol)
+            angle = 0.f;
+        else if (neighbours.leftDown != roadsObjects.symbol)
+            angle = 90.f;
+        else if (neighbours.rightDown != roadsObjects.symbol)
+            angle = 180.f;
+        else
+            angle = 270.f;
+
+        PutEntity(roadsObjects.corner, glm::ivec2{x, y}, glm::radians(angle));
+    }
+
+    void LevelGenerator::PutCurveRoad(int x, int y) {
+        float angle = 45;
+        const Neighbours neighbours = GetNeighbours(x, y);
+
+        if (neighbours.up == neighbours.right && neighbours.up == roadsObjects.symbol)
+            angle = 0.f;
+        else if (neighbours.up == neighbours.left && neighbours.up == roadsObjects.symbol)
+            angle = 90.f;
+        else if (neighbours.down == neighbours.left && neighbours.down == roadsObjects.symbol)
+            angle = 180.f;
+        else
+            angle = 270.f;
+
+        PutEntity(roadsObjects.curve, glm::ivec2{x, y}, glm::radians(angle));
+    }
+
+    Neighbours LevelGenerator::GetNeighbours(int x, int y) {
+        Neighbours result;
+
+        for (int i = -1; i < 2; ++i) {
+            for (int j = -1; j < 2; ++j) {
+                result.tiles[i + 1][j + 1] = GetTileOrZero(x + j, y + i);
+            }
+        }
+
+        return result;
+    }
+
+    char LevelGenerator::GetTileOrZero(int x, int y) {
+        if (x < 0 || y < 0)
+            return 0;
+
+        if (y > levelLayout.size() - 1)
+            return 0;
+
+        if (x > levelLayout[y].size() - 1)
+            return 0;
+
+        return levelLayout[y][x];
+    }
+
 }

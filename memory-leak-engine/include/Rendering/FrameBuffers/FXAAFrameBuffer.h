@@ -12,6 +12,8 @@ namespace mlg {
         uint32_t rboDepth = 0;
     public:
         FXAAFrameBuffer(int32_t width, int32_t height);
+
+        void Resize(int32_t width, int32_t height) override;
     };
 
 } // mlg

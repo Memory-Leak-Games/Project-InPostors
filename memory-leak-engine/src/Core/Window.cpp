@@ -70,8 +70,6 @@ int32_t Window::SetupWindow() {
     glfwSetWindowUserPointer(glfwWindow, (void*) &windowData);
     SetupCallbacks();
 
-    // TODO: Move this to HID classes
-    glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     glfwSwapInterval(false);
 
     return 0;
@@ -92,7 +90,7 @@ void Window::SetWindowSettings() const {
     if (SettingsManager::Get<bool>(SettingsType::Video, "LockSize"))
         glfwSetWindowSizeLimits(glfwWindow, windowData.width, windowData.height, windowData.width, windowData.height);
     else
-        glfwSetWindowSizeLimits(glfwWindow, windowData.width, windowData.height, GLFW_DONT_CARE, GLFW_DONT_CARE);
+        glfwSetWindowSizeLimits(glfwWindow, 640, 480, GLFW_DONT_CARE, GLFW_DONT_CARE);
 }
 
 GLFWmonitor *Window::GetMonitor() {

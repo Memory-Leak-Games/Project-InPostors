@@ -1,0 +1,110 @@
+{
+  "tiles": [
+  {
+    "symbol": "b",
+    "objects": [
+      {
+        "model": "res/models/Buildings/building_big_1.obj",
+        "collision-type": "rectangle",
+        "collision-size": 4.0,
+        "scale": 0.85
+      },
+      {
+        "model": "res/models/Buildings/building_big_2.obj",
+        "collision-type": "rectangle",
+        "collision-size": 4.0,
+        "scale": 0.85
+      },
+      {
+        "model": "res/models/Buildings/building_big_3.obj",
+        "collision-type": "rectangle",
+        "collision-size": 4.0,
+        "scale": 0.85
+      },
+      {
+        "model": "res/models/Buildings/building_big_4.obj",
+        "collision-type": "rectangle",
+        "collision-size": 4.0,
+        "scale": 0.85
+      }
+    ]
+  },
+  {
+    "symbol": "s",
+    "objects": [
+      {
+        "model": "res/models/Buildings/building_small_1.obj",
+        "scale": 0.85,
+        "collision-type": "rectangle",
+        "collision-size": 4.0
+      },
+      {
+        "model": "res/models/Buildings/building_small_2.obj",
+        "scale": 0.85,
+        "collision-type": "rectangle",
+        "collision-size": 4.0
+      },
+      {
+        "model": "res/models/Buildings/building_small_3.obj",
+        "scale": 0.85,
+        "collision-type": "rectangle",
+        "collision-size": 4.0
+      }
+    ]
+  },
+  {
+    "symbol": "L",
+    "objects": [
+      {
+        "model": "res/models/Buildings/building_corrner_big.obj",
+        "rotation": -90.0,
+        "scale": 0.85,
+        "collision-size": 4.0,
+        "collision-type": "rectangle"
+      }
+    ]
+  },
+  {
+    "symbol": "l",
+    "objects": [
+      {
+        "model": "res/models/Buildings/building_corrner_small.obj",
+        "rotation": 90.0,
+        "scale": 0.85,
+        "collision-size": 4.0,
+        "collision-type": "rectangle"
+      }
+    ]
+  },
+  {
+    "symbol": "p",
+    "isPathWay": true,
+    "objects": [
+      {
+        "model": "res/models/Roads/path_way.obj"
+      }
+    ]
+  }
+],
+
+  "road": {
+    "symbol": "#",
+    "road": {
+      "model": "res/models/Roads/road.obj",
+      "rotation": 90.0
+    },
+    "edge": {
+      "model": "res/models/Roads/road_edge.obj"
+    },
+    "corner": {
+      "model": "res/models/Roads/road_corner.obj"
+    },
+    "cross": {
+      "model": "res/models/Roads/road_cross.obj"
+    },
+    "curve": {
+      "model": "res/models/Roads/road_curve.obj"
+    }
+  }
+}
+

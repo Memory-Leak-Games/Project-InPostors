@@ -3,11 +3,11 @@
   "ShadowMapResolution": 2048,
   "VSync": false,
   "SSAO": true,
-  "SSAOSamples": 16,
+  "SSAOSamples": 8,
   "FXAA": true,
 
   "ResolutionWidth": 1280,
   "ResolutionHeight": 720,
   "WindowType": "windowed",
-  "LockSize": true
+  "LockSize": false
 }

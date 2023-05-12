@@ -89,16 +89,12 @@ public:
         mlg::ComponentManager::Initialize();
         mlg::EntityManager::Initialize();
 
-        mlg::LevelGenerator::Initialize();
-
         mlg::Core::Initialize();
         mlg::Input::Initialize();
 
         mlg::Core* engine = mlg::Core::GetInstance();
         PrepareScene();
         engine->MainLoop();
-
-        mlg::LevelGenerator::Stop();
 
         mlg::EntityManager::Stop();
         mlg::ComponentManager::Stop();
@@ -123,14 +119,6 @@ public:
     }
 
     void PrepareScene() {
-        auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
-        auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
-        cameraComponent.lock()->SetOrtho(40.f, 0.1, 100.f);
-
-        cameraComponent.lock()->GetTransform().SetPosition({-10.f, 15.f, -10.f});
-        cameraComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{60.f, 45.f, 0.f}));
-        cameraComponent.lock()->SetActive();
-
 //        sound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/SFX/mario_coin.ogg");
 //        music = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/Crushin.ogg");
 //        auto audioComponent = cameraEntity.lock()->AddComponent<mlg::AudioComponent>("AudioComponent", music);
@@ -141,16 +129,8 @@ public:
         auto redMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/red_material.json");
         auto blueMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/blue_material.json");
 
-        auto groundMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Ground/ground_material.json");
-        auto planeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/plane.obj");
-
         auto cubeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Cube.obj");
         auto sphereModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Sphere.obj");
-
-        auto ground = mlg::EntityManager::SpawnEntity<mlg::Entity>("Ground", true, mlg::SceneGraph::GetRoot());
-        ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, groundMaterial);
-        ground.lock()->GetTransform().SetPosition({0.f, -0.01f, 0.f});
-        ground.lock()->GetTransform().SetScale(glm::vec3{100.f});
 
         auto ui = mlg::EntityManager::SpawnEntity<mlg::Entity>("ui", true, mlg::SceneGraph::GetRoot());
 
@@ -180,25 +160,18 @@ public:
         PlayerData firstPlayerData = {0, mlg::RGBA::red};
         PlayerData secondPlayerData = {0, mlg::RGBA::cyan};
 
-        auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot(),
-                                                              firstPlayerData);
+        auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot(), firstPlayerData);
         player.lock()->AddComponent<PlayerOneInput>("PlayerInput");
 
-        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false, mlg::SceneGraph::GetRoot(),
-                                                                 secondPlayerData);
+        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false, mlg::SceneGraph::GetRoot(), secondPlayerData);
         playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
 
-        auto trigger = mlg::EntityManager::SpawnEntity<mlg::Entity>("Trigger", false, mlg::SceneGraph::GetRoot());
-        trigger.lock()->GetTransform().SetPosition(glm::vec3{5.f, 0.f, -2.f});
-        auto rigidbodyComponent = trigger.lock()->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
-        rigidbodyComponent.lock()->AddTrigger<mlg::ColliderShape::Circle>(glm::vec2(0.f, 0.0f), 1.f);
-        rigidbodyComponent.lock()->OnTriggerEnter.append([](const mlg::CollisionEvent& event) {
-            SPDLOG_INFO("Trigger");
-        });
+        auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
+        auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
 
-        auto levelGen = mlg::LevelGenerator::GetInstance();
-        levelGen->LoadJson("res/levels/detroit.json");
-        levelGen->GenerateLevel();
+        mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit.json");
+        mlg::LevelGenerator::SpawnGround("res/levels/Cities/detroit.json");
+        mlg::LevelGenerator::LoadCameraSettings("res/levels/Cities/detroit.json", *cameraComponent.lock());
     }
 
     virtual ~ProjectInpostors() {

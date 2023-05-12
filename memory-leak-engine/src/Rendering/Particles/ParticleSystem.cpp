@@ -70,7 +70,7 @@ namespace mlg {
         const glm::vec3 cameraPosition = Renderer::GetInstance()->GetCurrentCamera()->GetTransform().GetWorldPosition();
         auto sortByDistance = [cameraPosition](const GPUParticle& particle, const GPUParticle& anotherParticle) -> bool {
             return glm::length(particle.position - cameraPosition)
-                < glm::length(anotherParticle.position - cameraPosition);
+                > glm::length(anotherParticle.position - cameraPosition);
         };
 
         {

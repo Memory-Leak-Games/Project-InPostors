@@ -2,5 +2,5 @@
   "fpsCAP" : 1000,
   "physicsTickRate" : 60,
 
-  "collisionTorqueMultiplier" : 1.0
+  "collisionTorqueMultiplier" : 0.2
 }
