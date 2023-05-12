@@ -169,9 +169,9 @@ public:
         auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
         auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
 
-        mlg::LevelGenerator::LoadMap("res/levels/detroit.json");
-        mlg::LevelGenerator::SpawnGround("res/levels/detroit.json");
-        mlg::LevelGenerator::LoadCameraSettings("res/levels/detroit.json", *cameraComponent.lock());
+        mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit.json");
+        mlg::LevelGenerator::SpawnGround("res/levels/Cities/detroit.json");
+        mlg::LevelGenerator::LoadCameraSettings("res/levels/Cities/detroit.json", *cameraComponent.lock());
     }
 
     virtual ~ProjectInpostors() {

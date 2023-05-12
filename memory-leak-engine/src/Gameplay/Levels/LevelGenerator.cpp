@@ -84,7 +84,6 @@ namespace mlg {
 
         levelGenerator.LoadLayout();
 
-        levelGenerator.LoadRoads();
         levelGenerator.LoadMapObjects();
 
         levelGenerator.GenerateLevel();
@@ -100,7 +99,10 @@ namespace mlg {
     }
 
     void LevelGenerator::LoadMapObjects() {
-        for (const auto& jsonTile: levelJson["tiles"]) {
+        std::ifstream tileFile{levelJson["tileset"].get<std::string>()};
+        tileJson = json::parse(tileFile);
+
+        for (const auto& jsonTile: tileJson["tiles"]) {
             const char tileSymbol = jsonTile["symbol"].get<std::string>()[0];
 
             if (tileSymbol == roadsObjects.symbol)
@@ -119,7 +121,9 @@ namespace mlg {
 
             mapObjects.insert({tileSymbol, MapEntry{mapObjectPool, isPathWay, 0}});
         }
+        LoadRoads();
     }
+
 
     LevelGenerator::MapObject LevelGenerator::ParseObject(const json& jsonMapObject) {
         std::string modelPath = jsonMapObject["model"].get<std::string>();
@@ -150,7 +154,7 @@ namespace mlg {
     }
 
     void LevelGenerator::LoadRoads() {
-        json roadJson = levelJson["road"];
+        json roadJson = tileJson["road"];
         roadsObjects.symbol = roadJson["symbol"].get<std::string>()[0];
 
         roadsObjects.vertical = ParseObject(roadJson["vertical"]);

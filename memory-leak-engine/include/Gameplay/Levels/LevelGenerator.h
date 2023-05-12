@@ -43,12 +43,13 @@ namespace mlg {
         ~LevelGenerator() = default;
 
         nlohmann::json levelJson;
+        nlohmann::json tileJson;
 
         std::vector<std::string> levelLayout;
         std::unordered_map<char, MapEntry> mapObjects;
 
         std::string defaultMaterial;
-        float tileSize;
+        float tileSize = 10.f;
 
         void LoadLayout();
         void LoadMapObjects();
