@@ -11,7 +11,11 @@
 #include "Rendering/Assets/ModelAsset.h"
 #include "Rendering/Assets/MaterialAsset.h"
 
+#include "Rendering/Particles/ParticleSystem.h"
+
 #include "SceneGraph/Transform.h"
+#include "FX/FXLibrary.h"
+#include "Gameplay/Components/ParticleSystemComponent.h"
 
 using json = nlohmann::json;
 
@@ -30,6 +34,10 @@ std::shared_ptr<Factory> Factory::Create(uint64_t id, const std::string& name, b
 
     for (const auto& colliderJson: configJson["colliders"]) {
         result->AddCollider(colliderJson, mainRigidbody.get());
+    }
+
+    for (const auto& emitterJson: configJson["emitters"]) {
+        result->AddEmitter(emitterJson);
     }
 
     mainRigidbody->SetKinematic(true);
@@ -71,3 +79,15 @@ void Factory::AddCollider(const json& colliderJson, mlg::RigidbodyComponent* rig
 
     rigidbodyComponent->AddCollider<mlg::ColliderShape::Rectangle>(offset, size);
 }
+
+void Factory::AddEmitter(const json& emitterJson) {
+    const std::string id = emitterJson["id"].get<std::string>();
+    std::shared_ptr<mlg::ParticleSystem> emitter = FXLibrary::Get(id);
+    auto emitterComponent = AddComponent<mlg::ParticleSystemComponent>(id, emitter);
+    emitterComponent.lock()->GetTransform().SetPosition({
+        emitterJson["position"][0].get<float>(),
+        emitterJson["position"][1].get<float>(),
+        emitterJson["position"][2].get<float>(),
+    });
+}
+

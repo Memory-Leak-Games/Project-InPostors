@@ -8,20 +8,20 @@
 
   "layout": [
     "      bbbbbbbbbbbbbbb ",
-    "     s###############s",
-    "     s###############s",
-    "     s##ssss#########s",
-    "     s##    ###sss###s",
-    "     s##    ###bbs###s",
-    "ssssss##    ###Lss###Lbbbbb",
-    "s#########################b",
-    "s#########################b",
-    "s#########################b",
-    "sssss##sssss###bssssssssss ",
-    "    s##Lbbbs###b",
-    "    s##########b",
-    "    s##########b",
-    "    sssssssssssb"
+    "     s###############s     ",
+    "     s###############sbbbb ",
+    "     s##ssss#############b ",
+    "     s##    ###sss#######b ",
+    "     s##    ###bbs###sb##b ",
+    "ssssss##    ###Lss###Lb##bbb",
+    "s##########################b",
+    "s##########################b",
+    "s##########################b",
+    "sssss##sssss###bssss##ssssbb",
+    "    s##Lbbbs###bbbsb##b    ",
+    "    s#################s    ",
+    "    s#################b    ",
+    "    sssssssssssbbsbbsbb    "
   ],
 
   "cameraSettings": {

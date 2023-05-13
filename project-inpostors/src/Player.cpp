@@ -16,7 +16,7 @@
 #include "Car/CarMovementComponent.h"
 #include "Gameplay/Components/ParticleSystemComponent.h"
 
-#include "Car/FX/SmokeFX.h"
+#include "include/FX/SmokeFX.h"
 #include "Car/PlayerTwoInput.h"
 
 using json = nlohmann::json;
