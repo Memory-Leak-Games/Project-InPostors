@@ -18,3 +18,13 @@ PlayerTwoInput::PlayerTwoInput(const std::weak_ptr<mlg::Entity>& owner, const st
 : CarInput(owner, name) {}
 
 PlayerTwoInput::~PlayerTwoInput() {}
+
+bool PlayerTwoInput::GetPickUpInput() {
+    //TODO:
+    return false;
+}
+
+bool PlayerTwoInput::GetDropInput() {
+    //TODO:
+    return false;
+}

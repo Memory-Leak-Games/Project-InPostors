@@ -9,4 +9,6 @@ public:
     CarInput(const std::weak_ptr<mlg::Entity> &owner, const std::string &name) : Component(owner, name) {}
 
     virtual glm::vec2 GetMovementInput() = 0;
+    virtual bool GetPickUpInput() = 0;
+    virtual bool GetDropInput() = 0;
 };

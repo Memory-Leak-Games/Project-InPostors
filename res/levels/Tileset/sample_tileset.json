@@ -1,91 +1,99 @@
 {
   "tiles": [
-  {
-    "symbol": "b",
-    "objects": [
-      {
-        "model": "res/models/Buildings/building_big_1.obj",
-        "collision-type": "rectangle",
-        "collision-size": 4.0,
-        "scale": 0.85
-      },
-      {
-        "model": "res/models/Buildings/building_big_2.obj",
-        "collision-type": "rectangle",
-        "collision-size": 4.0,
-        "scale": 0.85
-      },
-      {
-        "model": "res/models/Buildings/building_big_3.obj",
-        "collision-type": "rectangle",
-        "collision-size": 4.0,
-        "scale": 0.85
-      },
-      {
-        "model": "res/models/Buildings/building_big_4.obj",
-        "collision-type": "rectangle",
-        "collision-size": 4.0,
-        "scale": 0.85
-      }
-    ]
-  },
-  {
-    "symbol": "s",
-    "objects": [
-      {
-        "model": "res/models/Buildings/building_small_1.obj",
-        "scale": 0.85,
-        "collision-type": "rectangle",
-        "collision-size": 4.0
-      },
-      {
-        "model": "res/models/Buildings/building_small_2.obj",
-        "scale": 0.85,
-        "collision-type": "rectangle",
-        "collision-size": 4.0
-      },
-      {
-        "model": "res/models/Buildings/building_small_3.obj",
-        "scale": 0.85,
-        "collision-type": "rectangle",
-        "collision-size": 4.0
-      }
-    ]
-  },
-  {
-    "symbol": "L",
-    "objects": [
-      {
-        "model": "res/models/Buildings/building_corrner_big.obj",
-        "rotation": -90.0,
-        "scale": 0.85,
-        "collision-size": 4.0,
-        "collision-type": "rectangle"
-      }
-    ]
-  },
-  {
-    "symbol": "l",
-    "objects": [
-      {
-        "model": "res/models/Buildings/building_corrner_small.obj",
-        "rotation": 90.0,
-        "scale": 0.85,
-        "collision-size": 4.0,
-        "collision-type": "rectangle"
-      }
-    ]
-  },
-  {
-    "symbol": "p",
-    "isPathWay": true,
-    "objects": [
-      {
-        "model": "res/models/Roads/path_way.obj"
-      }
-    ]
-  }
-],
+    {
+      "symbol": "b",
+      "objects": [
+        {
+          "model": "res/models/Buildings/building_big_1.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/Buildings/building_big_2.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/Buildings/building_big_3.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/Buildings/building_big_4.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        }
+      ]
+    },
+    {
+      "symbol": "s",
+      "objects": [
+        {
+          "model": "res/models/Buildings/building_small_1.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/Buildings/building_small_2.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/Buildings/building_small_3.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "L",
+      "objects": [
+        {
+          "model": "res/models/Buildings/building_corrner_big.obj",
+          "rotation": -90.0,
+          "scale": 0.85,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        }
+      ]
+    },
+    {
+      "symbol": "l",
+      "objects": [
+        {
+          "model": "res/models/Buildings/building_corrner_small.obj",
+          "rotation": 90.0,
+          "scale": 0.85,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        }
+      ]
+    },
+    {
+      "symbol": "p",
+      "isPathWay": true,
+      "objects": [
+        {
+          "model": "res/models/Roads/path_way.obj"
+        }
+      ]
+    }
+  ],
+
+  "factories": [
+    {
+      "symbol": "8",
+      "name": "Smelter",
+      "config:": "res/levels/Factories/smelter.json"
+    }
+  ],
 
   "road": {
     "symbol": "#",
@@ -94,16 +102,19 @@
       "rotation": 90.0
     },
     "edge": {
-      "model": "res/models/Roads/road_edge.obj"
+      "model": "res/models/Roads/road_edge.obj",
+      "rotation": -90.0
     },
     "corner": {
-      "model": "res/models/Roads/road_corner.obj"
+      "model": "res/models/Roads/road_corner.obj",
+      "rotation": 180.0
     },
     "cross": {
       "model": "res/models/Roads/road_cross.obj"
     },
     "curve": {
-      "model": "res/models/Roads/road_curve.obj"
+      "model": "res/models/Roads/road_curve.obj",
+      "rotation": -90.0
     }
   }
 }

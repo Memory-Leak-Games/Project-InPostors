@@ -14,6 +14,7 @@ struct PlayerData {
 class Player : public mlg::Entity {
 private:
     std::weak_ptr<mlg::RigidbodyComponent> rigidbodyComponent;
+    std::shared_ptr<class CarInput> carInput;
 
 private:
     Player(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent);
@@ -23,8 +24,11 @@ public:
                                           mlg::Transform* parent, const PlayerData& playerData,
                                           const std::string& configPath = "res/config/cars/testing.json");
 
+    void Start() override;
     void Update() override;
 
     ~Player() = default;
 
+private:
+    void PickUp();
 };

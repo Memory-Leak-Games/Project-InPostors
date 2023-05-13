@@ -15,6 +15,16 @@ public:
                                            mlg::Transform* parent, const std::string& configPath);
 
 private:
+    enum class FactoryType {
+        OneInput,
+        OneOutput,
+        OneInputOutput,
+        SeparateInputOutput
+    } factoryType;
+
     void AddMesh(const nlohmann::json& staticMeshJson);
     void AddCollider(const nlohmann::json& colliderJson, mlg::RigidbodyComponent* rigidbodyComponent);
+    void AddEmitter(const nlohmann::json& emitterJson);
+    void AddTrigger(const nlohmann::json& triggerJson, const std::string& triggerName,
+                    mlg::RigidbodyComponent* rigidbodyComponent);
 };

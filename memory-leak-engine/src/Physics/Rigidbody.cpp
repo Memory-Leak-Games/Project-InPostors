@@ -198,4 +198,32 @@ namespace mlg {
         AddForce(impulse * angularForceMultiplier * collision.normal, collision.position);
     }
 
+    struct WeakColliderHash {
+        size_t operator () (const std::shared_ptr<Collider>& collider) const {
+            return (size_t) collider.get();
+        }
+    };
+
+    void Rigidbody::GetOverlappingColliders(std::vector<std::weak_ptr<Collider>>& output) {
+        std::unordered_set<std::shared_ptr<Collider>, WeakColliderHash> outputSet;
+
+        for (const auto& collider: colliders) {
+            std::vector<std::shared_ptr<Collider>> nearColliders;
+            CollisionManager::FindNear(collider->GetPosition(), collider->GetRadius(), nearColliders);
+
+            // Check collision with near colliders
+            for (auto& anotherCollider : nearColliders) {
+                // But not with self
+                if (collider->GetOwner() == anotherCollider->GetOwner())
+                    continue;
+
+                if (collider->DetectCollision(anotherCollider.get())) {
+                    outputSet.insert(anotherCollider);
+                }
+            }
+        }
+
+        output.assign(outputSet.begin(), outputSet.end());
+    }
+
 } // mlg

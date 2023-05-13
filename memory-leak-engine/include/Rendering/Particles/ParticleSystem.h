@@ -30,6 +30,7 @@ namespace mlg {
 
         void Update(const class Transform& transform);
 
+        virtual std::shared_ptr<ParticleSystem> Clone() = 0;
         virtual void UpdateSystem(const class Transform& transform) = 0;
         virtual GPUParticle UpdateParticle(const Particle& particle, float life);
 

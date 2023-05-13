@@ -11,6 +11,15 @@
         "deviceIndex": 0,
         "isAxis": false,
         "code": 2
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": true,
+        "isPositive": false,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 2
       }
     ]
   },
@@ -26,6 +35,15 @@
         "deviceIndex": 0,
         "isAxis": false,
         "code": 1
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": true,
+        "isPositive": false,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 5
       }
     ]
   },
@@ -62,6 +80,36 @@
         "triggerZone": 0.5,
         "deadZone": 0.2,
         "code": 0
+      }
+    ]
+  },
+  {
+    "name": "pick_up_one",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 32
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": false,
+        "code": 2
+      }
+    ]
+  },
+  {
+    "name": "drop_one",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 340
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": false,
+        "code": 3
       }
     ]
   },

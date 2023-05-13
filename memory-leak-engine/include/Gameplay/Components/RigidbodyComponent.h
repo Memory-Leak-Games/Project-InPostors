@@ -20,6 +20,8 @@ namespace mlg {
     public:
         RigidbodyComponent(const std::weak_ptr<Entity>& owner, const std::string& name);
 
+        static std::weak_ptr<Entity> GetColliderOwner(const Collider& collider);
+
         void Start() override;
 
         void PhysicsUpdate() override;
@@ -65,6 +67,7 @@ namespace mlg {
         }
 
         void OverlapCircle(float radius, std::vector<std::weak_ptr<Entity>>& output);
+        void GetOverlappingColliders(std::vector<std::weak_ptr<Collider>>& output);
 
         void SetKinematic(bool isKinematic);
         void SetMass(float mass);

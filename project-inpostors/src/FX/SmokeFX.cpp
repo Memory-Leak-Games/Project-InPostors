@@ -1,4 +1,4 @@
-#include "Car/FX/SmokeFX.h"
+#include "include/FX/SmokeFX.h"
 #include "Core/Time.h"
 
 #include "SceneGraph/Transform.h"
@@ -14,7 +14,7 @@ void SmokeFX::UpdateSystem(const mlg::Transform& transform) {
 
     timeAccumulator += mlg::Time::GetDeltaSeconds();
 
-    while (timeAccumulator > timeToSpawn)
+    if (timeAccumulator > timeToSpawn)
     {
         mlg::ParticleProps particleProps {};
         particleProps.lifeTime = Random::get(0.3f, 0.7f);
@@ -46,4 +46,8 @@ void SmokeFX::UpdateSystem(const mlg::Transform& transform) {
 
 SmokeFX::SmokeFX() : mlg::ParticleSystem(50) {
     SetMaterial(mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/Particles/smokeFX.json"));
+}
+
+std::shared_ptr<mlg::ParticleSystem> SmokeFX::Clone() {
+    return std::make_shared<SmokeFX>();
 }
