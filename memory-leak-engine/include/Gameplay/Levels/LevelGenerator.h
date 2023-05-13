@@ -58,6 +58,7 @@ namespace mlg {
 
         void LoadLayout();
         void LoadMapObjects();
+        void LoadFactories();
         void LoadRoads();
         MapObject ParseObject(const nlohmann::json& jsonObject);
 
