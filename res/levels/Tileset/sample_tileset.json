@@ -94,16 +94,19 @@
       "rotation": 90.0
     },
     "edge": {
-      "model": "res/models/Roads/road_edge.obj"
+      "model": "res/models/Roads/road_edge.obj",
+      "rotation": -90.0
     },
     "corner": {
-      "model": "res/models/Roads/road_corner.obj"
+      "model": "res/models/Roads/road_corner.obj",
+      "rotation": 180.0
     },
     "cross": {
       "model": "res/models/Roads/road_cross.obj"
     },
     "curve": {
-      "model": "res/models/Roads/road_curve.obj"
+      "model": "res/models/Roads/road_curve.obj",
+      "rotation": -90.0
     }
   }
 }

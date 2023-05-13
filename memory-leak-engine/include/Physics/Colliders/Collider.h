@@ -15,6 +15,7 @@ namespace mlg {
         glm::vec2 normal;
         const class Rigidbody* collidedRigidbody;
         bool isTrigger;
+        std::string collidedTag;
     };
 
     class Collider {
@@ -24,6 +25,7 @@ namespace mlg {
     private:
         Rigidbody* owner;
         std::unique_ptr<ColliderShape::Shape> shape;
+        std::string tag;
 
         bool isTrigger = false;
 
@@ -36,6 +38,7 @@ namespace mlg {
     public:
         Collider(Rigidbody* owner, std::unique_ptr<ColliderShape::Shape> shape);
         Collider(Rigidbody* owner, bool isTrigger, std::unique_ptr<ColliderShape::Shape> shape);
+
         ~Collider();
 
         bool DetectCollision(Collider* anotherCollider);
@@ -49,6 +52,9 @@ namespace mlg {
         glm::vec2 GetPosition() const;
         float GetRadius() const;
         bool GetIsTrigger() const;
+        const std::string& GetTag() const;
+
+        void SetTag(const std::string& tag);
 
         friend class RigidbodyComponent;
         friend class Rigidbody;

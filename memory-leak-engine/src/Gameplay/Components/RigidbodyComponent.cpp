@@ -233,5 +233,18 @@ namespace mlg {
         output.assign(outputSet.begin(), outputSet.end());
     }
 
+    void RigidbodyComponent::GetOverlappingColliders(std::vector<std::weak_ptr<Collider>>& output) {
+        rigidbody->GetOverlappingColliders(output);
+    }
+
+    std::weak_ptr<Entity> RigidbodyComponent::GetColliderOwner(const Collider& collider) {
+        Rigidbody* rigidbody = collider.owner;
+
+        if (!rigidbodies.contains(rigidbody))
+            return {};
+
+        return rigidbodies.at(rigidbody)->GetOwner();
+    }
+
 
 } // mlg

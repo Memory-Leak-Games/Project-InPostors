@@ -114,4 +114,12 @@ namespace mlg {
         return isTrigger;
     }
 
+    const std::string& Collider::GetTag() const {
+        return tag;
+    }
+
+    void Collider::SetTag(const std::string& tag) {
+        Collider::tag = tag;
+    }
+
 }

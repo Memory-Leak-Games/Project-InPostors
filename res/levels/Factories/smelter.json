@@ -1,6 +1,4 @@
 {
-  "type": "Factory",
-
   "staticMesh": {
     "model": "res/models/Factories/smelter.obj",
     "material": "res/models/Buildings/buildings_material.json",
@@ -22,21 +20,22 @@
   ],
 
   "blueprintID": "iron",
+  "type": "OneInputOutput",
 
   "input": {
-    "offset": [0.0, 0.0],
-    "size": [1.0, 1.0]
+    "offset": [5.0, -3.0],
+    "size": [5.0, 5.0]
   },
 
   "output": {
-    "position": [0.0, 0.0],
+    "position": [-0.0, 0.0],
     "size": [1.0, 1.0]
   },
 
   "emitters": [
     {
       "id": "factorySmoke",
-      "position": [-2.5, 10.0, -4.5]
+      "position": [-4.0, 2.0, -2.5]
     }
   ]
 }

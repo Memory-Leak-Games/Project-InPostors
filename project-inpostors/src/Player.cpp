@@ -16,8 +16,10 @@
 #include "Car/CarMovementComponent.h"
 #include "Gameplay/Components/ParticleSystemComponent.h"
 
-#include "include/FX/SmokeFX.h"
+#include "FX/SmokeFX.h"
 #include "Car/PlayerTwoInput.h"
+
+#include "Physics/Colliders/Collider.h"
 
 using json = nlohmann::json;
 
@@ -55,5 +57,30 @@ std::shared_ptr<Player> Player::Create(uint64_t id, const std::string &name, boo
     return newPlayer;
 }
 
+void Player::Start() {
+    carInput = GetComponentByClass<CarInput>().lock();
+}
+
 void Player::Update() {
+    if (carInput->GetPickUpInput())
+        PickUp();
+
+    if (carInput->GetDropInput()) {
+        SPDLOG_WARN("{} : Drop", GetName());
+    }
+}
+
+void Player::PickUp() {
+    std::vector<std::weak_ptr<mlg::Collider>> overlappingColliders;
+    rigidbodyComponent.lock()->GetOverlappingColliders(overlappingColliders);
+
+    for (const auto& collider: overlappingColliders) {
+        if (collider.lock()->GetTag() != "output" && collider.lock()->GetTag() != "inputOutput") {
+            continue;
+        }
+
+        std::shared_ptr<Entity> factory = mlg::RigidbodyComponent::GetColliderOwner(*collider.lock()).lock();
+        SPDLOG_WARN("{} : PickUp from {}", GetName(), factory->GetName());
+    }
+
 }

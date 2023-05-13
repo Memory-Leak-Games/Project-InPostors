@@ -23,3 +23,11 @@ PlayerOneInput::~PlayerOneInput() {
 PlayerOneInput::PlayerOneInput(const std::weak_ptr<mlg::Entity> &owner, const std::string &name)
 : CarInput(owner, name) {}
 
+bool PlayerOneInput::GetPickUpInput() {
+    return mlg::Input::IsActionJustPressed("pick_up_one");
+}
+
+bool PlayerOneInput::GetDropInput() {
+    return mlg::Input::IsActionJustPressed("drop_one");
+}
+

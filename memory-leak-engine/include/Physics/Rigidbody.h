@@ -46,6 +46,8 @@ namespace mlg {
         [[nodiscard]] const glm::vec2& GetPosition() const;
         [[nodiscard]] bool GetIsKinematic() const;
 
+        void GetOverlappingColliders(std::vector<std::weak_ptr<Collider>>& output);
+
         friend class Physics;
         friend class RigidbodyComponent;
         friend class Collider;

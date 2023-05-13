@@ -93,8 +93,8 @@ namespace mlg {
 
             glm::vec2 collisionPoint = collider->FindCollisionPoint(anotherCollider->GetOwner()->GetPosition());
             glm::vec2 normal = Math::SafeNormal(collider->GetPosition() - collisionPoint);
-            collider->OnCollisionEnter({collisionPoint, separationVector, normal,
-                                        anotherCollider->GetOwner(), isTrigger});
+            collider->OnCollisionEnter(CollisionEvent{collisionPoint, separationVector, normal,
+                                       anotherCollider->GetOwner(), isTrigger, anotherCollider->GetTag()});
         }
 
         instance->collisionsThisTick.clear();
@@ -138,6 +138,11 @@ namespace mlg {
 
             output.push_back(collider.get());
         }
+    }
+
+    void CollisionManager::FindNear(const glm::vec2& position, float radius,
+                                    std::vector<std::shared_ptr<Collider>>& result) {
+        instance->spacialHashGrid->FindNear(position, radius, result);
     }
 
 
