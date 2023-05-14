@@ -132,6 +132,9 @@ namespace mlg {
 
             mapObjects.insert({tileSymbol, MapEntry{mapObjectPool, isPathWay, 0}});
         }
+
+        if (levelJson.contains("ignore"))
+            ignoredCharacters = levelJson["ignore"].get<std::string>();
     }
 
 
@@ -164,6 +167,9 @@ namespace mlg {
     }
 
     void LevelGenerator::LoadRoads() {
+        if (!tileJson.contains("road"))
+            return;
+
         json roadJson = tileJson["road"];
         roadsObjects.symbol = roadJson["symbol"].get<std::string>()[0];
 
@@ -183,6 +189,9 @@ namespace mlg {
                 ++x;
 
                 if (character == ' ')
+                    continue;
+
+                if (std::find(ignoredCharacters.begin(), ignoredCharacters.end(), character) != ignoredCharacters.end())
                     continue;
 
                 if (character == roadsObjects.symbol) {
