@@ -27,7 +27,7 @@ namespace mlg {
         };
 
         struct Roads {
-            char symbol;
+            char symbol = ' ';
             MapObject road;
             MapObject edge;
             MapObject cross;
@@ -48,6 +48,7 @@ namespace mlg {
         nlohmann::json levelJson;
         nlohmann::json tileJson;
 
+        std::string ignoredCharacters;
         std::vector<std::string> levelLayout;
         std::unordered_map<char, MapEntry> mapObjects;
 

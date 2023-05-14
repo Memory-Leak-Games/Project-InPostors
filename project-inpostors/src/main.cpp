@@ -174,6 +174,8 @@ public:
         mlg::LevelGenerator::SpawnGround("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::LoadCameraSettings("res/levels/Cities/detroit.json", *cameraComponent.lock());
 
+        mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit_props.json");
+
         auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
                                                                     "res/levels/Factories/smelter.json");
         auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
