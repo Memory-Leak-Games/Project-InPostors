@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <filesystem>
+#include <utility>
 
 namespace mlg {
 
@@ -9,7 +10,10 @@ namespace mlg {
         std::string path;
     public:
         explicit Asset(std::string path) : path(std::move(path)) {
-            MLG_ASSERT(exists(std::filesystem::path(this->path)));
+            if (!exists(std::filesystem::path(this->path))) {
+                SPDLOG_ERROR("Path: {} does not exist.", this->path);
+                MLG_ASSERT(exists(std::filesystem::path(this->path)));
+            }
         };
 
         virtual void Load() = 0;

@@ -1,35 +1,34 @@
 {
   "name": "Detroit",
   "tileSize": 4.0,
-  "defaultMaterial": "res/models/Buildings/buildings_material.json",
   "tileset": "res/levels/Tileset/city_tileset.json",
 
   "groundColor": [0.898, 0.854, 0.890, 1.0],
 
   "layout": [
-    "      bbbbbbbbbbbbbbb       ",
+    "      bbbbbbbbbbbBbbb       ",
     "     s###############s      ",
     "     s###############sbbbb  ",
     "     s##ssss#############b  ",
-    "     s##    ###sss#######b  ",
-    "     s##    ###bbs###sb##b  ",
-    "ssssss##    ###Lss###Lb##bbb",
-    "s##########################b",
-    "s##########################b",
-    "s##########################b",
-    "sssss##sssss###bssss##ssssbb",
-    "    s##Lbbbs###bbbsb##b     ",
+    "     s##pppp###sss#######b  ",
+    "     s##pppp###bbs###sb##b  ",
+    "  sssc##pppp###Lsf###ob##bbbbb ",
+    "ppp#########################ppp",
+    "ppp#########################ppp",
+    "ppp#########################ppp",
+    "  sss##spwps###bssss##ssssssss ",
+    "    s##Lppps###bbbsb##b     ",
     "    s#################s     ",
     "    s#################b     ",
     "    sssssssssssbbsbbsbb     "
   ],
 
   "cameraSettings": {
-    "position": [12.0, 30.0, -7.0],
+    "position": [16.0, 50.0, -14.0],
     "rotation": [65.0, -45.0, 0.0],
 
     "size": 100.0,
     "near": 0.1,
-    "far": 100.0
+    "far": 200.0
   }
 }

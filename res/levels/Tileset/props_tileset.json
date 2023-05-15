@@ -1,4 +1,5 @@
 {
+  "defaultMaterial": "res/materials/buildings_material.json",
   "tiles": [
     {
       "symbol": "p",

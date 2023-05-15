@@ -104,7 +104,6 @@ namespace mlg {
             levelLayout.push_back(jsonLayoutString.get<std::string>());
         }
 
-        defaultMaterial = levelJson["defaultMaterial"].get<std::string>();
         tileSize = levelJson["tileSize"].get<float>();
         citySize = GetCitySize();
     }
@@ -112,6 +111,8 @@ namespace mlg {
     void LevelGenerator::LoadMapObjects() {
         std::ifstream tileFile{levelJson["tileset"].get<std::string>()};
         tileJson = json::parse(tileFile);
+
+        defaultMaterial = tileJson["defaultMaterial"].get<std::string>();
 
         for (const auto& jsonTile: tileJson["tiles"]) {
             const char tileSymbol = jsonTile["symbol"].get<std::string>()[0];
