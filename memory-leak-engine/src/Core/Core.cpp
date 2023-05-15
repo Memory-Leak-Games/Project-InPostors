@@ -76,6 +76,10 @@ void Core::MainLoop() {
             RenderImGUI();
         }
 
+        if (SettingsManager::Get<bool>(SettingsType::Debug, "showColliders")) {
+            CollisionManager::DrawSpacialGridBounds();
+        }
+
         if (SettingsManager::Get<bool>(SettingsType::Debug, "showSpacialGrid")) {
             CollisionManager::DrawSpacialGrid();
         }

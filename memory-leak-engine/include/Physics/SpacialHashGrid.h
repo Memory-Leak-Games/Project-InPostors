@@ -23,10 +23,12 @@ namespace mlg {
         void Update(const std::shared_ptr<Collider>& client);
 
         void DebugDraw();
+        void DebugDrawBounds();
     private:
         void Insert(const std::shared_ptr<Collider>& client);
         [[nodiscard]] glm::ivec2 CalculateCellIndex(glm::vec2 position) const;
 
         int GetHashIndex(const glm::ivec2& position);
+
     };
 }// namespace mlg

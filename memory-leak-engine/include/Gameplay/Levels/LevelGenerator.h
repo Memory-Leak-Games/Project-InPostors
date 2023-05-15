@@ -10,6 +10,7 @@ namespace mlg {
         static void LoadMap(const std::string& path);
         static void LoadCameraSettings(const std::string& path, class CameraComponent& cameraComponent);
         static void SpawnGround(const std::string& path);
+        static void SetCityBounds(const std::string& path);
 
     private:
 
@@ -80,6 +81,8 @@ namespace mlg {
         glm::vec2 GetCitySize();
         Neighbours GetNeighbours(int x, int y);
         char GetTileOrZero(int x, int y);
+
+        glm::ivec2 GetLayoutSize();
     };
 
 } //mlg

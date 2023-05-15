@@ -16,5 +16,5 @@ std::shared_ptr<mlg::ParticleSystem> FXLibrary::Get(const std::string& id) {
 
     MLG_ASSERT_MSG(instance->fxMap.contains(id), "FX with this id, doesnt exist");
 
-    return instance->fxMap[id];
+    return instance->fxMap[id]->Clone();
 }

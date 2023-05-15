@@ -10,7 +10,7 @@
     {
       "type": "float",
       "name": "brightness",
-      "value": -0.1
+      "value": -0.2
     },
     {
       "type": "float",
@@ -25,7 +25,7 @@
     {
       "type": "float",
       "name": "filmGrain",
-      "value": 0.025
+      "value": 0.01
     },
     {
       "type": "float",

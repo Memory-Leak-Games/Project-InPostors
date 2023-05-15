@@ -37,6 +37,7 @@ namespace mlg {
         static void FindNear(const glm::vec2& position, float radius, std::vector<std::shared_ptr<Collider>>& result);
 
         static void DrawSpacialGrid();
+        static void DrawSpacialGridBounds();
     };
 
 } // mlg

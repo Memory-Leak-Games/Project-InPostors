@@ -18,6 +18,7 @@
 #include "Gameplay/Components/StaticMeshComponent.h"
 #include "Gameplay/Components/RigidbodyComponent.h"
 #include "Physics/Colliders/ColliderShapes.h"
+#include "Physics/CollisionManager.h"
 
 using json = nlohmann::json;
 using Random = effolkronium::random_static;
@@ -85,6 +86,23 @@ namespace mlg {
 
         ground.lock()->GetTransform().SetScale(groundScale);
     }
+
+    void LevelGenerator::SetCityBounds(const std::string& path) {
+        LevelGenerator levelGenerator;
+        std::ifstream levelFile{path};
+
+        levelGenerator.levelJson = json::parse(levelFile);
+        levelGenerator.LoadLayout();
+
+        const glm::vec2 citySize = levelGenerator.GetCitySize();
+        const glm::ivec2 layoutSize = levelGenerator.GetLayoutSize();
+
+        const glm::vec2 cityStart = -0.5f * citySize;
+        const glm::vec2 cityEnd = 0.5f * citySize;
+
+        CollisionManager::SetBounds(cityStart, cityEnd, layoutSize);
+    }
+
 
     void LevelGenerator::LoadMap(const std::string& path) {
         LevelGenerator levelGenerator;
@@ -207,14 +225,18 @@ namespace mlg {
     }
 
     glm::vec2 LevelGenerator::GetCitySize() {
-        citySize = glm::vec2 {0.f};
-        for (const std::string& row: levelLayout) {
-            citySize.x = std::max(citySize.x, static_cast<float>(row.size()));
-        }
-        citySize.y = (float) levelLayout.size();
-
-        citySize *= tileSize;
+        citySize = GetLayoutSize() *= tileSize;
         return citySize;
+    }
+
+    glm::ivec2 LevelGenerator::GetLayoutSize() {
+        glm::ivec2 layoutSize = glm::ivec2 {0};
+        for (const std::string& row: levelLayout) {
+            layoutSize.x = std::max(layoutSize.x, (int) row.size());
+        }
+        layoutSize.y = (int) levelLayout.size();
+
+        return layoutSize;
     }
 
     void LevelGenerator::PutTile(int x, int y, const char& character) {

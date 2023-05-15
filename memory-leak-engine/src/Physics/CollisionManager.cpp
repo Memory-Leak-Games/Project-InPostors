@@ -145,5 +145,9 @@ namespace mlg {
         instance->spacialHashGrid->FindNear(position, radius, result);
     }
 
+    void CollisionManager::DrawSpacialGridBounds() {
+        instance->spacialHashGrid->DebugDrawBounds();
+    }
+
 
 }// namespace mlg
