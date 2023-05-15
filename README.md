@@ -14,6 +14,17 @@
 ## Changelog
 
 * Physics
+  * Get Overlapping colliders
+* Gameplay
+  * Factories
+  * New models
+  * City Props
+  * Tile sets
+  * Particle Emitters
+
+### 09.04.2023
+
+* Physics
   * Triggers and overlap methods
 * Gameplay
   * Second player
