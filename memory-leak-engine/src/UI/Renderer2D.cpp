@@ -60,7 +60,10 @@ namespace mlg {
         windowSizeDirty = false;
 
         RenderingAPI::SetDefaultFrameBuffer();
+
+        glEnable(GL_BLEND);
         frameBuffer->Draw();
+        glDisable(GL_BLEND);
     }
 
     void Renderer2D::AddRenderable(std::weak_ptr<Renderable2D> renderable) {

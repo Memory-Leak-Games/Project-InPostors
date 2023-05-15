@@ -1,4 +1,5 @@
 {
+  "defaultMaterial": "res/materials/buildings_material.json",
   "tiles": [
     {
       "symbol": "b",
@@ -82,6 +83,59 @@
       "objects": [
         {
           "model": "res/models/Roads/path_way.obj"
+        }
+      ]
+    },
+    {
+      "symbol": "c",
+      "objects": [
+        {
+          "model": "res/models/Buildings/Special/cafe.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "w",
+      "objects": [
+        {
+          "model": "res/models/Buildings/Special/ferris_wheel.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "o",
+      "objects": [
+        {
+          "model": "res/models/Buildings/Special/library.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "B",
+      "objects": [
+        {
+          "model": "res/models/Buildings/Special/bakery.obj",
+          "scale": 0.85,
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "f",
+      "objects": [
+        {
+          "model": "res/models/Buildings/Special/fast_food.obj",
+          "scale": 0.85,
+          "collision-size": 4.0
         }
       ]
     }

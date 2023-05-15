@@ -135,28 +135,13 @@ public:
 
         auto ui = mlg::EntityManager::SpawnEntity<mlg::Entity>("ui", true, mlg::SceneGraph::GetRoot());
 
-        auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/ARLRDBD.TTF");
-        auto label = ui.lock()->AddComponent<mlg::Label>("Label", font);
-        label.lock()->SetText("Aaa Kotki 2 szarobure obydwa 1234567890");
-        label.lock()->SetPosition({50, 50});
-        label.lock()->SetTextColor({1, 1, 1});
-        label.lock()->SetSize(32);
-
         auto imageMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/cat_UI_material.json");
         auto image = ui.lock()->AddComponent<mlg::Image>("Image", imageMaterial);
-        image.lock()->SetSize(glm::vec2{256.f});
+        image.lock()->SetSize(glm::vec2{128.f});
         image.lock()->SetPosition({1280.f - 128.f, 720.f - 128.f});
         image.lock()->SetAnchor({1, 1});
 
-        auto progressBarMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/progressBar_material.json");
-        auto progressBar = ui.lock()->AddComponent<mlg::ProgressBar>("ProgressBar", progressBarMaterial);
-        progressBar.lock()->SetSize(glm::vec2{256.f, 32.f});
-        progressBar.lock()->SetPosition({150.f, 600.f});
-        progressBar.lock()->SetAnchor({0, 1});
-
-        mlg::Renderer2D::GetInstance()->AddRenderable(label);
         mlg::Renderer2D::GetInstance()->AddRenderable(image);
-        mlg::Renderer2D::GetInstance()->AddRenderable(progressBar);
 
         PlayerData firstPlayerData = {0, mlg::RGBA::red};
         PlayerData secondPlayerData = {0, mlg::RGBA::cyan};
@@ -179,7 +164,19 @@ public:
         auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
                                                                     "res/levels/Factories/smelter.json");
         auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
-        testFactoryRigidBody.lock()->SetPosition({15.f, 8.f});
+        testFactoryRigidBody.lock()->SetPosition({22.f, 8.f});
+
+        auto testMine = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
+                                                                    "res/levels/Factories/mine.json");
+        auto testMineRigidBody = testMine.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
+        testMineRigidBody.lock()->SetPosition({-60.f, -5.f});
+        testMineRigidBody.lock()->SetRotation(glm::radians(-90.f));
+
+        auto testIkea = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
+                                                                 "res/levels/Factories/ikea.json");
+        auto testIkeaRigidBody = testIkea.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
+        testIkeaRigidBody.lock()->SetPosition({55.f, -5.f});
+        testIkeaRigidBody.lock()->SetRotation(glm::radians(-90.f));
     }
 
     virtual ~ProjectInpostors() {

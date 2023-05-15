@@ -22,7 +22,7 @@ private:
 public:
     static std::shared_ptr<Player> Create(uint64_t id, const std::string& name, bool isStatic,
                                           mlg::Transform* parent, const PlayerData& playerData,
-                                          const std::string& configPath = "res/config/cars/testing.json");
+                                          const std::string& configPath = "res/config/cars/van.json");
 
     void Start() override;
     void Update() override;

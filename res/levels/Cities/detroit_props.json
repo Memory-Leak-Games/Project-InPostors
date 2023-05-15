@@ -1,7 +1,6 @@
 {
   "name": "detroit_props",
   "tileSize": 4.0,
-  "defaultMaterial": "res/models/Buildings/buildings_material.json",
   "tileset": "res/levels/Tileset/props_tileset.json",
 
   "ignore" : "#",
@@ -14,11 +13,11 @@
     "      t#    #h#   ##l##l#   ",
     "      #b    bh#   th#  ##   ",
     "      ##    #h#   #h#  ##   ",
-    " lt####lab##l#l#bal#l##llcl ",
-    " t#vv###vvvv#c#vvv###vv##c# ",
-    " l####l##b#al#l###b#l####cl ",
-    "     #b     #h#     BB      ",
-    "     ##     #h#     ##      ",
+    "   ####lab##l#l#bal#l##llcl    ",
+    "   #v###vvvv#c#vvv###vv##c#    ",
+    "   ###l####al#l###b#l####cl    ",
+    "     #b p p #h#     BB      ",
+    "     ## bbb #h#     ##      ",
     "     #l#####l#l#b###l#      ",
     "     ##p#p#p#p#p#p#p##      ",
     "                            "

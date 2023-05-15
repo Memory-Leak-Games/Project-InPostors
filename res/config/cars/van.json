@@ -1,0 +1,16 @@
+{
+  "model": "res/models/Cars/Players/van.obj",
+  "material": "res/materials/Car/chroma_key_material.json",
+  "parameters": {
+    "acceleration": 2400,
+    "maxSpeed": 25,
+    "backwardMaxSpeed": 10,
+    "engineHandling": 100,
+    "handling": 4000,
+
+    "rotationSpeed": 200,
+    "rotationRadius": 3,
+    "sideDrag": 80,
+    "counterTorque": 5
+  }
+}
