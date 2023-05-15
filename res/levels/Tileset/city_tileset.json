@@ -125,6 +125,7 @@
         {
           "model": "res/models/Buildings/Special/bakery.obj",
           "scale": 0.85,
+          "collision-type": "rectangle",
           "collision-size": 4.0
         }
       ]
@@ -135,6 +136,7 @@
         {
           "model": "res/models/Buildings/Special/fast_food.obj",
           "scale": 0.85,
+          "collision-type": "rectangle",
           "collision-size": 4.0
         }
       ]

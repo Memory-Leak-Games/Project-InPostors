@@ -117,7 +117,7 @@ namespace mlg {
             for (int y = 0; y < dimensions.y; ++y) {
                 glm::vec3 position {0.f};
                 position.x = ((float) x + 0.5f) * rectSize.x - boundsSize.x / 2.f;
-                position.z = ((float) y + 0.5f) * rectSize.y - boundsSize.x / 2.f;
+                position.z = -boundsStart.y + ((float) y + 1) * rectSize.y - boundsSize.x / 2.f;
 
                 glm::vec3 size {0.f};
                 size.x = rectSize.x;
@@ -126,5 +126,15 @@ namespace mlg {
                 Gizmos::DrawBox(position, size, glm::quat(glm::vec3{0.f}), RGBA::yellow);
             }
         }
+    }
+
+    void SpacialHashGrid::DebugDrawBounds() {
+        const glm::vec2 boundsSize = boundsEnd - boundsStart;
+        const glm::vec2 boundsPosition = boundsStart + 0.5f * boundsSize;
+
+        glm::vec3 boundsSize3D {boundsSize.x, 0.f, boundsSize.y};
+        glm::vec3 boundsPosition3D {boundsPosition.x, 0.f, boundsPosition.y};
+
+        Gizmos::DrawBox(boundsPosition3D, boundsSize3D, glm::quat{glm::vec3{0.f}}, RGBA::cyan, true);
     }
 }// namespace mlg

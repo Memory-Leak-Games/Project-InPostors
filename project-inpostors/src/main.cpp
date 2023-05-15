@@ -157,6 +157,7 @@ public:
 
         mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::SpawnGround("res/levels/Cities/detroit.json");
+        mlg::LevelGenerator::SetCityBounds("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::LoadCameraSettings("res/levels/Cities/detroit.json", *cameraComponent.lock());
 
         mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit_props.json");
