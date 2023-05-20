@@ -21,6 +21,8 @@
 
 #include "Physics/Colliders/Collider.h"
 
+#include "FX/FXLibrary.h"
+
 using json = nlohmann::json;
 
 Player::Player(uint64_t id, const std::string &name, bool isStatic, mlg::Transform *parent)
@@ -51,7 +53,7 @@ std::shared_ptr<Player> Player::Create(uint64_t id, const std::string &name, boo
 
     newPlayer->AddComponent<CarMovementComponent>("MovementComponent", configPath);
 
-    auto smoke = std::make_shared<SmokeFX>();
+    auto smoke = FXLibrary::Get("smoke");
     auto smokeComponent = newPlayer->AddComponent<mlg::ParticleSystemComponent>("SmokeFX", smoke);
 
     return newPlayer;
