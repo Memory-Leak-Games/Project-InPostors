@@ -11,4 +11,8 @@ private:
 public:
     bool Equals(const std::shared_ptr<Product>& another) const;
 
+    const std::string& GetName() const;
+    const std::string& GetIcon() const;
+    int GetColor() const;
+
 };

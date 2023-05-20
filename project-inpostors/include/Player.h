@@ -16,6 +16,7 @@ private:
 
     std::weak_ptr<mlg::RigidbodyComponent> rigidbodyComponent;
     std::shared_ptr<class CarInput> carInput;
+    std::shared_ptr<class EquipmentComponent> equipment;
 
     PlayerData playerData;
 

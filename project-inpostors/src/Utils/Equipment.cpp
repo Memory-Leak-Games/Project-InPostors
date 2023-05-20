@@ -1,9 +1,9 @@
-#include "include/Utils/Equipment.h"
+#include "include/Utils/EquipmentComponent.h"
 
 #include "Utils/Product.h"
 #include "Utils/Blueprint.h"
 
-bool Equipment::AddProduct(const std::shared_ptr<Product>& product) {
+bool EquipmentComponent::AddProduct(const std::shared_ptr<Product>& product) {
     if (equipment.size() >= size)
         return false;
 
@@ -13,7 +13,7 @@ bool Equipment::AddProduct(const std::shared_ptr<Product>& product) {
     return true;
 }
 
-bool Equipment::RequestProduct(const std::shared_ptr<Product>& product) {
+bool EquipmentComponent::RequestProduct(const std::shared_ptr<Product>& product) {
     for (auto it = equipment.begin(); it != equipment.end(); ++it) {
         if (product->Equals(*it)) {
             equipment.erase(it);
@@ -24,7 +24,7 @@ bool Equipment::RequestProduct(const std::shared_ptr<Product>& product) {
     return false;
 }
 
-bool Equipment::CheckProduct(const std::shared_ptr<Product>& product) const {
+bool EquipmentComponent::CheckProduct(const std::shared_ptr<Product>& product) const {
     for (const auto& ownedProduct : equipment) {
         if (product->Equals(ownedProduct)) {
             return true;
@@ -33,7 +33,7 @@ bool Equipment::CheckProduct(const std::shared_ptr<Product>& product) const {
     return false;
 }
 
-bool Equipment::CheckBlueprint(const Blueprint& blueprint) const {
+bool EquipmentComponent::CheckBlueprint(const Blueprint& blueprint) const {
     for (const auto&  product : blueprint.GetInput()) {
         if (!CheckProduct(product)) {
             return false;
@@ -42,11 +42,11 @@ bool Equipment::CheckBlueprint(const Blueprint& blueprint) const {
     return true;
 }
 
-bool Equipment::CheckIsFull() const{
+bool EquipmentComponent::CheckIsFull() const{
     return equipment.size() >= size;
 }
 
-Equipment::Equipment(const std::weak_ptr<mlg::Entity>& owner, const std::string& name, int size)
+EquipmentComponent::EquipmentComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name, int size)
 : Component(owner, name), size(size) {}
 
-Equipment::~Equipment() = default;
+EquipmentComponent::~EquipmentComponent() = default;

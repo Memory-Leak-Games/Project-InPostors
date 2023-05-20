@@ -13,7 +13,7 @@
 
 namespace mlg {
     ParticleSystem::ParticleSystem(uint32_t maxParticlesCount)
-    : maxParticlesCount(maxParticlesCount), poolIndex(maxParticlesCount - 1) {
+            : maxParticlesCount(maxParticlesCount), poolIndex(maxParticlesCount - 1) {
         particlesPool.resize(maxParticlesCount);
         rect = std::make_unique<Rect>();
 
@@ -21,7 +21,7 @@ namespace mlg {
     }
 
     ParticleSystem::ParticleSystem(const std::shared_ptr<MaterialAsset>& material, uint32_t maxParticlesCount)
-    : ParticleSystem(maxParticlesCount) {
+            : ParticleSystem(maxParticlesCount) {
         this->material = material;
     }
 
@@ -60,7 +60,7 @@ namespace mlg {
         glVertexArrayVertexBuffer(rectVao, 1, particlesVbo, 0, sizeof(GPUParticle));
     }
 
-    void ParticleSystem::LateDraw(struct Renderer *renderer) {
+    void ParticleSystem::LateDraw(struct Renderer* renderer) {
         ZoneScopedN("Draw Particles");
         TracyGpuZone("Draw Particles");
 
@@ -68,9 +68,10 @@ namespace mlg {
             return;
 
         const glm::vec3 cameraPosition = Renderer::GetInstance()->GetCurrentCamera()->GetTransform().GetWorldPosition();
-        auto sortByDistance = [cameraPosition](const GPUParticle& particle, const GPUParticle& anotherParticle) -> bool {
+        auto sortByDistance = [cameraPosition](const GPUParticle& particle,
+                                               const GPUParticle& anotherParticle) -> bool {
             return glm::length(particle.position - cameraPosition)
-                > glm::length(anotherParticle.position - cameraPosition);
+                   > glm::length(anotherParticle.position - cameraPosition);
         };
 
         {
@@ -78,7 +79,8 @@ namespace mlg {
             std::sort(particlesToRender.begin(), particlesToRender.end(), sortByDistance);
         }
 
-        glNamedBufferSubData(particlesVbo, 0, particlesToRender.size() * sizeof(GPUParticle), &particlesToRender.front());
+        glNamedBufferSubData(particlesVbo, 0, particlesToRender.size() * sizeof(GPUParticle),
+                             &particlesToRender.front());
 
         material->Activate();
 
@@ -92,20 +94,16 @@ namespace mlg {
         UpdateSystem(transform);
         particlesToRender.clear();
 
-        float deltaSeconds = Time::GetDeltaSeconds();
+        for (auto& particle: particlesPool) {
+            particle.lifeRemaining -= Time::GetDeltaSeconds();
 
-        for (auto& particle : particlesPool) {
+            if (particle.lifeRemaining <= 0.f)
+                particle.isActive = false;
+
             if (!particle.isActive)
                 continue;
 
-            if (particle.lifeRemaining <= 0.f) {
-                particle.isActive = false;
-                continue;
-            }
-
-            particle.lifeRemaining -= deltaSeconds;
-
-            float life = 1 - particle.lifeRemaining / particle.lifeTime;
+            float life = 1 - (particle.lifeRemaining / particle.lifeTime);
 
             particlesToRender.push_back(UpdateParticle(particle, life));
         }

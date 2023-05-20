@@ -2,13 +2,13 @@
 
 #include "Gameplay/Component.h"
 
-class Equipment : public mlg::Component {
+class EquipmentComponent : public mlg::Component {
 private:
     int size;
     std::vector<std::shared_ptr<class Product>> equipment;
 
 public:
-    Equipment(const std::weak_ptr<mlg::Entity>& owner, const std::string& name, int size);
+    EquipmentComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name, int size);
 
     eventpp::CallbackList<void()> equipmentChanged;
 
@@ -18,6 +18,10 @@ public:
     bool CheckBlueprint(const class Blueprint& blueprint) const;
     bool CheckIsFull() const;
 
-    ~Equipment() override;
+    ~EquipmentComponent() override;
+
+#ifdef DEBUG
+    friend class Player;
+#endif
 };
 

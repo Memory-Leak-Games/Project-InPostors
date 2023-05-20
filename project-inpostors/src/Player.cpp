@@ -22,7 +22,9 @@
 #include "Physics/Colliders/Collider.h"
 
 #include "FX/FXLibrary.h"
-#include "Utils/Equipment.h"
+
+#include "Utils/EquipmentComponent.h"
+#include "Utils/Product.h"
 
 using json = nlohmann::json;
 
@@ -41,7 +43,7 @@ std::shared_ptr<Player> Player::Create(uint64_t id, const std::string& name, boo
     newPlayer->LoadModel(configJson);
 
     newPlayer->AddComponent<CarMovementComponent>("MovementComponent", configPath);
-    newPlayer->AddComponent<Equipment>("Equipment", 3);
+    newPlayer->equipment = newPlayer->AddComponent<EquipmentComponent>("EquipmentComponent", 3).lock();
 
     auto smoke = FXLibrary::Get("smoke");
     auto smokeComponent = newPlayer->AddComponent<mlg::ParticleSystemComponent>("SmokeFX", smoke);
@@ -80,6 +82,18 @@ void Player::Update() {
     if (carInput->GetDropInput()) {
         SPDLOG_WARN("{} : Drop", GetName());
     }
+
+#ifdef DEBUG
+    ImGui::Begin(("Player " + std::to_string(playerData.id)).c_str());
+    std::string EquipmentStr;
+    for (const auto& item: equipment->equipment) {
+        EquipmentStr += item->GetName() + " ";
+    }
+
+    ImGui::Text("Equipment: %s", EquipmentStr.c_str());
+
+    ImGui::End();
+#endif
 }
 
 void Player::PickUp() {

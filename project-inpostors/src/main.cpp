@@ -144,7 +144,7 @@ public:
         mlg::Renderer2D::GetInstance()->AddRenderable(image);
 
         PlayerData firstPlayerData = {0, mlg::RGBA::red};
-        PlayerData secondPlayerData = {0, mlg::RGBA::cyan};
+        PlayerData secondPlayerData = {1, mlg::RGBA::cyan};
 
         auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot(), firstPlayerData);
         player.lock()->AddComponent<PlayerOneInput>("PlayerInput");
