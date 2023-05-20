@@ -1,4 +1,4 @@
-#include "Car/Equipment.h"
+#include "include/Utils/Equipment.h"
 
 #include "Utils/Product.h"
 #include "Utils/Blueprint.h"
@@ -45,5 +45,8 @@ bool Equipment::CheckBlueprint(const Blueprint& blueprint) const {
 bool Equipment::CheckIsFull() const{
     return equipment.size() >= size;
 }
+
+Equipment::Equipment(const std::weak_ptr<mlg::Entity>& owner, const std::string& name, int size)
+: Component(owner, name), size(size) {}
 
 Equipment::~Equipment() = default;

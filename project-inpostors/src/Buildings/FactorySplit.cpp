@@ -1,7 +1,7 @@
 #include "Buildings/FactorySplit.h"
 
 #include "Utils/Blueprint.h"
-#include "Car/Equipment.h"
+#include "include/Utils/Equipment.h"
 
 void FactorySplit::UnloadProduct(Equipment& equipment) {
     for (const auto& input : blueprint->GetInput()) {

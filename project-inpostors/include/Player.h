@@ -13,11 +13,14 @@ struct PlayerData {
 
 class Player : public mlg::Entity {
 private:
+
     std::weak_ptr<mlg::RigidbodyComponent> rigidbodyComponent;
     std::shared_ptr<class CarInput> carInput;
 
+    PlayerData playerData;
+
 private:
-    Player(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent);
+    Player(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent, const PlayerData& playerData);
 
 public:
     static std::shared_ptr<Player> Create(uint64_t id, const std::string& name, bool isStatic,
@@ -31,4 +34,7 @@ public:
 
 private:
     void PickUp();
+
+    void AddRigidbody(const nlohmann::json& configJson);
+    void LoadModel(const nlohmann::json& configJson);
 };

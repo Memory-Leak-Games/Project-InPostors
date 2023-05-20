@@ -22,41 +22,51 @@
 #include "Physics/Colliders/Collider.h"
 
 #include "FX/FXLibrary.h"
+#include "Utils/Equipment.h"
 
 using json = nlohmann::json;
 
-Player::Player(uint64_t id, const std::string &name, bool isStatic, mlg::Transform *parent)
-        : mlg::Entity(id, name, isStatic, parent) {}
+Player::Player(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent, const PlayerData& playerData)
+        : mlg::Entity(id, name, isStatic, parent), playerData(playerData) {}
 
-std::shared_ptr<Player> Player::Create(uint64_t id, const std::string &name, bool isStatic,
-                                       mlg::Transform *parent, const PlayerData &playerData,
-                                       const std::string &configPath) {
-    auto newPlayer = std::shared_ptr<Player>(new Player(id, name, isStatic, parent));
-
-    newPlayer->rigidbodyComponent = newPlayer->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
-    newPlayer->rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f, -0.5f), 0.5f);
-    newPlayer->rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f, 0.5f), 0.5f);
-    newPlayer->rigidbodyComponent.lock()->SetBounciness(0.5f);
+std::shared_ptr<Player> Player::Create(uint64_t id, const std::string& name, bool isStatic,
+                                       mlg::Transform* parent, const PlayerData& playerData,
+                                       const std::string& configPath) {
+    auto newPlayer = std::shared_ptr<Player>(new Player(id, name, isStatic, parent, playerData));
 
     std::ifstream configFile{configPath};
     json configJson = json::parse(configFile);
-    auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>(configJson["model"].get<std::string>());
-    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(configJson["material"].get<std::string>());
-    material = material->CreateDynamicInstance();
 
-    material->SetVec4("color", playerData.color);
-
-    auto staticMeshComponent = newPlayer->AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
-    newPlayer->AddComponent<CarMovementComponent>("MovementComponent");
-
-    staticMeshComponent.lock()->GetTransform().SetPosition({0.f, 0.3f, 0.f});
+    newPlayer->AddRigidbody(configJson);
+    newPlayer->LoadModel(configJson);
 
     newPlayer->AddComponent<CarMovementComponent>("MovementComponent", configPath);
+    newPlayer->AddComponent<Equipment>("Equipment", 3);
 
     auto smoke = FXLibrary::Get("smoke");
     auto smokeComponent = newPlayer->AddComponent<mlg::ParticleSystemComponent>("SmokeFX", smoke);
 
     return newPlayer;
+}
+
+void Player::AddRigidbody(const json& configJson) {
+    this->rigidbodyComponent = this->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
+    this->rigidbodyComponent.lock()->SetBounciness(0.5f);
+    for (const auto& collider: configJson["colliders"]) {
+        const glm::vec2 offset{collider["offset"][0].get<float>(), collider["offset"][1].get<float>(),};
+        const float size = collider["size"].get<float>();
+
+        this->rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(offset, size);
+    }
+}
+
+void Player::LoadModel(const json& configJson) {
+    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(configJson["material"].get<std::string>());
+    material = material->CreateDynamicInstance();
+    material->SetVec4("color", playerData.color);
+
+    auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>(configJson["model"].get<std::string>());
+    auto staticMeshComponent = this->AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
 }
 
 void Player::Start() {

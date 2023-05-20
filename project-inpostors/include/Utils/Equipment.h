@@ -2,12 +2,14 @@
 
 #include "Gameplay/Component.h"
 
-class Equipment : mlg::Component {
+class Equipment : public mlg::Component {
 private:
     int size;
     std::vector<std::shared_ptr<class Product>> equipment;
 
 public:
+    Equipment(const std::weak_ptr<mlg::Entity>& owner, const std::string& name, int size);
+
     eventpp::CallbackList<void()> equipmentChanged;
 
     bool AddProduct(const std::shared_ptr<Product>& product);
