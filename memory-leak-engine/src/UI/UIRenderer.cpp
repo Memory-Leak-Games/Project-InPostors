@@ -22,15 +22,37 @@ namespace mlg {
 
         auto material = AssetManager::GetAsset<MaterialAsset>("res/materials/simple_fbo_material.json");
         frameBuffer = std::make_unique<SingleTextureFrameBuffer>(window->GetWidth(), window->GetHeight(), material);
+
+        // Setup quad vao and vbo
+        const float quad[] = {
+                -0.5f, 0.5f,
+                -0.5f, -0.5f,
+                0.5f, -0.5f,
+
+                -0.5f, 0.5f,
+                0.5f, -0.5f,
+                0.5f, 0.5f};
+
+        glCreateVertexArrays(1, &vao);
+        glCreateBuffers(1, &vbo);
+
+        glNamedBufferData(vbo, sizeof(float) * 6 * 4, nullptr, GL_STATIC_DRAW);
+        glNamedBufferSubData(vbo, 0, sizeof(quad), quad);
+
+        glEnableVertexArrayAttrib(vao, 0);
+        glVertexArrayAttribBinding(vao, 0, 0);
+        glVertexArrayAttribFormat(vao, 0, 2, GL_FLOAT, GL_FALSE, 0);
+
+        glVertexArrayVertexBuffer(vao, 0, vbo, 0, 2 * sizeof(float));
     }
 
     void UIRenderer::Initialize() {
+        SPDLOG_INFO("Initializing UIRenderer");
         if (instance != nullptr)
             return;
 
         instance = new UIRenderer();
 
-        SPDLOG_INFO("Initializing UIRenderer");
         Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, OnWindowResize);
     }
 

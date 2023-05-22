@@ -137,14 +137,26 @@ public:
         auto sphereModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Sphere.obj");
 
         auto ui = mlg::EntityManager::SpawnEntity<mlg::Entity>("ui", true, mlg::SceneGraph::GetRoot());
-
         auto imageMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/cat_UI_material.json");
         auto image = ui.lock()->AddComponent<mlg::Image>("Image", imageMaterial);
         image.lock()->SetSize(glm::vec2{128.f});
         image.lock()->SetPosition({1280.f - 128.f, 720.f - 128.f});
         image.lock()->SetAnchor({1, 1});
+        auto progressBarMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/progressBar_material.json");
+        auto progressBar = ui.lock()->AddComponent<mlg::ProgressBar>("ProgressBar", progressBarMaterial);
+        progressBar.lock()->SetSize({256.f, 32.f});
+        progressBar.lock()->SetPosition({0.f, 720.f - 50.f});
+        progressBar.lock()->SetAnchor({0.f, 1.f});
+        auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/ARLRDBD.TTF");
+        auto label = ui.lock()->AddComponent<mlg::Label>("Label", font);
+        label.lock()->SetText("Aaa Kotki 2 szarobure obydwa 1234567890");
+        label.lock()->SetPosition({50, 50});
+        label.lock()->SetTextColor({1, 1, 1});
+        label.lock()->SetSize(32);
 
         mlg::UIRenderer::GetInstance()->AddRenderable(image);
+        mlg::UIRenderer::GetInstance()->AddRenderable(progressBar);
+        mlg::UIRenderer::GetInstance()->AddRenderable(label);
 
         PlayerData firstPlayerData = {0, mlg::RGBA::red};
         PlayerData secondPlayerData = {0, mlg::RGBA::cyan};

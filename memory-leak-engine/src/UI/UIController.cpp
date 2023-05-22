@@ -29,7 +29,6 @@ namespace mlg {
     }
 
     void UIController::Update() {
-        SPDLOG_INFO("Update UIController");
         if (!instance->focused)
             return;
 

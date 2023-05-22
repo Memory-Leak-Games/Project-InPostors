@@ -6,14 +6,13 @@ namespace mlg {
         static UIRenderer* instance;
 
         std::unique_ptr<class FrameBuffer> frameBuffer;
-
         std::vector<std::weak_ptr<class UIRenderable>> renderables;
-
         glm::mat4 projection;
 
         UIRenderer();
 
     public:
+        uint32_t vbo, vao;
         uint32_t windowWidth = 1280;
         uint32_t windowHeight = 720;
         float aspectRatio = (float) windowWidth / (float) windowHeight;

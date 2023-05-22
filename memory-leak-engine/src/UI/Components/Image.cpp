@@ -64,9 +64,9 @@ namespace mlg {
     }
 
     void Image::DrawRect() {
-        MLG_ASSERT(rectVao != 0);
+        MLG_ASSERT(UIRenderer::GetInstance()->vao != 0);
 
-        glBindVertexArray(rectVao);
+        glBindVertexArray(UIRenderer::GetInstance()->vao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
     }

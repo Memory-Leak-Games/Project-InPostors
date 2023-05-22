@@ -55,7 +55,7 @@ namespace mlg {
         shader->SetVec3F("textColor", textColor);
         shader->SetMat4F("projection", renderer->GetProjection());
         glActiveTexture(GL_TEXTURE0);
-        glBindVertexArray(vao);
+        glBindVertexArray(UIRenderer::GetInstance()->vao);
 
         float actualScale = scale * renderer->uiScale;
 
