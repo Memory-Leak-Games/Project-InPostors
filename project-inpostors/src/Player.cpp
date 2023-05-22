@@ -24,7 +24,6 @@
 #include "FX/FXLibrary.h"
 
 #include "Utils/EquipmentComponent.h"
-#include "Utils/Product.h"
 
 using json = nlohmann::json;
 
@@ -85,13 +84,7 @@ void Player::Update() {
 
 #ifdef DEBUG
     ImGui::Begin(("Player " + std::to_string(playerData.id)).c_str());
-    std::string EquipmentStr;
-    for (const auto& item: equipment->equipment) {
-        EquipmentStr += item->GetName() + " ";
-    }
-
-    ImGui::Text("Equipment: %s", EquipmentStr.c_str());
-
+    ImGui::Text("%s", equipment->ToString().c_str());
     ImGui::End();
 #endif
 }

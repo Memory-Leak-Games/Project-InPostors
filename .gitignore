@@ -11,3 +11,4 @@ CTestTestfile.cmake
 [Bb]uild/
 cmake-build*
 .idea
+.cache
