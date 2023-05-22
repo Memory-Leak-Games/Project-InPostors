@@ -35,6 +35,8 @@ public:
     void PhysicsUpdate() override;
     void AIUpdate() override;
 
+    float GetAcceleration() { return acceleration; }
+
     void LoadParameters(const std::string& path);
 
 private:

@@ -1,4 +1,4 @@
-#include "AI/TrafficMovementComponent.h"
+#include "ai/TrafficMovementComponent.h"
 
 #include <nlohmann/json.hpp>
 #include <fstream>
