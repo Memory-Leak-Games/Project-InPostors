@@ -7,7 +7,7 @@ namespace mlg {
         UIController();
 
     public:
-        class UIFocusableComponent* focused = nullptr;
+        std::weak_ptr<class UIFocusableComponent> focused;
 
         static void Initialize();
         static void Stop();

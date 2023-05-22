@@ -29,24 +29,30 @@ namespace mlg {
     }
 
     void UIController::Update() {
-        if (!instance->focused)
+        if (instance->focused.expired())
             return;
 
+        auto next = instance->focused.lock()->next;
+
         if (Input::IsActionJustPressed("ui_up")) {
-            if (instance->focused->next.top) {
-                instance->focused->next.top->GrabFocus();
+            if (!next.top.expired()) {
+                instance->focused.lock()->hasFocus = false;
+                next.top.lock()->GrabFocus();
             }
         } else if (Input::IsActionJustPressed("ui_down")) {
-            if (instance->focused->next.bottom) {
-                instance->focused->next.bottom->GrabFocus();
+            if (!next.bottom.expired()) {
+                instance->focused.lock()->hasFocus = false;
+                next.bottom.lock()->GrabFocus();
             }
         } else if (Input::IsActionJustPressed("ui_left")) {
-            if (instance->focused->next.left) {
-                instance->focused->next.left->GrabFocus();
+            if (!next.left.expired()) {
+                instance->focused.lock()->hasFocus = false;
+                next.left.lock()->GrabFocus();
             }
         } else if (Input::IsActionJustPressed("ui_right")) {
-            if (instance->focused->next.right) {
-                instance->focused->next.right->GrabFocus();
+            if (!next.right.expired()) {
+                instance->focused.lock()->hasFocus = false;
+                next.right.lock()->GrabFocus();
             }
         }
     }

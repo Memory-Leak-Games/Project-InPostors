@@ -6,10 +6,10 @@ namespace mlg {
     class UIFocusableComponent : public UIComponent {
     public:
         struct Next {
-            UIFocusableComponent* top;
-            UIFocusableComponent* bottom;
-            UIFocusableComponent* left;
-            UIFocusableComponent* right;
+            std::weak_ptr<UIFocusableComponent> top;
+            std::weak_ptr<UIFocusableComponent> bottom;
+            std::weak_ptr<UIFocusableComponent> left;
+            std::weak_ptr<UIFocusableComponent> right;
         } next;
         bool hasFocus = false;
 
