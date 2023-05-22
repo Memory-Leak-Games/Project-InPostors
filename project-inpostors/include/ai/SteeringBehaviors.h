@@ -74,9 +74,7 @@ private:
     glm::vec2 Alignment(const std::vector<std::weak_ptr<TrafficCar>>& agents);
 
     // Different calculation methods
-    glm::vec2 CalculateWeightedSum();
     glm::vec2 CalculatePrioritized();
-    glm::vec2 CalculateDithered();
 
 public:
     SteeringBehaviors(AIComponent* agent, const std::string& configPath = "res/config/ai.json");

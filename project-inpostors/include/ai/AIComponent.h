@@ -42,6 +42,9 @@ public:
     void AIUpdate() override;
 
     float GetMaxForce() { return maxForce; }
+    float GetMaxSpeed() { return maxSpeed; }
+    const glm::vec2& GetPosition();
+    glm::vec2 GetLinearVelocity();
 
     void LoadParameters(const std::string& path);
 

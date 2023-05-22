@@ -70,13 +70,64 @@ glm::vec2 SteeringBehaviors::CalculatePrioritized() {
     if (BehaviorTypeOn(separation)) {
         //TODO: Pass all cars here
 //        force = Separation() * separationWeight;
+
+        if (!AccumulateForce(steeringForce, force))
+            return steeringForce;
+    }
+
+    if (BehaviorTypeOn(alignment)) {
+        //TODO: Pass all cars here
+        //        force = Alignment() * alignmentWeight;
+
+        if (!AccumulateForce(steeringForce, force))
+            return steeringForce;
+    }
+
+    if (BehaviorTypeOn(seek)) {
+        force = Seek({10, 10}) * seekWeight;
+
+        if (!AccumulateForce(steeringForce, force))
+            return steeringForce;
+    }
+
+    if (BehaviorTypeOn(arrive)) {
+        force = Arrive({10, 10}, deceleration) * arriveWeight;
+
+        if (!AccumulateForce(steeringForce, force))
+            return steeringForce;
+    }
+
+    if (BehaviorTypeOn(followPath)) {
+//        force = FollowPath() * followPathWeight;
+
+        if (!AccumulateForce(steeringForce, force))
+            return steeringForce;
     }
 }
 
-glm::vec2 SteeringBehaviors::CalculateWeightedSum() {
-    glm::vec2 force;
+glm::vec2 SteeringBehaviors::Seek(glm::vec2 TargetPos) {
+    glm::vec2 desiredVelocity = glm::normalize(TargetPos - aiComponent->GetPosition())
+                                * aiComponent->GetPosition();
 
-    return force;
+    return (desiredVelocity - aiComponent->GetLinearVelocity());
+}
+
+glm::vec2 SteeringBehaviors::Arrive(glm::vec2 TargetPos, Deceleration deceleration) {
+    glm::vec2 toTarget = TargetPos - aiComponent->GetPosition();
+
+    float distance = toTarget.length();
+
+    if (distance > 0) {
+        const float decelerationTweaker = 0.3;
+
+        float speed = distance / ((float)deceleration * decelerationTweaker);
+        speed = fmin(speed, aiComponent->GetMaxSpeed());
+
+        glm::vec2 desiredVelocity = toTarget * speed / distance;
+        return (desiredVelocity - aiComponent->GetLinearVelocity());
+    }
+
+    return glm::vec2(0, 0);
 }
 
 void SteeringBehaviors::LoadParameters(const std::string& path) {

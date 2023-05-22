@@ -118,3 +118,11 @@ void AIComponent::LoadParameters(const std::string& path = "res/config/cars/test
     rotationSpeed = parameters["rotationSpeed"];
     rotationRadius = parameters["rotationRadius"];
 }
+
+const glm::vec2 &AIComponent::GetPosition() {
+    return rigidbodyComponent->GetPosition();
+}
+
+glm::vec2 AIComponent::GetLinearVelocity() {
+    return rigidbodyComponent->GetLinearVelocity();
+}
