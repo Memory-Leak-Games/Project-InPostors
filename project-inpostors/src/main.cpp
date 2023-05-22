@@ -28,6 +28,7 @@
 #include <Gameplay/Components/RigidbodyComponent.h>
 #include <Gameplay/Components/StaticMeshComponent.h>
 #include <Gameplay/EntityManager.h>
+#include <Gameplay/AI/AI.h>
 #include <Physics/Physics.h>
 #include <Rendering/CommonUniformBuffer.h>
 #include <Rendering/Gizmos/Gizmos.h>
@@ -90,12 +91,16 @@ public:
         mlg::ComponentManager::Initialize();
         mlg::EntityManager::Initialize();
 
+        mlg::AI::Initialize();
+
         mlg::Core::Initialize();
         mlg::Input::Initialize();
 
         mlg::Core* engine = mlg::Core::GetInstance();
         PrepareScene();
         engine->MainLoop();
+
+        mlg::AI::Stop();
 
         mlg::EntityManager::Stop();
         mlg::ComponentManager::Stop();
