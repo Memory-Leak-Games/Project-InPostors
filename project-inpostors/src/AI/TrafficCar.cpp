@@ -58,13 +58,13 @@ std::shared_ptr<TrafficCar> TrafficCar::Create(uint64_t id, const std::string& n
 }
 
 void TrafficCar::Start() {
-    //TODO: Implement this
+    //TODO: Implement Start
 }
 
 void TrafficCar::Update() {
-    //TODO: Implement this
+    //TODO: Implement Update
 }
 
 void TrafficCar::AIUpdate() {
-    //TODO: Implement this
+    //TODO: Implement AIUpdate
 }

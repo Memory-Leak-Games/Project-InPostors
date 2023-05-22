@@ -45,7 +45,7 @@ void TrafficMovementComponent::Update() {
 }
 
 void TrafficMovementComponent::AIUpdate() {
-
+    //TODO: Add AI functions here
 }
 
 void TrafficMovementComponent::LoadParameters(const std::string& path = "res/config/cars/testing.json") {
