@@ -65,6 +65,7 @@ namespace mlg {
         void RemoveComponent(Component *component);
 
         virtual void Start();
+        virtual void AIUpdate();
         virtual void PhysicsUpdate();
         virtual void Update();
         virtual void LateUpdate();

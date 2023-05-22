@@ -12,6 +12,8 @@ namespace mlg {
 
     void Component::Start() {}
 
+    void Component::AIUpdate() {}
+
     void Component::PhysicsUpdate() {}
 
     void Component::Update() {}
