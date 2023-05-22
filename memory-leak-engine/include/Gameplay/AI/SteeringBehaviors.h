@@ -54,6 +54,7 @@ namespace mlg {
         float followPathWeight;
 
         bool BehaviorTypeOn(behaviorType bt) { return (flags & bt) == bt; }
+        bool AccumulateForce(glm::vec2& sf, glm::vec2 forceToAdd);
 
         // Behavior declarations
         glm::vec2 Seek(glm::vec2 targetPos);
@@ -79,9 +80,12 @@ namespace mlg {
         SteeringBehaviors();
         virtual ~SteeringBehaviors();
 
-        glm::vec2 Calculate();
+        glm::vec2 Calculate(float viewDistance);
 
         glm::vec2 GetSteeringForce() const { return steeringForce; }
+
+        void SetBehaviorWeights(float cohesion, float separation, float alignment,
+                                float seek, float arrive, float follow);
 
         void SetSummingMethod(SummingMethod sm) { summingMethod = sm; }
 

@@ -5,21 +5,25 @@
 
 #include "Gameplay/Entity.h"
 #include "Gameplay/Components/RigidbodyComponent.h"
+#include "AI/TrafficMovementComponent"
 
 using json = nlohmann::json;
 
 namespace mlg {
 
-    AIComponent::AIComponnet(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
+    AIComponent::AIComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
                              const std::string& configPath = "res/config/ai.json")
             : Component(owner, name) {
         LoadParameters(configPath);
     }
 
-    AIComponent::~AIComponnet() = default;
+    AIComponent::~AIComponent() = default;
 
     void AIComponent::Start() {
         rigidbodyComponent = GetOwner().lock().GetComponentByClass<RigidbodyComponent>().lock();
+        trafficMovementComponent = GetOwner().lock.GetComponentByClass<TrafficMovementComponent>().lock();
+
+        maxForce = trafficMovementComponent.lock().
     }
 
     void AIComponent::Update() {
