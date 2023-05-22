@@ -146,12 +146,6 @@ public:
         PlayerData firstPlayerData = {0, mlg::RGBA::red};
         PlayerData secondPlayerData = {0, mlg::RGBA::cyan};
 
-        auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot(), firstPlayerData);
-        player.lock()->AddComponent<PlayerOneInput>("PlayerInput");
-
-        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false, mlg::SceneGraph::GetRoot(), secondPlayerData);
-        playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
-
         auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
         auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
 
@@ -164,6 +158,12 @@ public:
 
         // load props
         mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit_props.json");
+
+        auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot(), firstPlayerData);
+        player.lock()->AddComponent<PlayerOneInput>("PlayerInput");
+
+        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false, mlg::SceneGraph::GetRoot(), secondPlayerData);
+        playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
 
         // create factories
         auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),

@@ -1,5 +1,5 @@
 {
-  "defaultMaterial": "res/materials/buildings_material.json",
+  "default-material": "res/materials/buildings_material.json",
   "tiles": [
     {
       "symbol": "b",
@@ -79,7 +79,7 @@
     },
     {
       "symbol": "p",
-      "isPathWay": true,
+      "is-path-way": true,
       "objects": [
         {
           "model": "res/models/Roads/path_way.obj"
@@ -146,8 +146,15 @@
   "factories": [
     {
       "symbol": "8",
-      "name": "Smelter",
-      "config:": "res/levels/Factories/smelter.json"
+      "config": "res/levels/Factories/smelter.json"
+    },
+    {
+      "symbol": "9",
+      "config": "res/levels/Factories/mine.json"
+    },
+    {
+      "symbol": "&",
+      "config": "res/levels/Factories/ikea.json"
     }
   ],
 

@@ -32,12 +32,12 @@
     "far": 200.0
   },
 
-  "player-one-settings": {
+  "player-one": {
     "position": [0.0, 0.0, 0.0],
     "rotation": [0.0, 0.0, 0.0]
   },
 
-  "player-two-settings": {
+  "player-two": {
     "position": [0.0, 0.0, 0.0],
     "rotation": [0.0, 0.0, 0.0]
   }
