@@ -19,7 +19,7 @@ namespace mlg {
         glm::vec2 anchor {0.0f, 0.0f};
         glm::vec2 actualPosition = position;
         bool actualPositionDirty = true;
-        void CalculateActualPosition(const struct Renderer2D* renderer);
+        void CalculateActualPosition(const struct UIRenderer* renderer);
 
     public:
         UIComponent(std::weak_ptr<Entity> owner, std::string name);

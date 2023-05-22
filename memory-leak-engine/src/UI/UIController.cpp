@@ -4,6 +4,8 @@
 
 namespace mlg {
 
+    UIController* UIController::instance;
+
     UIController::UIController() {
     }
 
