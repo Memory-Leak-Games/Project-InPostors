@@ -19,7 +19,7 @@ namespace mlg {
     bool SteeringBehaviors::AccumulateForce(glm::vec2& total, glm::vec2 forceToAdd) {
         float magnitudeThusFar = total.length();
 
-        float magnitudeRemaining =
+//        float magnitudeRemaining =
     }
 
     glm::vec2 SteeringBehaviors::Calculate(float viewDistance) {

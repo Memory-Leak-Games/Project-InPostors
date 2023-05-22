@@ -1,6 +1,11 @@
 {
-  "name": "config",
-  "version": "1.0.0",
-  "dependencies": {
+  "name": "AI Settings",
+  "parameters": {
+    "cohesionWeight": 0.1,
+    "separationWeight": 0.5,
+    "alignmentWeight": 0.5,
+    "seekWeight": 0.5,
+    "arriveWeight": 0.5,
+    "followPathWeight": 0.9
   }
 }
