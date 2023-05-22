@@ -35,8 +35,9 @@ private:
     };
 
     uint64_t flags;
-    std::shared_ptr<AIComponent> aiComponent;
-    std::shared_ptr<TrafficCar> trafficCar;
+
+    AIComponent* aiComponent;
+    TrafficCar* trafficCar;
 
     enum Deceleration {
         slow = 3,
@@ -78,7 +79,7 @@ private:
     glm::vec2 CalculateDithered();
 
 public:
-    SteeringBehaviors(std::shared_ptr<TrafficCar> agent, const std::string& configPath = "res/config/ai.json");
+    SteeringBehaviors(AIComponent* agent, const std::string& configPath = "res/config/ai.json");
     virtual ~SteeringBehaviors();
 
     glm::vec2 Calculate();

@@ -5,11 +5,12 @@
 
 #include "ai/SteeringBehaviors.h"
 #include "ai/TrafficCar.h"
+#include "ai/AIComponent.h"
 
 using json = nlohmann::json;
 
-SteeringBehaviors::SteeringBehaviors(std::shared_ptr<TrafficCar> agent, const std::string& configPath)
-    : trafficCar(std::move(agent)), flags(0), deceleration(normal), summingMethod(prioritized) {
+SteeringBehaviors::SteeringBehaviors(AIComponent* agent, const std::string& configPath)
+    : aiComponent(agent), flags(0), deceleration(normal), summingMethod(prioritized) {
     LoadParameters(configPath);
 
     //TODO: Set Path here
@@ -22,10 +23,7 @@ SteeringBehaviors::~SteeringBehaviors() {
 bool SteeringBehaviors::AccumulateForce(glm::vec2& total, glm::vec2 forceToAdd) {
     float magnitudeThusFar = total.length();
 
-    auto aimovcom = trafficCar->GetComponentByName("AIMovementComponent");
-
-    float magnitudeRemaining = trafficCar->GetComponentByName("AIMovementComponent").lock()->GetMaxForce()
-            - magnitudeThusFar;
+    float magnitudeRemaining = aiComponent->GetMaxForce() - magnitudeThusFar;
 
     if (magnitudeRemaining <= 0.0)
         return false;

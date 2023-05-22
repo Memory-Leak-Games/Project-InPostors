@@ -31,7 +31,7 @@ AIComponent::AIComponent(const std::weak_ptr<mlg::Entity>& owner, const std::str
                          const std::string& configPath)
         : Component(owner, name) {
     LoadParameters(configPath);
-    steering = new SteeringBehaviors(GetOwner().lock());
+    steering = new SteeringBehaviors(this);
 }
 
 AIComponent::~AIComponent() = default;
@@ -59,7 +59,7 @@ void AIComponent::HandleEngineAndBraking() {
 
     const glm::vec3 localVelocity = rigidbodyComponent->GetLocalVelocity();
 
-    glm::vec2 steeringForce = steering.Calculate();
+    glm::vec2 steeringForce = steering->Calculate();
 
     float targetAccelerationForce = acceleration * steeringForce.y * mlg::Time::GetFixedTimeStep();
 
@@ -86,7 +86,7 @@ void AIComponent::HandleEngineAndBraking() {
 void AIComponent::HandleSteering() {
     std::shared_ptr<mlg::Entity> owner = GetOwner().lock();
     const glm::vec3 localVelocity = rigidbodyComponent->GetLocalVelocity();
-    const glm::vec2 steeringForce = steering.Calculate();
+    const glm::vec2 steeringForce = steering->Calculate();
 
     const float steeringSpeedFactor = std::clamp(localVelocity.z / rotationRadius, -1.f, 1.f);
     const float steeringSpeed = steeringForce.x * rotationSpeed * steeringSpeedFactor * mlg::Time::GetFixedTimeStep();
