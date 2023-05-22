@@ -1,9 +1,9 @@
 {
   "name": "Detroit",
-  "tileSize": 4.0,
+  "tile-size": 4.0,
   "tileset": "res/levels/Tileset/city_tileset.json",
 
-  "groundColor": [0.898, 0.854, 0.890, 1.0],
+  "ground-color": [0.898, 0.854, 0.890, 1.0],
 
   "layout": [
     "      bbbbbbbbbbbBbbb       ",
@@ -23,12 +23,22 @@
     "    sssssssssssbbsbbsbb     "
   ],
 
-  "cameraSettings": {
+  "camera-settings": {
     "position": [16.0, 50.0, -14.0],
     "rotation": [65.0, -45.0, 0.0],
 
     "size": 100.0,
     "near": 0.1,
     "far": 200.0
+  },
+
+  "player-one-settings": {
+    "position": [0.0, 0.0, 0.0],
+    "rotation": [0.0, 0.0, 0.0]
+  },
+
+  "player-two-settings": {
+    "position": [0.0, 0.0, 0.0],
+    "rotation": [0.0, 0.0, 0.0]
   }
 }
