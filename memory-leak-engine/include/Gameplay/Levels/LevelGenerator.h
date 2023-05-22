@@ -7,13 +7,13 @@ namespace mlg {
     class LevelGenerator {
 
     public:
-        static void LoadMap(const std::string& path);
+        static std::vector<std::string> LoadMap(const std::string& path);
         static void LoadCameraSettings(const std::string& path, class CameraComponent& cameraComponent);
         static void SpawnGround(const std::string& path);
         static void SetCityBounds(const std::string& path);
 
-    private:
 
+    private:
         struct MapObject {
             std::shared_ptr<class ModelAsset> model;
             std::shared_ptr<class MaterialAsset> material;
@@ -49,18 +49,18 @@ namespace mlg {
         nlohmann::json levelJson;
         nlohmann::json tileJson;
 
-        std::string ignoredCharacters;
         std::vector<std::string> levelLayout;
-        std::unordered_map<char, MapEntry> mapObjects;
 
+        std::string ignoredCharacters;
+        std::unordered_map<char, MapEntry> mapObjects;
         std::string defaultMaterial;
 
         float tileSize = 10.f;
-        glm::vec2 citySize;
+        glm::vec2 citySize = {0.f, 0.f};
 
-        void LoadLayout();
+        std::vector<std::string> LoadLayout();
         void LoadMapObjects();
-        void LoadFactories();
+        void LoadFactories(); //todo
         void LoadRoads();
         MapObject ParseObject(const nlohmann::json& jsonObject);
 
@@ -75,7 +75,7 @@ namespace mlg {
         void PutCurveRoad(int x, int y);
         void PutCornerRoad(int x, int y);
 
-        void PutEntity(const MapObject& mapObject, const glm::ivec2& position, float rotation);
+        void PutEntity(const MapObject& mapObject, const glm::ivec2& position, float rotation) const;
         float GetSmartRotation(int x, int y);
 
         glm::vec2 GetCitySize();

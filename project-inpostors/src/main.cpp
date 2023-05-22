@@ -160,13 +160,17 @@ public:
         auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
         auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
 
+        //std::vector<std::string> levelLayout;
+        //levelLayout = mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::SpawnGround("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::SetCityBounds("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::LoadCameraSettings("res/levels/Cities/detroit.json", *cameraComponent.lock());
 
+        // load props
         mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit_props.json");
 
+        // create factories
         auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
                                                                     "res/levels/Factories/smelter.json");
         auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
