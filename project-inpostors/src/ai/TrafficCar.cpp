@@ -19,7 +19,7 @@
 
 #include "Physics/Colliders/Collider.h"
 
-#include "AI/TrafficMovementComponent.h"
+#include "ai/AIComponent.h"
 
 using json = nlohmann::json;
 
@@ -45,11 +45,11 @@ std::shared_ptr<TrafficCar> TrafficCar::Create(uint64_t id, const std::string& n
     material->SetVec4("color", trafficCarData.color);
 
     auto staticMeshComponent = newTrafficCar->AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
-    newTrafficCar->AddComponent<TrafficMovementComponent>("MovementComponent");
+    newTrafficCar->AddComponent<AIComponent>("AIMovementComponent");
 
     staticMeshComponent.lock()->GetTransform().SetPosition({0.f, 0.6f, 0.f});
 
-    newTrafficCar->AddComponent<TrafficMovementComponent>("MovementComponent", configPath);
+    newTrafficCar->AddComponent<AIComponent>("AIMovementComponent", configPath);
 
     auto smoke = std::make_shared<SmokeFX>();
     auto smokeComponent = newTrafficCar->AddComponent<mlg::ParticleSystemComponent>("SmokeFX", smoke);

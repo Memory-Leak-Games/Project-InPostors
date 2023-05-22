@@ -1,5 +1,10 @@
 #pragma once
 
+class AIComponent;
+class TrafficCar;
+
+const float waypointSeekDistance = 20;
+
 class SteeringBehaviors {
 public:
     enum SummingMethod {
@@ -30,7 +35,8 @@ private:
     };
 
     uint64_t flags;
-//    std::shared_ptr<TrafficMovementComponent>
+    std::shared_ptr<AIComponent> aiComponent;
+    std::shared_ptr<TrafficCar> trafficCar;
 
     enum Deceleration {
         slow = 3,
@@ -44,8 +50,9 @@ private:
     glm::vec2 steeringForce;
     glm::vec2 target;
 
+    float viewDistance;
+
     // Weights for adjusting behavior strength
-    float cohesionWeight;
     float separationWeight;
     float alignmentWeight;
     float seekWeight;
@@ -61,14 +68,9 @@ private:
     glm::vec2 FollowPath();
 
     // Group behaviors
-    template <typename T>
-    glm::vec2 Cohesion(const std::vector<std::weak_ptr<T>> &agents);
+    glm::vec2 Separation(const std::vector<std::weak_ptr<TrafficCar>>& agents);
 
-    template <typename T>
-    glm::vec2 Separation(const std::vector<std::weak_ptr<T>> &agents);
-
-    template <typename T>
-    glm::vec2 Alignment(const std::vector<std::weak_ptr<T>> &agents);
+    glm::vec2 Alignment(const std::vector<std::weak_ptr<TrafficCar>>& agents);
 
     // Different calculation methods
     glm::vec2 CalculateWeightedSum();
@@ -76,41 +78,37 @@ private:
     glm::vec2 CalculateDithered();
 
 public:
-    SteeringBehaviors();
+    SteeringBehaviors(std::shared_ptr<TrafficCar> agent, const std::string& configPath = "res/config/ai.json");
     virtual ~SteeringBehaviors();
 
-    glm::vec2 Calculate(float viewDistance);
+    glm::vec2 Calculate();
 
     glm::vec2 GetSteeringForce() const { return steeringForce; }
 
-    void SetBehaviorWeights(float cohesion, float separation, float alignment,
-                            float seek, float arrive, float follow);
+    float GetSeparationWeight() const { return separationWeight; }
+    float GetAlignmentWeight() const { return alignmentWeight; }
 
     void SetSummingMethod(SummingMethod sm) { summingMethod = sm; }
+    void SetTarget(const glm::vec2 t) { target = t; }
 
     // Flag checks
     void SeekOn() { flags |= seek; }
     void ArriveOn() { flags |= arrive; }
-    void CohesionOn() { flags |= cohesion; }
     void SeparationOn() { flags |= separation; }
     void AlignmentOn() { flags |= alignment; }
     void FollowPathOn() { flags |= followPath; }
 
     void SeekOff() { if(BehaviorTypeOn(seek)) flags ^= seek; }
     void ArriveOff() { if(BehaviorTypeOn(arrive)) flags ^= arrive; }
-    void CohesionOff() { if(BehaviorTypeOn(cohesion)) flags ^= cohesion; }
     void SeparationOff() { if(BehaviorTypeOn(separation)) flags ^= separation; }
     void AlignmentOff() { if(BehaviorTypeOn(alignment)) flags ^= alignment; }
     void FollowPathOff() { if(BehaviorTypeOn(followPath)) flags ^= followPath; }
 
     bool isSeekOn() { return BehaviorTypeOn(seek); }
     bool isArriveOn() { return BehaviorTypeOn(arrive); }
-    bool isCohesionOn() { return BehaviorTypeOn(cohesion); }
     bool isSeparationOn() { return BehaviorTypeOn(separation); }
     bool isAlignmentOn() { return BehaviorTypeOn(alignment); }
     bool isFollowPathOn() { return BehaviorTypeOn(followPath); }
 
-    float GetSeparationWeight() const { return separationWeight; }
-    float GetAlignmentWeight() const { return alignmentWeight; }
-    float GetCohesionWeight() const { return cohesionWeight; }
+    void LoadParameters(const std::string& path);
 };

@@ -1,12 +1,16 @@
-#include "ai/SteeringBehaviors.h"
+#include <utility>
 
-SteeringBehaviors::SteeringBehaviors() : flags(0), deceleration(normal), summingMethod(prioritized) {
-    cohesionWeight = .5f;
-    separationWeight = .5f;
-    alignmentWeight = .5f;
-    seekWeight = .5f;
-    arriveWeight = .5f;
-    followPathWeight = .5f;
+#include <nlohmann/json.hpp>
+#include <fstream>
+
+#include "ai/SteeringBehaviors.h"
+#include "ai/TrafficCar.h"
+
+using json = nlohmann::json;
+
+SteeringBehaviors::SteeringBehaviors(std::shared_ptr<TrafficCar> agent, const std::string& configPath)
+    : trafficCar(std::move(agent)), flags(0), deceleration(normal), summingMethod(prioritized) {
+    LoadParameters(configPath);
 
     //TODO: Set Path here
 }
@@ -18,19 +22,35 @@ SteeringBehaviors::~SteeringBehaviors() {
 bool SteeringBehaviors::AccumulateForce(glm::vec2& total, glm::vec2 forceToAdd) {
     float magnitudeThusFar = total.length();
 
-//    float magnitudeRemaining =
+    auto aimovcom = trafficCar->GetComponentByName("AIMovementComponent");
+
+    float magnitudeRemaining = trafficCar->GetComponentByName("AIMovementComponent").lock()->GetMaxForce()
+            - magnitudeThusFar;
+
+    if (magnitudeRemaining <= 0.0)
+        return false;
+
+    float magnitudeToAdd = forceToAdd.length();
+
+    if (magnitudeToAdd < magnitudeRemaining)
+        total += forceToAdd;
+    else
+        total += glm::normalize(forceToAdd) * magnitudeRemaining;
+
+    return true;
 }
 
-glm::vec2 SteeringBehaviors::Calculate(float viewDistance) {
+glm::vec2 SteeringBehaviors::Calculate() {
     steeringForce = { 0, 0 };
 
-    if (BehaviorTypeOn(separation) || BehaviorTypeOn(alignment) || BehaviorTypeOn(cohesion)) {
+    if (BehaviorTypeOn(separation) || BehaviorTypeOn(alignment)) {
         //TODO: Tag cars within view range
     }
 
     switch (summingMethod) {
         case weightedAverage:
-            steeringForce = CalculateWeightedSum();
+            //TODO: Implement weighted average in the future
+            steeringForce = { 0, 0 };
             break;
         case prioritized:
             steeringForce = CalculatePrioritized();
@@ -59,4 +79,17 @@ glm::vec2 SteeringBehaviors::CalculateWeightedSum() {
     glm::vec2 force;
 
     return force;
+}
+
+void SteeringBehaviors::LoadParameters(const std::string& path) {
+    std::ifstream configFile{path};
+    json configJson = json::parse(configFile);
+
+    auto parameters = configJson["parameters"];
+
+    separationWeight = parameters["separationWeight"];
+    alignmentWeight = parameters["alignmentWeight"];
+    seekWeight = parameters["seekWeight"];
+    arriveWeight = parameters["arriveWeight"];
+    followPathWeight = parameters["followPathWeight"];
 }
