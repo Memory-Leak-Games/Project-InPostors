@@ -144,7 +144,7 @@ public:
         mlg::Renderer2D::GetInstance()->AddRenderable(image);
 
         PlayerData firstPlayerData = {0, mlg::RGBA::red};
-        PlayerData secondPlayerData = {0, mlg::RGBA::cyan};
+        PlayerData secondPlayerData = {1, mlg::RGBA::cyan};
 
         auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot(), firstPlayerData);
         player.lock()->AddComponent<PlayerOneInput>("PlayerInput");
@@ -166,18 +166,18 @@ public:
         mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit_props.json");
 
         // create factories
-        auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
+        auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("Smelter", false, mlg::SceneGraph::GetRoot(),
                                                                     "res/levels/Factories/smelter.json");
         auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
         testFactoryRigidBody.lock()->SetPosition({22.f, 8.f});
 
-        auto testMine = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
+        auto testMine = mlg::EntityManager::SpawnEntity<Factory>("Mine", false, mlg::SceneGraph::GetRoot(),
                                                                     "res/levels/Factories/mine.json");
         auto testMineRigidBody = testMine.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
         testMineRigidBody.lock()->SetPosition({-60.f, -5.f});
         testMineRigidBody.lock()->SetRotation(glm::radians(-90.f));
 
-        auto testIkea = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
+        auto testIkea = mlg::EntityManager::SpawnEntity<Factory>("Szwedzki sklep z meblami", false, mlg::SceneGraph::GetRoot(),
                                                                  "res/levels/Factories/ikea.json");
         auto testIkeaRigidBody = testIkea.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
         testIkeaRigidBody.lock()->SetPosition({55.f, -5.f});

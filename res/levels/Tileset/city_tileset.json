@@ -103,6 +103,7 @@
         {
           "model": "res/models/Buildings/Special/ferris_wheel.obj",
           "scale": 0.85,
+          "rotation": 90.0,
           "collision-type": "rectangle",
           "collision-size": 4.0
         }

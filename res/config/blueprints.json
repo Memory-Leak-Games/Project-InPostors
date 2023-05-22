@@ -1,0 +1,25 @@
+[
+    {
+        "name": "ore",
+        "input": [ ],
+        "output": "ore",
+        "time": 0.5
+    },
+    {
+        "name": "iron",
+        "input": [
+            "ore"
+        ],
+        "output": "iron",
+        "time": 1.0
+    },
+    {
+        "name": "furniture",
+        "input": [
+            "iron",
+            "wood"
+        ],
+        "output": "furniture",
+        "time": 2.0
+    }
+]

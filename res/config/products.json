@@ -1,0 +1,22 @@
+[
+    {
+        "name": "iron",
+        "icon": "None",
+        "color": [ 0.647, 0.612, 0.58 ]
+    },
+    {
+        "name": "ore",
+        "icon": "None",
+        "color": [ 0.0, 0.698, 0.663 ]
+    },
+    {
+        "name": "wood",
+        "icon": "None",
+        "color": [ 0.643, 0.455, 0.286 ]
+    },
+    {
+        "name": "furniture",
+        "icon": "None",
+        "color": [ 0.643, 0.455, 0.286 ]
+    }
+]
