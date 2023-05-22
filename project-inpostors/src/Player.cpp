@@ -1,5 +1,6 @@
 #include "Player.h"
 
+#include <memory>
 #include <nlohmann/json.hpp>
 #include <fstream>
 
@@ -8,6 +9,7 @@
 
 #include "Core/AssetManager/AssetManager.h"
 
+#include "Gameplay/Entity.h"
 #include "Rendering/Assets/ModelAsset.h"
 #include "Rendering/Assets/MaterialAsset.h"
 
@@ -24,6 +26,9 @@
 #include "FX/FXLibrary.h"
 
 #include "Utils/EquipmentComponent.h"
+#include "Utils/ProductManager.h"
+
+#include "Buildings/Factory.h"
 
 using json = nlohmann::json;
 
@@ -90,6 +95,9 @@ void Player::Update() {
 }
 
 void Player::PickUp() {
+    if (equipment->CheckIsFull())
+        return;
+
     std::vector<std::weak_ptr<mlg::Collider>> overlappingColliders;
     rigidbodyComponent.lock()->GetOverlappingColliders(overlappingColliders);
 
@@ -98,8 +106,20 @@ void Player::PickUp() {
             continue;
         }
 
-        std::shared_ptr<Entity> factory = mlg::RigidbodyComponent::GetColliderOwner(*collider.lock()).lock();
-        SPDLOG_WARN("{} : PickUp from {}", GetName(), factory->GetName());
+        std::shared_ptr<mlg::Entity> owner = mlg::RigidbodyComponent::GetColliderOwner(*collider.lock()).lock();
+        std::shared_ptr<Factory> factory = std::dynamic_pointer_cast<Factory>(owner);
+
+        if (!factory)
+            continue;
+
+        const std::string product = factory->GetEquipmentComponent()->RequestProduct();
+
+        if (product == "none")
+            return;
+        
+        equipment->AddProduct(product);
+
+        SPDLOG_WARN("{} : PickUp {} from {}", GetName(), product, factory->GetName());
     }
 
 }

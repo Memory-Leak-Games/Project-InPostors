@@ -15,7 +15,7 @@
     }
   ],
 
-  "blueprintID": "ironOre",
+  "blueprintID": "ore",
   "type": "OneOutput",
 
   "input": {

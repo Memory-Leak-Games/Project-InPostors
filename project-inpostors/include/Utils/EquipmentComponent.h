@@ -15,6 +15,8 @@ public:
 
     bool AddProduct(const std::string& productId);
     bool RequestProduct(const std::string& productId);
+    std::string RequestProduct();
+
     bool CheckProduct(const std::string& productId) const;
     bool CheckBlueprint(const std::string& blueprintId) const;
     bool CheckIsFull() const;

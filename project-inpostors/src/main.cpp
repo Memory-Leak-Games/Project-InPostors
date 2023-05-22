@@ -162,18 +162,18 @@ public:
 
         mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit_props.json");
 
-        auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
+        auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("Smelter", false, mlg::SceneGraph::GetRoot(),
                                                                     "res/levels/Factories/smelter.json");
         auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
         testFactoryRigidBody.lock()->SetPosition({22.f, 8.f});
 
-        auto testMine = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
+        auto testMine = mlg::EntityManager::SpawnEntity<Factory>("Mine", false, mlg::SceneGraph::GetRoot(),
                                                                     "res/levels/Factories/mine.json");
         auto testMineRigidBody = testMine.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
         testMineRigidBody.lock()->SetPosition({-60.f, -5.f});
         testMineRigidBody.lock()->SetRotation(glm::radians(-90.f));
 
-        auto testIkea = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
+        auto testIkea = mlg::EntityManager::SpawnEntity<Factory>("Szedzki sklep z meblami", false, mlg::SceneGraph::GetRoot(),
                                                                  "res/levels/Factories/ikea.json");
         auto testIkeaRigidBody = testIkea.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
         testIkeaRigidBody.lock()->SetPosition({55.f, -5.f});

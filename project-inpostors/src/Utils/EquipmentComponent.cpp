@@ -20,6 +20,16 @@ bool EquipmentComponent::RequestProduct(const std::string& product) {
     return true;
 }
 
+std::string EquipmentComponent::RequestProduct() {
+    if (equipment.empty())
+        return "none";
+
+    std::string product = equipment.front();
+    equipment.pop_back();
+    
+    return product;
+}
+
 bool EquipmentComponent::CheckProduct(const std::string& product) const {
     return std::find(equipment.begin(), equipment.end(), product) != equipment.end();
 }
