@@ -126,3 +126,7 @@ const glm::vec2 &AIComponent::GetPosition() {
 glm::vec2 AIComponent::GetLinearVelocity() {
     return rigidbodyComponent->GetLinearVelocity();
 }
+
+SteeringBehaviors* AIComponent::GetSteering() {
+    return steering;
+}

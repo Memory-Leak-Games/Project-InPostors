@@ -45,6 +45,7 @@ public:
     float GetMaxSpeed() { return maxSpeed; }
     const glm::vec2& GetPosition();
     glm::vec2 GetLinearVelocity();
+    SteeringBehaviors* GetSteering();
 
     void LoadParameters(const std::string& path);
 

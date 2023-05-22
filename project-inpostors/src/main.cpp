@@ -23,6 +23,9 @@
 #include "Car/PlayerOneInput.h"
 #include "Car/PlayerTwoInput.h"
 #include "Buildings/Factory.h"
+#include "ai/TrafficCar.h"
+#include "ai/AIComponent.h"
+#include "ai/SteeringBehaviors.h"
 
 #include <Gameplay/ComponentManager.h>
 #include <Gameplay/Components/RigidbodyComponent.h>
@@ -156,6 +159,11 @@ public:
 
         auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false, mlg::SceneGraph::GetRoot(), secondPlayerData);
         playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
+
+        TrafficCarData testCarData = {0, mlg::RGBA::white};
+
+        auto testCar = mlg::EntityManager::SpawnEntity<TrafficCar>("TrafficCar", false, mlg::SceneGraph::GetRoot(), testCarData);
+        testCar.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->SeekOn();
 
         auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
         auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
