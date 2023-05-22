@@ -25,9 +25,24 @@ using Random = effolkronium::random_static;
 
 namespace mlg {
 
+    std::vector<std::string> LevelGenerator::LoadMap(const std::string& path) {
+        LevelGenerator levelGenerator;
+
+        std::ifstream levelFile{path};
+        levelGenerator.levelJson = json::parse(levelFile);
+
+        std::vector<std::string> ret = levelGenerator.LoadLayout();
+        levelGenerator.LoadMapObjects();
+        levelGenerator.LoadRoads();
+
+        levelGenerator.GenerateLevel();
+
+        return ret;
+    }
+
     void LevelGenerator::LoadCameraSettings(const std::string& path, struct CameraComponent& cameraComponent) {
         std::ifstream levelFile{path};
-        json cameraJson = json::parse(levelFile)["cameraSettings"];
+        json cameraJson = json::parse(levelFile)["camera-settings"];
 
         const glm::vec3 position = {
                 cameraJson["position"][0].get<float>(),
@@ -61,10 +76,10 @@ namespace mlg {
         const float tileSize = levelGenerator.tileSize;
 
         glm::vec4 color {
-            levelGenerator.levelJson["groundColor"][0].get<float>(),
-            levelGenerator.levelJson["groundColor"][1].get<float>(),
-            levelGenerator.levelJson["groundColor"][2].get<float>(),
-            levelGenerator.levelJson["groundColor"][3].get<float>()
+            levelGenerator.levelJson["ground-color"][0].get<float>(),
+            levelGenerator.levelJson["ground-color"][1].get<float>(),
+            levelGenerator.levelJson["ground-color"][2].get<float>(),
+            levelGenerator.levelJson["ground-color"][3].get<float>()
         };
 
         auto planeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/plane.obj");
@@ -103,27 +118,19 @@ namespace mlg {
         CollisionManager::SetBounds(cityStart, cityEnd, layoutSize);
     }
 
+    // ======== PRIVATE METHODS ========
 
-    void LevelGenerator::LoadMap(const std::string& path) {
-        LevelGenerator levelGenerator;
-
-        std::ifstream levelFile{path};
-        levelGenerator.levelJson = json::parse(levelFile);
-
-        levelGenerator.LoadLayout();
-        levelGenerator.LoadMapObjects();
-        levelGenerator.LoadRoads();
-
-        levelGenerator.GenerateLevel();
-    }
-
-    void LevelGenerator::LoadLayout() {
+    std::vector<std::string> LevelGenerator::LoadLayout() {
+        std::vector<std::string> ret;
         for (const auto& jsonLayoutString: levelJson["layout"]) {
-            levelLayout.push_back(jsonLayoutString.get<std::string>());
+            std::string layoutString = jsonLayoutString.get<std::string>();
+            levelLayout.push_back(layoutString);
+            ret.push_back(layoutString);
         }
 
-        tileSize = levelJson["tileSize"].get<float>();
+        tileSize = levelJson["tile-size"].get<float>();
         citySize = GetCitySize();
+        return ret;
     }
 
     void LevelGenerator::LoadMapObjects() {
@@ -182,6 +189,8 @@ namespace mlg {
                                      ? jsonMapObject["collision-offset"].get<float>() : 0.0f;
         }
 
+        //if (jsonMapObject.contains("factory-data")) {}
+
         return mapObj;
     }
 
@@ -200,24 +209,27 @@ namespace mlg {
     }
 
     void LevelGenerator::GenerateLevel() {
-
         int x = 0, y = 0;
         for (const std::string& row: levelLayout) {
             ++y;
             for (const char& character: row) {
                 ++x;
 
+                // Ignore spaces
                 if (character == ' ')
                     continue;
 
+                // Ignore specified characters
                 if (std::find(ignoredCharacters.begin(), ignoredCharacters.end(), character) != ignoredCharacters.end())
                     continue;
 
+                // Place a road if required
                 if (character == roadsObjects.symbol) {
                     PutRoad(x - 1, y - 1);
                     continue;
                 }
 
+                // If road is not required, simply place a building.
                 PutTile(x - 1, y - 1, character);
             }
             x = 0;
@@ -231,10 +243,10 @@ namespace mlg {
 
     glm::ivec2 LevelGenerator::GetLayoutSize() {
         glm::ivec2 layoutSize = glm::ivec2 {0};
-        for (const std::string& row: levelLayout) {
-            layoutSize.x = std::max(layoutSize.x, (int) row.size());
-        }
-        layoutSize.y = (int) levelLayout.size();
+        for (const std::string& row: levelLayout)
+            layoutSize.x = std::max(layoutSize.x, static_cast<int>(row.size()));
+
+        layoutSize.y = static_cast<int>(levelLayout.size());
 
         return layoutSize;
     }
@@ -261,7 +273,7 @@ namespace mlg {
         PutEntity(mapObject, glm::ivec2{x, y}, glm::radians(smartRotation));
     }
 
-    void LevelGenerator::PutEntity(const MapObject& mapObject, const glm::ivec2& position, float rotation) {
+    void LevelGenerator::PutEntity(const MapObject& mapObject, const glm::ivec2& position, float rotation) const {
         auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("MapObject", true, mlg::SceneGraph::GetRoot());
 
         auto staticMesh = modelEntity.lock()->
@@ -299,14 +311,15 @@ namespace mlg {
         const Neighbours neighbours = GetNeighbours(x, y);
 
         float angle = 270.f;
+        char symbol = roadsObjects.symbol;
 
-        if (neighbours.left == roadsObjects.symbol)
+        if (neighbours.left == symbol)
             angle = 270.f;
-        else if (neighbours.down == roadsObjects.symbol)
+        else if (neighbours.down == symbol)
             angle = 0.f;
-        else if (neighbours.right == roadsObjects.symbol)
+        else if (neighbours.right == symbol)
             angle = 90.f;
-        else if (neighbours.up == roadsObjects.symbol)
+        else if (neighbours.up == symbol)
             angle = 180.f;
 
         return angle;
@@ -318,17 +331,21 @@ namespace mlg {
         int neighboursRoadsCount = 0;
         for (auto row : neighbours.tiles)
             for (auto tile : row)
-                neighboursRoadsCount += tile == roadsObjects.symbol ? 1 : 0;
+                neighboursRoadsCount += (tile == roadsObjects.symbol ? 1 : 0);
 
         bool isEdge = neighboursRoadsCount < 8 && neighboursRoadsCount > 4;
         bool isCorner = neighboursRoadsCount == 8;
         bool isCross = neighboursRoadsCount == 9;
 
-        bool isVertical = neighbours.up == roadsObjects.symbol || neighbours.down == roadsObjects.symbol;
-        isVertical &= neighbours.left != roadsObjects.symbol && neighbours.right != roadsObjects.symbol;
+        bool isVertical = neighbours.up == roadsObjects.symbol ||
+                neighbours.down == roadsObjects.symbol;
+        isVertical &= neighbours.left != roadsObjects.symbol &&
+                neighbours.right != roadsObjects.symbol;
 
-        bool isHorizontal = neighbours.left == roadsObjects.symbol || neighbours.right == roadsObjects.symbol;
-        isHorizontal &= neighbours.up != roadsObjects.symbol && neighbours.down != roadsObjects.symbol;
+        bool isHorizontal = neighbours.left == roadsObjects.symbol ||
+                neighbours.right == roadsObjects.symbol;
+        isHorizontal &= neighbours.up != roadsObjects.symbol &&
+                neighbours.down != roadsObjects.symbol;
 
         if (isEdge) {
             PutEdgeRoad(x, y);

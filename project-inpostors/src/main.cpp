@@ -155,13 +155,17 @@ public:
         auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
         auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
 
+        //std::vector<std::string> levelLayout;
+        //levelLayout = mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::SpawnGround("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::SetCityBounds("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::LoadCameraSettings("res/levels/Cities/detroit.json", *cameraComponent.lock());
 
+        // load props
         mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit_props.json");
 
+        // create factories
         auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("Smelter", false, mlg::SceneGraph::GetRoot(),
                                                                     "res/levels/Factories/smelter.json");
         auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
@@ -173,7 +177,7 @@ public:
         testMineRigidBody.lock()->SetPosition({-60.f, -5.f});
         testMineRigidBody.lock()->SetRotation(glm::radians(-90.f));
 
-        auto testIkea = mlg::EntityManager::SpawnEntity<Factory>("Szedzki sklep z meblami", false, mlg::SceneGraph::GetRoot(),
+        auto testIkea = mlg::EntityManager::SpawnEntity<Factory>("Szwedzki sklep z meblami", false, mlg::SceneGraph::GetRoot(),
                                                                  "res/levels/Factories/ikea.json");
         auto testIkeaRigidBody = testIkea.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
         testIkeaRigidBody.lock()->SetPosition({55.f, -5.f});
