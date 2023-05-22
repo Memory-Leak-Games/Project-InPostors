@@ -1,17 +1,17 @@
 #pragma once
 
 namespace mlg {
-    class Renderer2D {
+    class UIRenderer {
     private:
-        static Renderer2D* instance;
+        static UIRenderer* instance;
 
         std::unique_ptr<class FrameBuffer> frameBuffer;
 
-        std::vector<std::weak_ptr<class Renderable2D>> renderables;
+        std::vector<std::weak_ptr<class UIRenderable>> renderables;
 
         glm::mat4 projection;
 
-        Renderer2D();
+        UIRenderer();
 
     public:
         uint32_t windowWidth = 1280;
@@ -25,12 +25,12 @@ namespace mlg {
 
         static void OnWindowResize(const class Event& event);
 
-        static Renderer2D* GetInstance();
+        static UIRenderer* GetInstance();
 
         void Draw();
 
-        void AddRenderable(std::weak_ptr<Renderable2D> renderable);
-        void RemoveRenderable(std::weak_ptr<Renderable2D> renderable);
+        void AddRenderable(std::weak_ptr<class UIRenderable> renderable);
+        void RemoveRenderable(std::weak_ptr<class UIRenderable> renderable);
 
         glm::mat4 GetProjection() const;
 

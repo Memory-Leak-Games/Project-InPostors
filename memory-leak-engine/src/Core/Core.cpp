@@ -1,4 +1,5 @@
 #include "Core/Core.h"
+#include <UI/UIController.h>
 
 #ifdef DEBUG
 
@@ -32,7 +33,7 @@
 #include "Rendering/DirectionalLight.h"
 #include "Rendering/Gizmos/Gizmos.h"
 #include "SceneGraph/SceneGraph.h"
-#include "UI/Renderer2D.h"
+#include "UI/UIRenderer.h"
 
 using namespace mlg;
 
@@ -105,6 +106,7 @@ void Core::TickGameplay() const {
     EntityManager::ProcessEntities();
 
     Input::Update();
+    UIController::Update();
 
     Physics::TickFixedTimeSteps();
 
@@ -121,7 +123,7 @@ void Core::TickRendering() const {
     Renderer::GetInstance()->DrawFrame();
 
     Gizmos::DrawGizmos();
-    Renderer2D::GetInstance()->Draw();
+    UIRenderer::GetInstance()->Draw();
 }
 
 #ifdef DEBUG

@@ -1,7 +1,7 @@
 #include "include/UI/Components/Image.h"
 
 #include "Macros.h"
-#include "UI/Renderer2D.h"
+#include "UI/UIRenderer.h"
 
 #include "glad/glad.h"
 
@@ -48,7 +48,7 @@ namespace mlg {
         glVertexArrayVertexBuffer(rectVao, 0, rectVbo, 0, 2 * sizeof(float));
     }
 
-    void Image::Draw(const Renderer2D* renderer) {
+    void Image::Draw(const UIRenderer* renderer) {
         ZoneScopedN("Draw Image");
         UIComponent::Draw(renderer);
 

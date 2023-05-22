@@ -3,13 +3,13 @@
 #include <utility>
 
 #include "Gameplay/Component.h"
-#include "UI/Renderable2D.h"
+#include "UI/UIRenderable.h"
 
 namespace mlg {
     /*
      * Base class of every ui component in engine, ex. Label
      */
-    class UIComponent : public Component, public Renderable2D {
+    class UIComponent : public Component, public UIRenderable {
     private:
         // During rendering we are using actualPosition instead
         glm::vec2 position = {0.0f, 0.0f};
@@ -24,7 +24,7 @@ namespace mlg {
     public:
         UIComponent(std::weak_ptr<Entity> owner, std::string name);
 
-        void Draw(const class Renderer2D *renderer) override;
+        void Draw(const class UIRenderer *renderer) override;
 
         [[nodiscard]] const glm::vec2& GetPosition() const;
         [[nodiscard]] const glm::vec2& GetAnchor() const;

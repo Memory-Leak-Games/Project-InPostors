@@ -10,7 +10,7 @@
 #include "Core/Time.h"
 #include "Rendering/Assets/ShaderAsset.h"
 #include "Rendering/ShaderProgram.h"
-#include "UI/Renderer2D.h"
+#include "UI/UIRenderer.h"
 
 namespace mlg {
 
@@ -42,7 +42,7 @@ namespace mlg {
         glVertexArrayVertexBuffer(vao, 0, vbo, 0, 4 * sizeof(float));
     }
 
-    void Label::Draw(const Renderer2D* renderer) {
+    void Label::Draw(const UIRenderer* renderer) {
         ZoneScopedN("Draw Label");
         UIComponent::Draw(renderer);
 

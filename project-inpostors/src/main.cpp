@@ -38,9 +38,10 @@
 #include <UI/Components/Image.h>
 #include <UI/Components/Label.h>
 #include <UI/Components/ProgressBar.h>
-#include <UI/Renderer2D.h>
+#include <UI/UIRenderer.h>
 
 #include <Physics/Colliders/Collider.h>
+#include <UI/UIController.h>
 
 class ComponentTest : public mlg::Component {
 public:
@@ -77,7 +78,7 @@ public:
         mlg::Window::Initialize("Memory Leak Engine");
         mlg::RenderingAPI::Initialize();
         mlg::Renderer::Initialize();
-        mlg::Renderer2D::Initialize();
+        mlg::UIRenderer::Initialize();
         mlg::Gizmos::Initialize();
         mlg::CommonUniformBuffer::Initialize();
         mlg::SceneGraph::Initialize();
@@ -92,6 +93,7 @@ public:
 
         mlg::Core::Initialize();
         mlg::Input::Initialize();
+        mlg::UIController::Initialize();
 
         mlg::Core* engine = mlg::Core::GetInstance();
         PrepareScene();
@@ -104,10 +106,11 @@ public:
 
         mlg::AudioAPI::Stop();
         mlg::SceneGraph::Stop();
+        mlg::UIController::Stop();
         mlg::Input::Stop();
         mlg::Core::Stop();
         mlg::Gizmos::Stop();
-        mlg::Renderer2D::Stop();
+        mlg::UIRenderer::Stop();
         mlg::Renderer::Stop();
         mlg::RenderingAPI::Stop();
         mlg::Window::Stop();
@@ -141,7 +144,7 @@ public:
         image.lock()->SetPosition({1280.f - 128.f, 720.f - 128.f});
         image.lock()->SetAnchor({1, 1});
 
-        mlg::Renderer2D::GetInstance()->AddRenderable(image);
+        mlg::UIRenderer::GetInstance()->AddRenderable(image);
 
         PlayerData firstPlayerData = {0, mlg::RGBA::red};
         PlayerData secondPlayerData = {0, mlg::RGBA::cyan};

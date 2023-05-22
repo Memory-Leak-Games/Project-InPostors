@@ -19,7 +19,7 @@ namespace mlg {
     public:
 
         Label(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<class FontAsset>& font);
-        void Draw(const Renderer2D* renderer) override;
+        void Draw(const UIRenderer* renderer) override;
 
         [[nodiscard]] const std::string& GetText() const;
         [[nodiscard]] const glm::vec3& GetTextColor() const;
