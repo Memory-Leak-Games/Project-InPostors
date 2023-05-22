@@ -168,14 +168,15 @@ namespace mlg {
         if (!tileJson.contains("factories"))
             return;
 
-        SPDLOG_INFO("dupa");
         for (const auto &jsonFactories: tileJson["factories"]) {
-            SPDLOG_INFO("Symbol: {}", jsonFactories["symbol"].get<std::string>());
-            SPDLOG_INFO("kupa");
+            const char tileSymbol = jsonFactories["symbol"].get<std::string>()[0];
             std::string configPath = jsonFactories["config"].get<std::string>();
-            SPDLOG_INFO("chuj");
-            LoadFactoryData(configPath);
+            FactoryObject factoryTile = LoadFactoryData(configPath);
+            std::vector<MapObject> mapObjectPool; //ugly.
+            mapObjectPool.push_back(factoryTile.mesh);
+            mapObjects.insert({tileSymbol, MapEntry{mapObjectPool, false, 0}});
         }
+
     }
 
     void LevelGenerator::LoadRoads() {

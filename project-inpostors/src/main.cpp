@@ -166,10 +166,10 @@ public:
         playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
 
         // create factories
-        auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
-                                                                    "res/levels/Factories/smelter.json");
-        auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
-        testFactoryRigidBody.lock()->SetPosition({22.f, 8.f});
+        //auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
+        //                                                           "res/levels/Factories/smelter.json");
+        //auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
+        //testFactoryRigidBody.lock()->SetPosition({22.f, 8.f});
 
         auto testMine = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
                                                                     "res/levels/Factories/mine.json");
