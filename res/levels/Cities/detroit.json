@@ -33,12 +33,12 @@
   },
 
   "player-one": {
-    "position": [0.0, 0.0, 0.0],
-    "rotation": [0.0, 0.0, 0.0]
+    "position": [16.0, -4.0],
+    "rotation": 180.0,
+    "car-type": "res/config/cars/van.json"
   },
 
   "player-two": {
-    "position": [0.0, 0.0, 0.0],
-    "rotation": [0.0, 0.0, 0.0]
+    "position": [-16.0, 4.0]
   }
 }

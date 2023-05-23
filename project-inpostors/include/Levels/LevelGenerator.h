@@ -7,6 +7,7 @@ namespace mlg {
     class LevelGenerator {
 
     public:
+        //todo: rewrite these functions so that you need to provide json path only once
         static std::vector<std::string> LoadMap(const std::string& path);
         static void LoadCameraSettings(const std::string& path, class CameraComponent& cameraComponent);
         static void SpawnGround(const std::string& path);
@@ -74,6 +75,8 @@ namespace mlg {
         MapObject ParseObject(const nlohmann::json& jsonObject);
 
         void GenerateLevel();
+
+        void SpawnPlayers();
 
         void PutTile(int x, int y, const char& character);
         //void PutFactory(int x, int y, const FactoryObject& factory); //TODO: make it work somehow

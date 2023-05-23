@@ -19,6 +19,10 @@
 #include "Gameplay/Components/RigidbodyComponent.h"
 #include "Physics/Colliders/ColliderShapes.h"
 #include "Physics/CollisionManager.h"
+#include "Player.h"
+#include "Core/RGBA.h"
+#include "Car/PlayerOneInput.h"
+#include "Car/PlayerTwoInput.h"
 
 using json = nlohmann::json;
 using Random = effolkronium::random_static;
@@ -37,6 +41,7 @@ namespace mlg {
         levelGenerator.LoadRoads();
 
         levelGenerator.GenerateLevel();
+        levelGenerator.SpawnPlayers();
 
         return ret;
     }
@@ -118,6 +123,7 @@ namespace mlg {
 
         CollisionManager::SetBounds(cityStart, cityEnd, layoutSize);
     }
+
 
     // ======== PRIVATE METHODS ========
 
@@ -223,8 +229,8 @@ namespace mlg {
         return mapObj;
     }
 
-    LevelGenerator::FactoryObject LevelGenerator::LoadFactoryData(const std::string& path) {
-        std::ifstream factoryFile {path};
+    LevelGenerator::FactoryObject LevelGenerator::LoadFactoryData(const std::string &path) {
+        std::ifstream factoryFile{path};
         json factoryJson = json::parse(factoryFile);
 
         FactoryObject factoryObj;
@@ -260,6 +266,58 @@ namespace mlg {
             }
             x = 0;
         }
+    }
+
+    void LevelGenerator::SpawnPlayers() {
+        if (!(levelJson.contains("player-one")
+              && levelJson.contains("player-two")))
+            return;
+
+        //first player
+        auto firstPlayerJson = levelJson["player-one"];
+        glm::vec3 firstPlayerPosition = {
+                firstPlayerJson["position"][0].get<float>(),
+                0.3f,
+                firstPlayerJson["position"][1].get<float>(),
+        };
+        float firstPlayerRotation = firstPlayerJson.contains("rotation") ?
+                firstPlayerJson["rotation"].get<float>() : 0.f;
+        std::string firstPlayerCarData = firstPlayerJson.contains("car-data") ?
+                                         firstPlayerJson["car-data"].get<std::string>() :
+                                                 "res/config/cars/van.json";
+
+        PlayerData firstPlayerData = {0, mlg::RGBA::red,
+                                      firstPlayerPosition,
+                                      firstPlayerRotation,
+                                      firstPlayerCarData};
+
+
+        //second player
+        auto secondPlayerJson = levelJson["player-two"];
+        glm::vec3 secondPlayerPosition = {
+                secondPlayerJson["position"][0].get<float>(),
+                0.3f,
+                secondPlayerJson["position"][1].get<float>(),
+        };
+        float secondPlayerRotation = secondPlayerJson.contains("rotation") ?
+                                     secondPlayerJson["rotation"].get<float>() : 0.f;
+        std::string secondPlayerCarData = secondPlayerJson.contains("car-data") ?
+                                          secondPlayerJson["car-data"].get<std::string>() :
+                                                  "res/config/cars/van.json";
+
+        PlayerData secondPlayerData = {0, mlg::RGBA::cyan,
+                                       secondPlayerPosition,
+                                       secondPlayerRotation,
+                                       secondPlayerCarData};
+
+        //spawn players
+        auto player = mlg::EntityManager::SpawnEntity<Player>("PlayerOne", false,
+                                                              mlg::SceneGraph::GetRoot(), firstPlayerData);
+        player.lock()->AddComponent<PlayerOneInput>("PlayerInput");
+
+        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false,
+                                                                 mlg::SceneGraph::GetRoot(), secondPlayerData);
+        playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
     }
 
     glm::vec2 LevelGenerator::GetCitySize() {
