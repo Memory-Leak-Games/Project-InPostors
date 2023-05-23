@@ -31,6 +31,8 @@
 
 #include "Buildings/Factory.h"
 
+#include "UI/Components/Image.h"
+
 using json = nlohmann::json;
 
 Player::Player(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent, const PlayerData& playerData)
@@ -52,6 +54,16 @@ std::shared_ptr<Player> Player::Create(uint64_t id, const std::string& name, boo
 
     auto smoke = FXLibrary::Get("smoke");
     auto smokeComponent = newPlayer->AddComponent<mlg::ParticleSystemComponent>("SmokeFX", smoke);
+
+    // Player ui
+    {
+        auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/player/arrow_material.json");
+        newPlayer->uiArrow = newPlayer->AddComponent<mlg::Image>("Arrow", material);
+        auto ui = newPlayer->uiArrow.lock();
+        ui->SetBillboardTarget(newPlayer);
+        ui->SetSize({8.f, 8.f});
+        ui->SetPosition({0.f, 32.f});
+    }
 
     return newPlayer;
 }
@@ -82,6 +94,7 @@ void Player::LoadModel(const json& configJson) {
 
 void Player::Start() {
     carInput = GetComponentByClass<CarInput>().lock();
+    uiArrow.lock()->tint = playerData.color;
 }
 
 void Player::Update() {

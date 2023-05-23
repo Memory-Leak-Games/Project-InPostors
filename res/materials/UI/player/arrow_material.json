@@ -1,0 +1,18 @@
+{
+  "vertexShader": "res/shaders/UI/image.vert",
+  "fragmentShader": "res/shaders/UI/image.frag",
+  "uniforms": [
+    {
+      "type": "vec4",
+      "name": "tint",
+      "value": [1.0, 1.0, 1.0, 1.0]
+    }
+  ],
+  "textures": [
+    {
+      "name": "image",
+      "index": 0,
+      "path": "res/textures/Arrow.png"
+    }
+  ]
+}

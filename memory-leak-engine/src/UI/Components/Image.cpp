@@ -57,6 +57,7 @@ namespace mlg {
         material->GetShaderProgram()->SetVec2F("size", size * renderer->uiScale);
         material->GetShaderProgram()->SetVec2F("screenPosition", actualPosition);
         material->GetShaderProgram()->SetMat4F("projection", renderer->GetProjection());
+        material->GetShaderProgram()->SetVec4F("tint", tint);
 
         DrawRect();
 

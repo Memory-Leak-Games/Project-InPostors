@@ -4,6 +4,7 @@
 
 namespace mlg {
     class RigidbodyComponent;
+    class Image;
 }
 
 struct PlayerData {
@@ -20,6 +21,8 @@ private:
     std::weak_ptr<mlg::RigidbodyComponent> rigidbodyComponent;
     std::shared_ptr<class CarInput> carInput;
     std::shared_ptr<class EquipmentComponent> equipment;
+
+    std::weak_ptr<class mlg::Image> uiArrow;
 
     PlayerData playerData;
 
