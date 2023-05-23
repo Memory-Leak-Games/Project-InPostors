@@ -42,6 +42,18 @@ namespace mlg {
         static std::weak_ptr<Entity> FindByName(const std::string& name);
         static std::vector<std::weak_ptr<Entity>> FindAllByTag(const std::string& tag);
 
+        template<typename T>
+        static std::vector<std::weak_ptr<T>> FindAllByType() {
+            std::vector<std::weak_ptr<T>> foundElements;
+            for (const auto& entity : instance->entities) {
+                auto trafficEntity = std::dynamic_pointer_cast<T>(entity);
+                if (trafficEntity != nullptr) {
+                    foundElements.push_back(trafficEntity);
+                }
+            }
+            return foundElements;
+        }
+
         static void Start();
         static void AIUpdate();
         static void PhysicsUpdate();

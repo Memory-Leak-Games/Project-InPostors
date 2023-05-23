@@ -7,6 +7,9 @@
 #include "ai/TrafficCar.h"
 #include "ai/AIComponent.h"
 
+#include "Gameplay/EntityManager.h"
+#include "Gameplay/Entity.h"
+
 using json = nlohmann::json;
 
 SteeringBehaviors::SteeringBehaviors(AIComponent* agent, const std::string& configPath)
@@ -66,18 +69,17 @@ glm::vec2 SteeringBehaviors::Calculate() {
 
 glm::vec2 SteeringBehaviors::CalculatePrioritized() {
     glm::vec2 force;
+    std::vector<std::weak_ptr<TrafficCar>> cars = mlg::EntityManager::FindAllByType<TrafficCar>();
 
     if (BehaviorTypeOn(separation)) {
-        //TODO: Pass all cars here
-//        force = Separation() * separationWeight;
+        force = Separation(cars) * separationWeight;
 
         if (!AccumulateForce(steeringForce, force))
             return steeringForce;
     }
 
     if (BehaviorTypeOn(alignment)) {
-        //TODO: Pass all cars here
-        //        force = Alignment() * alignmentWeight;
+        force = Alignment(cars) * alignmentWeight;
 
         if (!AccumulateForce(steeringForce, force))
             return steeringForce;
@@ -133,6 +135,21 @@ glm::vec2 SteeringBehaviors::Arrive(glm::vec2 TargetPos, Deceleration decelerati
     }
 
     return glm::vec2(0, 0);
+}
+
+glm::vec2 SteeringBehaviors::Separation(const std::vector<std::weak_ptr<TrafficCar>>& agents) {
+    glm::vec2 steerForce;
+
+    for (uint64_t a = 0; a < agents.size(); ++a) {
+        if (agents[a] != aiComponent->GetOwner()) {
+            glm::vec2 toAgent = aiComponent->GetPosition() - agents[a].lock()->GetComponentByClass<AIComponent>().lock()->GetPosition();
+
+            //TODO: Fix error below
+//            steerForce += glm::normalize(toAgent) / toAgent.length();
+        }
+    }
+
+    return steerForce;
 }
 
 void SteeringBehaviors::LoadParameters(const std::string& path) {
