@@ -84,9 +84,12 @@ glm::vec2 SteeringBehaviors::CalculatePrioritized() {
     }
 
     if (BehaviorTypeOn(seek)) {
-        force = Seek({20, 2}) * seekWeight;
+        force = Seek({10, -20}) * seekWeight;
+
+        SPDLOG_INFO("Steering force: ({}, {}); Weight: {}", force.x, force.y, seekWeight);
 
         if (!AccumulateForce(steeringForce, force))
+            SPDLOG_INFO("Steering force: ({}, {})", steeringForce.x, steeringForce.y);
             return steeringForce;
     }
 
@@ -109,9 +112,12 @@ glm::vec2 SteeringBehaviors::CalculatePrioritized() {
 
 glm::vec2 SteeringBehaviors::Seek(glm::vec2 TargetPos) {
     glm::vec2 desiredVelocity = glm::normalize(TargetPos - aiComponent->GetPosition())
-                                * aiComponent->GetPosition();
+                                * aiComponent->GetMaxSpeed();
 
-    return (desiredVelocity - aiComponent->GetLinearVelocity());
+    glm::vec2 velocity2D;
+    velocity2D.x = aiComponent->GetLocalVelocity().x;
+    velocity2D.y = aiComponent->GetLocalVelocity().z;
+    return (desiredVelocity - velocity2D);
 }
 
 glm::vec2 SteeringBehaviors::Arrive(glm::vec2 TargetPos, Deceleration deceleration) {

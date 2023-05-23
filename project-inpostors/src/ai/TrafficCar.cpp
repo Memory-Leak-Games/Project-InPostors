@@ -47,7 +47,7 @@ std::shared_ptr<TrafficCar> TrafficCar::Create(uint64_t id, const std::string& n
     auto staticMeshComponent = newTrafficCar->AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
     newTrafficCar->AddComponent<AIComponent>("AIMovementComponent");
 
-    staticMeshComponent.lock()->GetTransform().SetPosition({50.f, 0.f, 50.f});
+    staticMeshComponent.lock()->GetTransform().SetPosition({0.f, 0.3f, 0.f});
 
     newTrafficCar->AddComponent<AIComponent>("AIMovementComponent", configPath);
 

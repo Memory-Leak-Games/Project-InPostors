@@ -89,7 +89,7 @@ void AIComponent::HandleEngineAndBraking() {
         targetAccelerationForce = -mlg::Math::Sat(localVelocity.z) * handling * mlg::Time::GetFixedTimeStep();
     }
 
-    rigidbodyComponent->AddForce(targetAccelerationForce * forwardVector2D);
+    rigidbodyComponent->AddForce(steeringForce);
 }
 
 void AIComponent::HandleSteering() {

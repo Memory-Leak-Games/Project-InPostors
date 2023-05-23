@@ -164,6 +164,8 @@ public:
 
         auto testCar = mlg::EntityManager::SpawnEntity<TrafficCar>("TrafficCar", false, mlg::SceneGraph::GetRoot(), testCarData);
         testCar.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->SeekOn();
+        auto testCarRigidbody = testCar.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
+        testCarRigidbody.lock()->SetPosition({10.f, 20.f});
 
         auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
         auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
