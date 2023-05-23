@@ -17,7 +17,7 @@
 
 #include "Core/Settings/SettingsManager.h"
 #include "Gameplay/Components/CameraComponent.h"
-#include "Gameplay/Levels/LevelGenerator.h"
+#include "Levels/LevelGenerator.h"
 #include "Player.h"
 #include "SceneGraph/SceneGraph.h"
 #include "Car/PlayerOneInput.h"

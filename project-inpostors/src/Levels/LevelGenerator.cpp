@@ -6,7 +6,7 @@
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
 
-#include "Gameplay/Levels/LevelGenerator.h"
+#include "Levels/LevelGenerator.h"
 
 #include "Gameplay/EntityManager.h"
 #include "Gameplay/Entity.h"
