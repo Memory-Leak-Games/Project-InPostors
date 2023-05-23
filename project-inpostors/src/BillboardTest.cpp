@@ -3,8 +3,6 @@
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Gameplay/Entity.h"
 #include "UI/Components/Image.h"
-#include "SceneGraph/Transform.h"
-#include "Rendering/Camera.h"
 #include "Rendering/CommonUniformBuffer.h"
 #include "UI/UIRenderer.h"
 
@@ -17,10 +15,8 @@ void BillboardTest::Draw(const mlg::UIRenderer* renderer) {
     auto view =  mlg::CommonUniformBuffer::GetUniforms().view;
     actualPosition = projection * view * world;
     actualPosition += glm::vec2(1, 1);
-    actualPosition.x *= renderer->windowWidth * 0.5;
-    actualPosition.y *= renderer->windowHeight * 0.5;
+    actualPosition.x *= (float)renderer->windowWidth * 0.5f;
+    actualPosition.y *= (float)renderer->windowHeight * 0.5f;
     actualPosition.y += 48.f;
     Image::Draw(renderer);
-    //std::string s = std::to_string(actualPosition[0]) + " " + std::to_string(actualPosition[1]) + " " + std::to_string(actualPosition[2]);
-    //SPDLOG_DEBUG(s);
 }

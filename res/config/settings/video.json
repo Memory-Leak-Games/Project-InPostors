@@ -6,8 +6,8 @@
   "SSAOSamples": 8,
   "FXAA": true,
 
-  "ResolutionWidth": 1280,
-  "ResolutionHeight": 720,
-  "WindowType": "windowed",
+  "ResolutionWidth": 1920,
+  "ResolutionHeight": 1080,
+  "WindowType": "fullscreen",
   "LockSize": false
 }
