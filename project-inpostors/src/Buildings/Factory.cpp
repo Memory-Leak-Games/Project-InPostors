@@ -80,6 +80,24 @@ std::shared_ptr<Factory> Factory::Create(uint64_t id, const std::string& name, b
         uiPanel->SetSize({130.f, 50.f});
         uiPanel->SetPosition({0.f, 75.f});
         uiPanel->SetBillboardTarget(result);
+
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/factory/arrow_material.json");
+        auto uiArrow = result->AddComponent<mlg::Image>("Arrow", material).lock();
+        uiArrow->SetSize({24.f, 24.f});
+        uiArrow->SetPosition({0.f, 75.f});
+        uiArrow->SetBillboardTarget(result);
+
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/wood_material.json");
+        auto uiWood = result->AddComponent<mlg::Image>("Wood", material).lock();
+        uiWood->SetSize({32.f, 32.f});
+        uiWood->SetPosition({-32.f, 75.f});
+        uiWood->SetBillboardTarget(result);
+
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/furniture_material.json");
+        auto uiFurniture = result->AddComponent<mlg::Image>("Furniture", material).lock();
+        uiFurniture->SetSize({32.f, 32.f});
+        uiFurniture->SetPosition({32.f, 75.f});
+        uiFurniture->SetBillboardTarget(result);
     }
 
     return result;

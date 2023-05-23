@@ -52,6 +52,9 @@ namespace mlg {
         ZoneScopedN("Draw Image");
         UIComponent::Draw(renderer);
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         material->Activate();
 
         material->GetShaderProgram()->SetVec2F("size", size * renderer->uiScale);
