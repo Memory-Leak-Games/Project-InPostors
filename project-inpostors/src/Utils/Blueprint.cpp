@@ -3,16 +3,25 @@
 
 Blueprint::Blueprint(const nlohmann::json& blueprintJson)
     : name(blueprintJson["name"]), input(), output(blueprintJson["output"]),
-     timeToProcess(blueprintJson["timeToProcess"]) {
+     timeToProcess(blueprintJson["time"]) {
     for (const auto& inputJson : blueprintJson["input"]) {
         input.push_back(inputJson);
     }
 }
 
-bool Blueprint::CheckBlueprint(const EquipmentComponent& component) {
+float Blueprint::GetTimeToProcess() const {
+    return timeToProcess;
+}
+
+std::string Blueprint::GetOutput() const {
+    return output;
+}
+
+bool Blueprint::CheckBlueprint(const EquipmentComponent& component) const {
     if (input.empty())
         return true;
 
-    MLG_UNIMPLEMENTED;
+    // todo: implement me
     return false;
 }
+

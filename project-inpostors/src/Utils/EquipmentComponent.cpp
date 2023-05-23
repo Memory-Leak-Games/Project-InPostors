@@ -17,6 +17,7 @@ bool EquipmentComponent::RequestProduct(const std::string& product) {
         return false;
 
     equipment.erase(foundIterator);
+    equipmentChanged();
     return true;
 }
 
@@ -26,6 +27,7 @@ std::string EquipmentComponent::RequestProduct() {
 
     std::string product = equipment.front();
     equipment.pop_back();
+    equipmentChanged();
     
     return product;
 }

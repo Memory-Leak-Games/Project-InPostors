@@ -9,5 +9,8 @@ class Blueprint {
 public:
     explicit Blueprint(const nlohmann::json& blueprintJson);
 
-    bool CheckBlueprint(const class EquipmentComponent& component);
+    bool CheckBlueprint(const class EquipmentComponent& component) const;
+
+    std::string GetOutput() const;
+    float GetTimeToProcess() const;
 };

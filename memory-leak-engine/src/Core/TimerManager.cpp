@@ -26,7 +26,7 @@ void mlg::TimerManager::Stop() {
     instance = nullptr;
 }
 
-mlg::TimerManager* mlg::TimerManager::GetInstance() {
+mlg::TimerManager* mlg::TimerManager::Get() {
     return instance;
 }
 
@@ -40,13 +40,14 @@ void mlg::TimerManager::Update() {
         if (elapsedTime < timer.timeToTrigger) 
             continue;
 
-        timer.onTrigger();
-
         if (timer.repeat) {
             timer.startTimePoint = currentTimePoint;
         } else {
+            timer.valid = false;
             timersToRemove.push_back(id);
         }
+
+        timer.onTrigger();
     }
 
     for (const auto& id: timersToRemove) {
@@ -60,6 +61,7 @@ uint mlg::TimerManager::SetTimer(float time, bool repeat, const std::function<vo
     newTimer.timeToTrigger = time;
     newTimer.repeat = repeat;
     newTimer.onTrigger = function;
+    newTimer.valid = true;
 
     newTimer.startTimePoint = Time::GetSeconds();
 
@@ -81,7 +83,7 @@ void mlg::TimerManager::ClearTimer(uint id) {
 }
 
 bool mlg::TimerManager::IsTimerValid(uint id) {
-    return timersMap.find(id) != timersMap.end();
+    return timersMap.find(id) != timersMap.end() && timersMap.at(id).valid;
 }
 
 float mlg::TimerManager::GetTimerRemainingTime(uint id) {
