@@ -23,8 +23,6 @@ void AIComponent::Start() {
     rigidbodyComponent->SetAngularDrag(10.f);
 
     staticMeshComponent = GetOwner().lock()->GetComponentByClass<mlg::StaticMeshComponent>().lock();
-
-    //TODO: Initialize input here
 }
 
 AIComponent::AIComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
@@ -39,13 +37,24 @@ AIComponent::~AIComponent() = default;
 void AIComponent::Update() {
     std::shared_ptr<mlg::Entity> owner = GetOwner().lock();
 
-    float angularSpeed = glm::degrees(rigidbodyComponent->GetAngularSpeed());
-    float bodySkew = mlg::Math::Clamp(-angularSpeed / 10.f, -15.f, 15.f);
-
-    staticMeshComponent->GetTransform().SetRotation({{0.f, 0.f, glm::radians(bodySkew)}});
+//    float angularSpeed = glm::degrees(rigidbodyComponent->GetAngularSpeed());
+//    float bodySkew = mlg::Math::Clamp(-angularSpeed / 10.f, -15.f, 15.f);
+//
+//    staticMeshComponent->GetTransform().SetRotation({{0.f, 0.f, glm::radians(bodySkew)}});
 }
 
 void AIComponent::PhysicsUpdate() {
+//    std::shared_ptr<mlg::Entity> owner = GetOwner().lock();
+//    const glm::vec3 forwardVector = owner->GetTransform().GetForwardVector();
+//    glm::vec2 forwardVector2D;
+//    forwardVector2D.x = forwardVector.x;
+//    forwardVector2D.y = forwardVector.z;
+//
+//    glm::vec2 steeringForce;
+//    steeringForce = steering->Calculate();
+//
+//    acceleration = steeringForce / mass;
+
     HandleEngineAndBraking();
     HandleSteering();
 }
@@ -125,6 +134,10 @@ const glm::vec2 &AIComponent::GetPosition() {
 
 glm::vec2 AIComponent::GetLinearVelocity() {
     return rigidbodyComponent->GetLinearVelocity();
+}
+
+glm::vec3 AIComponent::GetLocalVelocity() {
+    return rigidbodyComponent->GetLocalVelocity();
 }
 
 SteeringBehaviors* AIComponent::GetSteering() {

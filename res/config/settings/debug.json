@@ -1,5 +1,5 @@
 {
-  "showColliders": false,
-  "showForces": false,
+  "showColliders": true,
+  "showForces": true,
   "showSpacialGrid": false
 }

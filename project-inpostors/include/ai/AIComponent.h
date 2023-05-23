@@ -8,7 +8,6 @@ namespace mlg {
     class Entity;
 }
 
-class TrafficMovementComponent;
 class SteeringBehaviors;
 
 class AIComponent : public mlg::Component {
@@ -45,6 +44,7 @@ public:
     float GetMaxSpeed() { return maxSpeed; }
     const glm::vec2& GetPosition();
     glm::vec2 GetLinearVelocity();
+    glm::vec3 GetLocalVelocity();
     SteeringBehaviors* GetSteering();
 
     void LoadParameters(const std::string& path);
