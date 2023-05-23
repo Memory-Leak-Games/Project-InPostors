@@ -1,5 +1,5 @@
 #include "Core/Core.h"
-#include <UI/UIController.h>
+
 
 #ifdef DEBUG
 
@@ -14,6 +14,8 @@
 #include "Core/Time.h"
 #include "Core/Window.h"
 
+#include "Core/TimerManager.h"
+
 #include "Rendering/CommonUniformBuffer.h"
 #include "Rendering/Renderer.h"
 #include "Rendering/RenderingAPI.h"
@@ -22,6 +24,8 @@
 #include "Rendering/FrameBuffers/GBuffer.h"
 #include "Rendering/FrameBuffers/PostProcess.h"
 #include "Rendering/FrameBuffers/SSAOFrameBuffer.h"
+
+#include <UI/UIController.h>
 
 #include "Events/WindowEvent.h"
 
@@ -104,6 +108,8 @@ void Core::TickGameplay() const {
     ZoneScopedN("Tick Gameplay");
     ComponentManager::ProcessComponents();
     EntityManager::ProcessEntities();
+
+    TimerManager::Update();
 
     Input::Update();
     UIController::Update();
