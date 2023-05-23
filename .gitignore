@@ -1,15 +1,21 @@
+[Bb]uild/
+Testing
+
+# CLion
+cmake-build*
+.idea
+
+# VSCode
+compile_commands.json
+build
+.cache
+.vscode
+
+# CMake
 CMakeCache.txt
 CMakeFiles
 CMakeScripts
-Testing
-Makefile
 cmake_install.cmake
-install_manifest.txt
-compile_commands.json
 CTestTestfile.cmake
-
-[Bb]uild/
-cmake-build*
-.idea
-.cache
-.vscode
+Makefile
+install_manifest.txt
