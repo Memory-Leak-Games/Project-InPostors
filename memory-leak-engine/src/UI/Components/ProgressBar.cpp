@@ -7,14 +7,14 @@
 #include "Rendering/ShaderProgram.h"
 
 #include "Core/Time.h"
-#include "UI/Renderer2D.h"
+#include "UI/UIRenderer.h"
 
 namespace mlg {
     ProgressBar::ProgressBar(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<struct MaterialAsset>& material)
         : Image(std::move(owner), std::move(name), material) {}
 
     // TODO: Do przemyślenia czy ta klasa powinna dziedziczyć z obrazka a jeżeli tak to wypadało by korzystać z jej kodu
-    void ProgressBar::Draw(const Renderer2D* renderer) {
+    void ProgressBar::Draw(const UIRenderer* renderer) {
         ZoneScopedN("Draw ProgressBar");
         UIComponent::Draw(renderer);
 
