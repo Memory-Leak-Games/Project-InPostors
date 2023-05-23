@@ -140,16 +140,38 @@ glm::vec2 SteeringBehaviors::Arrive(glm::vec2 TargetPos, Deceleration decelerati
 glm::vec2 SteeringBehaviors::Separation(const std::vector<std::weak_ptr<TrafficCar>>& agents) {
     glm::vec2 steerForce;
 
-    for (uint64_t a = 0; a < agents.size(); ++a) {
-        if (agents[a] != aiComponent->GetOwner()) {
-            glm::vec2 toAgent = aiComponent->GetPosition() - agents[a].lock()->GetComponentByClass<AIComponent>().lock()->GetPosition();
+    for (const auto & agent : agents) {
+        if (agent != aiComponent->GetOwner()) {
+            glm::vec2 toAgent = aiComponent->GetPosition() - agent.lock()->GetComponentByClass<AIComponent>().lock()->GetPosition();
 
-            //TODO: Fix error below
-//            steerForce += glm::normalize(toAgent) / toAgent.length();
+            glm::vec2 normToAgent = glm::normalize(toAgent);
+            normToAgent.x /= toAgent.length();
+            normToAgent.y /= toAgent.length();
+            steerForce += normToAgent;
         }
     }
 
     return steerForce;
+}
+
+glm::vec2 SteeringBehaviors::Alignment(const std::vector<std::weak_ptr<TrafficCar>>& agents) {
+    glm::vec2 avgHeading;
+
+    for (const auto & agent : agents) {
+        if (agent != aiComponent->GetOwner()) {
+            glm::vec2 heading2D;
+            heading2D.x = agent.lock()->GetTransform().GetForwardVector().x;
+            heading2D.y = agent.lock()->GetTransform().GetForwardVector().z;
+
+            avgHeading += heading2D;
+        }
+    }
+
+    avgHeading /= (float)agents.size();
+    avgHeading.x -= aiComponent->GetOwner().lock()->GetTransform().GetForwardVector().x;
+    avgHeading.y -= aiComponent->GetOwner().lock()->GetTransform().GetForwardVector().z;
+    
+    return avgHeading;
 }
 
 void SteeringBehaviors::LoadParameters(const std::string& path) {
