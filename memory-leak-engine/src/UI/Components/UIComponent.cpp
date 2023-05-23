@@ -8,6 +8,13 @@ namespace mlg {
 
     UIComponent::UIComponent(std::weak_ptr<Entity> owner, std::string name) : Component(std::move(owner), std::move(name)) {}
 
+    void UIComponent::Start() {
+        thisAsRenderable = std::dynamic_pointer_cast<UIRenderable>(
+                ComponentManager::GetByRawPointer(this).lock());
+
+        UIRenderer::GetInstance()->AddRenderable(thisAsRenderable);
+    }
+
     void UIComponent::CalculateActualPosition(const UIRenderer* renderer) {
         actualPositionDirty = false;
 
@@ -86,6 +93,7 @@ namespace mlg {
         isBillboard = true;
         actualPositionDirty = true;
     }
+
 
 
 }
