@@ -86,15 +86,12 @@ glm::vec2 SteeringBehaviors::CalculatePrioritized() {
     if (BehaviorTypeOn(seek)) {
         force = Seek({10, -20}) * seekWeight;
 
-        SPDLOG_INFO("Steering force: ({}, {}); Weight: {}", force.x, force.y, seekWeight);
-
         if (!AccumulateForce(steeringForce, force))
-            SPDLOG_INFO("Steering force: ({}, {})", steeringForce.x, steeringForce.y);
             return steeringForce;
     }
 
     if (BehaviorTypeOn(arrive)) {
-        force = Arrive({10, 10}, deceleration) * arriveWeight;
+        force = Arrive({10, -20}, deceleration) * arriveWeight;
 
         if (!AccumulateForce(steeringForce, force))
             return steeringForce;
@@ -132,10 +129,15 @@ glm::vec2 SteeringBehaviors::Arrive(glm::vec2 TargetPos, Deceleration decelerati
         speed = fmin(speed, aiComponent->GetMaxSpeed());
 
         glm::vec2 desiredVelocity = toTarget * speed / distance;
-        return (desiredVelocity - aiComponent->GetLinearVelocity());
+
+        glm::vec2 velocity2D;
+        velocity2D.x = aiComponent->GetLocalVelocity().x;
+        velocity2D.y = aiComponent->GetLocalVelocity().z;
+
+        return (desiredVelocity - velocity2D);
     }
 
-    return glm::vec2(0, 0);
+    return { 0, 0 };
 }
 
 void SteeringBehaviors::LoadParameters(const std::string& path) {
