@@ -1,11 +1,12 @@
 #pragma once
 
+#include <cstdint>
 #include <functional>
 namespace mlg {
 
     class TimerManager {
         struct Timer {
-            uint id;
+            uint32_t id;
             double startTimePoint;
 
             float timeToTrigger;
@@ -17,7 +18,7 @@ namespace mlg {
         static TimerManager* instance;
         TimerManager() = default;
 
-        uint idCounter = 0;
+        uint32_t idCounter = 0;
         std::unordered_map<uint, Timer> timersMap;
 
     public:
@@ -28,13 +29,13 @@ namespace mlg {
 
         static void Update();
 
-        uint SetTimer(float time, bool repeat, const std::function<void()>& function);
-        void ClearTimer(uint id);
+        uint32_t SetTimer(float time, bool repeat, const std::function<void()>& function);
+        void ClearTimer(uint32_t id);
 
-        bool IsTimerValid(uint id);
-        float GetTimerRemainingTime(uint id);
-        float GetTimerElapsedTime(uint id);
-        float GetTimerRate(uint id);
+        bool IsTimerValid(uint32_t id);
+        float GetTimerRemainingTime(uint32_t id);
+        float GetTimerElapsedTime(uint32_t id);
+        float GetTimerRate(uint32_t id);
 
     };
 
