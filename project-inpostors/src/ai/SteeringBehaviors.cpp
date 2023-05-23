@@ -86,11 +86,8 @@ glm::vec2 SteeringBehaviors::CalculatePrioritized() {
     if (BehaviorTypeOn(seek)) {
         force = Seek({10, -20}) * seekWeight;
 
-        SPDLOG_INFO("Steering force: ({}, {}); Weight: {}", force.x, force.y, seekWeight);
-
-        if (!AccumulateForce(steeringForce, force))
-            SPDLOG_INFO("Steering force: ({}, {})", steeringForce.x, steeringForce.y);
-            return steeringForce;
+        steeringForce += force;
+        return steeringForce;
     }
 
     if (BehaviorTypeOn(arrive)) {
