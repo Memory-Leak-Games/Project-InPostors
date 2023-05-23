@@ -205,14 +205,24 @@ public:
         auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
 
         auto billboardEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("BillboardTest", false, mlg::SceneGraph::GetRoot());
-        auto billboardTest = billboardEntity.lock()->AddComponent<BillboardTest>("Billboard", arrowMaterial);
-        billboardTest.lock()->player = player;
+        auto billboardTest = billboardEntity.lock()->AddComponent<mlg::Image>("Billboard", arrowMaterial);
+        billboardTest.lock()->SetBillboardTarget(player);
         billboardTest.lock()->SetSize(glm::vec2{16.f});
+        billboardTest.lock()->SetPosition({0.f, 32.f});
+
+        auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/ARLRDBD.TTF");
+        auto label = billboardEntity.lock()->AddComponent<mlg::Label>("Label", font);
+        label.lock()->SetText("Aaa Kotki 2 szarobure obydwa 1234567890");
+        label.lock()->SetPosition({0, 32});
+        label.lock()->SetTextColor({1, 1, 1});
+        label.lock()->SetSize(32);
+        label.lock()->SetBillboardTarget(player);
 
         mlg::UIRenderer::GetInstance()->AddRenderable(billboardTest);
+        mlg::UIRenderer::GetInstance()->AddRenderable(label);
 
-        //std::vector<std::string> levelLayout;
-        //levelLayout = mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit.json");
+        std::vector<std::string> levelLayout;
+        levelLayout = mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::SpawnGround("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::SetCityBounds("res/levels/Cities/detroit.json");

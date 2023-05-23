@@ -63,7 +63,7 @@ namespace mlg {
         float xpos, ypos, w, h;
 
         // Iterate through all characters
-        float cursor = actualPosition.x * actualScale;
+        float cursor = actualPosition.x;
         for (char8_t c : text) {
 
             // Skip rendering space
@@ -79,7 +79,7 @@ namespace mlg {
 
                 // Calculate position and size
                 xpos = cursor + ch.Bearing.x * actualScale;
-                ypos = (actualPosition.y - (float) (ch.Size.y - ch.Bearing.y)) * actualScale;
+                ypos = (actualPosition.y - (float) (ch.Size.y - ch.Bearing.y) * actualScale);
 
                 w = (float) ch.Size.x * actualScale;
                 h = (float) ch.Size.y * actualScale;
