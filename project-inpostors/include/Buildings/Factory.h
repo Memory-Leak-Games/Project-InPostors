@@ -5,6 +5,7 @@
 
 namespace mlg {
     class RigidbodyComponent;
+    class Image;
 }
 
 class Factory : public mlg::Entity {

@@ -23,6 +23,7 @@
 #include "Utils/Blueprint.h"
 #include "Utils/BlueprintManager.h"
 
+#include "UI/Components/Image.h"
 #include "Utils/EquipmentComponent.h"
 
 
@@ -71,6 +72,16 @@ std::shared_ptr<Factory> Factory::Create(uint64_t id, const std::string& name, b
     }
 
     mainRigidbody->SetKinematic(true);
+
+    // Factory ui
+    {
+        auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/factory/panel_material.json");
+        auto uiPanel = result->AddComponent<mlg::Image>("Panel", material).lock();
+        uiPanel->SetSize({130.f, 50.f});
+        uiPanel->SetPosition({0.f, 75.f});
+        uiPanel->SetBillboardTarget(result);
+    }
+
     return result;
 }
 
