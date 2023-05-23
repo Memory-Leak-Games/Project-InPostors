@@ -1,12 +1,12 @@
 #include "UI/Components/UIComponent.h"
 
-#include "UI/Renderer2D.h"
+#include "UI/UIRenderer.h"
 
 namespace mlg {
 
     UIComponent::UIComponent(std::weak_ptr<Entity> owner, std::string name) : Component(std::move(owner), std::move(name)) {};
 
-    void UIComponent::CalculateActualPosition(const Renderer2D* renderer) {
+    void UIComponent::CalculateActualPosition(const UIRenderer* renderer) {
         actualPositionDirty = false;
 
         // Component's offset from anchor for 1280x720 window
@@ -24,7 +24,7 @@ namespace mlg {
         actualPosition = anchorPosition + defaultOffset * renderer->uiScale;
     }
 
-    void UIComponent::Draw(const Renderer2D* renderer) {
+    void UIComponent::Draw(const UIRenderer* renderer) {
         if (renderer->windowSizeDirty || actualPositionDirty)
         {
             CalculateActualPosition(renderer);
