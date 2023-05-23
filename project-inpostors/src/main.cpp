@@ -14,8 +14,9 @@
 
 #include "Core/Core.h"
 #include "Core/Time.h"
-
+#include "Core/TimerManager.h"
 #include "Core/Settings/SettingsManager.h"
+
 #include "Gameplay/Components/CameraComponent.h"
 #include "Gameplay/Levels/LevelGenerator.h"
 #include "Player.h"
@@ -42,6 +43,7 @@
 #include <UI/UIRenderer.h>
 
 #include <Physics/Colliders/Collider.h>
+#include <spdlog/spdlog.h>
 #include <UI/UIController.h>
 
 class ComponentTest : public mlg::Component {
@@ -75,6 +77,7 @@ public:
         mlg::SettingsManager::Initialize();
 
         mlg::Time::Initialize();
+        mlg::TimerManager::Initialize();
         mlg::AssetManager::Initialize();
         mlg::Window::Initialize("Memory Leak Engine");
         mlg::RenderingAPI::Initialize();
@@ -117,6 +120,7 @@ public:
         mlg::Window::Stop();
         mlg::AssetManager::Stop();
         mlg::Time::Stop();
+        mlg::TimerManager::Stop();
 
         mlg::SettingsManager::Stop();
 
@@ -158,37 +162,37 @@ public:
             label.lock()->SetSize(32);
             auto buttonMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/button_material.json");
             auto focusMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/focus_material.json");
-            auto button1 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
-            auto button2 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
-            auto button3 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
-            auto button4 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
-            auto button5 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
-            button1.lock()->SetPosition({400.f, 300.f});
-            button2.lock()->SetPosition({400.f, 360.f});
-            button3.lock()->SetPosition({400.f, 240.f});
-            button4.lock()->SetPosition({190.f, 300.f});
-            button5.lock()->SetPosition({610.f, 300.f});
+            // auto button1 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
+            // auto button2 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
+            // auto button3 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
+            // auto button4 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
+            // auto button5 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
+            // button1.lock()->SetPosition({400.f, 300.f});
+            // button2.lock()->SetPosition({400.f, 360.f});
+            // button3.lock()->SetPosition({400.f, 240.f});
+            // button4.lock()->SetPosition({190.f, 300.f});
+            // button5.lock()->SetPosition({610.f, 300.f});
 
-            button1.lock()->next.top = button2;
-            button1.lock()->next.bottom = button3;
-            button1.lock()->next.left = button4;
-            button1.lock()->next.right = button5;
+            // button1.lock()->next.top = button2;
+            // button1.lock()->next.bottom = button3;
+            // button1.lock()->next.left = button4;
+            // button1.lock()->next.right = button5;
 
-            button2.lock()->next.bottom = button1;
-            button3.lock()->next.top = button1;
-            button4.lock()->next.right = button1;
-            button5.lock()->next.left = button1;
+            // button2.lock()->next.bottom = button1;
+            // button3.lock()->next.top = button1;
+            // button4.lock()->next.right = button1;
+            // button5.lock()->next.left = button1;
 
-            button1.lock()->GrabFocus();
+            // button1.lock()->GrabFocus();
 
             mlg::UIRenderer::GetInstance()->AddRenderable(image);
             mlg::UIRenderer::GetInstance()->AddRenderable(progressBar);
             mlg::UIRenderer::GetInstance()->AddRenderable(label);
-            mlg::UIRenderer::GetInstance()->AddRenderable(button1);
-            mlg::UIRenderer::GetInstance()->AddRenderable(button2);
-            mlg::UIRenderer::GetInstance()->AddRenderable(button3);
-            mlg::UIRenderer::GetInstance()->AddRenderable(button4);
-            mlg::UIRenderer::GetInstance()->AddRenderable(button5);
+            // mlg::UIRenderer::GetInstance()->AddRenderable(button1);
+            // mlg::UIRenderer::GetInstance()->AddRenderable(button2);
+            // mlg::UIRenderer::GetInstance()->AddRenderable(button3);
+            // mlg::UIRenderer::GetInstance()->AddRenderable(button4);
+            // mlg::UIRenderer::GetInstance()->AddRenderable(button5);
         }
 
         PlayerData firstPlayerData = {0, mlg::RGBA::red};
@@ -230,6 +234,10 @@ public:
         auto testIkeaRigidBody = testIkea.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
         testIkeaRigidBody.lock()->SetPosition({55.f, -5.f});
         testIkeaRigidBody.lock()->SetRotation(glm::radians(-90.f));
+
+        uint timer = mlg::TimerManager::GetInstance()->SetTimer(2.f, false, []() -> void {
+            SPDLOG_WARN("Hello after 2s");
+        });
     }
 
     virtual ~ProjectInpostors() {

@@ -12,3 +12,4 @@ CTestTestfile.cmake
 cmake-build*
 .idea
 .cache
+.vscode
