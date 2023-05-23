@@ -1,4 +1,5 @@
 #include "Core/Core.h"
+#include "Core/TimerManager.h"
 
 #ifdef DEBUG
 
@@ -103,6 +104,8 @@ void Core::TickGameplay() const {
     ZoneScopedN("Tick Gameplay");
     ComponentManager::ProcessComponents();
     EntityManager::ProcessEntities();
+
+    TimerManager::Update();
 
     Input::Update();
 

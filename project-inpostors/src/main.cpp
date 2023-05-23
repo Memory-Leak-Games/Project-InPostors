@@ -14,8 +14,9 @@
 
 #include "Core/Core.h"
 #include "Core/Time.h"
-
+#include "Core/TimerManager.h"
 #include "Core/Settings/SettingsManager.h"
+
 #include "Gameplay/Components/CameraComponent.h"
 #include "Gameplay/Levels/LevelGenerator.h"
 #include "Player.h"
@@ -41,6 +42,7 @@
 #include <UI/Renderer2D.h>
 
 #include <Physics/Colliders/Collider.h>
+#include <spdlog/spdlog.h>
 
 class ComponentTest : public mlg::Component {
 public:
@@ -73,6 +75,7 @@ public:
         mlg::SettingsManager::Initialize();
 
         mlg::Time::Initialize();
+        mlg::TimerManager::Initialize();
         mlg::AssetManager::Initialize();
         mlg::Window::Initialize("Memory Leak Engine");
         mlg::RenderingAPI::Initialize();
@@ -113,6 +116,7 @@ public:
         mlg::Window::Stop();
         mlg::AssetManager::Stop();
         mlg::Time::Stop();
+        mlg::TimerManager::Stop();
 
         mlg::SettingsManager::Stop();
 
@@ -182,6 +186,10 @@ public:
         auto testIkeaRigidBody = testIkea.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
         testIkeaRigidBody.lock()->SetPosition({55.f, -5.f});
         testIkeaRigidBody.lock()->SetRotation(glm::radians(-90.f));
+
+        uint timer = mlg::TimerManager::GetInstance()->SetTimer(2.f, false, []() -> void {
+            SPDLOG_WARN("Hello after 2s");
+        });
     }
 
     virtual ~ProjectInpostors() {
