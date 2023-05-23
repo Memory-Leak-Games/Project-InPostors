@@ -170,7 +170,7 @@ glm::vec2 SteeringBehaviors::Alignment(const std::vector<std::weak_ptr<TrafficCa
     avgHeading /= (float)agents.size();
     avgHeading.x -= aiComponent->GetOwner().lock()->GetTransform().GetForwardVector().x;
     avgHeading.y -= aiComponent->GetOwner().lock()->GetTransform().GetForwardVector().z;
-    
+
     return avgHeading;
 }
 
