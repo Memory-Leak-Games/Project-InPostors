@@ -45,6 +45,7 @@
 #include <UI/UIRenderer.h>
 
 #include <Physics/Colliders/Collider.h>
+#include <cstdint>
 #include <spdlog/spdlog.h>
 #include <UI/UIController.h>
 
@@ -254,7 +255,7 @@ public:
         testIkeaRigidBody.lock()->SetPosition({55.f, -5.f});
         testIkeaRigidBody.lock()->SetRotation(glm::radians(-90.f));
 
-        uint timer = mlg::TimerManager::GetInstance()->SetTimer(2.f, false, []() -> void {
+        uint32_t timer = mlg::TimerManager::GetInstance()->SetTimer(2.f, false, []() -> void {
             SPDLOG_WARN("Hello after 2s");
         });
     }
