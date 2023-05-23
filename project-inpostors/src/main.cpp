@@ -15,14 +15,15 @@
 #include "Core/Core.h"
 #include "Core/Time.h"
 
+#include "BillboardTest.h"
+#include "Buildings/Factory.h"
+#include "Car/PlayerOneInput.h"
+#include "Car/PlayerTwoInput.h"
 #include "Core/Settings/SettingsManager.h"
 #include "Gameplay/Components/CameraComponent.h"
 #include "Gameplay/Levels/LevelGenerator.h"
 #include "Player.h"
 #include "SceneGraph/SceneGraph.h"
-#include "Car/PlayerOneInput.h"
-#include "Car/PlayerTwoInput.h"
-#include "Buildings/Factory.h"
 
 #include <Gameplay/ComponentManager.h>
 #include <Gameplay/Components/RigidbodyComponent.h>
@@ -137,10 +138,10 @@ public:
         auto cubeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Cube.obj");
         auto sphereModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Sphere.obj");
 
+        auto imageMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/cat_UI_material.json");
         // UI testing
         {
             auto ui = mlg::EntityManager::SpawnEntity<mlg::Entity>("ui", true, mlg::SceneGraph::GetRoot());
-            auto imageMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/cat_UI_material.json");
             auto image = ui.lock()->AddComponent<mlg::Image>("Image", imageMaterial);
             image.lock()->SetSize(glm::vec2{128.f});
             image.lock()->SetPosition({1280.f - 128.f, 720.f - 128.f});
@@ -202,6 +203,13 @@ public:
 
         auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
         auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
+
+        auto billboardEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("BillboardTest", false, mlg::SceneGraph::GetRoot());
+        auto billboardTest = billboardEntity.lock()->AddComponent<BillboardTest>("Billboard", imageMaterial);
+        billboardTest.lock()->player = player;
+        billboardTest.lock()->SetSize(glm::vec2{32.f});
+
+        mlg::UIRenderer::GetInstance()->AddRenderable(billboardTest);
 
         //std::vector<std::string> levelLayout;
         //levelLayout = mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit.json");
