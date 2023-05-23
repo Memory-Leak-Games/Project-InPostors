@@ -86,12 +86,12 @@ glm::vec2 SteeringBehaviors::CalculatePrioritized() {
     if (BehaviorTypeOn(seek)) {
         force = Seek({10, -20}) * seekWeight;
 
-        steeringForce += force;
-        return steeringForce;
+        if (!AccumulateForce(steeringForce, force))
+            return steeringForce;
     }
 
     if (BehaviorTypeOn(arrive)) {
-        force = Arrive({10, 10}, deceleration) * arriveWeight;
+        force = Arrive({10, -20}, deceleration) * arriveWeight;
 
         if (!AccumulateForce(steeringForce, force))
             return steeringForce;
@@ -104,7 +104,7 @@ glm::vec2 SteeringBehaviors::CalculatePrioritized() {
             return steeringForce;
     }
 
-    return {0, 0};
+    return steeringForce;
 }
 
 glm::vec2 SteeringBehaviors::Seek(glm::vec2 TargetPos) {
