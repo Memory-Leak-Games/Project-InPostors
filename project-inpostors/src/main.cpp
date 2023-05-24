@@ -15,7 +15,6 @@
 #include "Core/Core.h"
 #include "Core/Time.h"
 
-#include "BillboardTest.h"
 #include "Buildings/Factory.h"
 #include "Car/PlayerOneInput.h"
 #include "Car/PlayerTwoInput.h"
@@ -23,7 +22,7 @@
 #include "Core/Settings/SettingsManager.h"
 
 #include "Gameplay/Components/CameraComponent.h"
-#include "Gameplay/Levels/LevelGenerator.h"
+#include "Levels/LevelGenerator.h"
 #include "Player.h"
 #include "SceneGraph/SceneGraph.h"
 
@@ -198,34 +197,8 @@ public:
 //            mlg::UIRenderer::GetInstance()->AddRenderable(button5);
         }
 
-        PlayerData firstPlayerData = {0, mlg::RGBA::red};
-        PlayerData secondPlayerData = {1, mlg::RGBA::cyan};
-
-        auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot(), firstPlayerData);
-        player.lock()->AddComponent<PlayerOneInput>("PlayerInput");
-
-        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false, mlg::SceneGraph::GetRoot(), secondPlayerData);
-        playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
-
         auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
         auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
-
-        auto billboardEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("BillboardTest", false, mlg::SceneGraph::GetRoot());
-        auto billboardTest = billboardEntity.lock()->AddComponent<mlg::Image>("Billboard", arrowMaterial);
-        billboardTest.lock()->SetBillboardTarget(player);
-        billboardTest.lock()->SetSize(glm::vec2{16.f});
-        billboardTest.lock()->SetPosition({0.f, 32.f});
-
-        auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/ARLRDBD.TTF");
-        auto label = billboardEntity.lock()->AddComponent<mlg::Label>("Label", font);
-        label.lock()->SetText("Aaa Kotki 2 szarobure obydwa 1234567890");
-        label.lock()->SetPosition({0, 32});
-        label.lock()->SetTextColor({1, 1, 1});
-        label.lock()->SetSize(32);
-        label.lock()->SetBillboardTarget(player);
-
-        mlg::UIRenderer::GetInstance()->AddRenderable(billboardTest);
-        mlg::UIRenderer::GetInstance()->AddRenderable(label);
 
         std::vector<std::string> levelLayout;
         levelLayout = mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit.json");
@@ -237,11 +210,12 @@ public:
         // load props
         mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit_props.json");
 
+
         // create factories
-        auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("Smelter", false, mlg::SceneGraph::GetRoot(),
-                                                                    "res/levels/Factories/smelter.json");
-        auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
-        testFactoryRigidBody.lock()->SetPosition({22.f, 8.f});
+        //auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
+        //                                                           "res/levels/Factories/smelter.json");
+        //auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
+        //testFactoryRigidBody.lock()->SetPosition({22.f, 8.f});
 
         auto testMine = mlg::EntityManager::SpawnEntity<Factory>("Mine", false, mlg::SceneGraph::GetRoot(),
                                                                     "res/levels/Factories/mine.json");

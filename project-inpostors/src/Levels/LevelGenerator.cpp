@@ -6,7 +6,7 @@
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
 
-#include "Gameplay/Levels/LevelGenerator.h"
+#include "Levels/LevelGenerator.h"
 
 #include "Gameplay/EntityManager.h"
 #include "Gameplay/Entity.h"
@@ -19,13 +19,17 @@
 #include "Gameplay/Components/RigidbodyComponent.h"
 #include "Physics/Colliders/ColliderShapes.h"
 #include "Physics/CollisionManager.h"
+#include "Player.h"
+#include "Core/RGBA.h"
+#include "Car/PlayerOneInput.h"
+#include "Car/PlayerTwoInput.h"
 
 using json = nlohmann::json;
 using Random = effolkronium::random_static;
 
 namespace mlg {
 
-    std::vector<std::string> LevelGenerator::LoadMap(const std::string& path) {
+    std::vector<std::string> LevelGenerator::LoadMap(const std::string &path) {
         LevelGenerator levelGenerator;
 
         std::ifstream levelFile{path};
@@ -33,14 +37,16 @@ namespace mlg {
 
         std::vector<std::string> ret = levelGenerator.LoadLayout();
         levelGenerator.LoadMapObjects();
+        levelGenerator.LoadFactories();
         levelGenerator.LoadRoads();
 
         levelGenerator.GenerateLevel();
+        levelGenerator.SpawnPlayers();
 
         return ret;
     }
 
-    void LevelGenerator::LoadCameraSettings(const std::string& path, struct CameraComponent& cameraComponent) {
+    void LevelGenerator::LoadCameraSettings(const std::string &path, struct CameraComponent &cameraComponent) {
         std::ifstream levelFile{path};
         json cameraJson = json::parse(levelFile)["camera-settings"];
 
@@ -65,7 +71,7 @@ namespace mlg {
         cameraComponent.SetOrtho(size, near, far);
     }
 
-    void LevelGenerator::SpawnGround(const std::string& path) {
+    void LevelGenerator::SpawnGround(const std::string &path) {
         LevelGenerator levelGenerator;
         std::ifstream levelFile{path};
 
@@ -75,11 +81,11 @@ namespace mlg {
         const glm::vec2 citySize = levelGenerator.GetCitySize();
         const float tileSize = levelGenerator.tileSize;
 
-        glm::vec4 color {
-            levelGenerator.levelJson["ground-color"][0].get<float>(),
-            levelGenerator.levelJson["ground-color"][1].get<float>(),
-            levelGenerator.levelJson["ground-color"][2].get<float>(),
-            levelGenerator.levelJson["ground-color"][3].get<float>()
+        glm::vec4 color{
+                levelGenerator.levelJson["ground-color"][0].get<float>(),
+                levelGenerator.levelJson["ground-color"][1].get<float>(),
+                levelGenerator.levelJson["ground-color"][2].get<float>(),
+                levelGenerator.levelJson["ground-color"][3].get<float>()
         };
 
         auto planeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/plane.obj");
@@ -102,7 +108,7 @@ namespace mlg {
         ground.lock()->GetTransform().SetScale(groundScale);
     }
 
-    void LevelGenerator::SetCityBounds(const std::string& path) {
+    void LevelGenerator::SetCityBounds(const std::string &path) {
         LevelGenerator levelGenerator;
         std::ifstream levelFile{path};
 
@@ -118,11 +124,12 @@ namespace mlg {
         CollisionManager::SetBounds(cityStart, cityEnd, layoutSize);
     }
 
+
     // ======== PRIVATE METHODS ========
 
     std::vector<std::string> LevelGenerator::LoadLayout() {
         std::vector<std::string> ret;
-        for (const auto& jsonLayoutString: levelJson["layout"]) {
+        for (const auto &jsonLayoutString: levelJson["layout"]) {
             std::string layoutString = jsonLayoutString.get<std::string>();
             levelLayout.push_back(layoutString);
             ret.push_back(layoutString);
@@ -137,9 +144,9 @@ namespace mlg {
         std::ifstream tileFile{levelJson["tileset"].get<std::string>()};
         tileJson = json::parse(tileFile);
 
-        defaultMaterial = tileJson["defaultMaterial"].get<std::string>();
+        defaultMaterial = tileJson["default-material"].get<std::string>();
 
-        for (const auto& jsonTile: tileJson["tiles"]) {
+        for (const auto &jsonTile: tileJson["tiles"]) {
             const char tileSymbol = jsonTile["symbol"].get<std::string>()[0];
 
             if (tileSymbol == roadsObjects.symbol)
@@ -148,11 +155,11 @@ namespace mlg {
             std::vector<MapObject> mapObjectPool;
 
             bool isPathWay = false;
-            if (jsonTile.contains("isPathWay")) {
-                isPathWay = jsonTile["isPathWay"].get<bool>();
+            if (jsonTile.contains("is-path-way")) {
+                isPathWay = jsonTile["is-path-way"].get<bool>();
             }
 
-            for (const auto& jsonMapObject: jsonTile["objects"]) {
+            for (const auto &jsonMapObject: jsonTile["objects"]) {
                 mapObjectPool.push_back(std::move(ParseObject(jsonMapObject)));
             }
 
@@ -163,35 +170,19 @@ namespace mlg {
             ignoredCharacters = levelJson["ignore"].get<std::string>();
     }
 
+    void LevelGenerator::LoadFactories() {
+        if (!tileJson.contains("factories"))
+            return;
 
-    LevelGenerator::MapObject LevelGenerator::ParseObject(const json& jsonMapObject) {
-        std::string modelPath = jsonMapObject["model"].get<std::string>();
-        std::string materialPath = jsonMapObject.contains("material")
-                                   ? jsonMapObject["material"].get<std::string>()
-                                   : defaultMaterial;
-
-        MapObject mapObj;
-        mapObj.model = AssetManager::GetAsset<ModelAsset>(modelPath);
-        mapObj.material = AssetManager::GetAsset<MaterialAsset>(materialPath);
-
-        mapObj.worldRot = jsonMapObject.contains("rotation") ? jsonMapObject["rotation"].get<float>() : 0.f;
-        mapObj.worldRot = glm::radians(mapObj.worldRot);
-
-        mapObj.scale = jsonMapObject.contains("scale")
-                        ? jsonMapObject["scale"].get<float>() : 1.f;
-
-        if (jsonMapObject.contains("collision-type")) {
-            mapObj.hasCollision = true;
-            mapObj.colliderType = jsonMapObject["collision-type"].get<std::string>();
-            mapObj.colliderSize = jsonMapObject.contains("collision-size")
-                                   ? jsonMapObject["collision-size"].get<float>() : 1.0f;
-            mapObj.colliderOffset = jsonMapObject.contains("collision-offset")
-                                     ? jsonMapObject["collision-offset"].get<float>() : 0.0f;
+        for (const auto &jsonFactories: tileJson["factories"]) {
+            const char tileSymbol = jsonFactories["symbol"].get<std::string>()[0];
+            std::string configPath = jsonFactories["config"].get<std::string>();
+            FactoryObject factoryTile = LoadFactoryData(configPath);
+            std::vector<MapObject> mapObjectPool; //ugly.
+            mapObjectPool.push_back(factoryTile.mesh);
+            mapObjects.insert({tileSymbol, MapEntry{mapObjectPool, false, 0}});
         }
 
-        //if (jsonMapObject.contains("factory-data")) {}
-
-        return mapObj;
     }
 
     void LevelGenerator::LoadRoads() {
@@ -208,11 +199,52 @@ namespace mlg {
         roadsObjects.corner = ParseObject(roadJson["corner"]);
     }
 
+
+    LevelGenerator::MapObject LevelGenerator::ParseObject(const json &jsonMapObject) {
+        std::string modelPath = jsonMapObject["model"].get<std::string>();
+        std::string materialPath = jsonMapObject.contains("material")
+                                   ? jsonMapObject["material"].get<std::string>()
+                                   : defaultMaterial;
+
+        MapObject mapObj;
+        mapObj.model = AssetManager::GetAsset<ModelAsset>(modelPath);
+        mapObj.material = AssetManager::GetAsset<MaterialAsset>(materialPath);
+
+        mapObj.worldRot = jsonMapObject.contains("rotation")
+                          ? jsonMapObject["rotation"].get<float>() : 0.f;
+        mapObj.worldRot = glm::radians(mapObj.worldRot);
+
+        mapObj.scale = jsonMapObject.contains("scale")
+                       ? jsonMapObject["scale"].get<float>() : 1.f;
+
+        if (jsonMapObject.contains("collision-type")) {
+            mapObj.hasCollision = true;
+            mapObj.colliderType = jsonMapObject["collision-type"].get<std::string>();
+            mapObj.colliderSize = jsonMapObject.contains("collision-size")
+                                  ? jsonMapObject["collision-size"].get<float>() : 1.0f;
+            mapObj.colliderOffset = jsonMapObject.contains("collision-offset")
+                                    ? jsonMapObject["collision-offset"].get<float>() : 0.0f;
+        }
+
+        return mapObj;
+    }
+
+    LevelGenerator::FactoryObject LevelGenerator::LoadFactoryData(const std::string &path) {
+        std::ifstream factoryFile{path};
+        json factoryJson = json::parse(factoryFile);
+
+        FactoryObject factoryObj;
+        factoryObj.mesh = ParseObject(factoryJson["static-mesh"]);
+        //todo: add colliders, blueprints & emitters
+
+        return factoryObj;
+    }
+
     void LevelGenerator::GenerateLevel() {
         int x = 0, y = 0;
-        for (const std::string& row: levelLayout) {
+        for (const std::string &row: levelLayout) {
             ++y;
-            for (const char& character: row) {
+            for (const char &character: row) {
                 ++x;
 
                 // Ignore spaces
@@ -229,11 +261,63 @@ namespace mlg {
                     continue;
                 }
 
-                // If road is not required, simply place a building.
+                // Place a simple building if nothing special is required
                 PutTile(x - 1, y - 1, character);
             }
             x = 0;
         }
+    }
+
+    void LevelGenerator::SpawnPlayers() {
+        if (!(levelJson.contains("player-one")
+              && levelJson.contains("player-two")))
+            return;
+
+        //first player
+        auto firstPlayerJson = levelJson["player-one"];
+        glm::vec3 firstPlayerPosition = {
+                firstPlayerJson["position"][0].get<float>(),
+                0.3f,
+                firstPlayerJson["position"][1].get<float>(),
+        };
+        float firstPlayerRotation = firstPlayerJson.contains("rotation") ?
+                firstPlayerJson["rotation"].get<float>() : 0.f;
+        std::string firstPlayerCarData = firstPlayerJson.contains("car-data") ?
+                                         firstPlayerJson["car-data"].get<std::string>() :
+                                                 "res/config/cars/van.json";
+
+        PlayerData firstPlayerData = {0, mlg::RGBA::red,
+                                      firstPlayerPosition,
+                                      firstPlayerRotation,
+                                      firstPlayerCarData};
+
+
+        //second player
+        auto secondPlayerJson = levelJson["player-two"];
+        glm::vec3 secondPlayerPosition = {
+                secondPlayerJson["position"][0].get<float>(),
+                0.3f,
+                secondPlayerJson["position"][1].get<float>(),
+        };
+        float secondPlayerRotation = secondPlayerJson.contains("rotation") ?
+                                     secondPlayerJson["rotation"].get<float>() : 0.f;
+        std::string secondPlayerCarData = secondPlayerJson.contains("car-data") ?
+                                          secondPlayerJson["car-data"].get<std::string>() :
+                                                  "res/config/cars/van.json";
+
+        PlayerData secondPlayerData = {0, mlg::RGBA::cyan,
+                                       secondPlayerPosition,
+                                       secondPlayerRotation,
+                                       secondPlayerCarData};
+
+        //spawn players
+        auto player = mlg::EntityManager::SpawnEntity<Player>("PlayerOne", false,
+                                                              mlg::SceneGraph::GetRoot(), firstPlayerData);
+        player.lock()->AddComponent<PlayerOneInput>("PlayerInput");
+
+        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false,
+                                                                 mlg::SceneGraph::GetRoot(), secondPlayerData);
+        playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
     }
 
     glm::vec2 LevelGenerator::GetCitySize() {
@@ -242,8 +326,8 @@ namespace mlg {
     }
 
     glm::ivec2 LevelGenerator::GetLayoutSize() {
-        glm::ivec2 layoutSize = glm::ivec2 {0};
-        for (const std::string& row: levelLayout)
+        glm::ivec2 layoutSize = glm::ivec2{0};
+        for (const std::string &row: levelLayout)
             layoutSize.x = std::max(layoutSize.x, static_cast<int>(row.size()));
 
         layoutSize.y = static_cast<int>(levelLayout.size());
@@ -251,14 +335,14 @@ namespace mlg {
         return layoutSize;
     }
 
-    void LevelGenerator::PutTile(int x, int y, const char& character) {
+    void LevelGenerator::PutTile(int x, int y, const char &character) {
         if (!mapObjects.contains(character)) {
             SPDLOG_WARN("LevelLoader: unknown character: {}, at ({}, {}).", character, x, y);
             return;
         }
 
-        MapEntry& mapEntry = mapObjects.at(character);
-        std::vector<MapObject>& mapObjectPool = mapEntry.objectsPool;
+        MapEntry &mapEntry = mapObjects.at(character);
+        std::vector<MapObject> &mapObjectPool = mapEntry.objectsPool;
 
         mapEntry.useCount++;
 
@@ -267,13 +351,22 @@ namespace mlg {
             Random::shuffle(mapObjectPool);
         }
 
-        const MapObject& mapObject = mapObjectPool[mapEntry.useCount];
+        const MapObject &mapObject = mapObjectPool[mapEntry.useCount];
 
         float smartRotation = GetSmartRotation(x, y);
         PutEntity(mapObject, glm::ivec2{x, y}, glm::radians(smartRotation));
     }
 
-    void LevelGenerator::PutEntity(const MapObject& mapObject, const glm::ivec2& position, float rotation) const {
+    //TODO: Kris here - the engine does not know anything about factories
+    // and now I dunno what to do :(
+    //void LevelGenerator::PutFactory(int x, int y, const FactoryObject& factory) {
+    //    auto factoryEntity = mlg::EntityManager::SpawnEntity<Factory>("Factory", false, mlg::SceneGraph::GetRoot(),
+    //                                                                "res/levels/Factories/smelter.json");
+    //    auto factoryEntityRigidBody = factoryEntity.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
+    //    factoryEntityRigidBody.lock()->SetPosition({x, y});
+    //}
+
+    void LevelGenerator::PutEntity(const MapObject &mapObject, const glm::ivec2 &position, float rotation) const {
         auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("MapObject", true, mlg::SceneGraph::GetRoot());
 
         auto staticMesh = modelEntity.lock()->
@@ -329,8 +422,8 @@ namespace mlg {
         const Neighbours neighbours = GetNeighbours(x, y);
 
         int neighboursRoadsCount = 0;
-        for (auto row : neighbours.tiles)
-            for (auto tile : row)
+        for (auto row: neighbours.tiles)
+            for (auto tile: row)
                 neighboursRoadsCount += (tile == roadsObjects.symbol ? 1 : 0);
 
         bool isEdge = neighboursRoadsCount < 8 && neighboursRoadsCount > 4;
@@ -338,14 +431,14 @@ namespace mlg {
         bool isCross = neighboursRoadsCount == 9;
 
         bool isVertical = neighbours.up == roadsObjects.symbol ||
-                neighbours.down == roadsObjects.symbol;
+                          neighbours.down == roadsObjects.symbol;
         isVertical &= neighbours.left != roadsObjects.symbol &&
-                neighbours.right != roadsObjects.symbol;
+                      neighbours.right != roadsObjects.symbol;
 
         bool isHorizontal = neighbours.left == roadsObjects.symbol ||
-                neighbours.right == roadsObjects.symbol;
+                            neighbours.right == roadsObjects.symbol;
         isHorizontal &= neighbours.up != roadsObjects.symbol &&
-                neighbours.down != roadsObjects.symbol;
+                        neighbours.down != roadsObjects.symbol;
 
         if (isEdge) {
             PutEdgeRoad(x, y);

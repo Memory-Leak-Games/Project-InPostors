@@ -36,17 +36,17 @@ Player::Player(uint64_t id, const std::string& name, bool isStatic, mlg::Transfo
         : mlg::Entity(id, name, isStatic, parent), playerData(playerData) {}
 
 std::shared_ptr<Player> Player::Create(uint64_t id, const std::string& name, bool isStatic,
-                                       mlg::Transform* parent, const PlayerData& playerData,
-                                       const std::string& configPath) {
+                                       mlg::Transform* parent, const PlayerData& playerData) {
     auto newPlayer = std::shared_ptr<Player>(new Player(id, name, isStatic, parent, playerData));
-
-    std::ifstream configFile{configPath};
+    newPlayer->GetTransform().SetPosition(playerData.initialPosition);
+  
+    std::ifstream configFile{playerData.carData};
     json configJson = json::parse(configFile);
 
-    newPlayer->AddRigidbody(configJson);
+    newPlayer->AddRigidbody(configJson, playerData.initialRotation);
     newPlayer->LoadModel(configJson);
 
-    newPlayer->AddComponent<CarMovementComponent>("MovementComponent", configPath);
+    newPlayer->AddComponent<CarMovementComponent>("MovementComponent", playerData.carData);
     newPlayer->equipment = newPlayer->AddComponent<EquipmentComponent>("EquipmentComponent", 3).lock();
 
     auto smoke = FXLibrary::Get("smoke");
@@ -55,9 +55,11 @@ std::shared_ptr<Player> Player::Create(uint64_t id, const std::string& name, boo
     return newPlayer;
 }
 
-void Player::AddRigidbody(const json& configJson) {
+  
+void Player::AddRigidbody(const json& configJson, float rotation = 0.f) {
     this->rigidbodyComponent = this->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
     this->rigidbodyComponent.lock()->SetBounciness(0.5f);
+    this->rigidbodyComponent.lock()->SetRotation(rotation);
     for (const auto& collider: configJson["colliders"]) {
         const glm::vec2 offset{collider["offset"][0].get<float>(), collider["offset"][1].get<float>(),};
         const float size = collider["size"].get<float>();

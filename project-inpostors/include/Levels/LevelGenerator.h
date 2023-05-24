@@ -7,6 +7,7 @@ namespace mlg {
     class LevelGenerator {
 
     public:
+        //todo: rewrite these functions so that you need to provide json path only once
         static std::vector<std::string> LoadMap(const std::string& path);
         static void LoadCameraSettings(const std::string& path, class CameraComponent& cameraComponent);
         static void SpawnGround(const std::string& path);
@@ -36,6 +37,12 @@ namespace mlg {
             MapObject corner;
         } roadsObjects;
 
+        struct FactoryObject {
+            MapObject mesh;
+            //std::string blueprint;
+            //std::string type;
+        };
+
         struct MapEntry {
             std::vector<MapObject> objectsPool;
             bool isPathWay = false;
@@ -60,13 +67,19 @@ namespace mlg {
 
         std::vector<std::string> LoadLayout();
         void LoadMapObjects();
-        void LoadFactories(); //todo
         void LoadRoads();
+        void LoadFactories(); //todo
+
+        FactoryObject LoadFactoryData(const std::string& path);
+
         MapObject ParseObject(const nlohmann::json& jsonObject);
 
         void GenerateLevel();
 
+        void SpawnPlayers();
+
         void PutTile(int x, int y, const char& character);
+        //void PutFactory(int x, int y, const FactoryObject& factory); //TODO: make it work somehow
         void PutRoad(int x, int y);
 
         void PutStraightRoad(int x, int y, bool isVertical);
@@ -76,6 +89,7 @@ namespace mlg {
         void PutCornerRoad(int x, int y);
 
         void PutEntity(const MapObject& mapObject, const glm::ivec2& position, float rotation) const;
+
         float GetSmartRotation(int x, int y);
 
         glm::vec2 GetCitySize();
