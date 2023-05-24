@@ -6,6 +6,7 @@
 namespace mlg {
     class RigidbodyComponent;
     class Image;
+    class Label;
 }
 
 class Factory : public mlg::Entity {
@@ -14,8 +15,13 @@ private:
 
     std::shared_ptr<class EquipmentComponent> equipmentComponent;
 
+
     std::string blueprintId;
     uint produceTimerHandle = 0;
+
+    std::shared_ptr<class mlg::Label> amount1;
+    std::shared_ptr<class mlg::Label> amount2;
+    std::shared_ptr<class mlg::Label> amount3;
 
 public:
     ~Factory() override;
