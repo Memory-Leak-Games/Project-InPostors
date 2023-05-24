@@ -145,8 +145,8 @@ glm::vec2 SteeringBehaviors::Separation(const std::vector<std::weak_ptr<TrafficC
             glm::vec2 toAgent = aiComponent->GetPosition() - agent.lock()->GetComponentByClass<AIComponent>().lock()->GetPosition();
 
             glm::vec2 normToAgent = glm::normalize(toAgent);
-            normToAgent.x /= toAgent.length();
-            normToAgent.y /= toAgent.length();
+//            normToAgent.x /= toAgent.length();
+//            normToAgent.y /= toAgent.length();
             steerForce += normToAgent;
         }
     }
