@@ -44,4 +44,6 @@ private:
 
     void PickUp();
     void Drop();
+	
+    static void GenerateUI(const std::shared_ptr<Player>& newPlayer);
 };

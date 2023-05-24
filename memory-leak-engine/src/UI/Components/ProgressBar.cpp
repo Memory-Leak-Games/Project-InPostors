@@ -34,8 +34,10 @@ namespace mlg {
 
         material->GetShaderProgram()->SetFloat("percentage", percentage);
 
-        // TODO: Sam prostokąt też bym rysował w osobnej klasie statycznej
-        DrawRect();
+        MLG_ASSERT(UIRenderer::GetInstance()->vao != 0);
+        glBindVertexArray(UIRenderer::GetInstance()->vao);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
 
         material->DeActivate();
     }

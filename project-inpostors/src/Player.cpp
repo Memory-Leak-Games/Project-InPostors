@@ -31,7 +31,9 @@
 
 #include "Buildings/Factory.h"
 
+#include "UI/Assets/FontAsset.h"
 #include "UI/Components/Image.h"
+#include "UI/Components/Label.h"
 
 using json = nlohmann::json;
 
@@ -55,15 +57,7 @@ std::shared_ptr<Player> Player::Create(uint64_t id, const std::string& name, boo
     auto smoke = FXLibrary::Get("smoke");
     auto smokeComponent = newPlayer->AddComponent<mlg::ParticleSystemComponent>("SmokeFX", smoke);
 
-    // Player ui
-    {
-        auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/player/arrow_material.json");
-        newPlayer->uiArrow = newPlayer->AddComponent<mlg::Image>("Arrow", material);
-        auto ui = newPlayer->uiArrow.lock();
-        ui->SetBillboardTarget(newPlayer);
-        ui->SetSize({8.f, 8.f});
-        ui->SetPosition({0.f, 32.f});
-    }
+    GenerateUI(newPlayer);
 
     return newPlayer;
 }
@@ -176,5 +170,87 @@ void Player::Drop() {
             SPDLOG_WARN("{} : Drop {} to {}", GetName(), item, factory->GetName());
             return;
         }
+    }
+}
+
+void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
+    auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/arialbd.ttf");
+
+    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/player/arrow_material.json");
+    newPlayer->uiArrow = newPlayer->AddComponent<mlg::Image>("Arrow", material);
+    auto ui = newPlayer->uiArrow.lock();
+    ui->SetBillboardTarget(newPlayer);
+    ui->SetSize({14.f, 14.f});
+    ui->SetPosition({0.f, 24.f});
+    ui->tint = newPlayer->playerData.color;
+
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/wood_material.json");
+    ui = newPlayer->AddComponent<mlg::Image>("WoodEq", material).lock();
+    ui->SetBillboardTarget(newPlayer);
+    ui->SetSize({14.f, 14.f});
+    ui->SetPosition({7.f, 53.f});
+
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/metal_material.json");
+    ui = newPlayer->AddComponent<mlg::Image>("MetalEq", material).lock();
+    ui->SetBillboardTarget(newPlayer);
+    ui->SetSize({14.f, 14.f});
+    ui->SetPosition({-7.f, 53.f});
+
+    auto label = newPlayer->AddComponent<mlg::Label>("PlayerTag", font).lock();
+    label->SetSize(12);
+    label->SetTextColor(newPlayer->playerData.color);
+    label->SetBillboardTarget(newPlayer);
+    label->SetPosition({-6.f, 35.f});
+    if(newPlayer->GetName() == "Player")
+    {
+        label->SetText("P1");
+    } else {
+        label->SetText("P2");
+    }
+
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/player/panel_material.json");
+    ui = newPlayer->AddComponent<mlg::Image>("Panel", material).lock();
+    ui->SetSize({200.f, 38.f});
+    if(newPlayer->GetName() == "Player")
+    {
+        ui->SetPosition(ui->GetSize() * 0.5f);
+    } else {
+        ui->SetPosition({1280 - ui->GetSize().x * 0.5f, ui->GetSize().y * 0.5});
+        ui->SetAnchor({1, 0});
+    }
+
+    label = newPlayer->AddComponent<mlg::Label>("PlayerName", font).lock();
+    label->SetSize(32);
+    label->SetTextColor(newPlayer->playerData.color);
+    if(newPlayer->GetName() == "Player")
+    {
+        label->SetPosition({10, 8});
+        label->SetText("P1");
+    } else {
+        label->SetAnchor({1, 0});
+        label->SetPosition({1280 - 50, 8});
+        label->SetText("P2");
+    }
+
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/wood_material.json");
+    ui = newPlayer->AddComponent<mlg::Image>("WoodEq", material).lock();
+    ui->SetSize({32.f, 32.f});
+    if(newPlayer->GetName() == "Player")
+    {
+        ui->SetPosition({72.f, 17.f});
+    } else {
+        ui->SetPosition({1280 - 72.f, 17.f});
+        ui->SetAnchor({1, 0});
+    }
+
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/metal_material.json");
+    ui = newPlayer->AddComponent<mlg::Image>("MetalEq", material).lock();
+    ui->SetSize({32.f, 32.f});
+    if(newPlayer->GetName() == "Player")
+    {
+        ui->SetPosition({72.f+36.f, 17.f});
+    } else {
+        ui->SetPosition({1280 - 72.f - 36.f, 17.f});
+        ui->SetAnchor({1, 0});
     }
 }

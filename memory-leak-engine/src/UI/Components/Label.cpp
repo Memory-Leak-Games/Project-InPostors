@@ -14,32 +14,11 @@
 
 namespace mlg {
 
-    float Label::glyphQuad[] = {
-            0.0, 1.0, 0.0, 0.0,
-            0.0, 0.0, 0.0, 1.0,
-            1.0, 0.0, 1.0, 1.0,
-
-            0.0, 1.0, 0.0, 0.0,
-            1.0, 0.0, 1.0, 1.0,
-            1.0, 1.0, 1.0, 0.0};
-
     Label::Label(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<class FontAsset>& font)
         : UIComponent(std::move(owner), std::move(name)), font(font) {
         shader = std::make_shared<ShaderProgram>(
                 AssetManager::GetAsset<ShaderAsset>("res/shaders/UI/glyph.vert"),
                 AssetManager::GetAsset<ShaderAsset>("res/shaders/UI/glyph.frag"));
-
-        glCreateVertexArrays(1, &vao);
-        glCreateBuffers(1, &vbo);
-
-        glNamedBufferData(vbo, sizeof(float) * 6 * 4, nullptr, GL_STATIC_DRAW);
-        glNamedBufferSubData(vbo, 0, sizeof(glyphQuad), glyphQuad);
-
-        glEnableVertexArrayAttrib(vao, 0);
-        glVertexArrayAttribBinding(vao, 0, 0);
-        glVertexArrayAttribFormat(vao, 0, 4, GL_FLOAT, GL_FALSE, 0);
-
-        glVertexArrayVertexBuffer(vao, 0, vbo, 0, 4 * sizeof(float));
     }
 
     void Label::Draw(const UIRenderer* renderer) {

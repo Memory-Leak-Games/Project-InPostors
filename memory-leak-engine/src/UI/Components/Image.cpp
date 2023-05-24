@@ -11,41 +11,8 @@
 #include <utility>
 
 namespace mlg {
-    uint32_t Image::rectVao;
-    uint32_t Image::rectVbo;
-
     Image::Image(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<MaterialAsset>& material)
         : UIComponent(std::move(owner), std::move(name)), material(material) {
-        if (rectVao == 0 || rectVbo == 0)
-            InitializeRect();
-    }
-
-    void Image::InitializeRect() {
-        static const std::vector<float> rectVertices({
-                                                             -0.5f, 0.5f,
-                                                             -0.5f, -0.5f,
-                                                             0.5f, -0.5f,
-
-                                                             -0.5f, 0.5f,
-                                                             0.5f, -0.5f,
-                                                             0.5f, 0.5f
-                                                     });
-
-        glCreateVertexArrays(1, &rectVao);
-        glCreateBuffers(1, &rectVbo);
-
-        glNamedBufferData(rectVbo, sizeof(float) * 6 * 4, &rectVertices[0], GL_DYNAMIC_DRAW);
-
-        glCreateVertexArrays(1, &rectVao);
-        glCreateBuffers(1, &rectVbo);
-
-        glNamedBufferData(rectVbo, rectVertices.size() * sizeof(float), &rectVertices[0], GL_STATIC_DRAW);
-
-        glEnableVertexArrayAttrib(rectVao, 0);
-        glVertexArrayAttribBinding(rectVao, 0, 0);
-        glVertexArrayAttribFormat(rectVao, 0, 2, GL_FLOAT, GL_FALSE, 0);
-
-        glVertexArrayVertexBuffer(rectVao, 0, rectVbo, 0, 2 * sizeof(float));
     }
 
     void Image::Draw(const UIRenderer* renderer) {
@@ -54,6 +21,7 @@ namespace mlg {
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glDepthMask(GL_FALSE);
 
         material->Activate();
 
@@ -62,17 +30,13 @@ namespace mlg {
         material->GetShaderProgram()->SetMat4F("projection", renderer->GetProjection());
         material->GetShaderProgram()->SetVec4F("tint", tint);
 
-        DrawRect();
-
-        material->DeActivate();
-    }
-
-    void Image::DrawRect() {
         MLG_ASSERT(UIRenderer::GetInstance()->vao != 0);
-
         glBindVertexArray(UIRenderer::GetInstance()->vao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
+
+        material->DeActivate();
+        glDepthMask(GL_TRUE);
     }
 
     const glm::vec2& Image::GetSize() const {
