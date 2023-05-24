@@ -13,11 +13,11 @@ namespace mlg {
         std::shared_ptr<class MaterialAsset> material;
     public:
         explicit Image(std::weak_ptr<Entity> owner, std::string name,
-                       const std::shared_ptr<struct MaterialAsset>& material);
+                       const std::shared_ptr<class MaterialAsset>& material);
 
         void InitializeRect();
 
-        void Draw(const class Renderer2D* renderer) override;
+        void Draw(const class UIRenderer* renderer) override;
 
         [[nodiscard]] const glm::vec2& GetSize() const;
 

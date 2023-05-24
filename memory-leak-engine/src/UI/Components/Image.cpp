@@ -1,12 +1,12 @@
 #include "include/UI/Components/Image.h"
 
 #include "Macros.h"
-#include "UI/Renderer2D.h"
+#include "UI/UIRenderer.h"
 
 #include "glad/glad.h"
 
-#include "include/Rendering/Assets/MaterialAsset.h"
-#include "include/Rendering/ShaderProgram.h"
+#include "Rendering/Assets/MaterialAsset.h"
+#include "Rendering/ShaderProgram.h"
 
 #include <utility>
 
@@ -14,7 +14,7 @@ namespace mlg {
     uint32_t Image::rectVao;
     uint32_t Image::rectVbo;
 
-    Image::Image(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<struct MaterialAsset>& material)
+    Image::Image(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<MaterialAsset>& material)
         : UIComponent(std::move(owner), std::move(name)), material(material) {
         if (rectVao == 0 || rectVbo == 0)
             InitializeRect();
@@ -48,7 +48,7 @@ namespace mlg {
         glVertexArrayVertexBuffer(rectVao, 0, rectVbo, 0, 2 * sizeof(float));
     }
 
-    void Image::Draw(const Renderer2D* renderer) {
+    void Image::Draw(const UIRenderer* renderer) {
         ZoneScopedN("Draw Image");
         UIComponent::Draw(renderer);
 
@@ -64,9 +64,9 @@ namespace mlg {
     }
 
     void Image::DrawRect() {
-        MLG_ASSERT(rectVao != 0);
+        MLG_ASSERT(UIRenderer::GetInstance()->vao != 0);
 
-        glBindVertexArray(rectVao);
+        glBindVertexArray(UIRenderer::GetInstance()->vao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
     }

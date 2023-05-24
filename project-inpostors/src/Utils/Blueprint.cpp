@@ -1,25 +1,18 @@
-#include "include/Utils/Blueprint.h"
+#include <Utils/Blueprint.h>
+#include <Utils/EquipmentComponent.h>
 
-const std::vector<std::shared_ptr<Product>>& Blueprint::GetInput() const {
-    return input;
+Blueprint::Blueprint(const nlohmann::json& blueprintJson)
+    : name(blueprintJson["name"]), input(), output(blueprintJson["output"]),
+     timeToProcess(blueprintJson["timeToProcess"]) {
+    for (const auto& inputJson : blueprintJson["input"]) {
+        input.push_back(inputJson);
+    }
 }
 
-void Blueprint::SetInput(const std::vector<std::shared_ptr<Product>>& input) {
-    Blueprint::input = input;
-}
+bool Blueprint::CheckBlueprint(const EquipmentComponent& component) {
+    if (input.empty())
+        return true;
 
-const std::shared_ptr<Product>& Blueprint::GetOutput() const {
-    return output;
-}
-
-void Blueprint::SetOutput(const std::shared_ptr<Product>& output) {
-    Blueprint::output = output;
-}
-
-int Blueprint::GetProcessingTime() const {
-    return processingTime;
-}
-
-void Blueprint::SetProcessingTime(int processingTime) {
-    Blueprint::processingTime = processingTime;
+    MLG_UNIMPLEMENTED;
+    return false;
 }

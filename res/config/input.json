@@ -178,5 +178,41 @@
         "code": 0
       }
     ]
+  },
+  {
+    "name": "ui_up",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 87
+      }
+    ]
+  },
+  {
+    "name": "ui_down",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 83
+      }
+    ]
+  },
+  {
+    "name": "ui_left",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 65
+      }
+    ]
+  },
+  {
+    "name": "ui_right",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 68
+      }
+    ]
   }
 ]

@@ -27,6 +27,8 @@
 #include <eventpp/eventdispatcher.h>
 #include <eventpp/eventqueue.h>
 
+#include <functional>
+
 #include "effolkronium/random.hpp"
 
 #include "nlohmann/json.hpp"

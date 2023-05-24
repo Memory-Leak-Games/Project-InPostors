@@ -19,6 +19,8 @@
 
 #include "Physics/Colliders/Collider.h"
 
+#include "Utils/EquipmentComponent.h"
+
 using json = nlohmann::json;
 
 Factory::Factory(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent)
@@ -34,6 +36,11 @@ std::shared_ptr<Factory> Factory::Create(uint64_t id, const std::string& name, b
     result->AddMesh(configJson["static-mesh"]);
     auto mainRigidbody = result->AddComponent<mlg::RigidbodyComponent>("MainRigidbody").lock();
 
+    result->equipmentComponent = result->AddComponent<EquipmentComponent>("Equipment", 3).lock();
+    
+    //TODO: Remove this
+    result->equipmentComponent->AddProduct("iron");
+
     for (const auto& colliderJson: configJson["colliders"]) {
         result->AddCollider(colliderJson, mainRigidbody.get());
     }
@@ -41,7 +48,6 @@ std::shared_ptr<Factory> Factory::Create(uint64_t id, const std::string& name, b
     for (const auto& emitterJson: configJson["emitters"]) {
         result->AddEmitter(emitterJson);
     }
-
 
     result->factoryType = magic_enum::enum_cast<FactoryType>(configJson["type"].get<std::string>()).value();
     if (result->factoryType == FactoryType::OneInput || result->factoryType == FactoryType::SeparateInputOutput) {
@@ -120,5 +126,17 @@ void Factory::AddTrigger(const json& triggerJson, const std::string& triggerName
 
     auto collider = rigidbodyComponent->AddTrigger<mlg::ColliderShape::Rectangle>(offset, size);
     collider.lock()->SetTag(triggerName);
+}
+
+void Factory::Update() {
+#ifdef DEBUG
+    ImGui::Begin("Factories");
+    ImGui::Text("%s, %s", GetName().c_str(), equipmentComponent->ToString().c_str());
+    ImGui::End();
+#endif
+}
+
+const std::shared_ptr<EquipmentComponent>& Factory::GetEquipmentComponent() const {
+    return equipmentComponent;
 }
 
