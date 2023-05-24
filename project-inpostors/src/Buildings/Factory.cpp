@@ -1,30 +1,37 @@
 #include "Buildings/Factory.h"
 
-#include <nlohmann/json.hpp>
 #include <fstream>
+#include <nlohmann/json.hpp>
 
+#include "Core/TimerManager.h"
 #include "Gameplay/Components/RigidbodyComponent.h"
 #include "Gameplay/Components/StaticMeshComponent.h"
 
 #include "Core/AssetManager/AssetManager.h"
 
-#include "Rendering/Assets/ModelAsset.h"
 #include "Rendering/Assets/MaterialAsset.h"
+#include "Rendering/Assets/ModelAsset.h"
 
 #include "Rendering/Particles/ParticleSystem.h"
 
-#include "SceneGraph/Transform.h"
 #include "FX/FXLibrary.h"
 #include "Gameplay/Components/ParticleSystemComponent.h"
+#include "SceneGraph/Transform.h"
 
 #include "Physics/Colliders/Collider.h"
 
+#include "Utils/Blueprint.h"
+#include "Utils/BlueprintManager.h"
+
 #include "Utils/EquipmentComponent.h"
+
 
 using json = nlohmann::json;
 
 Factory::Factory(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent)
-: Entity(id, name, isStatic, parent) {}
+    : Entity(id, name, isStatic, parent) {}
+
+Factory::~Factory() = default;
 
 std::shared_ptr<Factory> Factory::Create(uint64_t id, const std::string& name, bool isStatic,
                                          mlg::Transform* parent, const std::string& configPath) {
@@ -36,16 +43,17 @@ std::shared_ptr<Factory> Factory::Create(uint64_t id, const std::string& name, b
     result->AddMesh(configJson["static-mesh"]);
     auto mainRigidbody = result->AddComponent<mlg::RigidbodyComponent>("MainRigidbody").lock();
 
-    result->equipmentComponent = result->AddComponent<EquipmentComponent>("Equipment", 3).lock();
-    
-    //TODO: Remove this
-    result->equipmentComponent->AddProduct("iron");
+    result->blueprintId = configJson["blueprintID"];
 
-    for (const auto& colliderJson: configJson["colliders"]) {
+    const int equipmentSize = configJson["equipmentSize"];
+    result->equipmentComponent = result->AddComponent<EquipmentComponent>("Equipment", equipmentSize).lock();
+
+
+    for (const auto& colliderJson : configJson["colliders"]) {
         result->AddCollider(colliderJson, mainRigidbody.get());
     }
 
-    for (const auto& emitterJson: configJson["emitters"]) {
+    for (const auto& emitterJson : configJson["emitters"]) {
         result->AddEmitter(emitterJson);
     }
 
@@ -72,30 +80,24 @@ void Factory::AddMesh(const json& staticMeshJson) {
 
     auto staticMeshComponent = AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
     staticMeshComponent.lock()->GetTransform().SetPosition({
-        staticMeshJson["position"][0].get<float>(),
-        staticMeshJson["position"][1].get<float>(),
-        staticMeshJson["position"][2].get<float>(),
+            staticMeshJson["position"][0],
+            staticMeshJson["position"][1],
+            staticMeshJson["position"][2],
     });
 
     staticMeshComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{
-       staticMeshJson["rotation"].get<float>()
+            staticMeshJson["rotation"][0],
+            staticMeshJson["rotation"][1],
+            staticMeshJson["rotation"][2],
     }));
 
     staticMeshComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{
-            staticMeshJson["scale"].get<float>()
-    }));
+            staticMeshJson["scale"]}));
 }
 
 void Factory::AddCollider(const json& colliderJson, mlg::RigidbodyComponent* rigidbodyComponent) {
-    glm::vec2 offset {
-        colliderJson["offset"][0].get<float>(),
-        colliderJson["offset"][1].get<float>()
-    };
-
-    glm::vec2 size {
-        colliderJson["size"][0].get<float>(),
-        colliderJson["size"][1].get<float>()
-    };
+    glm::vec2 offset{colliderJson["offset"][0], colliderJson["offset"][1]};
+    glm::vec2 size{colliderJson["size"][0], colliderJson["size"][1]};
 
     rigidbodyComponent->AddCollider<mlg::ColliderShape::Rectangle>(offset, size);
 }
@@ -105,38 +107,68 @@ void Factory::AddEmitter(const json& emitterJson) {
     std::shared_ptr<mlg::ParticleSystem> emitter = FXLibrary::Get(id);
     auto emitterComponent = AddComponent<mlg::ParticleSystemComponent>(id, emitter);
     emitterComponent.lock()->GetTransform().SetPosition({
-        emitterJson["position"][0].get<float>(),
-        emitterJson["position"][1].get<float>(),
-        emitterJson["position"][2].get<float>(),
+            emitterJson["position"][0],
+            emitterJson["position"][1],
+            emitterJson["position"][2],
     });
 }
 
 void Factory::AddTrigger(const json& triggerJson, const std::string& triggerName,
                          mlg::RigidbodyComponent* rigidbodyComponent) {
 
-    glm::vec2 offset {
-            triggerJson["offset"][0].get<float>(),
-            triggerJson["offset"][1].get<float>()
-    };
-
-    glm::vec2 size {
-            triggerJson["size"][0].get<float>(),
-            triggerJson["size"][1].get<float>()
-    };
+    glm::vec2 offset{triggerJson["offset"][0], triggerJson["offset"][1]};
+    glm::vec2 size{triggerJson["size"][0], triggerJson["size"][1]};
 
     auto collider = rigidbodyComponent->AddTrigger<mlg::ColliderShape::Rectangle>(offset, size);
     collider.lock()->SetTag(triggerName);
 }
 
+void Factory::CheckBlueprintAndStartWorking() {
+    // If factory is producing do not add another timer
+    if (mlg::TimerManager::Get()->IsTimerValid(produceTimerHandle) || equipmentComponent->IsFull())
+        return;
+
+    const Blueprint& blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
+
+    if (!blueprint.CheckBlueprint(*equipmentComponent))
+        return;
+    
+    // Remove inputs from eq
+    for (const auto& item : blueprint.GetInput()) {
+        equipmentComponent->RequestProduct(item);
+    }
+
+    auto productionLambda = [this, blueprint]() {
+        equipmentComponent->AddProduct(blueprint.GetOutput());
+        CheckBlueprintAndStartWorking();
+    };
+
+    produceTimerHandle = mlg::TimerManager::Get()->SetTimer(blueprint.GetTimeToProcess(), false, productionLambda);
+}
+
+void Factory::Start() {
+    CheckBlueprintAndStartWorking();
+
+    equipmentComponent->equipmentChanged.append([this]() {
+        CheckBlueprintAndStartWorking();
+    });
+}
+
 void Factory::Update() {
 #ifdef DEBUG
     ImGui::Begin("Factories");
-    ImGui::Text("%s, %s", GetName().c_str(), equipmentComponent->ToString().c_str());
+    ImGui::Text("%s, %s, timeToProduce: %f", GetName().c_str(), equipmentComponent->ToString().c_str(),
+                mlg::TimerManager::Get()->GetTimerRemainingTime(produceTimerHandle));
     ImGui::End();
 #endif
+}
+
+bool Factory::IsWorking() const {
+    return mlg::TimerManager::Get()->IsTimerValid(produceTimerHandle);
 }
 
 const std::shared_ptr<EquipmentComponent>& Factory::GetEquipmentComponent() const {
     return equipmentComponent;
 }
 
+std::string Factory::GetBlueprintId() const { return blueprintId; }

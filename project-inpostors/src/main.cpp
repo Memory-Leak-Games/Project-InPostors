@@ -145,10 +145,10 @@ public:
         mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit_props.json");
 
         // create factories
-        //auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
-        //                                                           "res/levels/Factories/smelter.json");
-        //auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
-        //testFactoryRigidBody.lock()->SetPosition({22.f, 8.f});
+        auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("Smelter", false, mlg::SceneGraph::GetRoot(),
+                                                                  "res/levels/Factories/smelter.json");
+        auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
+        testFactoryRigidBody.lock()->SetPosition({22.f, 8.f});
 
         auto testMine = mlg::EntityManager::SpawnEntity<Factory>("Mine", false, mlg::SceneGraph::GetRoot(),
                                                                     "res/levels/Factories/mine.json");
@@ -161,10 +161,6 @@ public:
         auto testIkeaRigidBody = testIkea.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
         testIkeaRigidBody.lock()->SetPosition({55.f, -5.f});
         testIkeaRigidBody.lock()->SetRotation(glm::radians(-90.f));
-
-        uint32_t timer = mlg::TimerManager::GetInstance()->SetTimer(2.f, false, []() -> void {
-            SPDLOG_WARN("Hello after 2s");
-        });
     }
 
     virtual ~ProjectInpostors() {

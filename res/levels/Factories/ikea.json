@@ -4,7 +4,7 @@
     "material": "res/materials/buildings_material.json",
 
     "position": [0.0, 0.0, 0.0],
-    "rotation": 0.0,
+    "rotation": [0.0, 0.0, 0.0],
     "scale": 1.0
   },
 
@@ -20,6 +20,7 @@
   ],
 
   "blueprintID": "furniture",
+  "equipmentSize": 3,
   "type": "OneInput",
 
   "input": {

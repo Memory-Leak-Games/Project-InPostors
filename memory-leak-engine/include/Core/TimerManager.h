@@ -13,6 +13,8 @@ namespace mlg {
             bool repeat;
 
             std::function<void()> onTrigger;
+
+            bool valid;
         };
 
         static TimerManager* instance;
@@ -25,7 +27,7 @@ namespace mlg {
         static void Initialize();
         static void Stop();
 
-        static TimerManager* GetInstance();
+        static TimerManager* Get();
 
         static void Update();
 
