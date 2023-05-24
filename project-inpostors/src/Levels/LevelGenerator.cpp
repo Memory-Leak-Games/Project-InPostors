@@ -224,6 +224,9 @@ namespace mlg {
                                   ? jsonMapObject["collision-size"].get<float>() : 1.0f;
             mapObj.colliderOffset = jsonMapObject.contains("collision-offset")
                                     ? jsonMapObject["collision-offset"].get<float>() : 0.0f;
+            
+            if (jsonMapObject.contains("dynamic"))
+                mapObj.isDynamic = jsonMapObject["dynamic"];
         }
 
         return mapObj;
@@ -308,7 +311,7 @@ namespace mlg {
                                           secondPlayerJson["car-data"].get<std::string>() :
                                                   "res/config/cars/van.json";
 
-        PlayerData secondPlayerData = {0, mlg::RGBA::cyan,
+        PlayerData secondPlayerData = {1, mlg::RGBA::cyan,
                                        secondPlayerPosition,
                                        secondPlayerRotation,
                                        secondPlayerCarData};
@@ -370,7 +373,7 @@ namespace mlg {
     //}
 
     void LevelGenerator::PutEntity(const MapObject &mapObject, const glm::ivec2 &position, float rotation) const {
-        auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("MapObject", true, mlg::SceneGraph::GetRoot());
+        auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("MapObject", !mapObject.isDynamic, mlg::SceneGraph::GetRoot());
 
         auto staticMesh = modelEntity.lock()->
                 AddComponent<mlg::StaticMeshComponent>("StaticMesh", mapObject.model, mapObject.material);
@@ -400,7 +403,7 @@ namespace mlg {
         }
 
         rb.lock()->SetRotation(mapObject.worldRot + rotation);
-        rb.lock()->SetKinematic(true);
+        rb.lock()->SetKinematic(!mapObject.isDynamic);
     }
 
     float LevelGenerator::GetSmartRotation(int x, int y) {

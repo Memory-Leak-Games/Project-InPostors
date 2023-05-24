@@ -5,7 +5,9 @@
       "symbol": "p",
       "objects": [
         {
-          "model": "res/models/Props/plant.obj"
+          "model": "res/models/Props/plant.obj",
+          "collision-type": "rectangle",
+          "dynamic": true
         }
       ]
     },
@@ -14,7 +16,8 @@
       "objects": [
         {
           "model": "res/models/Props/garbage_collector.obj",
-          "collision-type": "rectangle"
+          "collision-type": "rectangle",
+          "dynamic": true
         }
       ]
     },
@@ -23,7 +26,8 @@
       "objects": [
         {
           "model": "res/models/Props/bench.obj",
-          "collision-type": "rectangle"
+          "collision-type": "rectangle",
+          "dynamic": true
         }
       ]
     },
@@ -33,7 +37,8 @@
         {
           "model": "res/models/Props/street_lamp.obj",
           "collision-type": "rectangle",
-          "collision-size": 0.5
+          "collision-size": 0.5,
+          "dynamic": true
         }
       ]
     },
@@ -43,7 +48,8 @@
         {
           "model": "res/models/Props/traffic_cone.obj",
           "collision-type": "rectangle",
-          "collision-size": 0.25
+          "collision-size": 0.25,
+          "dynamic": true
         }
       ]
     },
@@ -54,7 +60,8 @@
           "model": "res/models/Props/barier_small.obj",
           "rotation": 90.0,
           "collision-type": "rectangle",
-          "collision-size": 1.0
+          "collision-size": 1.0,
+          "dynamic": true
         }
       ]
     },
@@ -65,7 +72,8 @@
           "model": "res/models/Props/bilboard_wide.obj",
           "rotation": 90.0,
           "collision-type": "rectangle",
-          "collision-size": 0.5
+          "collision-size": 0.5,
+          "dynamic": true
         }
       ]
     },
