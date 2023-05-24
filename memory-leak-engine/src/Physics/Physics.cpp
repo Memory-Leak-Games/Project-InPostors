@@ -50,6 +50,10 @@ namespace mlg {
 
         instance->timeAccumulator += deltaTime;
 
+        // skip very long frames
+        if (deltaTime > 0.5f)
+            return;
+
         while (instance->timeAccumulator >= Time::GetFixedTimeStep()) {
             ZoneScopedNC("Tick Physics", tracy::Color::ColorType::Green);
             instance->OnFixedUpdate();

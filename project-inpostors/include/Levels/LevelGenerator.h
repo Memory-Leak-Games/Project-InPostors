@@ -12,7 +12,7 @@ namespace mlg {
         static void LoadCameraSettings(const std::string& path, class CameraComponent& cameraComponent);
         static void SpawnGround(const std::string& path);
         static void SetCityBounds(const std::string& path);
-
+        static void SpawnPlayers(const std::string& path);
 
     private:
         struct MapObject {
@@ -68,7 +68,7 @@ namespace mlg {
         std::vector<std::string> LoadLayout();
         void LoadMapObjects();
         void LoadRoads();
-        void LoadFactories(); //todo
+        void LoadFactories();//todo
 
         FactoryObject LoadFactoryData(const std::string& path);
 
@@ -76,7 +76,6 @@ namespace mlg {
 
         void GenerateLevel();
 
-        void SpawnPlayers();
 
         void PutTile(int x, int y, const char& character);
         //void PutFactory(int x, int y, const FactoryObject& factory); //TODO: make it work somehow
@@ -99,5 +98,4 @@ namespace mlg {
         glm::ivec2 GetLayoutSize();
     };
 
-} //mlg
- 
+}// namespace mlg
