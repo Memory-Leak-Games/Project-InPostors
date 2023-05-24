@@ -1,12 +1,14 @@
 #include "UI/Components/UIComponent.h"
 
-#include "UI/Renderer2D.h"
+#include "Rendering/CommonUniformBuffer.h"
+#include "UI/UIRenderer.h"
+#include "Gameplay/Entity.h"
 
 namespace mlg {
 
-    UIComponent::UIComponent(std::weak_ptr<Entity> owner, std::string name) : Component(std::move(owner), std::move(name)) {};
+    UIComponent::UIComponent(std::weak_ptr<Entity> owner, std::string name) : Component(std::move(owner), std::move(name)) {}
 
-    void UIComponent::CalculateActualPosition(const Renderer2D* renderer) {
+    void UIComponent::CalculateActualPosition(const UIRenderer* renderer) {
         actualPositionDirty = false;
 
         // Component's offset from anchor for 1280x720 window
@@ -17,17 +19,34 @@ namespace mlg {
 
         // Calculate anchors' current position
         glm::vec2 anchorPosition = {
-                renderer->windowWidth * anchor.x,
-                renderer->windowHeight * anchor.y
+                (float)renderer->windowWidth * anchor.x,
+                (float)renderer->windowHeight * anchor.y
         };
 
         actualPosition = anchorPosition + defaultOffset * renderer->uiScale;
     }
 
-    void UIComponent::Draw(const Renderer2D* renderer) {
-        if (renderer->windowSizeDirty || actualPositionDirty)
-        {
-            CalculateActualPosition(renderer);
+    void UIComponent::FollowTarget(const struct UIRenderer* renderer) {
+        glm::vec4 world = glm::vec4(billboardTarget.lock()->GetTransform().GetWorldPosition(), 1.0f);
+        auto projection =  mlg::CommonUniformBuffer::GetUniforms().projection;
+        auto view =  mlg::CommonUniformBuffer::GetUniforms().view;
+        actualPosition = projection * view * world;
+        actualPosition += glm::vec2(1, 1);
+        actualPosition.x *= (float)renderer->windowWidth * 0.5f;
+        actualPosition.y *= (float)renderer->windowHeight * 0.5f;
+        actualPosition += position * renderer->uiScale;
+    }
+
+    void UIComponent::Draw(const UIRenderer* renderer) {
+        if(!isBillboard) {
+            if (renderer->windowSizeDirty || actualPositionDirty) {
+                CalculateActualPosition(renderer);
+            }
+        } else {
+            if (billboardTarget.lock()->GetTransform().GetIsDirty() || true)
+            {
+                FollowTarget(renderer);
+            }
         }
     }
 
@@ -48,5 +67,25 @@ namespace mlg {
         UIComponent::anchor = glm::clamp(anchor, 0.0f, 1.0f);
         actualPositionDirty = false;
     }
+
+    bool UIComponent::IsBillboard1() const {
+        return isBillboard;
+    }
+
+    void UIComponent::SetIsBillboard(bool isBillboard) {
+        UIComponent::isBillboard = isBillboard;
+        actualPositionDirty = true;
+    }
+
+    const std::weak_ptr<Entity>& UIComponent::GetBillboardTarget() const {
+        return billboardTarget;
+    }
+
+    void UIComponent::SetBillboardTarget(const std::weak_ptr<Entity>& billboardTarget) {
+        UIComponent::billboardTarget = billboardTarget;
+        isBillboard = true;
+        actualPositionDirty = true;
+    }
+
 
 }

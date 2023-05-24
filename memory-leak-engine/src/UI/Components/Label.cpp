@@ -10,7 +10,7 @@
 #include "Core/Time.h"
 #include "Rendering/Assets/ShaderAsset.h"
 #include "Rendering/ShaderProgram.h"
-#include "UI/Renderer2D.h"
+#include "UI/UIRenderer.h"
 
 namespace mlg {
 
@@ -42,7 +42,7 @@ namespace mlg {
         glVertexArrayVertexBuffer(vao, 0, vbo, 0, 4 * sizeof(float));
     }
 
-    void Label::Draw(const Renderer2D* renderer) {
+    void Label::Draw(const UIRenderer* renderer) {
         ZoneScopedN("Draw Label");
         UIComponent::Draw(renderer);
 
@@ -55,7 +55,7 @@ namespace mlg {
         shader->SetVec3F("textColor", textColor);
         shader->SetMat4F("projection", renderer->GetProjection());
         glActiveTexture(GL_TEXTURE0);
-        glBindVertexArray(vao);
+        glBindVertexArray(renderer->vao);
 
         float actualScale = scale * renderer->uiScale;
 
@@ -63,7 +63,7 @@ namespace mlg {
         float xpos, ypos, w, h;
 
         // Iterate through all characters
-        float cursor = actualPosition.x * actualScale;
+        float cursor = actualPosition.x;
         for (char8_t c : text) {
 
             // Skip rendering space
@@ -79,7 +79,7 @@ namespace mlg {
 
                 // Calculate position and size
                 xpos = cursor + ch.Bearing.x * actualScale;
-                ypos = (actualPosition.y - (float) (ch.Size.y - ch.Bearing.y)) * actualScale;
+                ypos = (actualPosition.y - (float) (ch.Size.y - ch.Bearing.y) * actualScale);
 
                 w = (float) ch.Size.x * actualScale;
                 h = (float) ch.Size.y * actualScale;

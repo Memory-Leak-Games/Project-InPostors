@@ -1,5 +1,6 @@
 #include "Core/Core.h"
 
+
 #ifdef DEBUG
 
 #include "backends/imgui_impl_glfw.h"
@@ -13,6 +14,8 @@
 #include "Core/Time.h"
 #include "Core/Window.h"
 
+#include "Core/TimerManager.h"
+
 #include "Rendering/CommonUniformBuffer.h"
 #include "Rendering/Renderer.h"
 #include "Rendering/RenderingAPI.h"
@@ -21,6 +24,8 @@
 #include "Rendering/FrameBuffers/GBuffer.h"
 #include "Rendering/FrameBuffers/PostProcess.h"
 #include "Rendering/FrameBuffers/SSAOFrameBuffer.h"
+
+#include <UI/UIController.h>
 
 #include "Events/WindowEvent.h"
 
@@ -32,7 +37,7 @@
 #include "Rendering/DirectionalLight.h"
 #include "Rendering/Gizmos/Gizmos.h"
 #include "SceneGraph/SceneGraph.h"
-#include "UI/Renderer2D.h"
+#include "UI/UIRenderer.h"
 
 using namespace mlg;
 
@@ -104,7 +109,10 @@ void Core::TickGameplay() const {
     ComponentManager::ProcessComponents();
     EntityManager::ProcessEntities();
 
+    TimerManager::Update();
+
     Input::Update();
+    UIController::Update();
 
     Physics::TickFixedTimeSteps();
 
@@ -121,7 +129,7 @@ void Core::TickRendering() const {
     Renderer::GetInstance()->DrawFrame();
 
     Gizmos::DrawGizmos();
-    Renderer2D::GetInstance()->Draw();
+    UIRenderer::GetInstance()->Draw();
 }
 
 #ifdef DEBUG
@@ -180,7 +188,6 @@ void Core::Initialize() {
     ImGuiIO& io = ImGui::GetIO();
     (void) io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;// Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
 
     Window::GetInstance()->ImGuiInit();
 

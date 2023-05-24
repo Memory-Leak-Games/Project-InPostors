@@ -11,7 +11,7 @@ namespace mlg {
         explicit ProgressBar(std::weak_ptr<Entity> owner, std::string name,
                              const std::shared_ptr<struct MaterialAsset>& material);
 
-        void Draw(const Renderer2D* renderer) override;
+        void Draw(const UIRenderer* renderer) override;
     };
 
 } // mlg
