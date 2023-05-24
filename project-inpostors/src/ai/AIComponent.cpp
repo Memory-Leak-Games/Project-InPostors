@@ -57,13 +57,13 @@ void AIComponent::HandleEngineAndBraking() {
 }
 
 void AIComponent::HandleSteering() {
+    //TODO: Szymon HALP!
     const glm::vec2 steeringForce = steering->Calculate();
 
     glm::vec2 normalVector = mlg::Math::SafeNormal(steeringForce);
-    float rotation = std::atan2(normalVector.y, normalVector.x);
+    float rotation = -std::atan2(normalVector.y, normalVector.x);
 
-    SPDLOG_INFO("Angle: {}", rotation);
-
+//    SPDLOG_INFO("Angle: {}", rotation);
     rigidbodyComponent->SetRotation(rotation);
 }
 
@@ -71,7 +71,7 @@ void AIComponent::AIUpdate() {
     //TODO: Update AI here
 }
 
-void AIComponent::LoadParameters(const std::string& path = "res/config/cars/testing.json") {
+void AIComponent::LoadParameters(const std::string& path = "res/config/cars/traffic.json") {
     std::ifstream configFile{path};
     json configJson = json::parse(configFile);
 

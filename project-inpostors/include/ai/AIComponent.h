@@ -32,7 +32,7 @@ private:
 
 public:
     AIComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
-                const std::string& configPath = "res/config/cars/testing.json");
+                const std::string& configPath = "res/config/cars/traffic.json");
     ~AIComponent() override;
 
     void Start() override;
