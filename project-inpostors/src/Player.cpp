@@ -30,11 +30,11 @@ std::shared_ptr<Player> Player::Create(uint64_t id, const std::string &name, boo
                                        mlg::Transform *parent, const PlayerData &playerData) {
     auto newPlayer = std::shared_ptr<Player>(new Player(id, name, isStatic, parent));
     newPlayer->GetTransform().SetPosition(playerData.initialPosition);
-    newPlayer->GetTransform().SetEulerRotation({0.f, glm::radians(playerData.initialRotation), 0.f});
     newPlayer->rigidbodyComponent = newPlayer->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
     newPlayer->rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f, -0.5f), 0.5f);
     newPlayer->rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f, 0.5f), 0.5f);
     newPlayer->rigidbodyComponent.lock()->SetBounciness(0.5f);
+    newPlayer->rigidbodyComponent.lock()->SetRotation(playerData.initialRotation);
 
     std::ifstream configFile{playerData.carData};
     json configJson = json::parse(configFile);
