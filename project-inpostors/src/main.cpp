@@ -289,10 +289,6 @@ public:
         auto testIkeaRigidBody = testIkea.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
         testIkeaRigidBody.lock()->SetPosition({55.f, -5.f});
         testIkeaRigidBody.lock()->SetRotation(glm::radians(-90.f));
-
-        uint32_t timer = mlg::TimerManager::GetInstance()->SetTimer(2.f, false, []() -> void {
-            SPDLOG_WARN("Hello after 2s");
-        });
     }
 
     virtual ~ProjectInpostors() {

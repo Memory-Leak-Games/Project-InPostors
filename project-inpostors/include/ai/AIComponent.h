@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Gameplay/Component.h"
+#include <memory>
 
 namespace mlg {
     class RigidbodyComponent;
@@ -14,7 +15,7 @@ class AIComponent : public mlg::Component {
 private:
     std::shared_ptr<mlg::RigidbodyComponent> rigidbodyComponent;
     std::shared_ptr<mlg::StaticMeshComponent> staticMeshComponent;
-    SteeringBehaviors* steering;
+    std::unique_ptr<SteeringBehaviors> steering;
 
     //Driving
     float acceleration;
@@ -40,12 +41,12 @@ public:
     void PhysicsUpdate() override;
     void AIUpdate() override;
 
-    float GetMaxForce() { return maxForce; }
-    float GetMaxSpeed() { return maxSpeed; }
-    const glm::vec2& GetPosition();
-    glm::vec2 GetLinearVelocity();
-    glm::vec3 GetLocalVelocity();
-    SteeringBehaviors* GetSteering();
+    float GetMaxForce() const { return maxForce; }
+    float GetMaxSpeed() const { return maxSpeed; }
+    glm::vec2 GetPosition() const;
+    glm::vec2 GetLinearVelocity() const;
+    glm::vec3 GetLocalVelocity() const;
+    SteeringBehaviors* GetSteering() const;
 
     void LoadParameters(const std::string& path);
 
