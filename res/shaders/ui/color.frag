@@ -2,11 +2,11 @@
 
 in vec2 uv;
 
-uniform vec4 color;
+uniform vec4 tint;
 
 out vec4 fragColor;
 
 void main()
 {
-    fragColor = color;
+    fragColor = tint;
 }

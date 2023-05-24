@@ -48,4 +48,7 @@ private:
 
     void CheckBlueprintAndStartWorking();
     void ProduceItem();
+    void Update() override;
+
+    static void GenerateUI(const std::shared_ptr<Factory>& result);
 };
