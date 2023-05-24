@@ -40,7 +40,7 @@ std::shared_ptr<Player> Player::Create(uint64_t id, const std::string& name, boo
     auto newPlayer = std::shared_ptr<Player>(new Player(id, name, isStatic, parent, playerData));
     newPlayer->GetTransform().SetPosition(playerData.initialPosition);
   
-    std::ifstream configFile{playerData.cardData};
+    std::ifstream configFile{playerData.carData};
     json configJson = json::parse(configFile);
 
     newPlayer->AddRigidbody(configJson, playerData.initialRotation);
