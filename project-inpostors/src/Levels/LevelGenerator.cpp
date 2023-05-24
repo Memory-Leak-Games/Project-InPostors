@@ -41,7 +41,6 @@ namespace mlg {
         levelGenerator.LoadRoads();
 
         levelGenerator.GenerateLevel();
-        levelGenerator.SpawnPlayers();
 
         return ret;
     }
@@ -268,7 +267,10 @@ namespace mlg {
         }
     }
 
-    void LevelGenerator::SpawnPlayers() {
+    void LevelGenerator::SpawnPlayers(const std::string& path) {
+        std::ifstream levelFile{path};
+        json levelJson = json::parse(levelFile);
+
         if (!(levelJson.contains("player-one")
               && levelJson.contains("player-two")))
             return;
