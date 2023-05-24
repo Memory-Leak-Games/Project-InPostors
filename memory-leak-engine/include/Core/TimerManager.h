@@ -19,7 +19,7 @@ namespace mlg {
         TimerManager() = default;
 
         uint32_t idCounter = 0;
-        std::unordered_map<uint, Timer> timersMap;
+        std::unordered_map<unsigned int, Timer> timersMap;
 
     public:
         static void Initialize();
