@@ -20,7 +20,6 @@ void AIComponent::Start() {
     rigidbodyComponent = GetOwner().lock()->GetComponentByClass<mlg::RigidbodyComponent>().lock();
 
     rigidbodyComponent->SetLinearDrag(10.f);
-    rigidbodyComponent->SetAngularDrag(10.f);
 
     staticMeshComponent = GetOwner().lock()->GetComponentByClass<mlg::StaticMeshComponent>().lock();
 }
@@ -36,25 +35,9 @@ AIComponent::~AIComponent() = default;
 
 void AIComponent::Update() {
     std::shared_ptr<mlg::Entity> owner = GetOwner().lock();
-
-//    float angularSpeed = glm::degrees(rigidbodyComponent->GetAngularSpeed());
-//    float bodySkew = mlg::Math::Clamp(-angularSpeed / 10.f, -15.f, 15.f);
-//
-//    staticMeshComponent->GetTransform().SetRotation({{0.f, 0.f, glm::radians(bodySkew)}});
 }
 
 void AIComponent::PhysicsUpdate() {
-//    std::shared_ptr<mlg::Entity> owner = GetOwner().lock();
-//    const glm::vec3 forwardVector = owner->GetTransform().GetForwardVector();
-//    glm::vec2 forwardVector2D;
-//    forwardVector2D.x = forwardVector.x;
-//    forwardVector2D.y = forwardVector.z;
-//
-//    glm::vec2 steeringForce;
-//    steeringForce = steering->Calculate();
-//
-//    acceleration = steeringForce / mass;
-
     HandleEngineAndBraking();
     HandleSteering();
 }
@@ -70,40 +53,18 @@ void AIComponent::HandleEngineAndBraking() {
 
     glm::vec2 steeringForce = steering->Calculate();
 
-    float targetAccelerationForce = acceleration * steeringForce.y * mlg::Time::GetFixedTimeStep();
-
-    // Select speed by acceleration direction
-    float currentMaxSpeed = steeringForce.y > 0.f ? maxSpeed : backwardMaxSpeed;
-
-    // Simulate smaller force engine at max speed
-    targetAccelerationForce = mlg::Math::Lerp(targetAccelerationForce, 0.f,
-                                              std::abs(localVelocity.z) / currentMaxSpeed);
-
-    // engine handling
-    if (std::abs(steeringForce.y) < std::numeric_limits<float>::epsilon())
-        targetAccelerationForce =
-                engineHandling * mlg::Math::Clamp(-1.f, 1.f, -localVelocity.z) * mlg::Time::GetFixedTimeStep();
-
-    // handling when velocity direction != movement direction
-    if (localVelocity.z * steeringForce.y < 0.f) {
-        targetAccelerationForce = -mlg::Math::Sat(localVelocity.z) * handling * mlg::Time::GetFixedTimeStep();
-    }
-
     rigidbodyComponent->AddForce(steeringForce);
 }
 
 void AIComponent::HandleSteering() {
-    std::shared_ptr<mlg::Entity> owner = GetOwner().lock();
-    const glm::vec3 localVelocity = rigidbodyComponent->GetLocalVelocity();
     const glm::vec2 steeringForce = steering->Calculate();
 
-    const float steeringSpeedFactor = std::clamp(localVelocity.z / rotationRadius, -1.f, 1.f);
-    const float steeringSpeed = steeringForce.x * rotationSpeed * steeringSpeedFactor * mlg::Time::GetFixedTimeStep();
+    glm::vec2 normalVector = mlg::Math::SafeNormal(steeringForce);
+    float rotation = std::atan2(normalVector.y, normalVector.x);
 
-    float angularVelocity = rigidbodyComponent->GetAngularSpeed();
+    SPDLOG_INFO("Angle: {}", rotation);
 
-    if (glm::abs(angularVelocity) < glm::abs(steeringSpeed))
-        rigidbodyComponent->SetAngularVelocity(steeringSpeed);
+    rigidbodyComponent->SetRotation(rotation);
 }
 
 void AIComponent::AIUpdate() {

@@ -13,7 +13,7 @@
 using json = nlohmann::json;
 
 SteeringBehaviors::SteeringBehaviors(AIComponent* agent, const std::string& configPath)
-    : aiComponent(agent), flags(0), deceleration(normal), summingMethod(prioritized) {
+    : aiComponent(agent), flags(0), deceleration(fast), summingMethod(prioritized) {
     LoadParameters(configPath);
 
     //TODO: Set Path here
