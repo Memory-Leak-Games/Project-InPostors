@@ -15,7 +15,6 @@
 #include "Core/Core.h"
 #include "Core/Time.h"
 
-#include "BillboardTest.h"
 #include "Buildings/Factory.h"
 #include "Car/PlayerOneInput.h"
 #include "Car/PlayerTwoInput.h"
@@ -200,9 +199,6 @@ public:
 
         auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
         auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
-
-        mlg::UIRenderer::GetInstance()->AddRenderable(billboardTest);
-        mlg::UIRenderer::GetInstance()->AddRenderable(label);
 
         std::vector<std::string> levelLayout;
         levelLayout = mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit.json");
