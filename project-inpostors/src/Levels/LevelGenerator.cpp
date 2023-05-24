@@ -404,6 +404,10 @@ namespace mlg {
 
         rb.lock()->SetRotation(mapObject.worldRot + rotation);
         rb.lock()->SetKinematic(!mapObject.isDynamic);
+        
+        // TODO: Remove magic numbers
+        rb.lock()->SetLinearDrag(20.f);
+        rb.lock()->SetAngularDrag(10.f);
     }
 
     float LevelGenerator::GetSmartRotation(int x, int y) {
