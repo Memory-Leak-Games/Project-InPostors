@@ -145,7 +145,7 @@ public:
         mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit_props.json");
 
         // create factories
-        auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
+        auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("Smelter", false, mlg::SceneGraph::GetRoot(),
                                                                   "res/levels/Factories/smelter.json");
         auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
         testFactoryRigidBody.lock()->SetPosition({22.f, 8.f});

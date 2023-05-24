@@ -10,6 +10,7 @@ private:
 
 public:
     EquipmentComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name, int size);
+    ~EquipmentComponent() override;
 
     eventpp::CallbackList<void()> equipmentChanged;
 
@@ -17,12 +18,9 @@ public:
     bool RequestProduct(const std::string& productId);
     std::string RequestProduct();
 
-    bool CheckProduct(const std::string& productId) const;
-    bool CheckBlueprint(const std::string& blueprintId) const;
-    bool CheckIsFull() const;
+    bool Has(const std::string& productId) const;
+    bool IsFull() const;
 
     std::string ToString() const;
-
-    ~EquipmentComponent() override;
 };
 

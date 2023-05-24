@@ -1,5 +1,7 @@
 #include <string>
 
+#include "Utils/Blueprint.h"
+#include "Utils/BlueprintManager.h"
 #include "Utils/EquipmentComponent.h"
 
 bool EquipmentComponent::AddProduct(const std::string& product) {
@@ -32,13 +34,8 @@ std::string EquipmentComponent::RequestProduct() {
     return product;
 }
 
-bool EquipmentComponent::CheckProduct(const std::string& product) const {
+bool EquipmentComponent::Has(const std::string& product) const {
     return std::find(equipment.begin(), equipment.end(), product) != equipment.end();
-}
-
-bool EquipmentComponent::CheckBlueprint(const std::string& blueprint) const {
-    MLG_UNIMPLEMENTED;
-    return true;
 }
 
 std::string EquipmentComponent::ToString() const {
@@ -51,7 +48,7 @@ std::string EquipmentComponent::ToString() const {
     return result;
 }
 
-bool EquipmentComponent::CheckIsFull() const {
+bool EquipmentComponent::IsFull() const {
     return equipment.size() >= size;
 }
 

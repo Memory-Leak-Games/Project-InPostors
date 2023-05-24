@@ -1,8 +1,8 @@
 #include "Player.h"
 
+#include <fstream>
 #include <memory>
 #include <nlohmann/json.hpp>
-#include <fstream>
 
 #include "Gameplay/Components/RigidbodyComponent.h"
 #include "Gameplay/Components/StaticMeshComponent.h"
@@ -10,21 +10,22 @@
 #include "Core/AssetManager/AssetManager.h"
 
 #include "Gameplay/Entity.h"
-#include "Rendering/Assets/ModelAsset.h"
 #include "Rendering/Assets/MaterialAsset.h"
+#include "Rendering/Assets/ModelAsset.h"
 
 #include "SceneGraph/Transform.h"
 
 #include "Car/CarMovementComponent.h"
 #include "Gameplay/Components/ParticleSystemComponent.h"
 
-#include "FX/SmokeFX.h"
 #include "Car/PlayerTwoInput.h"
+#include "FX/SmokeFX.h"
 
 #include "Physics/Colliders/Collider.h"
 
 #include "FX/FXLibrary.h"
 
+#include "Utils/BlueprintManager.h"
 #include "Utils/EquipmentComponent.h"
 #include "Utils/ProductManager.h"
 
@@ -33,13 +34,13 @@
 using json = nlohmann::json;
 
 Player::Player(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent, const PlayerData& playerData)
-        : mlg::Entity(id, name, isStatic, parent), playerData(playerData) {}
+    : mlg::Entity(id, name, isStatic, parent), playerData(playerData) {}
 
 std::shared_ptr<Player> Player::Create(uint64_t id, const std::string& name, bool isStatic,
                                        mlg::Transform* parent, const PlayerData& playerData) {
     auto newPlayer = std::shared_ptr<Player>(new Player(id, name, isStatic, parent, playerData));
     newPlayer->GetTransform().SetPosition(playerData.initialPosition);
-  
+
     std::ifstream configFile{playerData.carData};
     json configJson = json::parse(configFile);
 
@@ -55,13 +56,15 @@ std::shared_ptr<Player> Player::Create(uint64_t id, const std::string& name, boo
     return newPlayer;
 }
 
-  
 void Player::AddRigidbody(const json& configJson, float rotation = 0.f) {
     this->rigidbodyComponent = this->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
     this->rigidbodyComponent.lock()->SetBounciness(0.5f);
     this->rigidbodyComponent.lock()->SetRotation(rotation);
-    for (const auto& collider: configJson["colliders"]) {
-        const glm::vec2 offset{collider["offset"][0].get<float>(), collider["offset"][1].get<float>(),};
+    for (const auto& collider : configJson["colliders"]) {
+        const glm::vec2 offset{
+                collider["offset"][0].get<float>(),
+                collider["offset"][1].get<float>(),
+        };
         const float size = collider["size"].get<float>();
 
         this->rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(offset, size);
@@ -85,9 +88,8 @@ void Player::Update() {
     if (carInput->GetPickUpInput())
         PickUp();
 
-    if (carInput->GetDropInput()) {
-        SPDLOG_WARN("{} : Drop", GetName());
-    }
+    if (carInput->GetDropInput())
+        Drop();
 
 #ifdef DEBUG
     ImGui::Begin(("Player " + std::to_string(playerData.id)).c_str());
@@ -97,13 +99,13 @@ void Player::Update() {
 }
 
 void Player::PickUp() {
-    if (equipment->CheckIsFull())
+    if (equipment->IsFull())
         return;
 
     std::vector<std::weak_ptr<mlg::Collider>> overlappingColliders;
     rigidbodyComponent.lock()->GetOverlappingColliders(overlappingColliders);
 
-    for (const auto& collider: overlappingColliders) {
+    for (const auto& collider : overlappingColliders) {
         if (collider.lock()->GetTag() != "output" && collider.lock()->GetTag() != "inputOutput") {
             continue;
         }
@@ -114,14 +116,52 @@ void Player::PickUp() {
         if (!factory)
             continue;
 
-        const std::string product = factory->GetEquipmentComponent()->RequestProduct();
+        const std::string factoryOutput =
+                BlueprintManager::Get()->GetBlueprint(factory->GetBlueprintId()).GetOutput();
 
-        if (product == "none")
+        if (!factory->GetEquipmentComponent()->RequestProduct(factoryOutput))
             return;
-        
-        equipment->AddProduct(product);
 
-        SPDLOG_WARN("{} : PickUp {} from {}", GetName(), product, factory->GetName());
+        equipment->AddProduct(factoryOutput);
+
+        // TODO: remove me
+        SPDLOG_WARN("{} : PickUp {} from {}", GetName(), factoryOutput, factory->GetName());
     }
+}
 
+void Player::Drop() {
+    std::vector<std::weak_ptr<mlg::Collider>> overlappingColliders;
+    rigidbodyComponent.lock()->GetOverlappingColliders(overlappingColliders);
+
+    for (const auto& collider : overlappingColliders) {
+        if (collider.lock()->GetTag() != "input" && collider.lock()->GetTag() != "inputOutput") {
+            continue;
+        }
+
+        std::shared_ptr<mlg::Entity> owner = mlg::RigidbodyComponent::GetColliderOwner(*collider.lock()).lock();
+        std::shared_ptr<Factory> factory = std::dynamic_pointer_cast<Factory>(owner);
+
+        if (!factory)
+            continue;
+
+        const std::vector<std::string> factoryInputs =
+                BlueprintManager::Get()->GetBlueprint(factory->GetBlueprintId()).GetInput();
+
+        for (const auto& item : factoryInputs) {
+            if (!equipment->Has(item))
+                continue;
+
+            // TODO: this may cause problems when factory needs multiple types of inputs,
+            //       but factory eq is full of garbage.
+
+            if (!factory->GetEquipmentComponent()->AddProduct(item))
+                continue;
+
+            equipment->RequestProduct(item);
+
+            // TODO: remove me
+            SPDLOG_WARN("{} : Drop {} to {}", GetName(), item, factory->GetName());
+            return;
+        }
+    }
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+#include <vector>
 class Blueprint {
     std::string name;
     std::vector<std::string> input;
@@ -12,5 +14,6 @@ public:
     bool CheckBlueprint(const class EquipmentComponent& component) const;
 
     std::string GetOutput() const;
+    const std::vector<std::string>& GetInput() const;
     float GetTimeToProcess() const;
 };

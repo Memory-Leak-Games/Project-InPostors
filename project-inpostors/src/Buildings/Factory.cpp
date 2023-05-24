@@ -125,13 +125,18 @@ void Factory::AddTrigger(const json& triggerJson, const std::string& triggerName
 
 void Factory::CheckBlueprintAndStartWorking() {
     // If factory is producing do not add another timer
-    if (mlg::TimerManager::Get()->IsTimerValid(produceTimerHandle) || equipmentComponent->CheckIsFull())
+    if (mlg::TimerManager::Get()->IsTimerValid(produceTimerHandle) || equipmentComponent->IsFull())
         return;
 
-    const Blueprint& blueprint = BlueprintManager::GetInstance()->GetBlueprint(blueprintId);
+    const Blueprint& blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
 
     if (!blueprint.CheckBlueprint(*equipmentComponent))
         return;
+    
+    // Remove inputs from eq
+    for (const auto& item : blueprint.GetInput()) {
+        equipmentComponent->RequestProduct(item);
+    }
 
     auto productionLambda = [this, blueprint]() {
         equipmentComponent->AddProduct(blueprint.GetOutput());
