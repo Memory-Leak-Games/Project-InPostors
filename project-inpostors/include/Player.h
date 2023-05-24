@@ -38,6 +38,6 @@ public:
 private:
     void PickUp();
 
-    void AddRigidbody(const nlohmann::json& configJson);
+    void AddRigidbody(const nlohmann::json& configJson, const float rotation);
     void LoadModel(const nlohmann::json& configJson);
 };
