@@ -72,7 +72,9 @@ namespace mlg {
         TracyGpuZone("Draw UI")
 
         frameBuffer->Activate();
-        frameBuffer->Clear();
+        static GLfloat transparent[4] = {0.f, 0.f, 0.f, 0.f};
+        glClearNamedFramebufferfv(frameBuffer->GetFbo(), GL_COLOR, 0, transparent);
+        frameBuffer->GetFbo();
 
         for (auto& renderable : renderables) {
             if (renderable.expired())

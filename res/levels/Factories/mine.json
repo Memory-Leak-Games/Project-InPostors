@@ -1,5 +1,5 @@
 {
-  "staticMesh": {
+  "static-mesh": {
     "model": "res/models/Factories/mine.obj",
     "material": "res/materials/buildings_material.json",
 

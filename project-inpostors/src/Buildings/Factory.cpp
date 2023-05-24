@@ -40,7 +40,7 @@ std::shared_ptr<Factory> Factory::Create(uint64_t id, const std::string& name, b
     std::ifstream configFile{configPath};
     json configJson = json::parse(configFile);
 
-    result->AddMesh(configJson["staticMesh"]);
+    result->AddMesh(configJson["static-mesh"]);
     auto mainRigidbody = result->AddComponent<mlg::RigidbodyComponent>("MainRigidbody").lock();
 
     result->blueprintId = configJson["blueprintID"];

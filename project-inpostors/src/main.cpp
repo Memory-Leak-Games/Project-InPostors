@@ -14,16 +14,17 @@
 
 #include "Core/Core.h"
 #include "Core/Time.h"
+
+#include "Buildings/Factory.h"
+#include "Car/PlayerOneInput.h"
+#include "Car/PlayerTwoInput.h"
 #include "Core/TimerManager.h"
 #include "Core/Settings/SettingsManager.h"
 
 #include "Gameplay/Components/CameraComponent.h"
-#include "Gameplay/Levels/LevelGenerator.h"
+#include "Levels/LevelGenerator.h"
 #include "Player.h"
 #include "SceneGraph/SceneGraph.h"
-#include "Car/PlayerOneInput.h"
-#include "Car/PlayerTwoInput.h"
-#include "Buildings/Factory.h"
 
 #include <Gameplay/ComponentManager.h>
 #include <Gameplay/Components/RigidbodyComponent.h>
@@ -43,6 +44,7 @@
 #include <UI/UIRenderer.h>
 
 #include <Physics/Colliders/Collider.h>
+#include <cstdint>
 #include <spdlog/spdlog.h>
 #include <UI/UIController.h>
 
@@ -128,98 +130,23 @@ public:
     }
 
     void PrepareScene() {
-//        sound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/SFX/mario_coin.ogg");
-//        music = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/Crushin.ogg");
-//        auto audioComponent = cameraEntity.lock()->AddComponent<mlg::AudioComponent>("AudioComponent", music);
-//        audioComponent.lock()->SetLooping();
-//        audioComponent.lock()->Play();
-
-        auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
-        auto redMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/red_material.json");
-        auto blueMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/blue_material.json");
-
-        auto cubeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Cube.obj");
-        auto sphereModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Sphere.obj");
-
-        // UI testing
-        {
-            auto ui = mlg::EntityManager::SpawnEntity<mlg::Entity>("ui", true, mlg::SceneGraph::GetRoot());
-            auto imageMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/cat_UI_material.json");
-            auto image = ui.lock()->AddComponent<mlg::Image>("Image", imageMaterial);
-            image.lock()->SetSize(glm::vec2{128.f});
-            image.lock()->SetPosition({1280.f - 128.f, 720.f - 128.f});
-            image.lock()->SetAnchor({1, 1});
-            auto progressBarMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/progressBar_material.json");
-            auto progressBar = ui.lock()->AddComponent<mlg::ProgressBar>("ProgressBar", progressBarMaterial);
-            progressBar.lock()->SetSize({256.f, 32.f});
-            progressBar.lock()->SetPosition({0.f, 720.f - 50.f});
-            progressBar.lock()->SetAnchor({0.f, 1.f});
-            auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/ARLRDBD.TTF");
-            auto label = ui.lock()->AddComponent<mlg::Label>("Label", font);
-            label.lock()->SetText("Aaa Kotki 2 szarobure obydwa 1234567890");
-            label.lock()->SetPosition({50, 50});
-            label.lock()->SetTextColor({1, 1, 1});
-            label.lock()->SetSize(32);
-            auto buttonMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/button_material.json");
-            auto focusMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/focus_material.json");
-            // auto button1 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
-            // auto button2 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
-            // auto button3 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
-            // auto button4 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
-            // auto button5 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
-            // button1.lock()->SetPosition({400.f, 300.f});
-            // button2.lock()->SetPosition({400.f, 360.f});
-            // button3.lock()->SetPosition({400.f, 240.f});
-            // button4.lock()->SetPosition({190.f, 300.f});
-            // button5.lock()->SetPosition({610.f, 300.f});
-
-            // button1.lock()->next.top = button2;
-            // button1.lock()->next.bottom = button3;
-            // button1.lock()->next.left = button4;
-            // button1.lock()->next.right = button5;
-
-            // button2.lock()->next.bottom = button1;
-            // button3.lock()->next.top = button1;
-            // button4.lock()->next.right = button1;
-            // button5.lock()->next.left = button1;
-
-            // button1.lock()->GrabFocus();
-
-            mlg::UIRenderer::GetInstance()->AddRenderable(image);
-            mlg::UIRenderer::GetInstance()->AddRenderable(progressBar);
-            mlg::UIRenderer::GetInstance()->AddRenderable(label);
-            // mlg::UIRenderer::GetInstance()->AddRenderable(button1);
-            // mlg::UIRenderer::GetInstance()->AddRenderable(button2);
-            // mlg::UIRenderer::GetInstance()->AddRenderable(button3);
-            // mlg::UIRenderer::GetInstance()->AddRenderable(button4);
-            // mlg::UIRenderer::GetInstance()->AddRenderable(button5);
-        }
-
-        PlayerData firstPlayerData = {0, mlg::RGBA::red};
-        PlayerData secondPlayerData = {1, mlg::RGBA::cyan};
-
-        auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot(), firstPlayerData);
-        player.lock()->AddComponent<PlayerOneInput>("PlayerInput");
-
-        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false, mlg::SceneGraph::GetRoot(), secondPlayerData);
-        playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
-
         auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
         auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
 
-        //std::vector<std::string> levelLayout;
-        //levelLayout = mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit.json");
+        std::vector<std::string> levelLayout;
+        levelLayout = mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::SpawnGround("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::SetCityBounds("res/levels/Cities/detroit.json");
         mlg::LevelGenerator::LoadCameraSettings("res/levels/Cities/detroit.json", *cameraComponent.lock());
+        mlg::LevelGenerator::SpawnPlayers("res/levels/Cities/detroit.json");
 
         // load props
         mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit_props.json");
 
         // create factories
-        auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("Smelter", false, mlg::SceneGraph::GetRoot(),
-                                                                    "res/levels/Factories/smelter.json");
+        auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("TestFactory", false, mlg::SceneGraph::GetRoot(),
+                                                                  "res/levels/Factories/smelter.json");
         auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
         testFactoryRigidBody.lock()->SetPosition({22.f, 8.f});
 

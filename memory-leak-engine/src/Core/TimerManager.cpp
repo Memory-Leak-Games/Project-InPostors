@@ -33,7 +33,7 @@ mlg::TimerManager* mlg::TimerManager::Get() {
 void mlg::TimerManager::Update() {
     const double currentTimePoint = Time::GetSeconds();
 
-    std::vector<uint> timersToRemove;
+    std::vector<uint32_t> timersToRemove;
 
     for (auto& [id, timer] : instance->timersMap) {
         const float elapsedTime = instance->GetTimerElapsedTime(id);
@@ -55,7 +55,7 @@ void mlg::TimerManager::Update() {
     }
 }
 
-uint mlg::TimerManager::SetTimer(float time, bool repeat, const std::function<void()>& function) {
+uint32_t mlg::TimerManager::SetTimer(float time, bool repeat, const std::function<void()>& function) {
     Timer newTimer;
     newTimer.id = idCounter;
     newTimer.timeToTrigger = time;
@@ -72,7 +72,7 @@ uint mlg::TimerManager::SetTimer(float time, bool repeat, const std::function<vo
     return newTimer.id;
 }
 
-void mlg::TimerManager::ClearTimer(uint id) {
+void mlg::TimerManager::ClearTimer(uint32_t id) {
     auto foundIterator = timersMap.find(id);
     if (foundIterator == timersMap.end()) {
         SPDLOG_WARN("Timer with id: {} not found.", id);
@@ -86,7 +86,7 @@ bool mlg::TimerManager::IsTimerValid(uint id) {
     return timersMap.find(id) != timersMap.end() && timersMap.at(id).valid;
 }
 
-float mlg::TimerManager::GetTimerRemainingTime(uint id) {
+float mlg::TimerManager::GetTimerRemainingTime(uint32_t id) {
     auto foundIterator = timersMap.find(id);
     if (foundIterator == timersMap.end())
         return -1.f;
@@ -96,7 +96,7 @@ float mlg::TimerManager::GetTimerRemainingTime(uint id) {
     return foundIterator->second.timeToTrigger - elapsedTime;
 }
 
-float mlg::TimerManager::GetTimerElapsedTime(uint id) {
+float mlg::TimerManager::GetTimerElapsedTime(uint32_t id) {
     auto foundIterator = timersMap.find(id);
     if (foundIterator == timersMap.end())
         return -1.f;
@@ -105,7 +105,7 @@ float mlg::TimerManager::GetTimerElapsedTime(uint id) {
     return (float) (currentTimePoint - foundIterator->second.startTimePoint);
 }
 
-float mlg::TimerManager::GetTimerRate(uint id) {
+float mlg::TimerManager::GetTimerRate(uint32_t id) {
     auto foundIterator = timersMap.find(id);
     if (foundIterator == timersMap.end())
         return -1.f;

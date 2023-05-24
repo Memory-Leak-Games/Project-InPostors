@@ -5,8 +5,8 @@
 
 #include "glad/glad.h"
 
-#include "include/Rendering/Assets/MaterialAsset.h"
-#include "include/Rendering/ShaderProgram.h"
+#include "Rendering/Assets/MaterialAsset.h"
+#include "Rendering/ShaderProgram.h"
 
 #include <utility>
 
@@ -14,7 +14,7 @@ namespace mlg {
     uint32_t Image::rectVao;
     uint32_t Image::rectVbo;
 
-    Image::Image(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<struct MaterialAsset>& material)
+    Image::Image(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<MaterialAsset>& material)
         : UIComponent(std::move(owner), std::move(name)), material(material) {
         if (rectVao == 0 || rectVbo == 0)
             InitializeRect();
