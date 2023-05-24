@@ -33,7 +33,7 @@ std::shared_ptr<Factory> Factory::Create(uint64_t id, const std::string& name, b
     std::ifstream configFile{configPath};
     json configJson = json::parse(configFile);
 
-    result->AddMesh(configJson["staticMesh"]);
+    result->AddMesh(configJson["static-mesh"]);
     auto mainRigidbody = result->AddComponent<mlg::RigidbodyComponent>("MainRigidbody").lock();
 
     result->equipmentComponent = result->AddComponent<EquipmentComponent>("Equipment", 3).lock();
@@ -78,9 +78,7 @@ void Factory::AddMesh(const json& staticMeshJson) {
     });
 
     staticMeshComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{
-       staticMeshJson["rotation"][0].get<float>(),
-       staticMeshJson["rotation"][1].get<float>(),
-       staticMeshJson["rotation"][2].get<float>(),
+       staticMeshJson["rotation"].get<float>()
     }));
 
     staticMeshComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{

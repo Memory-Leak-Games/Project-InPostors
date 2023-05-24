@@ -11,7 +11,7 @@
     "     s###############sbbbb  ",
     "     s##ssss#############b  ",
     "     s##pppp###sss#######b  ",
-    "     s##pppp###bbs###sb##b  ",
+    "     s##pp8p###bbs###sb##b  ",
     "  sssc##pppp###Lsf###ob##bbbbb ",
     "ppp#########################ppp",
     "ppp#########################ppp",
@@ -32,13 +32,13 @@
     "far": 200.0
   },
 
-  "player-one-settings": {
-    "position": [0.0, 0.0, 0.0],
-    "rotation": [0.0, 0.0, 0.0]
+  "player-one": {
+    "position": [16.0, -4.0],
+    "rotation": 180.0,
+    "car-type": "res/config/cars/van.json"
   },
 
-  "player-two-settings": {
-    "position": [0.0, 0.0, 0.0],
-    "rotation": [0.0, 0.0, 0.0]
+  "player-two": {
+    "position": [-16.0, 4.0]
   }
 }

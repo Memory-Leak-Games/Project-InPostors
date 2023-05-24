@@ -27,8 +27,11 @@ namespace mlg {
         void FollowTarget(const struct UIRenderer* renderer);
 
     public:
+        std::weak_ptr<UIRenderable> thisAsRenderable;
+
         UIComponent(std::weak_ptr<Entity> owner, std::string name);
 
+        void Start() override;
         void Draw(const class UIRenderer *renderer) override;
 
         [[nodiscard]] const glm::vec2& GetPosition() const;

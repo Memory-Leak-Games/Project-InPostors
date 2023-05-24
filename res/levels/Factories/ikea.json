@@ -1,10 +1,10 @@
 {
-  "staticMesh": {
+  "static-mesh": {
     "model": "res/models/Factories/factory_2.obj",
     "material": "res/materials/buildings_material.json",
 
     "position": [0.0, 0.0, 0.0],
-    "rotation": [0.0, 0.0, 0.0],
+    "rotation": 0.0,
     "scale": 1.0
   },
 
