@@ -23,14 +23,16 @@
 #include "Utils/Blueprint.h"
 #include "Utils/BlueprintManager.h"
 
+#include "Core/Time.h"
 #include "UI/Assets/FontAsset.h"
 #include "UI/Components/Image.h"
-#include "UI/Components/ProgressBar.h"
 #include "UI/Components/Label.h"
+#include "UI/Components/ProgressBar.h"
 #include "Utils/EquipmentComponent.h"
 
 
 using json = nlohmann::json;
+using Random = effolkronium::random_static;
 
 Factory::Factory(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent)
     : Entity(id, name, isStatic, parent) {}
@@ -168,6 +170,11 @@ void Factory::Update() {
                 mlg::TimerManager::Get()->GetTimerRemainingTime(produceTimerHandle));
     ImGui::End();
 #endif
+
+    productionBar->percentage += mlg::Time::GetDeltaSeconds() * 0.5;
+    if (productionBar->percentage > 1.f){
+        productionBar->percentage = Random::get(-5.0f, 0.f);
+    }
 }
 
 bool Factory::IsWorking() const {
@@ -197,10 +204,10 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
 //        uiPanel->SetBillboardTarget(result);
 
         material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/factory/progressBar_material.json");
-        auto uiBar = result->AddComponent<mlg::ProgressBar>("Bar", material).lock();
-        uiBar->SetSize({48.f, 5.f});
-        uiBar->SetPosition({0.f, 59.f-16.f});
-        uiBar->SetBillboardTarget(result);
+        result->productionBar = result->AddComponent<mlg::ProgressBar>("Bar", material).lock();
+        result->productionBar->SetSize({48.f, 5.f});
+        result->productionBar->SetPosition({0.f, 59.f-16.f});
+        result->productionBar->SetBillboardTarget(result);
 
         material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/wood_material.json");
         auto uiWood = result->AddComponent<mlg::Image>("Wood", material).lock();
@@ -237,10 +244,10 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
 //        uiPanel->SetBillboardTarget(result);
 
         material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/factory/progressBar_material.json");
-        auto uiBar = result->AddComponent<mlg::ProgressBar>("Bar", material).lock();
-        uiBar->SetSize({128.f, 5.f});
-        uiBar->SetPosition({0.f, 59.f-16.f});
-        uiBar->SetBillboardTarget(result);
+        result->productionBar = result->AddComponent<mlg::ProgressBar>("Bar", material).lock();
+        result->productionBar->SetSize({128.f, 5.f});
+        result->productionBar->SetPosition({0.f, 59.f-16.f});
+        result->productionBar->SetBillboardTarget(result);
 
         material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/wood_material.json");
         auto uiWood = result->AddComponent<mlg::Image>("Recipe1", material).lock();

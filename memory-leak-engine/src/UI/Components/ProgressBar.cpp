@@ -23,10 +23,10 @@ namespace mlg {
         material->Activate();
 
         // TODO: To oczywiście wyrzucić
-        percentage += Time::GetDeltaSeconds() * 0.5;
-        if (percentage > 1.f){
-            percentage = Random::get(-5.0f, 0.f);
-        }
+//        percentage += Time::GetDeltaSeconds() * 0.5;
+//        if (percentage > 1.f){
+//            percentage = Random::get(-5.0f, 0.f);
+//        }
 
         material->GetShaderProgram()->SetVec2F("size", GetSize() * renderer->uiScale);
         material->GetShaderProgram()->SetVec2F("screenPosition", actualPosition);

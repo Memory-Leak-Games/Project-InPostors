@@ -7,6 +7,7 @@ namespace mlg {
     class RigidbodyComponent;
     class Image;
     class Label;
+    class ProgressBar;
 }
 
 class Factory : public mlg::Entity {
@@ -22,6 +23,7 @@ private:
     std::shared_ptr<class mlg::Label> amount1;
     std::shared_ptr<class mlg::Label> amount2;
     std::shared_ptr<class mlg::Label> amount3;
+    std::shared_ptr<class mlg::ProgressBar> productionBar;
 
 public:
     ~Factory() override;
