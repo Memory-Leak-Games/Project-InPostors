@@ -25,13 +25,13 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     result->score->SetAnchor({1.0, 1.0});
     result->score->SetText("Score: 100");
 
-    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/window_material.json");
+    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/gameplay/window_material.json");
     auto ui = result->AddComponent<mlg::Image>("ChatWindow", material).lock();
     ui->SetPosition({640.f, 0.f});
     ui->SetAnchor({0.5, 0});
     ui->SetSize({400, 200});
 
-    font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/OCRAEXT.ttf");
+    font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/OCRAEXT.TTF");
     result->chat = result->AddComponent<mlg::Label>("Chat", font).lock();
     result->chat->SetPosition({460.f, 50.f});
     result->chat->SetAnchor({0.5, 1.0});
@@ -39,13 +39,13 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     result->chat->SetText("How can I help you?");
 
     // THIS IS VERY MUCH MOCK
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/player/panel_material.json");
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/player/panel_material.json");
     ui = result->AddComponent<mlg::Image>("QuestPanel", material).lock();
     ui->SetPosition({85.f, 720 - 50.f});
     ui->SetAnchor({0, 1});
     ui->SetSize({150, 100});
 
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/furniture_material.json");
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/furniture_material.json");
     ui = result->AddComponent<mlg::Image>("QuestItem", material).lock();
     ui->SetPosition({85.f, 720.f - 30.f});
     ui->SetAnchor({0, 1});
@@ -59,7 +59,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     label->SetText("Furniture");
     label->SetTextColor({0, 0, 0});
 
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/progressBar_material.json");
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/factory/progressBar_material.json");
     result->questBar = result->AddComponent<mlg::ProgressBar>("QuestLimit", material).lock();
     result->questBar->SetPosition({85.f, 720.f - 95.f});
     result->questBar->SetAnchor({0.0, 1.0});
