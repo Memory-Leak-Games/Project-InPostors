@@ -37,7 +37,7 @@ void SmokeFX::UpdateSystem(const mlg::Transform& transform) {
 }
 
 SmokeFX::SmokeFX() : mlg::ParticleSystem(30) {
-    SetMaterial(mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/Particles/smokeFX.json"));
+    SetMaterial(mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/particles/smoke_fx.json"));
 }
 
 std::shared_ptr<mlg::ParticleSystem> SmokeFX::Clone() {

@@ -1,6 +1,6 @@
 {
   "vertexShader": "res/shaders/quad_renderer.vert",
-  "fragmentShader": "res/shaders/post_process/simple_fbo.frag",
+  "fragmentShader": "res/shaders/post_process/fxaa_pass.frag",
   "uniforms": [],
   "textures": []
 }

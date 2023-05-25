@@ -1,6 +1,0 @@
-{
-  "vertexShader": "res/shaders/quad_renderer.vert",
-  "fragmentShader": "res/shaders/PostProcess/blur.frag",
-  "uniforms": [],
-  "textures": []
-}

@@ -77,7 +77,7 @@ void DirectionalLight::InitializeFrameBuffer() {
     MLG_ASSERT_MSG(glCheckNamedFramebufferStatus(shadowMapFrameBuffer, GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE,
                    "Shadowmap Framebuffer is not complete");
 
-    shadowMapMaterial = AssetManager::GetAsset<MaterialAsset>("res/config/EngineMaterials/shadowmap_material.json");
+    shadowMapMaterial = AssetManager::GetAsset<MaterialAsset>("res/materials/engine/shadowmap_material.json");
 }
 
 void DirectionalLight::BindShadowMap() {

@@ -1,0 +1,185 @@
+{
+  "default-material": "res/materials/buildings_material.json",
+  "tiles": [
+    {
+      "symbol": "b",
+      "objects": [
+        {
+          "model": "res/models/buildings/building_big_1.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/building_big_2.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/building_big_3.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/building_big_4.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        }
+      ]
+    },
+    {
+      "symbol": "s",
+      "objects": [
+        {
+          "model": "res/models/buildings/building_small_1.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/building_small_2.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/building_small_3.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "L",
+      "objects": [
+        {
+          "model": "res/models/buildings/building_corrner_big.obj",
+          "rotation": -90.0,
+          "scale": 0.85,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        }
+      ]
+    },
+    {
+      "symbol": "l",
+      "objects": [
+        {
+          "model": "res/models/buildings/building_corrner_small.obj",
+          "rotation": 90.0,
+          "scale": 0.85,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        }
+      ]
+    },
+    {
+      "symbol": "p",
+      "is-path-way": true,
+      "objects": [
+        {
+          "model": "res/models/roads/path_way.obj"
+        }
+      ]
+    },
+    {
+      "symbol": "c",
+      "objects": [
+        {
+          "model": "res/models/buildings/special/cafe.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "w",
+      "objects": [
+        {
+          "model": "res/models/buildings/special/ferris_wheel.obj",
+          "scale": 0.85,
+          "rotation": 90.0,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "o",
+      "objects": [
+        {
+          "model": "res/models/buildings/special/library.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "B",
+      "objects": [
+        {
+          "model": "res/models/buildings/special/bakery.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "f",
+      "objects": [
+        {
+          "model": "res/models/buildings/special/fast_food.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    }
+  ],
+
+  "factories": [
+    {
+      "symbol": "8",
+      "config": "res/levels/factories/smelter.json"
+    },
+    {
+      "symbol": "9",
+      "config": "res/levels/factories/mine.json"
+    },
+    {
+      "symbol": "&",
+      "config": "res/levels/factories/ikea.json"
+    }
+  ],
+
+  "road": {
+    "symbol": "#",
+    "road": {
+      "model": "res/models/roads/road.obj",
+      "rotation": 90.0
+    },
+    "edge": {
+      "model": "res/models/roads/road_edge.obj",
+      "rotation": -90.0
+    },
+    "corner": {
+      "model": "res/models/roads/road_corner.obj",
+      "rotation": 180.0
+    },
+    "cross": {
+      "model": "res/models/roads/road_cross.obj"
+    },
+    "curve": {
+      "model": "res/models/roads/road_curve.obj",
+      "rotation": -90.0
+    }
+  }
+}
+
