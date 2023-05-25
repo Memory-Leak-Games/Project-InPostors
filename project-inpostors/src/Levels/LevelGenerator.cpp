@@ -23,6 +23,7 @@
 #include "Core/RGBA.h"
 #include "Car/PlayerOneInput.h"
 #include "Car/PlayerTwoInput.h"
+#include "Buildings/Factory.h"
 
 using json = nlohmann::json;
 using Random = effolkronium::random_static;
@@ -40,6 +41,7 @@ namespace mlg {
         // I need to test full factories not only mesh
         // levelGenerator.LoadFactories();
         levelGenerator.LoadRoads();
+        //levelGenerator.LoadProps(levelJson["props"].get<std::string>()); //todo
 
         levelGenerator.GenerateLevel();
 
@@ -177,10 +179,10 @@ namespace mlg {
         for (const auto &jsonFactories: tileJson["factories"]) {
             const char tileSymbol = jsonFactories["symbol"].get<std::string>()[0];
             std::string configPath = jsonFactories["config"].get<std::string>();
-            FactoryObject factoryTile = LoadFactoryData(configPath);
-            std::vector<MapObject> mapObjectPool; //ugly.
-            mapObjectPool.push_back(factoryTile.mesh);
-            mapObjects.insert({tileSymbol, MapEntry{mapObjectPool, false, 0}});
+            //FactoryObject factoryTile = LoadFactoryData(configPath);
+            //std::vector<MapObject> mapObjectPool; //ugly.
+            //mapObjectPool.push_back(factoryTile.mesh);
+            //mapObjects.insert({tileSymbol, MapEntry{mapObjectPool, false, 0}});
         }
 
     }
@@ -224,7 +226,7 @@ namespace mlg {
                                   ? jsonMapObject["collision-size"].get<float>() : 1.0f;
             mapObj.colliderOffset = jsonMapObject.contains("collision-offset")
                                     ? jsonMapObject["collision-offset"].get<float>() : 0.0f;
-            
+
             if (jsonMapObject.contains("dynamic"))
                 mapObj.isDynamic = jsonMapObject["dynamic"];
         }
@@ -232,16 +234,6 @@ namespace mlg {
         return mapObj;
     }
 
-    LevelGenerator::FactoryObject LevelGenerator::LoadFactoryData(const std::string &path) {
-        std::ifstream factoryFile{path};
-        json factoryJson = json::parse(factoryFile);
-
-        FactoryObject factoryObj;
-        factoryObj.mesh = ParseObject(factoryJson["static-mesh"]);
-        //todo: add colliders, blueprints & emitters
-
-        return factoryObj;
-    }
 
     void LevelGenerator::GenerateLevel() {
         int x = 0, y = 0;
@@ -250,12 +242,18 @@ namespace mlg {
             for (const char &character: row) {
                 ++x;
 
+                //todo: only for testing purposes, remove later
+                if (character == '8')
+                    PutFactory("res/levels/factories/smelter.json",
+                               {x - 1, y - 1}, {1.3f, 0.5f}, 0.0f);
+
                 // Ignore spaces
                 if (character == ' ')
                     continue;
 
                 // Ignore specified characters
-                if (std::find(ignoredCharacters.begin(), ignoredCharacters.end(), character) != ignoredCharacters.end())
+                if (std::find(ignoredCharacters.begin(), ignoredCharacters.end(),
+                              character) != ignoredCharacters.end())
                     continue;
 
                 // Place a road if required
@@ -271,7 +269,7 @@ namespace mlg {
         }
     }
 
-    void LevelGenerator::SpawnPlayers(const std::string& path) {
+    void LevelGenerator::SpawnPlayers(const std::string &path) {
         std::ifstream levelFile{path};
         json levelJson = json::parse(levelFile);
 
@@ -287,10 +285,10 @@ namespace mlg {
                 firstPlayerJson["position"][1].get<float>(),
         };
         float firstPlayerRotation = firstPlayerJson.contains("rotation") ?
-                firstPlayerJson["rotation"].get<float>() : 0.f;
+                                    firstPlayerJson["rotation"].get<float>() : 0.f;
         std::string firstPlayerCarData = firstPlayerJson.contains("car-data") ?
                                          firstPlayerJson["car-data"].get<std::string>() :
-                                                 "res/config/cars/van.json";
+                                         "res/config/cars/van.json";
 
         PlayerData firstPlayerData = {0, mlg::RGBA::red,
                                       firstPlayerPosition,
@@ -309,7 +307,7 @@ namespace mlg {
                                      secondPlayerJson["rotation"].get<float>() : 0.f;
         std::string secondPlayerCarData = secondPlayerJson.contains("car-data") ?
                                           secondPlayerJson["car-data"].get<std::string>() :
-                                                  "res/config/cars/van.json";
+                                          "res/config/cars/van.json";
 
         PlayerData secondPlayerData = {1, mlg::RGBA::cyan,
                                        secondPlayerPosition,
@@ -373,7 +371,8 @@ namespace mlg {
     //}
 
     void LevelGenerator::PutEntity(const MapObject &mapObject, const glm::ivec2 &position, float rotation) const {
-        auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("MapObject", !mapObject.isDynamic, mlg::SceneGraph::GetRoot());
+        auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("MapObject", !mapObject.isDynamic,
+                                                                        mlg::SceneGraph::GetRoot());
 
         auto staticMesh = modelEntity.lock()->
                 AddComponent<mlg::StaticMeshComponent>("StaticMesh", mapObject.model, mapObject.material);
@@ -404,10 +403,24 @@ namespace mlg {
 
         rb.lock()->SetRotation(mapObject.worldRot + rotation);
         rb.lock()->SetKinematic(!mapObject.isDynamic);
-        
+
         // TODO: Remove magic numbers
         rb.lock()->SetLinearDrag(20.f);
         rb.lock()->SetAngularDrag(10.f);
+    }
+
+    void LevelGenerator::PutFactory(const std::string &configPath, const glm::ivec2 &position,
+                                    const glm::vec2& posAdjust, float rotation) const {
+        auto factory = mlg::EntityManager::SpawnEntity<Factory>
+                ("Factory", false, mlg::SceneGraph::GetRoot(), configPath);
+        auto factoryRigidBody = factory.lock()->
+                GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
+
+        glm::vec2 factoryPosition{0.0f};
+        factoryPosition.x = -static_cast<float>(position.x) * tileSize + 0.5f * citySize.x - 0.5f * tileSize + 0.5f;
+        factoryPosition.y = -static_cast<float>(position.y) * tileSize + 0.5f * citySize.y - 0.5f * tileSize - 0.5f;
+        factoryRigidBody.lock()->SetPosition(factoryPosition + posAdjust);
+        factoryRigidBody.lock()->SetRotation(glm::radians(rotation));
     }
 
     float LevelGenerator::GetSmartRotation(int x, int y) {

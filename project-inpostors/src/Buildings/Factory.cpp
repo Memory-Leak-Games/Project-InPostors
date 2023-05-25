@@ -86,13 +86,13 @@ void Factory::AddMesh(const json& staticMeshJson) {
     });
 
     staticMeshComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{
-            staticMeshJson["rotation"][0],
-            staticMeshJson["rotation"][1],
-            staticMeshJson["rotation"][2],
+            0.f,
+            staticMeshJson["rotation"],
+            0.f,
     }));
 
-    staticMeshComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{
-            staticMeshJson["scale"]}));
+    staticMeshComponent.lock()->GetTransform().SetScale(glm::vec3{
+            staticMeshJson["scale"]});
 }
 
 void Factory::AddCollider(const json& colliderJson, mlg::RigidbodyComponent* rigidbodyComponent) {

@@ -150,10 +150,10 @@ public:
         mlg::LevelGenerator::LoadMap(testLevelPropsPath);
 
         // create factories
-        auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("Smelter", false, mlg::SceneGraph::GetRoot(),
-                                                                  "res/levels/factories/smelter.json");
-        auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
-        testFactoryRigidBody.lock()->SetPosition({22.f, 8.f});
+        //auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("Smelter", false, mlg::SceneGraph::GetRoot(),
+        //                                                          "res/levels/factories/smelter.json");
+        //auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
+        //testFactoryRigidBody.lock()->SetPosition({22.f, 8.f});
 
         auto testMine = mlg::EntityManager::SpawnEntity<Factory>("Mine", false, mlg::SceneGraph::GetRoot(),
                                                                     "res/levels/factories/mine.json");

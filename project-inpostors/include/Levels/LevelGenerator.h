@@ -18,24 +18,22 @@ namespace mlg {
         struct MapObject {
             std::shared_ptr<class ModelAsset> model;
             std::shared_ptr<class MaterialAsset> material;
-
+            std::string colliderType;
             float worldRot;
             float scale;
-
-            bool hasCollision = false;
-            std::string colliderType;
             float colliderSize = 1.0f;
             float colliderOffset = 0.0f;
+            bool hasCollision = false;
             bool isDynamic = false;
         };
 
         struct Roads {
-            char symbol = ' ';
             MapObject road;
             MapObject edge;
             MapObject cross;
             MapObject curve;
             MapObject corner;
+            char symbol = ' ';
         } roadsObjects;
 
         struct FactoryObject {
@@ -46,9 +44,8 @@ namespace mlg {
 
         struct MapEntry {
             std::vector<MapObject> objectsPool;
-            bool isPathWay = false;
-
             int useCount = 0;
+            bool isPathWay = false;
         };
 
         LevelGenerator() = default;
@@ -69,9 +66,8 @@ namespace mlg {
         std::vector<std::string> LoadLayout();
         void LoadMapObjects();
         void LoadRoads();
-        void LoadFactories();//todo
+        void LoadFactories(); //todo
 
-        FactoryObject LoadFactoryData(const std::string& path);
 
         MapObject ParseObject(const nlohmann::json& jsonObject);
 
@@ -89,6 +85,8 @@ namespace mlg {
         void PutCornerRoad(int x, int y);
 
         void PutEntity(const MapObject& mapObject, const glm::ivec2& position, float rotation) const;
+        void PutFactory(const std::string& configPath, const glm::ivec2& position,
+                        const glm::vec2& posAdjust = glm::vec2(0.f, 0.f), float rotation = 0.f) const;
 
         float GetSmartRotation(int x, int y);
 
