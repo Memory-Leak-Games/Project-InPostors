@@ -1,0 +1,42 @@
+{
+  "static-mesh": {
+    "model": "res/models/factories/smelter.obj",
+    "material": "res/materials/buildings_material.json",
+
+    "position": [0.0, 0.0, 0.0],
+    "rotation": [0.0, 0.0, 0.0],
+    "scale": 1.0
+  },
+
+  "colliders":[
+    {
+      "offset": [-1.0, 4.0],
+      "size": [14.0, 7.0]
+    },
+    {
+      "offset": [-2.0, -3.0],
+      "size": [8.0, 7.0]
+    }
+  ],
+
+  "blueprintID": "iron",
+  "equipmentSize": 3,
+  "type": "OneInputOutput",
+
+  "input": {
+    "offset": [5.0, -3.0],
+    "size": [5.0, 5.0]
+  },
+
+  "output": {
+    "position": [-0.0, 0.0],
+    "size": [1.0, 1.0]
+  },
+
+  "emitters": [
+    {
+      "id": "factorySmoke",
+      "position": [-4.0, 2.0, -2.5]
+    }
+  ]
+}

@@ -47,6 +47,7 @@
 #include <cstdint>
 #include <spdlog/spdlog.h>
 #include <UI/UIController.h>
+#include <string>
 
 class ComponentTest : public mlg::Component {
 public:
@@ -134,30 +135,34 @@ public:
         auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
 
         std::vector<std::string> levelLayout;
-        levelLayout = mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit.json");
-        mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit.json");
-        mlg::LevelGenerator::SpawnGround("res/levels/Cities/detroit.json");
-        mlg::LevelGenerator::SetCityBounds("res/levels/Cities/detroit.json");
-        mlg::LevelGenerator::LoadCameraSettings("res/levels/Cities/detroit.json", *cameraComponent.lock());
-        mlg::LevelGenerator::SpawnPlayers("res/levels/Cities/detroit.json");
+
+        const std::string testLevelPath = "res/levels/maps/detroit.json";
+        const std::string testLevelPropsPath = "res/levels/maps/detroit_props.json";
+
+        levelLayout = mlg::LevelGenerator::LoadMap(testLevelPath);
+        mlg::LevelGenerator::LoadMap(testLevelPath);
+        mlg::LevelGenerator::SpawnGround(testLevelPath);
+        mlg::LevelGenerator::SetCityBounds(testLevelPath);
+        mlg::LevelGenerator::LoadCameraSettings(testLevelPath, *cameraComponent.lock());
+        mlg::LevelGenerator::SpawnPlayers(testLevelPath);
 
         // load props
-        mlg::LevelGenerator::LoadMap("res/levels/Cities/detroit_props.json");
+        mlg::LevelGenerator::LoadMap(testLevelPropsPath);
 
         // create factories
         auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("Smelter", false, mlg::SceneGraph::GetRoot(),
-                                                                  "res/levels/Factories/smelter.json");
+                                                                  "res/levels/factories/smelter.json");
         auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
         testFactoryRigidBody.lock()->SetPosition({22.f, 8.f});
 
         auto testMine = mlg::EntityManager::SpawnEntity<Factory>("Mine", false, mlg::SceneGraph::GetRoot(),
-                                                                    "res/levels/Factories/mine.json");
+                                                                    "res/levels/factories/mine.json");
         auto testMineRigidBody = testMine.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
         testMineRigidBody.lock()->SetPosition({-60.f, -5.f});
         testMineRigidBody.lock()->SetRotation(glm::radians(-90.f));
 
         auto testIkea = mlg::EntityManager::SpawnEntity<Factory>("Szwedzki sklep z meblami", false, mlg::SceneGraph::GetRoot(),
-                                                                 "res/levels/Factories/ikea.json");
+                                                                 "res/levels/factories/ikea.json");
         auto testIkeaRigidBody = testIkea.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
         testIkeaRigidBody.lock()->SetPosition({55.f, -5.f});
         testIkeaRigidBody.lock()->SetRotation(glm::radians(-90.f));

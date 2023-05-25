@@ -1,0 +1,12 @@
+{
+  "vertexShader": "res/shaders/quad_renderer.vert",
+  "fragmentShader": "res/shaders/light_pass/light_pass.frag",
+  "uniforms": [
+    {
+      "type": "float",
+      "name": "posterizationLevels",
+      "value": 16
+    }
+  ],
+  "textures": []
+}

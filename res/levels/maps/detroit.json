@@ -1,0 +1,44 @@
+{
+  "name": "Detroit",
+  "tile-size": 4.0,
+  "tileset": "res/levels/tilesets/city_tileset.json",
+
+  "ground-color": [0.898, 0.854, 0.890, 1.0],
+
+  "layout": [
+    "      bbbbbbbbbbbBbbb       ",
+    "     s###############s      ",
+    "     s###############sbbbb  ",
+    "     s##ssss#############b  ",
+    "     s##pppp###sss#######b  ",
+    "     s##pp8p###bbs###sb##b  ",
+    "  sssc##pppp###Lsf###ob##bbbbb ",
+    "ppp#########################ppp",
+    "ppp#########################ppp",
+    "ppp#########################ppp",
+    "  sss##spwps###bssss##ssssssss ",
+    "    s##Lppps###bbbsb##b     ",
+    "    s#################s     ",
+    "    s#################b     ",
+    "    sssssssssssbbsbbsbb     "
+  ],
+
+  "camera-settings": {
+    "position": [16.0, 50.0, -14.0],
+    "rotation": [65.0, -45.0, 0.0],
+
+    "size": 100.0,
+    "near": 0.1,
+    "far": 200.0
+  },
+
+  "player-one": {
+    "position": [16.0, -4.0],
+    "rotation": 180.0,
+    "car-type": "res/config/cars/van.json"
+  },
+
+  "player-two": {
+    "position": [-16.0, 4.0]
+  }
+}

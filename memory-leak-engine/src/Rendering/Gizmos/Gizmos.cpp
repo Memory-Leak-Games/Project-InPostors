@@ -52,8 +52,8 @@ float pointVertex[]{0.0f, 0.0f, 0.0f};
 void mlg::Gizmos::Initialize() {
     // Load gizmo shader
     shader = new ShaderProgram(
-            mlg::AssetManager::GetAsset<ShaderAsset>("res/shaders/Utils/gizmo.vert"),
-            mlg::AssetManager::GetAsset<ShaderAsset>("res/shaders/Utils/gizmo.frag"));
+            mlg::AssetManager::GetAsset<ShaderAsset>("res/shaders/utils/gizmo.vert"),
+            mlg::AssetManager::GetAsset<ShaderAsset>("res/shaders/utils/gizmo.frag"));
 
     // Generate line gizmo
     {

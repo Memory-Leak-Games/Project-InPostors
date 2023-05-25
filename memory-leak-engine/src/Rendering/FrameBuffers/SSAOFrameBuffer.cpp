@@ -23,7 +23,7 @@ namespace mlg {
 
         MLG_ASSERT_MSG(IsFrameBufferComplete(), "Frame buffer is not complete");
 
-        material = AssetManager::GetAsset<MaterialAsset>("res/config/EngineMaterials/ssao_material.json");
+        material = AssetManager::GetAsset<MaterialAsset>("res/materials/engine/ssao_material.json");
 
         numberOfSamples = SettingsManager::Get<uint32_t>(SettingsType::Video, "SSAOSamples");
 
