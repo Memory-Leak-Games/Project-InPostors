@@ -25,6 +25,7 @@
 #include "Levels/LevelGenerator.h"
 #include "Player.h"
 #include "SceneGraph/SceneGraph.h"
+#include "UI/GameplayOverlay.h"
 
 #include <Gameplay/ComponentManager.h>
 #include <Gameplay/Components/RigidbodyComponent.h>
@@ -241,6 +242,12 @@ public:
         auto testIkeaRigidBody = testIkea.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
         testIkeaRigidBody.lock()->SetPosition({55.f, -5.f});
         testIkeaRigidBody.lock()->SetRotation(glm::radians(-90.f));
+
+        auto overlay = mlg::EntityManager::SpawnEntity<GameplayOverlay>("Overlay", false, mlg::SceneGraph::GetRoot());
+
+        uint32_t timer = mlg::TimerManager::GetInstance()->SetTimer(2.f, false, []() -> void {
+            SPDLOG_WARN("Hello after 2s");
+        });
     }
 
     virtual ~ProjectInpostors() {
