@@ -29,6 +29,7 @@
 #include "Utils/EquipmentComponent.h"
 #include "Utils/ProductManager.h"
 
+#include "Audio/Assets/AudioAsset.h"
 #include "Buildings/Factory.h"
 
 using json = nlohmann::json;
@@ -82,6 +83,9 @@ void Player::LoadModel(const json& configJson) {
 
 void Player::Start() {
     carInput = GetComponentByClass<CarInput>().lock();
+    pickUpSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/pick_up.wav");
+    dropSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/drop.wav");
+    hitSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/hit.wav");
 }
 
 void Player::Update() {
@@ -90,6 +94,16 @@ void Player::Update() {
 
     if (carInput->GetDropInput())
         Drop();
+
+    std::vector<std::weak_ptr<mlg::Collider>> overlappingColliders;
+    rigidbodyComponent.lock()->GetOverlappingColliders(overlappingColliders);
+
+    for (const auto& collider : overlappingColliders) {
+        if (collider.lock()->GetTag().empty() && (rigidbodyComponent.lock()->GetAngularSpeed() > 0.5 || rigidbodyComponent.lock()->GetAngularSpeed() < -0.5)) {
+            //SPDLOG_WARN("{}", rigidbodyComponent.lock()->GetAngularSpeed());
+            hitSound->Play();
+        }
+    }
 
 #ifdef DEBUG
     ImGui::Begin(("Player " + std::to_string(playerData.id)).c_str());
@@ -123,7 +137,7 @@ void Player::PickUp() {
             return;
 
         equipment->AddProduct(factoryOutput);
-
+        pickUpSound->Play();
         // TODO: remove me
         SPDLOG_WARN("{} : PickUp {} from {}", GetName(), factoryOutput, factory->GetName());
     }
@@ -156,7 +170,7 @@ void Player::Drop() {
 
             if (!factory->GetEquipmentComponent()->AddProduct(item))
                 continue;
-
+            dropSound->Play();
             equipment->RequestProduct(item);
 
             // TODO: remove me

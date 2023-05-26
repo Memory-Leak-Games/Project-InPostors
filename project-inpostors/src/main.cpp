@@ -70,7 +70,7 @@ public:
 };
 
 class ProjectInpostors {
-    std::shared_ptr<mlg::AudioAsset> sound;
+    std::shared_ptr<mlg::AudioAsset> cityAmbientSound;
     std::shared_ptr<mlg::AudioAsset> music;
 
 public:
@@ -145,6 +145,9 @@ public:
         mlg::LevelGenerator::SetCityBounds(testLevelPath);
         mlg::LevelGenerator::LoadCameraSettings(testLevelPath, *cameraComponent.lock());
         mlg::LevelGenerator::SpawnPlayers(testLevelPath);
+
+        cityAmbientSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/city_ambient.mp3");
+        cityAmbientSound->PlayBackgroundMusic();
 
         // load props
         mlg::LevelGenerator::LoadMap(testLevelPropsPath);
