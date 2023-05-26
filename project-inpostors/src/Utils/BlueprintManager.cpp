@@ -8,7 +8,7 @@ BlueprintManager* BlueprintManager::instance;
 
 using json = nlohmann::json;
 
-BlueprintManager* BlueprintManager::GetInstance() {
+BlueprintManager* BlueprintManager::Get() {
     
     if (instance) {
         return instance;

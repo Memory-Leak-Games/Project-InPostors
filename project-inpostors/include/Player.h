@@ -33,11 +33,12 @@ public:
     void Start() override;
     void Update() override;
 
-    ~Player() = default;
+    ~Player() override = default;
 
 private:
-    void PickUp();
-
     void AddRigidbody(const nlohmann::json& configJson, const float rotation);
     void LoadModel(const nlohmann::json& configJson);
+
+    void PickUp();
+    void Drop();
 };

@@ -66,6 +66,8 @@ namespace mlg {
         return std::shared_ptr<Entity>(new Entity(id, name, isStatic, parent));
     }
 
+    Entity::~Entity() = default;
+
     uint64_t Entity::GetId() const {
         return id;
     }

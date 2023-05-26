@@ -26,6 +26,7 @@ namespace mlg {
             std::string colliderType;
             float colliderSize = 1.0f;
             float colliderOffset = 0.0f;
+            bool isDynamic = false;
         };
 
         struct Roads {

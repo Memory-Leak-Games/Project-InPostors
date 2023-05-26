@@ -5,7 +5,7 @@
 #include "Core/Time.h"
 
 FactorySmokeFX::FactorySmokeFX(): mlg::ParticleSystem(30) {
-    SetMaterial(mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/Particles/smokeFX.json"));
+    SetMaterial(mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/particles/smoke_fx.json"));
 }
 
 std::shared_ptr<mlg::ParticleSystem> FactorySmokeFX::Clone() {

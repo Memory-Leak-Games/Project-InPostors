@@ -1,0 +1,38 @@
+{
+  "vertexShader": "res/shaders/quad_renderer.vert",
+  "fragmentShader": "res/shaders/post_process/post_process.frag",
+  "uniforms": [
+    {
+      "type": "float",
+      "name": "gamma",
+      "value": 1.8
+    },
+    {
+      "type": "float",
+      "name": "brightness",
+      "value": -0.2
+    },
+    {
+      "type": "float",
+      "name": "contrast",
+      "value": 1.0
+    },
+    {
+      "type": "float",
+      "name": "saturation",
+      "value": 1.4
+    },
+    {
+      "type": "float",
+      "name": "filmGrain",
+      "value": 0.01
+    },
+    {
+      "type": "float",
+      "name": "filmGrainSize",
+      "value": 4.0
+    }
+  ],
+  "textures": [
+  ]
+}

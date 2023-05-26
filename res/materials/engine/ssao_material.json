@@ -1,0 +1,27 @@
+{
+  "vertexShader": "res/shaders/quad_renderer.vert",
+  "fragmentShader": "res/shaders/ssao_pass/ssao_pass.frag",
+  "uniforms": [
+    {
+      "type": "float",
+      "name": "radius",
+      "value": 1.5
+    },
+    {
+      "type": "float",
+      "name": "bias",
+      "value": 0.05
+    },
+    {
+      "type": "float",
+      "name": "magnitude",
+      "value": 0.6
+    },
+    {
+      "type": "float",
+      "name": "contrast",
+      "value": 1.5
+    }
+  ],
+  "textures": []
+}

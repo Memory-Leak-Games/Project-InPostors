@@ -28,6 +28,7 @@ namespace mlg {
 
     public:
         static std::shared_ptr<Entity> Create(uint64_t id, const std::string &name, bool isStatic, Transform *parent);
+        virtual ~Entity();
 
         template<typename T, typename ... Args>
         std::weak_ptr<T> AddComponent(Args &&... args) {

@@ -20,7 +20,7 @@ namespace mlg {
 
         MLG_ASSERT_MSG(IsFrameBufferComplete(), "Frame buffer is not complete");
 
-        material = AssetManager::GetAsset<MaterialAsset>("res/config/EngineMaterials/ssao_blur_material.json");
+        material = AssetManager::GetAsset<MaterialAsset>("res/materials/engine/ssao_blur_material.json");
     }
 
     void BlurPass::GenerateAndBindTextures() {

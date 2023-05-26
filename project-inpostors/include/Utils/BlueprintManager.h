@@ -10,7 +10,7 @@ class BlueprintManager {
     BlueprintManager() = default;
 
 public:
-    static BlueprintManager* GetInstance();
+    static BlueprintManager* Get();
 
     const Blueprint& GetBlueprint(const std::string& name);
 
