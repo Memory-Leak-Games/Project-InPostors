@@ -245,7 +245,7 @@ namespace mlg {
                 //todo: only for testing purposes, remove later
                 if (character == '8')
                     PutFactory("res/levels/factories/smelter.json",
-                               {x - 1, y - 1}, {1.3f, 0.5f}, 0.0f);
+                               {x - 1, y - 1}, 0.0f);
 
                 // Ignore spaces
                 if (character == ' ')
@@ -361,15 +361,6 @@ namespace mlg {
         PutEntity(mapObject, glm::ivec2{x, y}, glm::radians(smartRotation));
     }
 
-    //TODO: Kris here - the engine does not know anything about factories
-    // and now I dunno what to do :(
-    //void LevelGenerator::PutFactory(int x, int y, const FactoryObject& factory) {
-    //    auto factoryEntity = mlg::EntityManager::SpawnEntity<Factory>("Factory", false, mlg::SceneGraph::GetRoot(),
-    //                                                                "res/levels/Factories/smelter.json");
-    //    auto factoryEntityRigidBody = factoryEntity.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
-    //    factoryEntityRigidBody.lock()->SetPosition({x, y});
-    //}
-
     void LevelGenerator::PutEntity(const MapObject &mapObject, const glm::ivec2 &position, float rotation) const {
         auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("MapObject", !mapObject.isDynamic,
                                                                         mlg::SceneGraph::GetRoot());
@@ -377,9 +368,7 @@ namespace mlg {
         auto staticMesh = modelEntity.lock()->
                 AddComponent<mlg::StaticMeshComponent>("StaticMesh", mapObject.model, mapObject.material);
 
-        glm::vec3 objectPosition{0.0f};
-        objectPosition.x = -static_cast<float>(position.x) * tileSize + 0.5f * citySize.x - 0.5f * tileSize;
-        objectPosition.z = -static_cast<float>(position.y) * tileSize + 0.5f * citySize.y - 0.5f * tileSize;
+        glm::vec3 objectPosition = GetLevelPosition(position);
 
         modelEntity.lock()->GetTransform().SetPosition(objectPosition);
         modelEntity.lock()->GetTransform().SetEulerRotation({0.f, mapObject.worldRot + rotation, 0.f});
@@ -410,16 +399,15 @@ namespace mlg {
     }
 
     void LevelGenerator::PutFactory(const std::string &configPath, const glm::ivec2 &position,
-                                    const glm::vec2& posAdjust, float rotation) const {
+                                    float rotation) const {
         auto factory = mlg::EntityManager::SpawnEntity<Factory>
                 ("Factory", false, mlg::SceneGraph::GetRoot(), configPath);
         auto factoryRigidBody = factory.lock()->
                 GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
 
-        glm::vec2 factoryPosition{0.0f};
-        factoryPosition.x = -static_cast<float>(position.x) * tileSize + 0.5f * citySize.x - 0.5f * tileSize + 0.5f;
-        factoryPosition.y = -static_cast<float>(position.y) * tileSize + 0.5f * citySize.y - 0.5f * tileSize - 0.5f;
-        factoryRigidBody.lock()->SetPosition(factoryPosition + posAdjust);
+        glm::vec2 factoryPosition = GetLevelPosition(position, true);
+
+        factoryRigidBody.lock()->SetPosition(factoryPosition);
         factoryRigidBody.lock()->SetRotation(glm::radians(rotation));
     }
 
@@ -562,5 +550,18 @@ namespace mlg {
 
         return levelLayout[y][x];
     }
+
+    glm::vec3 LevelGenerator::GetLevelPosition(const glm::ivec2 &localPos, bool isRigid) const {
+        glm::vec3 levelPos = {0.f, 0.f, 0.f};
+        levelPos.x = -static_cast<float>(localPos.x) * tileSize + 0.5f * citySize.x - 0.5f * tileSize + 0.5f;
+        float locPos = -static_cast<float>(localPos.y) * tileSize + 0.5f * citySize.y - 0.5f * tileSize - 0.5f;
+        if (!isRigid)
+            levelPos.z = locPos;
+        else
+            levelPos.y = locPos;
+
+        return levelPos;
+    }
+
 
 }

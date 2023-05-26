@@ -75,7 +75,6 @@ namespace mlg {
 
 
         void PutTile(int x, int y, const char& character);
-        //void PutFactory(int x, int y, const FactoryObject& factory); //TODO: make it work somehow
         void PutRoad(int x, int y);
 
         void PutStraightRoad(int x, int y, bool isVertical);
@@ -86,7 +85,7 @@ namespace mlg {
 
         void PutEntity(const MapObject& mapObject, const glm::ivec2& position, float rotation) const;
         void PutFactory(const std::string& configPath, const glm::ivec2& position,
-                        const glm::vec2& posAdjust = glm::vec2(0.f, 0.f), float rotation = 0.f) const;
+                        float rotation = 0.f) const;
 
         float GetSmartRotation(int x, int y);
 
@@ -95,6 +94,8 @@ namespace mlg {
         char GetTileOrZero(int x, int y);
 
         glm::ivec2 GetLayoutSize();
+        [[nodiscard]] glm::vec3 GetLevelPosition(const glm::ivec2 &localPos,
+                                                 bool isRigid = false) const;
     };
 
 }// namespace mlg
