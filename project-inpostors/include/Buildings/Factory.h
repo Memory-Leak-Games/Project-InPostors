@@ -14,7 +14,7 @@ private:
     std::shared_ptr<class EquipmentComponent> equipmentComponent;
 
     std::string blueprintId;
-    uint produceTimerHandle = 0;
+    uint64_t produceTimerHandle = 0;
 
 public:
     ~Factory() override;

@@ -550,4 +550,7 @@ namespace mlg {
         return levelLayout[y][x];
     }
 
+    std::vector<std::string> LevelGenerator::GetLevelLayout() {
+        return levelLayout;
+    }
 }
