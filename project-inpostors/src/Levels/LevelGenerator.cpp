@@ -400,7 +400,7 @@ namespace mlg {
         rigidbody->SetKinematic(!mapObject.isDynamic);
 
         // TODO: load this from JSON? I don't know
-        constexpr float timeToDestroy = 0.25;
+        constexpr float timeToDestroy = 0.5f;
 
         if (mapObject.isDynamic) {
             newEntity->AddComponent<AutoDestroyComponent>(
