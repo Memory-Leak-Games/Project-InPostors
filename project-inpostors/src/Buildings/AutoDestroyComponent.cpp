@@ -25,12 +25,12 @@ void AutoDestroyComponent::Start() {
     Entity owner = GetOwner().lock();
     Rigidbody rigidbody = owner->GetComponentByClass<mlg::RigidbodyComponent>().lock();
 
-    auto destroyDelegate = []() -> void {
-        SPDLOG_DEBUG("Boom");
+    auto destroyDelegate = [owner]() -> void {
+        owner->QueueForDeletion();
     };
 
     rigidbody->OnCollisionEnter.append(
-    [this, &destroyDelegate](const mlg::CollisionEvent& event) {
+    [this, destroyDelegate](const mlg::CollisionEvent& event) {
         if (mlg::TimerManager::Get()->IsTimerValid(timerHandle))
             return;
 
