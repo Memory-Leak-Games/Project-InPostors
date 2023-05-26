@@ -1,7 +1,7 @@
 {
   "name": "detroit_props",
   "tile-size": 4.0,
-  "tileset": "res/levels/Tileset/props_tileset.json",
+  "tileset": "res/levels/tileset/props_tileset.json",
 
   "ignore" : "#",
 
