@@ -6,7 +6,7 @@
 namespace mlg {
     FXAAFrameBuffer::FXAAFrameBuffer(int32_t width, int32_t height)
     : SingleTextureFrameBuffer(width, height) {
-        material = AssetManager::GetAsset<MaterialAsset>("res/config/EngineMaterials/fxaa_material.json");
+        material = AssetManager::GetAsset<MaterialAsset>("res/materials/engine/fxaa_material.json");
 
         glCreateRenderbuffers(1, &rboDepth);
         glNamedRenderbufferStorage(rboDepth, GL_DEPTH_COMPONENT, GetWidth(), GetHeight());

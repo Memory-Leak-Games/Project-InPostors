@@ -1,0 +1,12 @@
+{
+  "vertexShader": "res/shaders/model.vert",
+  "fragmentShader": "res/shaders/colored.frag",
+  "uniforms": [
+    {
+      "type": "vec4",
+      "name": "color",
+      "value": [0.2, 0.2, 0.2, 1.0]
+    }
+  ],
+  "textures": []
+}

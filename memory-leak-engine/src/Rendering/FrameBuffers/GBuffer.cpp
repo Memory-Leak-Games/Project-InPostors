@@ -21,7 +21,7 @@ namespace mlg {
 
         MLG_ASSERT_MSG(IsFrameBufferComplete(), "Frame buffer is not complete");
 
-        material = AssetManager::GetAsset<MaterialAsset>("res/config/EngineMaterials/light_pass_material.json");
+        material = AssetManager::GetAsset<MaterialAsset>("res/materials/engine/light_pass_material.json");
     }
 
     void GBuffer::GenerateAndBindGTextures() {

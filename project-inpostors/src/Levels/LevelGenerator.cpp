@@ -87,8 +87,8 @@ namespace mlg {
                 levelGenerator.levelJson["ground-color"][2].get<float>(),
                 levelGenerator.levelJson["ground-color"][3].get<float>()};
 
-        auto planeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/plane.obj");
-        auto groundMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Ground/ground_material.json");
+        auto planeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/primitives/plane.obj");
+        auto groundMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/color/gray_material.json");
         groundMaterial = groundMaterial->CreateDynamicInstance();
         groundMaterial->SetVec4("color", color);
 
