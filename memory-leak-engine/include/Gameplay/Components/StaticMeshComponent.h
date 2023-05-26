@@ -10,6 +10,7 @@ namespace mlg {
         std::shared_ptr<class ModelAsset> model;
         std::shared_ptr<class MaterialAsset> material;
         std::weak_ptr<Renderable> thisAsRenderable;
+        bool visible;
 
         bool wasDirty;
 
@@ -28,6 +29,8 @@ namespace mlg {
         void Draw(struct Renderer* renderer) override;
 
         void DrawShadowMap(struct Renderer* renderer, struct ShaderProgram* shaderProgram) override;
+
+        void SetVisible(bool value);
 
         ~StaticMeshComponent() override;
     };

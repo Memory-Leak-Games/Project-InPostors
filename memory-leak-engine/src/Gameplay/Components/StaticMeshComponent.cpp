@@ -16,7 +16,7 @@ namespace mlg {
     StaticMeshComponent::StaticMeshComponent(const std::weak_ptr<Entity>& owner, const std::string& name,
                                              const std::shared_ptr<ModelAsset>& model,
                                              const std::shared_ptr<MaterialAsset>& material)
-            : SceneComponent(owner, name), model(model), material(material), wasDirty(true) {
+            : SceneComponent(owner, name), model(model), material(material), wasDirty(true), visible(true) {
     }
 
     void StaticMeshComponent::Start() {
@@ -27,6 +27,9 @@ namespace mlg {
     }
 
     void StaticMeshComponent::Draw(struct Renderer* renderer) {
+        if (!visible)
+            return;
+
         ZoneScopedN("Draw StaticMesh");
         {
             ZoneScopedN("Send Matrices");
@@ -41,9 +44,16 @@ namespace mlg {
     }
 
     void StaticMeshComponent::DrawShadowMap(struct Renderer* renderer, struct ShaderProgram* shaderProgram) {
+        if (!visible)
+            return;
+
         const glm::mat4 modelToLight = DirectionalLight::GetInstance()->GetSun().lightSpaceMatrix * GetTransform().GetWorldMatrix();
         shaderProgram->SetMat4F("modelToLight", modelToLight);
         renderer->DrawModel(model.get());
+    }
+
+    void StaticMeshComponent::SetVisible(bool value) {
+        visible = value;
     }
 
     void StaticMeshComponent::Stop() {
