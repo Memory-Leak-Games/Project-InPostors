@@ -10,6 +10,7 @@ namespace mlg {
         ~RGBA() = delete;
 
         static constexpr glm::vec4 white = glm::vec4{1.f, 1.f, 1.f, 1.f};
+        static constexpr glm::vec4 gray = glm::vec4{.5f, .5f, .5f, .5f};
         static constexpr glm::vec4 black = glm::vec4{0.f, 0.f, 0.f, 1.f};
         static constexpr glm::vec4 red = glm::vec4{1.f, 0.f, 0.f, 1.f};
         static constexpr glm::vec4 green = glm::vec4{0.f, 1.f, 0.f, 1.f};
