@@ -54,15 +54,15 @@ namespace mlg {
         const glm::vec2& GetPosition();
         float GetRotation();
 
-        template<typename T, typename ... Args>
-        std::weak_ptr<Collider> AddCollider(Args&& ... args) {
-            auto shape = std::make_unique<T>(rigidbody->position, std::forward<Args>(args) ...);
+        template<typename T, typename... Args>
+        std::weak_ptr<Collider> AddCollider(Args&&... args) {
+            auto shape = std::make_unique<T>(rigidbody->position, std::forward<Args>(args)...);
             return AddCollider(std::move(shape));
         }
 
-        template<typename T, typename ... Args>
-        std::weak_ptr<Collider> AddTrigger(Args&& ... args) {
-            auto shape = std::make_unique<T>(rigidbody->position, std::forward<Args>(args) ...);
+        template<typename T, typename... Args>
+        std::weak_ptr<Collider> AddTrigger(Args&&... args) {
+            auto shape = std::make_unique<T>(rigidbody->position, std::forward<Args>(args)...);
             return AddTrigger(std::move(shape));
         }
 
@@ -80,4 +80,4 @@ namespace mlg {
         std::weak_ptr<Collider> AddTrigger(std::unique_ptr<ColliderShape::Shape> shape);
     };
 
-} // mlg
+}// namespace mlg
