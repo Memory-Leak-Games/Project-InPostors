@@ -18,7 +18,7 @@ private:
 
 
     std::string blueprintId;
-    uint produceTimerHandle = 0;
+    uint32_t produceTimerHandle = 0;
 
     std::shared_ptr<class mlg::Label> amount1;
     std::shared_ptr<class mlg::Label> amount2;
@@ -56,7 +56,7 @@ private:
 
     void CheckBlueprintAndStartWorking();
     void ProduceItem();
-    void Update() override;
+    //void Update() override;
 
     static void GenerateUI(const std::shared_ptr<Factory>& result);
 };

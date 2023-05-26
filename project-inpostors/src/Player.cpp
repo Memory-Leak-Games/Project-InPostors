@@ -176,7 +176,7 @@ void Player::Drop() {
 void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/arialbd.ttf");
 
-    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/player/arrow_material.json");
+    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/player/arrow_material.json");
     newPlayer->uiArrow = newPlayer->AddComponent<mlg::Image>("Arrow", material);
     auto ui = newPlayer->uiArrow.lock();
     ui->SetBillboardTarget(newPlayer);
@@ -184,13 +184,13 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     ui->SetPosition({0.f, 24.f});
     ui->tint = newPlayer->playerData.color;
 
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/wood_material.json");
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/wood_material.json");
     ui = newPlayer->AddComponent<mlg::Image>("WoodEq", material).lock();
     ui->SetBillboardTarget(newPlayer);
     ui->SetSize({14.f, 14.f});
     ui->SetPosition({7.f, 53.f});
 
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/metal_material.json");
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/metal_material.json");
     ui = newPlayer->AddComponent<mlg::Image>("MetalEq", material).lock();
     ui->SetBillboardTarget(newPlayer);
     ui->SetSize({14.f, 14.f});
@@ -208,7 +208,7 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
         label->SetText("P2");
     }
 
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/player/panel_material.json");
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/player/panel_material.json");
     ui = newPlayer->AddComponent<mlg::Image>("Panel", material).lock();
     ui->SetSize({200.f, 38.f});
     if(newPlayer->GetName() == "Player")
@@ -232,7 +232,7 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
         label->SetText("P2");
     }
 
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/wood_material.json");
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/wood_material.json");
     ui = newPlayer->AddComponent<mlg::Image>("WoodEq", material).lock();
     ui->SetSize({32.f, 32.f});
     if(newPlayer->GetName() == "Player")
@@ -243,7 +243,7 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
         ui->SetAnchor({1, 0});
     }
 
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/metal_material.json");
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/metal_material.json");
     ui = newPlayer->AddComponent<mlg::Image>("MetalEq", material).lock();
     ui->SetSize({32.f, 32.f});
     if(newPlayer->GetName() == "Player")

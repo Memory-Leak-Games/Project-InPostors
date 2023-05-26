@@ -192,7 +192,7 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
     auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/arialbd.ttf");
 
     if(result->factoryType == FactoryType::OneInput || result->factoryType == FactoryType::OneOutput) {
-        auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/factory/panel_material.json");
+        auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/panel_material.json");
         auto uiPanel = result->AddComponent<mlg::Image>("PanelRecipe", material).lock();
         uiPanel->SetSize({48.f, 36.f});
         uiPanel->SetPosition({0.f, 75.f-16.f});
@@ -203,13 +203,13 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
 //        uiPanel->SetPosition({0.f, 40.f});
 //        uiPanel->SetBillboardTarget(result);
 
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/factory/progressBar_material.json");
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/progressBar_material.json");
         result->productionBar = result->AddComponent<mlg::ProgressBar>("Bar", material).lock();
         result->productionBar->SetSize({48.f, 5.f});
         result->productionBar->SetPosition({0.f, 59.f-16.f});
         result->productionBar->SetBillboardTarget(result);
 
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/wood_material.json");
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/wood_material.json");
         auto uiWood = result->AddComponent<mlg::Image>("Wood", material).lock();
         uiWood->SetSize({24.f, 24.f});
         uiWood->SetPosition({0.f, 75.f-16.f});
@@ -227,7 +227,7 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
         result->amount1->SetTextColor({1.0, 0.8, 0.0});
         result->amount1->SetBillboardTarget(result);
     } else {
-        auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/factory/panel_material.json");
+        auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/panel_material.json");
         auto uiPanel = result->AddComponent<mlg::Image>("PanelRecipe", material).lock();
         uiPanel->SetSize({128.f, 36.f});
         uiPanel->SetPosition({0.f, 75.f-16.f});
@@ -243,37 +243,37 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
 //        uiPanel->SetPosition({36.f, 40.f});
 //        uiPanel->SetBillboardTarget(result);
 
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/factory/progressBar_material.json");
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/progressBar_material.json");
         result->productionBar = result->AddComponent<mlg::ProgressBar>("Bar", material).lock();
         result->productionBar->SetSize({128.f, 5.f});
         result->productionBar->SetPosition({0.f, 59.f-16.f});
         result->productionBar->SetBillboardTarget(result);
 
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/wood_material.json");
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/wood_material.json");
         auto uiWood = result->AddComponent<mlg::Image>("Recipe1", material).lock();
         uiWood->SetSize({24.f, 24.f});
         uiWood->SetPosition({-48.f, 75.f-16.f});
         uiWood->SetBillboardTarget(result);
 
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/metal_material.json");
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/metal_material.json");
         auto uiMetal = result->AddComponent<mlg::Image>("Recipe2", material).lock();
         uiMetal->SetSize({24.f, 24.f});
         uiMetal->SetPosition({-16.f, 75.f-16.f});
         uiMetal->SetBillboardTarget(result);
 
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/arrow_material.json");
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/arrow_material.json");
         auto uiArrow = result->AddComponent<mlg::Image>("RecipeArrow", material).lock();
         uiArrow->SetSize({24.f, 24.f});
         uiArrow->SetPosition({16.f, 75.f-16.f});
         uiArrow->SetBillboardTarget(result);
 
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/furniture_material.json");
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/furniture_material.json");
         auto uiFurniture = result->AddComponent<mlg::Image>("Recipe3", material).lock();
         uiFurniture->SetSize({24.f, 24.f});
         uiFurniture->SetPosition({48.f, 75.f-16.f});
         uiFurniture->SetBillboardTarget(result);
 
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/wood_material.json");
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/wood_material.json");
         auto uiEq = result->AddComponent<mlg::Image>("Eq", material).lock();
         uiEq->SetSize({16.f, 16.f});
         uiEq->SetPosition({-42.f-12.f, 44.f-16.f});
@@ -286,7 +286,7 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
         result->amount1->SetTextColor({1.0, 0.8, 0.0});
         result->amount1->SetBillboardTarget(result);
 
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/metal_material.json");
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/metal_material.json");
         uiEq = result->AddComponent<mlg::Image>("Eq", material).lock();
         uiEq->SetSize({16.f, 16.f});
         uiEq->SetPosition({0.f-12.f, 44.f-16.f});
@@ -299,7 +299,7 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
         result->amount2->SetTextColor({0.8, 0.8, 1.0});
         result->amount2->SetBillboardTarget(result);
 
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/icon/furniture_material.json");
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/furniture_material.json");
         uiEq = result->AddComponent<mlg::Image>("Eq", material).lock();
         uiEq->SetSize({16.f, 16.f});
         uiEq->SetPosition({42.f-12.f, 44.f-16.f});

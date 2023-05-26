@@ -1,12 +1,12 @@
 {
-  "vertexShader": "res/shaders/UI/image.vert",
-  "fragmentShader": "res/shaders/UI/image.frag",
+  "vertexShader": "res/shaders/ui/image.vert",
+  "fragmentShader": "res/shaders/ui/image.frag",
   "uniforms": [],
   "textures": [
     {
       "name": "image",
       "index": 0,
-      "path": "res/textures/UI/Metal_icon.png"
+      "path": "res/textures/ui/metal_icon.png"
     }
   ]
 }

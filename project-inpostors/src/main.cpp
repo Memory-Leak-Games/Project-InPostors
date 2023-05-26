@@ -138,74 +138,12 @@ public:
 //        audioComponent.lock()->SetLooping();
 //        audioComponent.lock()->Play();
 
-        auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/white_material.json");
-        auto redMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/red_material.json");
-        auto blueMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/models/Primitives/blue_material.json");
+        auto whiteMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/color/white_material.json");
+        auto redMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/color/red_material.json");
+        auto blueMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/color/blue_material.json");
 
-        auto cubeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Cube.obj");
-        auto sphereModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/Primitives/Sphere.obj");
-
-        // UI testing
-        {
-//            auto ui = mlg::EntityManager::SpawnEntity<mlg::Entity>("ui", true, mlg::SceneGraph::GetRoot());
-//            auto image = ui.lock()->AddComponent<mlg::Image>("Image", imageMaterial);
-//            image.lock()->SetSize(glm::vec2{128.f});
-//            image.lock()->SetPosition({1280.f - 128.f, 720.f - 128.f});
-//            image.lock()->SetAnchor({1, 1});
-//            auto progressBarMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/progressBar_material.json");
-//            auto progressBar = ui.lock()->AddComponent<mlg::ProgressBar>("ProgressBar", progressBarMaterial);
-//            progressBar.lock()->SetSize({256.f, 32.f});
-//            progressBar.lock()->SetPosition({0.f, 720.f - 50.f});
-//            progressBar.lock()->SetAnchor({0.f, 1.f});
-//            auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/ARLRDBD.TTF");
-//            auto label = ui.lock()->AddComponent<mlg::Label>("Label", font);
-//            label.lock()->SetText("Aaa Kotki 2 szarobure obydwa 1234567890");
-//            label.lock()->SetPosition({50, 50});
-//            label.lock()->SetTextColor({1, 1, 1});
-//            label.lock()->SetSize(32);
-//            auto buttonMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/button_material.json");
-//            auto focusMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/UI/focus_material.json");
-//            auto button1 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
-//            auto button2 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
-//            auto button3 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
-//            auto button4 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
-//            auto button5 = ui.lock()->AddComponent<mlg::Button>("Button", buttonMaterial, focusMaterial);
-//            button1.lock()->SetPosition({400.f, 300.f});
-//            button2.lock()->SetPosition({400.f, 360.f});
-//            button3.lock()->SetPosition({400.f, 240.f});
-//            button4.lock()->SetPosition({190.f, 300.f});
-//            button5.lock()->SetPosition({610.f, 300.f});
-//
-//            button1.lock()->next.top = button2;
-//            button1.lock()->next.bottom = button3;
-//            button1.lock()->next.left = button4;
-//            button1.lock()->next.right = button5;
-//
-//            button2.lock()->next.bottom = button1;
-//            button3.lock()->next.top = button1;
-//            button4.lock()->next.right = button1;
-//            button5.lock()->next.left = button1;
-//
-//            button1.lock()->GrabFocus();
-//
-//            mlg::UIRenderer::GetInstance()->AddRenderable(image);
-//            mlg::UIRenderer::GetInstance()->AddRenderable(progressBar);
-//            mlg::UIRenderer::GetInstance()->AddRenderable(label);
-//            mlg::UIRenderer::GetInstance()->AddRenderable(button1);
-//            mlg::UIRenderer::GetInstance()->AddRenderable(button2);
-//            mlg::UIRenderer::GetInstance()->AddRenderable(button3);
-//            mlg::UIRenderer::GetInstance()->AddRenderable(button4);
-//            mlg::UIRenderer::GetInstance()->AddRenderable(button5);
-        }
-
-        PlayerData firstPlayerData = {0, mlg::RGBA::red};
-        PlayerData secondPlayerData = {1, mlg::RGBA::cyan};
-
-        auto player = mlg::EntityManager::SpawnEntity<Player>("Player", false, mlg::SceneGraph::GetRoot(), firstPlayerData);
-        player.lock()->AddComponent<PlayerOneInput>("PlayerInput");
-
-        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false, mlg::SceneGraph::GetRoot(), secondPlayerData);
-        playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
+        auto cubeModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/primitives/Cube.obj");
+        auto sphereModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/primitives/Sphere.obj");
 
         auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
         auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
@@ -245,7 +183,7 @@ public:
 
         auto overlay = mlg::EntityManager::SpawnEntity<GameplayOverlay>("Overlay", false, mlg::SceneGraph::GetRoot());
 
-        uint32_t timer = mlg::TimerManager::GetInstance()->SetTimer(2.f, false, []() -> void {
+        uint32_t timer = mlg::TimerManager::Get()->SetTimer(2.f, false, []() -> void {
             SPDLOG_WARN("Hello after 2s");
         });
     }
