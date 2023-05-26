@@ -24,9 +24,6 @@
 #include "Physics/CollisionManager.h"
 #include "Player.h"
 
-#include "Core/RGBA.h"
-#include "Car/PlayerOneInput.h"
-#include "Car/PlayerTwoInput.h"
 #include "Buildings/Factory.h"
 #include "Buildings/AutoDestroyComponent.h"
 
@@ -239,17 +236,6 @@ namespace mlg {
         return mapObj;
     }
 
-    LevelGenerator::FactoryObject LevelGenerator::LoadFactoryData(const std::string& path) {
-        std::ifstream factoryFile{path};
-        json factoryJson = json::parse(factoryFile);
-
-        FactoryObject factoryObj;
-        factoryObj.mesh = ParseObject(factoryJson["static-mesh"]);
-        //todo: add colliders, blueprints & emitters
-
-        return factoryObj;
-    }
-
     void LevelGenerator::GenerateLevel() {
         int x = 0, y = 0;
         for (const std::string& row : levelLayout) {
@@ -378,8 +364,8 @@ namespace mlg {
     }
 
     void LevelGenerator::PutEntity(const MapObject &mapObject, const glm::ivec2 &position, float rotation) const {
-        auto modelEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("MapObject", !mapObject.isDynamic,
-                                                                        mlg::SceneGraph::GetRoot());
+        auto newEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>(
+                "MapObject", !mapObject.isDynamic, mlg::SceneGraph::GetRoot()).lock();
 
         auto staticMesh = newEntity->AddComponent<mlg::StaticMeshComponent>("StaticMesh", mapObject.model, mapObject.material);
 
