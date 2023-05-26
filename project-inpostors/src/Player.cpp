@@ -201,7 +201,7 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     label->SetTextColor(newPlayer->playerData.color);
     label->SetBillboardTarget(newPlayer);
     label->SetPosition({-6.f, 35.f});
-    if(newPlayer->GetName() == "Player")
+    if(newPlayer->playerData.id == 0)
     {
         label->SetText("P1");
     } else {
@@ -211,7 +211,7 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/player/panel_material.json");
     ui = newPlayer->AddComponent<mlg::Image>("Panel", material).lock();
     ui->SetSize({200.f, 38.f});
-    if(newPlayer->GetName() == "Player")
+    if(newPlayer->playerData.id == 0)
     {
         ui->SetPosition(ui->GetSize() * 0.5f);
     } else {
@@ -222,7 +222,7 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     label = newPlayer->AddComponent<mlg::Label>("PlayerName", font).lock();
     label->SetSize(32);
     label->SetTextColor(newPlayer->playerData.color);
-    if(newPlayer->GetName() == "Player")
+    if(newPlayer->playerData.id == 0)
     {
         label->SetPosition({10, 8});
         label->SetText("P1");
@@ -235,7 +235,7 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/wood_material.json");
     ui = newPlayer->AddComponent<mlg::Image>("WoodEq", material).lock();
     ui->SetSize({32.f, 32.f});
-    if(newPlayer->GetName() == "Player")
+    if(newPlayer->playerData.id == 0)
     {
         ui->SetPosition({72.f, 17.f});
     } else {
@@ -246,7 +246,7 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/metal_material.json");
     ui = newPlayer->AddComponent<mlg::Image>("MetalEq", material).lock();
     ui->SetSize({32.f, 32.f});
-    if(newPlayer->GetName() == "Player")
+    if(newPlayer->playerData.id == 0)
     {
         ui->SetPosition({72.f+36.f, 17.f});
     } else {
