@@ -6,7 +6,7 @@ using Random = effolkronium::random_static;
 
 DestroyFX::DestroyFX()
     : mlg::ParticleSystem(15), firstUpdate(true) {
-    SetMaterial(mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/Particles/smokeFX.json"));
+    SetMaterial(mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/particles/smoke_fx.json"));
 }
 
 void DestroyFX::UpdateSystem(const mlg::Transform& transform) {
