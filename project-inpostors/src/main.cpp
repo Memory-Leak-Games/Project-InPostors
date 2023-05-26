@@ -168,7 +168,7 @@ public:
         auto testCarOne = mlg::EntityManager::SpawnEntity<TrafficCar>("TrafficCar", false, mlg::SceneGraph::GetRoot(), testCarOneData);
         testCarOne.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->TrafficDriveOn();
         auto testCarOneRigidbody = testCarOne.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
-        testCarOneRigidbody.lock()->SetPosition({10.f, 15.f});
+        testCarOneRigidbody.lock()->SetPosition({30.f, -5.f});
 
 //        auto testCarTwo = mlg::EntityManager::SpawnEntity<TrafficCar>("TrafficCar", false, mlg::SceneGraph::GetRoot(), testCarTwoData);
 //        testCarTwo.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->TrafficDriveOn();

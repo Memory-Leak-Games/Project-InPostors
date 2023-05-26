@@ -90,6 +90,7 @@ public:
     float GetAlignmentWeight() const { return alignmentWeight; }
 
     std::list<glm::vec2> GetPath() const;
+    glm::vec2 GetCurrentWaypoint() const;
 
     void SetPath(std::list<glm::vec2> newPath);
     void CreateBasePath(float minX, float minY, float maxX, float maxY) const;
@@ -103,14 +104,14 @@ public:
     void SeparationOn() { flags |= separation; }
     void AlignmentOn() { flags |= alignment; }
     void FollowPathOn() { flags |= followPath; }
-    void TrafficDriveOn() { AlignmentOn(); SeparationOn(); }
+    void TrafficDriveOn() { FollowPathOn(); AlignmentOn(); SeparationOn(); }
 
     void SeekOff() { if(BehaviorTypeOn(seek)) flags ^= seek; }
     void ArriveOff() { if(BehaviorTypeOn(arrive)) flags ^= arrive; }
     void SeparationOff() { if(BehaviorTypeOn(separation)) flags ^= separation; }
     void AlignmentOff() { if(BehaviorTypeOn(alignment)) flags ^= alignment; }
     void FollowPathOff() { if(BehaviorTypeOn(followPath)) flags ^= followPath; }
-    void TrafficDriveOff() { AlignmentOff(); SeparationOff(); }
+    void TrafficDriveOff() { FollowPathOff(); AlignmentOff(); SeparationOff(); }
 
     bool isSeekOn() { return BehaviorTypeOn(seek); }
     bool isArriveOn() { return BehaviorTypeOn(arrive); }

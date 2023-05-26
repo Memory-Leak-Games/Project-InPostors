@@ -55,14 +55,15 @@ void AIComponent::PhysicsUpdate() {
 #ifdef DEBUG
     if (mlg::SettingsManager::Get<bool>(mlg::SettingsType::Debug, "showAiForces")) {
         glm::vec3 steeringForce3D = {steeringForce.x, 0.f, steeringForce.y};
+        glm::vec3 nextWaypoint = {steering->GetCurrentWaypoint().x, 0.f, steering->GetCurrentWaypoint().y};
         glm::vec3 position = GetOwner().lock()->GetTransform().GetPosition();
         mlg::Gizmos::DrawLine(position, position + steeringForce3D, mlg::RGBA::magenta);
+        mlg::Gizmos::DrawLine(position, nextWaypoint, mlg::RGBA::red);
     }
 #endif
 }
 
 void AIComponent::AIUpdate() {
-    //TODO: Update AI here
 }
 
 void AIComponent::LoadParameters(const std::string& path = "res/config/cars/traffic.json") {
