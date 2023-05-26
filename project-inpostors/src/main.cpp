@@ -31,6 +31,7 @@
 #include "ai/TrafficCar.h"
 #include "ai/AIComponent.h"
 #include "ai/SteeringBehaviors.h"
+#include "ai/Path.h"
 
 #include <Gameplay/ComponentManager.h>
 #include <Gameplay/Components/RigidbodyComponent.h>
@@ -165,28 +166,19 @@ public:
         TrafficCarData testCarThreeData = {2, mlg::RGBA::black};
 
         auto testCarOne = mlg::EntityManager::SpawnEntity<TrafficCar>("TrafficCar", false, mlg::SceneGraph::GetRoot(), testCarOneData);
-        testCarOne.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->SeekOn();
-        testCarOne.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->ArriveOn();
-        testCarOne.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->SeparationOn();
-        testCarOne.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->AlignmentOn();
+        testCarOne.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->TrafficDriveOn();
         auto testCarOneRigidbody = testCarOne.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
         testCarOneRigidbody.lock()->SetPosition({10.f, 15.f});
 
-        auto testCarTwo = mlg::EntityManager::SpawnEntity<TrafficCar>("TrafficCar", false, mlg::SceneGraph::GetRoot(), testCarTwoData);
-        testCarTwo.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->SeekOn();
-        testCarTwo.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->ArriveOn();
-        testCarTwo.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->SeparationOn();
-        testCarTwo.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->AlignmentOn();
-        auto testCarTwoRigidbody = testCarTwo.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
-        testCarTwoRigidbody.lock()->SetPosition({10.f, 25.f});
-
-        auto testCarThree = mlg::EntityManager::SpawnEntity<TrafficCar>("TrafficCar", false, mlg::SceneGraph::GetRoot(), testCarThreeData);
-        testCarThree.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->SeekOn();
-        testCarThree.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->ArriveOn();
-        testCarThree.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->SeparationOn();
-        testCarThree.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->AlignmentOn();
-        auto testCarThreeRigidbody = testCarThree.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
-        testCarThreeRigidbody.lock()->SetPosition({-30.f, 0.f});
+//        auto testCarTwo = mlg::EntityManager::SpawnEntity<TrafficCar>("TrafficCar", false, mlg::SceneGraph::GetRoot(), testCarTwoData);
+//        testCarTwo.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->TrafficDriveOn();
+//        auto testCarTwoRigidbody = testCarTwo.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
+//        testCarTwoRigidbody.lock()->SetPosition({10.f, 25.f});
+//
+//        auto testCarThree = mlg::EntityManager::SpawnEntity<TrafficCar>("TrafficCar", false, mlg::SceneGraph::GetRoot(), testCarThreeData);
+//        testCarThree.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->TrafficDriveOn();
+//        auto testCarThreeRigidbody = testCarThree.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
+//        testCarThreeRigidbody.lock()->SetPosition({-30.f, 0.f});
 
         // create factories
         auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("Smelter", false, mlg::SceneGraph::GetRoot(),

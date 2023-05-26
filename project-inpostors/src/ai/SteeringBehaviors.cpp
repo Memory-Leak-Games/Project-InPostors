@@ -6,6 +6,7 @@
 #include "ai/SteeringBehaviors.h"
 #include "ai/TrafficCar.h"
 #include "ai/AIComponent.h"
+#include "ai/Path.h"
 
 #include "Gameplay/EntityManager.h"
 #include "Gameplay/Entity.h"
@@ -16,12 +17,16 @@ SteeringBehaviors::SteeringBehaviors(AIComponent* agent, const std::string& conf
     : aiComponent(agent), flags(0), deceleration(fast), summingMethod(prioritized) {
     LoadParameters(configPath);
 
-    //TODO: Set Path here
+    path = std::make_unique<Path>();
+    path->LoopOn();
+
+    //TODO: Replace this with Path from level
+//    path->CreateBasePath(-10, -10, 10, 10);
+    path->AddWaypoint({10.f, -20.f});
+    path->AddWaypoint({10.f, 10.f});
 }
 
-SteeringBehaviors::~SteeringBehaviors() {
-    //TODO: Delete Path
-}
+SteeringBehaviors::~SteeringBehaviors() = default;
 
 bool SteeringBehaviors::AccumulateForce(glm::vec2& total, glm::vec2 forceToAdd) {
     float magnitudeThusFar = total.length();
@@ -100,7 +105,7 @@ glm::vec2 SteeringBehaviors::CalculatePrioritized() {
     }
 
     if (BehaviorTypeOn(followPath)) {
-//        force = FollowPath() * followPathWeight;
+        force = FollowPath() * followPathWeight;
 
         if (!AccumulateForce(steeringForce, force))
             return steeringForce;
@@ -134,7 +139,7 @@ glm::vec2 SteeringBehaviors::Arrive(glm::vec2 TargetPos, Deceleration decelerati
         return (desiredVelocity - aiComponent->GetLinearVelocity());
     }
 
-    return glm::vec2(0, 0);
+    return {0, 0};
 }
 
 glm::vec2 SteeringBehaviors::Separation(const std::vector<std::weak_ptr<TrafficCar>>& agents) {
@@ -174,6 +179,20 @@ glm::vec2 SteeringBehaviors::Alignment(const std::vector<std::weak_ptr<TrafficCa
     return avgHeading;
 }
 
+glm::vec2 SteeringBehaviors::FollowPath() {
+    if (glm::distance2(path->GetCurrentWaypoint(), aiComponent->GetPosition())
+        < sqrt(waypointSeekDistance)) {
+        path->SetNextWaypoint();
+    }
+
+    if (!path->IsPathCompleted()) {
+        return Seek(path->GetCurrentWaypoint());
+    }
+    else {
+        return Arrive(path->GetCurrentWaypoint(), slow);
+    }
+}
+
 void SteeringBehaviors::LoadParameters(const std::string& path) {
     std::ifstream configFile{path};
     json configJson = json::parse(configFile);
@@ -185,4 +204,12 @@ void SteeringBehaviors::LoadParameters(const std::string& path) {
     seekWeight = parameters["seekWeight"];
     arriveWeight = parameters["arriveWeight"];
     followPathWeight = parameters["followPathWeight"];
+}
+
+void SteeringBehaviors::SetPath(std::list<glm::vec2> newPath) {
+    path->Set(newPath);
+}
+
+void SteeringBehaviors::CreateBasePath(float minX, float minY, float maxX, float maxY) const {
+    path->CreateBasePath(minX, minY, maxX, maxY);
 }

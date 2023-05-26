@@ -2,6 +2,7 @@
 
 class AIComponent;
 class TrafficCar;
+class Path;
 
 const float waypointSeekDistance = 20;
 
@@ -36,8 +37,9 @@ private:
 
     uint64_t flags;
 
-    AIComponent* aiComponent;
-    TrafficCar* trafficCar;
+    std::unique_ptr<AIComponent> aiComponent;
+    std::unique_ptr<TrafficCar> trafficCar;
+    std::unique_ptr<Path> path;
 
     enum Deceleration {
         slow = 3,
@@ -87,6 +89,9 @@ public:
     float GetSeparationWeight() const { return separationWeight; }
     float GetAlignmentWeight() const { return alignmentWeight; }
 
+    void SetPath(std::list<glm::vec2> newPath);
+    void CreateBasePath(float minX, float minY, float maxX, float maxY) const;
+
     void SetSummingMethod(SummingMethod sm) { summingMethod = sm; }
     void SetTarget(const glm::vec2 t) { target = t; }
 
@@ -96,12 +101,14 @@ public:
     void SeparationOn() { flags |= separation; }
     void AlignmentOn() { flags |= alignment; }
     void FollowPathOn() { flags |= followPath; }
+    void TrafficDriveOn() { AlignmentOn(); SeparationOn(); }
 
     void SeekOff() { if(BehaviorTypeOn(seek)) flags ^= seek; }
     void ArriveOff() { if(BehaviorTypeOn(arrive)) flags ^= arrive; }
     void SeparationOff() { if(BehaviorTypeOn(separation)) flags ^= separation; }
     void AlignmentOff() { if(BehaviorTypeOn(alignment)) flags ^= alignment; }
     void FollowPathOff() { if(BehaviorTypeOn(followPath)) flags ^= followPath; }
+    void TrafficDriveOff() { AlignmentOff(); SeparationOff(); }
 
     bool isSeekOn() { return BehaviorTypeOn(seek); }
     bool isArriveOn() { return BehaviorTypeOn(arrive); }
