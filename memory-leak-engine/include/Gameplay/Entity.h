@@ -21,7 +21,6 @@ namespace mlg {
 
         std::vector<std::weak_ptr<class Component>> components;
 
-
     protected:
         explicit Entity(uint64_t id, std::string name, bool isStatic, Transform* parent);
 
