@@ -7,6 +7,8 @@ namespace mlg {
 }
 
 class SmokeFX : public mlg::ParticleSystem {
+private:
+    float timeAccumulator = 0.f;
 public:
     SmokeFX();
 
