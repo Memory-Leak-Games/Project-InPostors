@@ -37,9 +37,9 @@ private:
 
     uint64_t flags;
 
-    std::unique_ptr<AIComponent> aiComponent;
-    std::unique_ptr<TrafficCar> trafficCar;
-    std::unique_ptr<Path> path;
+    AIComponent* aiComponent;
+    TrafficCar* trafficCar;
+    Path* path;
 
     enum Deceleration {
         slow = 3,
@@ -88,6 +88,8 @@ public:
 
     float GetSeparationWeight() const { return separationWeight; }
     float GetAlignmentWeight() const { return alignmentWeight; }
+
+    std::list<glm::vec2> GetPath() const;
 
     void SetPath(std::list<glm::vec2> newPath);
     void CreateBasePath(float minX, float minY, float maxX, float maxY) const;

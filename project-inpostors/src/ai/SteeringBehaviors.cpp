@@ -17,13 +17,13 @@ SteeringBehaviors::SteeringBehaviors(AIComponent* agent, const std::string& conf
     : aiComponent(agent), flags(0), deceleration(fast), summingMethod(prioritized) {
     LoadParameters(configPath);
 
-    path = std::make_unique<Path>();
+    path = new Path();
     path->LoopOn();
 
     //TODO: Replace this with Path from level
 //    path->CreateBasePath(-10, -10, 10, 10);
-    path->AddWaypoint({10.f, -20.f});
-    path->AddWaypoint({10.f, 10.f});
+    path->AddWaypoint({10.f, 0.f});
+    path->AddWaypoint({-30.f, 0.f});
 }
 
 SteeringBehaviors::~SteeringBehaviors() = default;
@@ -106,6 +106,7 @@ glm::vec2 SteeringBehaviors::CalculatePrioritized() {
 
     if (BehaviorTypeOn(followPath)) {
         force = FollowPath() * followPathWeight;
+        SPDLOG_INFO("Follow path force ({}, {})", force.x, force.y);
 
         if (!AccumulateForce(steeringForce, force))
             return steeringForce;
@@ -182,6 +183,7 @@ glm::vec2 SteeringBehaviors::Alignment(const std::vector<std::weak_ptr<TrafficCa
 glm::vec2 SteeringBehaviors::FollowPath() {
     if (glm::distance2(path->GetCurrentWaypoint(), aiComponent->GetPosition())
         < sqrt(waypointSeekDistance)) {
+        SPDLOG_INFO("Waypoint reached - selecting new waypoint");
         path->SetNextWaypoint();
     }
 
@@ -189,7 +191,7 @@ glm::vec2 SteeringBehaviors::FollowPath() {
         return Seek(path->GetCurrentWaypoint());
     }
     else {
-        return Arrive(path->GetCurrentWaypoint(), slow);
+        return Arrive(path->GetCurrentWaypoint(), normal);
     }
 }
 
@@ -212,4 +214,8 @@ void SteeringBehaviors::SetPath(std::list<glm::vec2> newPath) {
 
 void SteeringBehaviors::CreateBasePath(float minX, float minY, float maxX, float maxY) const {
     path->CreateBasePath(minX, minY, maxX, maxY);
+}
+
+std::list<glm::vec2> SteeringBehaviors::GetPath() const {
+    return path->GetPath();
 }
