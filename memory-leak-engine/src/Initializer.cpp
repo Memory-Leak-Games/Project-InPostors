@@ -37,9 +37,15 @@ void mlg::Initializer::InitializeCoreComponents() {
     Core::Initialize();
     Input::Initialize();
     UIController::Initialize();
+
+    RenderingAPI::Initialize();
+    Gizmos::Initialize();
 }
 
 void mlg::Initializer::StopCoreComponents() {
+    Gizmos::Stop();
+    RenderingAPI::Stop();
+
     UIController::Stop();
     Input::Stop();
     Core::Stop();
@@ -54,13 +60,11 @@ void mlg::Initializer::StopCoreComponents() {
 }
 
 void mlg::Initializer::InitializeSceneComponents() {
-    RenderingAPI::Initialize();
     Renderer::Initialize();
     UIRenderer::Initialize();
     CommonUniformBuffer::Initialize();
 
     SceneGraph::Initialize();
-    Gizmos::Initialize();
 
     TimerManager::Initialize();
     Physics::Initialize();
@@ -76,11 +80,9 @@ void mlg::Initializer::StopSceneComponents() {
     Physics::Stop();
     TimerManager::Stop();
 
-    Gizmos::Stop();
     SceneGraph::Stop();
     
     CommonUniformBuffer::Stop();
     UIRenderer::Stop();
     Renderer::Stop();
-    RenderingAPI::Stop();
 }
