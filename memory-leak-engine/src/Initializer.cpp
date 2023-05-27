@@ -1,7 +1,8 @@
 #include "Initializer.h"
 
-#include "Core/AssetManager/AssetManager.h"
 #include "Core/Core.h"
+#include "Core/AssetManager/AssetManager.h"
+#include "Core/SceneManager/SceneManager.h"
 #include "Core/Settings/SettingsManager.h"
 #include "Core/Time.h"
 #include "Core/TimerManager.h"
@@ -40,9 +41,13 @@ void mlg::Initializer::InitializeCoreComponents() {
 
     RenderingAPI::Initialize();
     Gizmos::Initialize();
+
+    SceneManager::Initialize();
 }
 
 void mlg::Initializer::StopCoreComponents() {
+    SceneManager::Stop();
+
     Gizmos::Stop();
     RenderingAPI::Stop();
 
