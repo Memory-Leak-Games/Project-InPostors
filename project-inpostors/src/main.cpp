@@ -147,7 +147,8 @@ public:
         mlg::LevelGenerator::SpawnPlayers(testLevelPath);
 
         cityAmbientSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/city_ambient.mp3");
-        cityAmbientSound->PlayBackgroundMusic();
+        cityAmbientSound->PlayBackgroundMusic(4.f);
+
 
         // load props
         mlg::LevelGenerator::LoadMap(testLevelPropsPath);

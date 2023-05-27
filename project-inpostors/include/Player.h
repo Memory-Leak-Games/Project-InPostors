@@ -25,9 +25,11 @@ private:
     std::shared_ptr<class mlg::AudioAsset> pickUpSound;
     std::shared_ptr<class mlg::AudioAsset> dropSound;
     std::shared_ptr<class mlg::AudioAsset> hitSound;
+    std::shared_ptr<class mlg::AudioAsset> truckEngineSound;
+
+    bool isEngineSoundPlaying = false;
 
     PlayerData playerData;
-
 private:
     Player(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent, const PlayerData& playerData);
 

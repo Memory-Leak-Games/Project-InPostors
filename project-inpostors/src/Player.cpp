@@ -86,6 +86,8 @@ void Player::Start() {
     pickUpSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/pick_up.wav");
     dropSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/drop.wav");
     hitSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/hit.wav");
+    truckEngineSound =  mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/truck_engine.mp3");
+
 }
 
 void Player::Update() {
@@ -95,13 +97,28 @@ void Player::Update() {
     if (carInput->GetDropInput())
         Drop();
 
+
+    //Engine idle sound (when we "stay")
+    if (abs(rigidbodyComponent.lock()->GetLocalVelocity().z) < 0.5) {
+        if (!isEngineSoundPlaying) {
+            truckEngineSound->Play(1.f);
+            isEngineSoundPlaying = true;
+        }
+    }
+    else {
+        if (isEngineSoundPlaying) {
+            truckEngineSound->Stop();
+            isEngineSoundPlaying = false;
+        }
+    }
+
+    //SPDLOG_WARN("{}", rigidbodyComponent.lock()->GetLocalVelocity().z);
+
     std::vector<std::weak_ptr<mlg::Collider>> overlappingColliders;
     rigidbodyComponent.lock()->GetOverlappingColliders(overlappingColliders);
-
     for (const auto& collider : overlappingColliders) {
-        if (collider.lock()->GetTag().empty() && (rigidbodyComponent.lock()->GetAngularSpeed() > 0.5 || rigidbodyComponent.lock()->GetAngularSpeed() < -0.5)) {
-            //SPDLOG_WARN("{}", rigidbodyComponent.lock()->GetAngularSpeed());
-            hitSound->Play();
+        if (collider.lock()->GetTag().empty()) {
+            hitSound->Play(rigidbodyComponent.lock()->GetLocalVelocity().z * 0.1);
         }
     }
 
@@ -137,7 +154,7 @@ void Player::PickUp() {
             return;
 
         equipment->AddProduct(factoryOutput);
-        pickUpSound->Play();
+        pickUpSound->Play(4.f);
         // TODO: remove me
         SPDLOG_WARN("{} : PickUp {} from {}", GetName(), factoryOutput, factory->GetName());
     }
@@ -170,7 +187,7 @@ void Player::Drop() {
 
             if (!factory->GetEquipmentComponent()->AddProduct(item))
                 continue;
-            dropSound->Play();
+            dropSound->Play(4.f);
             equipment->RequestProduct(item);
 
             // TODO: remove me
