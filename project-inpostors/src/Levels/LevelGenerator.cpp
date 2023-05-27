@@ -39,6 +39,7 @@ namespace mlg {
 
         std::vector<std::string> ret = levelGenerator.LoadLayout();
         levelGenerator.LoadMapObjects();
+
         // I need to test full factories not only mesh
         // levelGenerator.LoadFactories();
         levelGenerator.LoadRoads();

@@ -136,11 +136,10 @@ public:
 
         std::vector<std::string> levelLayout;
 
-        const std::string testLevelPath = "res/levels/maps/detroit.json";
-        const std::string testLevelPropsPath = "res/levels/maps/detroit_props.json";
+        const std::string testLevelPath = "res/levels/maps/test_level.json";
+        const std::string testLevelPropsPath = "res/levels/maps/test_level_props.json";
 
         levelLayout = mlg::LevelGenerator::LoadMap(testLevelPath);
-        mlg::LevelGenerator::LoadMap(testLevelPath);
         mlg::LevelGenerator::SpawnGround(testLevelPath);
         mlg::LevelGenerator::SetCityBounds(testLevelPath);
         mlg::LevelGenerator::LoadCameraSettings(testLevelPath, *cameraComponent.lock());
