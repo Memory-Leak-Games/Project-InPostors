@@ -6,6 +6,10 @@
 
 TODO: Add readme
 
+## Parameters
+- `--test-scene` - run test scene
+- `--level=<PathTolevel>` - run level 
+
 [Changelog](ChangeLog.md)
 
 ## Credits:
