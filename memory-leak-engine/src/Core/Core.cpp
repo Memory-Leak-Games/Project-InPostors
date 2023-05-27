@@ -1,4 +1,5 @@
 #include "Core/Core.h"
+#include "Core/SceneManager/SceneManager.h"
 
 
 #ifdef DEBUG
@@ -118,6 +119,10 @@ void Core::TickGameplay() const {
 
     ComponentManager::Update();
     EntityManager::Update();
+
+    SceneManager::Update();
+    OnUpdate();
+
     ComponentManager::LateUpdate();
     EntityManager::LateUpdate();
 }

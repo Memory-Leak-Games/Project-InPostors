@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <eventpp/callbacklist.h>
 
 #include "Window.h"
 
@@ -12,6 +13,8 @@ namespace mlg {
         Core() = default;
 
     public:
+        eventpp::CallbackList<void()> OnUpdate;
+
         static void Initialize();
         static void Stop();
 
