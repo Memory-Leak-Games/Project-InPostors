@@ -51,6 +51,16 @@ namespace mlg {
 
         levelGenerator.GenerateLevel();
 
+        // TODO: Kris there is my garbage. I would not be offended if you modify
+        // or delete that
+
+        if (!levelGenerator.levelJson.contains("sublevels"))
+            return ret;
+
+        for (const auto& sublevel : levelGenerator.levelJson["sublevels"]) {
+            LoadMap(sublevel);
+        }
+
         return ret;
     }
 
