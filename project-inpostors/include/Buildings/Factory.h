@@ -14,7 +14,7 @@ private:
     std::shared_ptr<class EquipmentComponent> equipmentComponent;
 
     std::string blueprintId;
-    uint produceTimerHandle = 0;
+    unsigned int produceTimerHandle = 0;
 
 public:
     ~Factory() override;
@@ -38,6 +38,8 @@ private:
         OneInputOutput,
         SeparateInputOutput
     } factoryType;
+
+    glm::vec2 meshOffset;
 
     void AddMesh(const nlohmann::json& staticMeshJson);
     void AddCollider(const nlohmann::json& colliderJson, mlg::RigidbodyComponent* rigidbodyComponent);
