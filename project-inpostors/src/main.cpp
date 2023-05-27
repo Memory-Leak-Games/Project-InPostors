@@ -27,6 +27,11 @@ public:
         engine->MainLoop();
 
         mlg::Initializer::StopSceneComponents();
+        mlg::Initializer::InitializeSceneComponents();
+        PrepareScene();
+        engine->MainLoop();
+
+        mlg::Initializer::StopSceneComponents();
         mlg::Initializer::StopCoreComponents();
 
         return 0;
