@@ -1,0 +1,41 @@
+{
+  "name": "TestMap",
+  "tile-size": 4.0,
+  "tileset": "res/levels/tilesets/city_tileset.json",
+
+  "sublevels": [ "res/levels/maps/test_level_props.json" ],
+
+  "ground-color": [0.898, 0.854, 0.890, 1.0],
+
+  "layout": [
+    " ##########################",
+    " ##########################",
+    " ##########################",
+    " ###        ###         ###",
+    " ###        ###         ###",
+    " ###        ###         ###",
+    " ##########################",
+    " ##########################",
+    " ##########################"
+  ],
+
+  "camera-settings": {
+    "position": [16.0, 50.0, -14.0],
+    "rotation": [65.0, -45.0, 0.0],
+
+    "size": 100.0,
+    "near": 0.1,
+    "far": 200.0
+  },
+
+  "player-one": {
+    "position": [32.0, -12.0],
+    "rotation": 180.0,
+    "car-type": "res/config/cars/van.json"
+  },
+
+  "player-two": {
+    "position": [-16.0, -12.0],
+    "car-type": "res/config/cars/van.json"
+  }
+}

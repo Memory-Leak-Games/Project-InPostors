@@ -45,6 +45,12 @@ CPMAddPackage("gh:freetype/freetype#VER-2-13-0")
 CPMAddPackage("gh:wolfpld/tracy@0.9.1")
 CPMAddPackage("gh:Neargye/magic_enum@0.8.2")
 
+CPMAddPackage(
+  GITHUB_REPOSITORY jarro2783/cxxopts
+  VERSION 3.1.1
+  OPTIONS "CXXOPTS_BUILD_EXAMPLES NO" "CXXOPTS_BUILD_TESTS NO" "CXXOPTS_ENABLE_INSTALL YES"
+)
+
 set_target_properties(glad
         stb_image
         glfw
