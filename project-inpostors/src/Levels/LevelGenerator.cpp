@@ -1,7 +1,9 @@
 #include <effolkronium/random.hpp>
 #include <fstream>
+#include <memory>
 #include <utility>
 
+#include "Core/AssetManager/AssetManager.h"
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
 #include "Rendering/Model.h"
@@ -202,36 +204,21 @@ namespace mlg {
     }
 
     LevelGenerator::MapObject LevelGenerator::ParseObject(const json& jsonMapObject) {
-        std::string modelPath = jsonMapObject["model"].get<std::string>();
-        std::string materialPath = jsonMapObject.contains("material")
-                                           ? jsonMapObject["material"].get<std::string>()
-                                           : defaultMaterial;
-
         MapObject mapObj;
-        mapObj.model = AssetManager::GetAsset<ModelAsset>(modelPath);
-        mapObj.material = AssetManager::GetAsset<MaterialAsset>(materialPath);
+        mapObj.modelPath = jsonMapObject["model"];
+        mapObj.materialPath = jsonMapObject.value("material", defaultMaterial);
 
-        mapObj.worldRot = jsonMapObject.contains("rotation")
-                                  ? jsonMapObject["rotation"].get<float>()
-                                  : 0.f;
+        mapObj.worldRot = jsonMapObject.value("rotation", 0.f);
         mapObj.worldRot = glm::radians(mapObj.worldRot);
 
-        mapObj.scale = jsonMapObject.contains("scale")
-                               ? jsonMapObject["scale"].get<float>()
-                               : 1.f;
+        mapObj.scale = jsonMapObject.value("scale", 1.f);
 
         if (jsonMapObject.contains("collision-type")) {
             mapObj.hasCollision = true;
-            mapObj.colliderType = jsonMapObject["collision-type"].get<std::string>();
-            mapObj.colliderSize = jsonMapObject.contains("collision-size")
-                                          ? jsonMapObject["collision-size"].get<float>()
-                                          : 1.0f;
-            mapObj.colliderOffset = jsonMapObject.contains("collision-offset")
-                                            ? jsonMapObject["collision-offset"].get<float>()
-                                            : 0.0f;
-
-            if (jsonMapObject.contains("dynamic"))
-                mapObj.isDynamic = jsonMapObject["dynamic"];
+            mapObj.colliderType = jsonMapObject["collision-type"];
+            mapObj.colliderSize = jsonMapObject.value("collision-size", 1.f);
+            mapObj.colliderOffset = jsonMapObject.value("collision-offset", 0.f);
+            mapObj.isDynamic = jsonMapObject.value("dynamic", false);
         }
 
         return mapObj;
@@ -368,7 +355,10 @@ namespace mlg {
         auto newEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>(
                 "MapObject", !mapObject.isDynamic, mlg::SceneGraph::GetRoot()).lock();
 
-        auto staticMesh = newEntity->AddComponent<mlg::StaticMeshComponent>("StaticMesh", mapObject.model, mapObject.material);
+        auto model = mlg::AssetManager::GetAsset<ModelAsset>(mapObject.modelPath);
+        auto material = mlg::AssetManager::GetAsset<MaterialAsset>(mapObject.materialPath);
+
+        auto staticMesh = newEntity->AddComponent<mlg::StaticMeshComponent>("StaticMesh", model, material);
 
         glm::vec3 objectPosition = GetLevelPosition(position);
 
