@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Neighbours.h"
+#include <string>
 
 namespace mlg {
 
@@ -16,8 +17,8 @@ namespace mlg {
 
     private:
         struct MapObject {
-            std::shared_ptr<class ModelAsset> model;
-            std::shared_ptr<class MaterialAsset> material;
+            std::string modelPath;
+            std::string materialPath;
             std::string colliderType;
             float worldRot;
             float scale;
