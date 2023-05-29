@@ -109,6 +109,9 @@ namespace mlg {
         TracyGpuZone("Late Draw");
 
         for (auto &lateRenderable: lateRenderables) {
+            if (lateRenderable.expired())
+                continue;
+
             lateRenderable.lock()->LateDraw(this);
         }
     }

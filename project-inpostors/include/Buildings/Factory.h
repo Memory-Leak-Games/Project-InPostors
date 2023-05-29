@@ -18,12 +18,13 @@ private:
 
 
     std::string blueprintId;
-    uint32_t produceTimerHandle = 0;
 
     std::shared_ptr<class mlg::Label> amount1;
     std::shared_ptr<class mlg::Label> amount2;
     std::shared_ptr<class mlg::Label> amount3;
     std::shared_ptr<class mlg::ProgressBar> productionBar;
+
+    unsigned int produceTimerHandle = 0;
 
 public:
     ~Factory() override;
@@ -47,6 +48,8 @@ private:
         OneInputOutput,
         SeparateInputOutput
     } factoryType;
+
+    glm::vec2 meshOffset;
 
     void AddMesh(const nlohmann::json& staticMeshJson);
     void AddCollider(const nlohmann::json& colliderJson, mlg::RigidbodyComponent* rigidbodyComponent);

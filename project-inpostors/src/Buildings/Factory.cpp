@@ -90,18 +90,20 @@ void Factory::AddMesh(const json& staticMeshJson) {
     auto staticMeshComponent = AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
     staticMeshComponent.lock()->GetTransform().SetPosition({
             staticMeshJson["position"][0],
+            0.0,
             staticMeshJson["position"][1],
-            staticMeshJson["position"][2],
     });
 
-    staticMeshComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{
-            staticMeshJson["rotation"][0],
-            staticMeshJson["rotation"][1],
-            staticMeshJson["rotation"][2],
-    }));
+    meshOffset = {staticMeshJson["position"][0], staticMeshJson["position"][1]};
 
     staticMeshComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{
-            staticMeshJson["scale"]}));
+            0.f,
+            staticMeshJson["rotation"],
+            0.f,
+    }));
+
+    staticMeshComponent.lock()->GetTransform().SetScale(glm::vec3{
+            staticMeshJson["scale"]});
 }
 
 void Factory::AddCollider(const json& colliderJson, mlg::RigidbodyComponent* rigidbodyComponent) {
@@ -115,11 +117,14 @@ void Factory::AddEmitter(const json& emitterJson) {
     const std::string id = emitterJson["id"].get<std::string>();
     std::shared_ptr<mlg::ParticleSystem> emitter = FXLibrary::Get(id);
     auto emitterComponent = AddComponent<mlg::ParticleSystemComponent>(id, emitter);
-    emitterComponent.lock()->GetTransform().SetPosition({
-            emitterJson["position"][0],
-            emitterJson["position"][1],
-            emitterJson["position"][2],
-    });
+    glm::vec3 emitterPosition = {
+        emitterJson["position"][0],
+        emitterJson["position"][1],
+        emitterJson["position"][2]
+    };
+    emitterPosition.x += meshOffset.x;
+    emitterPosition.z += meshOffset.y;
+    emitterComponent.lock()->GetTransform().SetPosition(emitterPosition);
 }
 
 void Factory::AddTrigger(const json& triggerJson, const std::string& triggerName,

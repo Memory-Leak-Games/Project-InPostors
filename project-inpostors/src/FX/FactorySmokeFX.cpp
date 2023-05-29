@@ -4,7 +4,7 @@
 #include "SceneGraph/Transform.h"
 #include "Core/Time.h"
 
-FactorySmokeFX::FactorySmokeFX(): mlg::ParticleSystem(30) {
+FactorySmokeFX::FactorySmokeFX(): mlg::ParticleSystem(100) {
     SetMaterial(mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/particles/smoke_fx.json"));
 }
 
@@ -15,7 +15,6 @@ std::shared_ptr<mlg::ParticleSystem> FactorySmokeFX::Clone() {
 void FactorySmokeFX::UpdateSystem(const mlg::Transform& transform) {
     using Random = effolkronium::random_static;
 
-    static float timeAccumulator;
     const float timeToSpawn = 0.1f;
 
     timeAccumulator += mlg::Time::GetDeltaSeconds();
@@ -23,7 +22,7 @@ void FactorySmokeFX::UpdateSystem(const mlg::Transform& transform) {
     if (timeAccumulator > timeToSpawn)
     {
         mlg::ParticleProps particleProps {};
-        particleProps.lifeTime = Random::get(2.f, 1.f);
+        particleProps.lifeTime = Random::get(1.0f, 1.5f);
         particleProps.position = transform.GetWorldPosition() - transform.GetForwardVector();
 
         particleProps.position += glm::vec3 {
@@ -43,7 +42,7 @@ void FactorySmokeFX::UpdateSystem(const mlg::Transform& transform) {
                 Random::get(-1.f, 1.f) + 2.f
         });
 
-        particleProps.endVelocity = particleProps.beginVelocity;
+        particleProps.endVelocity = particleProps.beginVelocity * 0.8f;
 
         Emit(particleProps);
 

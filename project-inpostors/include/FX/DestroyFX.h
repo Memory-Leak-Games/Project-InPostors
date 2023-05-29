@@ -6,11 +6,11 @@ namespace mlg {
     class Transform;
 }
 
-class SmokeFX : public mlg::ParticleSystem {
+class DestroyFX : public mlg::ParticleSystem {
 private:
-    float timeAccumulator = 0.f;
+    bool firstUpdate;
 public:
-    SmokeFX();
+    DestroyFX();
 
     void UpdateSystem(const mlg::Transform& transform) override;
 

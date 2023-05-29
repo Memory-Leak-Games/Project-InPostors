@@ -123,7 +123,9 @@ namespace mlg {
     std::weak_ptr<Collider> RigidbodyComponent::AddCollider(std::unique_ptr<ColliderShape::Shape> shape) {
         auto collider = rigidbody->AddCollider(std::move(shape)).lock();
 
-        collider->OnCollisionEnter.append(OnCollisionEnter);
+        collider->OnCollisionEnter.append([this](const CollisionEvent& event) {
+            OnCollisionEnter(event);
+        });
 
 #ifdef DEBUG
         if (!SettingsManager::Get<bool>(SettingsType::Debug, "showColliders"))
