@@ -1,20 +1,17 @@
 #pragma once
 
-#include <string>
-#include <vector>
-
 class NavigationGraph {
 public:
     struct Node {
         glm::vec2 position;
-        std::vector<std::shared_ptr<NavigationGraph>> connectedNodes;
+        std::vector<std::shared_ptr<Node>> connectedNodes;
 
         bool operator==(const Node &other) const { return position == other.position; }
         bool operator!=(const Node &other) const { return !(*this == other); }
     };
 
 private:
-    std::list<Node> nodes;
+    std::list<std::shared_ptr<Node>> nodes;
 
     std::vector<std::string> layout;
     char crossCharacter;
