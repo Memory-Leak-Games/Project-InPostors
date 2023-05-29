@@ -8,20 +8,23 @@ public:
     struct Node {
         glm::vec2 position;
         std::vector<std::shared_ptr<NavigationGraph>> connectedNodes;
+
+        bool operator==(const Node &other) const { return position == other.position; }
+        bool operator!=(const Node &other) const { return !(*this == other); }
     };
 
 private:
-    std::vector<Node> nodes;
+    std::list<Node> nodes;
 
     std::vector<std::string> layout;
     char crossCharacter;
+
     float tileSize;
+    glm::vec2 citySize {};
+    glm::ivec2 layoutSize {};
 
 public:
-    explicit NavigationGraph(
-            const std::vector<std::string>& layout,
-            char crossCharacter,
-            float tileSize);
+    explicit NavigationGraph(const std::string& levelPath);
 
     Node GetNearestNode(const glm::vec2& position);
 
@@ -29,6 +32,5 @@ public:
 
 private:
     void ParseLayout();
-    glm::vec2 AverageCenterLocations(int x, int y);
-
+    void OptimizeNodes();
 };

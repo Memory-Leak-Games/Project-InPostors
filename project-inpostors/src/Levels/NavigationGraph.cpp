@@ -1,19 +1,38 @@
 #include "Levels/NavigationGraph.h"
+
+#include <fstream>
+#include <stack>
+
 #include "Core/Math.h"
 #include "Rendering/Gizmos/Gizmos.h"
-#include <vector>
 
-NavigationGraph::NavigationGraph(
-        const std::vector<std::string>& layout,
-        char crossCharacter,
-        float tileSize)
-    : layout(layout), crossCharacter(crossCharacter), tileSize(tileSize) {
+using json = nlohmann::json;
+
+NavigationGraph::NavigationGraph(const std::string& levelPath) {
+    std::ifstream levelFile{levelPath};
+    json levelJson = json::parse(levelFile);
+
+    tileSize = levelJson.value("tile-size", 1.f);
+    crossCharacter = levelJson.value("cross-character", 'x');
+    layout = levelJson["navigation"];
+
+    layoutSize.y = layout.size();
+
+    for (const auto& row : layout) {
+        layoutSize.x = std::max(layoutSize.x, (int) row.size());
+    }
+
+    citySize.x = (float) layoutSize.x * tileSize;
+    citySize.y = (float) layoutSize.y * tileSize;
+
+    ParseLayout();
 }
 
 void NavigationGraph::DrawNodes() {
 #ifdef DEBUG
     for (const auto& node : nodes) {
-        mlg::Gizmos::DrawSphere(mlg::Math::ProjectTo3D(node.position));
+        mlg::Gizmos::DrawSphere(
+                mlg::Math::ProjectTo3D(node.position), 0.5f);
     }
 #endif
 }
@@ -25,35 +44,41 @@ void NavigationGraph::ParseLayout() {
                 continue;
 
             Node newNode;
-            newNode.position = AverageCenterLocations(x, y);
+            newNode.position = {layoutSize.x - x, layoutSize.y - y};
+            newNode.position *= tileSize;
+            newNode.position -= citySize / 2.f;
+            newNode.position -= glm::vec2{0.f, 1.f} + tileSize / 2.f;
+
+            nodes.push_back(newNode);
         }
     }
+
+    OptimizeNodes();
 }
 
-glm::vec2 NavigationGraph::AverageCenterLocations(int x, int y) {
-    std::vector<glm::vec2> cornerPositions;
+void NavigationGraph::OptimizeNodes() {
+    std::vector<Node*> nodesToRemove;
+    std::unordered_set<Node*> visitedNodes;
 
-    // find near corners
-    for (int i = -1; i < 1; ++i) {
-        if (y + i > layout.size() || y + i < 0)
+    for (auto& nodeOne : nodes) {
+        if (visitedNodes.contains(&nodeOne))
             continue;
 
-        for (int j = -1; j < 1; ++j) {
-            if (x + i < 0 || x + i > layout[i].size())
+        for (auto& nodeTwo : nodes) {
+            if (&nodeOne == &nodeTwo)
                 continue;
 
-            float tileX = (float) (x + j) * tileSize + tileSize / 2;
-            float tileY = (float) (y + i) * tileSize + tileSize / 2;
+            if (glm::length(nodeOne.position - nodeTwo.position) > tileSize)
+                continue;
 
-            cornerPositions.emplace_back(tileX, tileY);
+            nodeOne.position = (nodeOne.position + nodeTwo.position) / 2.f;
+
+            nodesToRemove.push_back(&nodeTwo);
+            visitedNodes.insert(&nodeTwo);
         }
     }
 
-    // average position
-    glm::vec2 result{0};
-    for (const auto& corner : cornerPositions) {
-        result += corner;
+    for (auto node : nodesToRemove) {
+        unsigned long x = nodes.remove(*node);
     }
-
-    return result / (float) cornerPositions.size();
 }

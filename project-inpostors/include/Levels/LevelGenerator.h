@@ -14,7 +14,6 @@ namespace mlg {
         static void SpawnGround(const std::string& path);
         static void SetCityBounds(const std::string& path);
         static void SpawnPlayers(const std::string& path);
-        static void LoadNavigationGraph(const std::string& path);
 
     private:
         struct MapObject {
