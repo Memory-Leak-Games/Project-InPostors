@@ -6,6 +6,7 @@
 #include "Levels/LevelGenerator.h"
 
 #include "SceneGraph/SceneGraph.h"
+#include "UI/GameplayOverlay.h"
 
 LevelScene::LevelScene(const std::string& path) : levelPath(path) {}
 
@@ -20,5 +21,7 @@ void LevelScene::Load() {
     mlg::LevelGenerator::SetCityBounds(levelPath);
     mlg::LevelGenerator::LoadCameraSettings(levelPath, *cameraComponent.lock());
     mlg::LevelGenerator::SpawnPlayers(levelPath);
+
+    auto gameplayOverlay = mlg::EntityManager::SpawnEntity<GameplayOverlay>("Overlay", false, mlg::SceneGraph::GetRoot());
 }
 
