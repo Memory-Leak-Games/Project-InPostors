@@ -82,6 +82,11 @@ void Player::LoadModel(const json& configJson) {
 
 void Player::Start() {
     carInput = GetComponentByClass<CarInput>().lock();
+
+    pickUpSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/pick_up.wav");
+    dropSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/drop.wav");
+    hitSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/hit.wav");
+    //truckEngineSound =  mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/truck_engine.mp3");
 }
 
 void Player::Update() {
@@ -90,6 +95,15 @@ void Player::Update() {
 
     if (carInput->GetDropInput())
         Drop();
+
+    std::vector<std::weak_ptr<mlg::Collider>> overlappingColliders;
+    rigidbodyComponent.lock()->GetOverlappingColliders(overlappingColliders);
+
+    for (const auto& collider : overlappingColliders) {
+        if (collider.lock()->GetTag().empty() && (rigidbodyComponent.lock()->GetAngularSpeed() > 0.5 || rigidbodyComponent.lock()->GetAngularSpeed() < -0.5)) {
+            hitSound->Play();
+        }
+    }
 
 #ifdef DEBUG
     ImGui::Begin(("Player " + std::to_string(playerData.id)).c_str());
@@ -123,6 +137,7 @@ void Player::PickUp() {
             return;
 
         equipment->AddProduct(factoryOutput);
+        pickUpSound->Play(4.f);
 
         // TODO: remove me
         SPDLOG_WARN("{} : PickUp {} from {}", GetName(), factoryOutput, factory->GetName());
@@ -158,7 +173,7 @@ void Player::Drop() {
                 continue;
 
             equipment->RequestProduct(item);
-
+            dropSound->Play(4.f);
             // TODO: remove me
             SPDLOG_WARN("{} : Drop {} to {}", GetName(), item, factory->GetName());
             return;
