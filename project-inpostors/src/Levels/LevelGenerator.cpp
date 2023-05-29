@@ -139,6 +139,15 @@ namespace mlg {
         CollisionManager::SetBounds(cityStart, cityEnd, layoutSize);
     }
 
+    void LevelGenerator::LoadNavigationGraph(const std::string& path) {
+        LevelGenerator levelGenerator;
+        std::ifstream levelFile{path};
+
+        levelGenerator.levelJson = json::parse(levelFile);
+        
+        
+    }
+
     // ======== PRIVATE METHODS ========
 
     std::vector<std::string> LevelGenerator::LoadLayout() {
