@@ -213,22 +213,25 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     ui->SetSize({200.f, 38.f});
     if(newPlayer->playerData.id == 0)
     {
-        ui->SetPosition(ui->GetSize() * 0.5f);
+        ui->SetPosition(ui->GetSize() * 0.5f + glm::vec2(16, 16));
+        ui->tint = {1.0, 0.0, 0.0, 0.7};
     } else {
-        ui->SetPosition({1280 - ui->GetSize().x * 0.5f, ui->GetSize().y * 0.5});
+        ui->SetPosition({1280 - ui->GetSize().x * 0.5f - 16, ui->GetSize().y * 0.5 + 16});
         ui->SetAnchor({1, 0});
+        ui->tint = {0.0, 1.0, 1.0, 0.7};
     }
+    ui->tint += glm::vec4(0.5, 0.5, 0.5, 0.0);
 
     label = newPlayer->AddComponent<mlg::Label>("PlayerName", font).lock();
     label->SetSize(32);
     label->SetTextColor(newPlayer->playerData.color);
     if(newPlayer->playerData.id == 0)
     {
-        label->SetPosition({10, 8});
+        label->SetPosition({10 + 16, 8 + 16});
         label->SetText("P1");
     } else {
         label->SetAnchor({1, 0});
-        label->SetPosition({1280 - 50, 8});
+        label->SetPosition({1280 - 50 - 16, 8 + 16});
         label->SetText("P2");
     }
 
@@ -237,9 +240,9 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     ui->SetSize({32.f, 32.f});
     if(newPlayer->playerData.id == 0)
     {
-        ui->SetPosition({72.f, 17.f});
+        ui->SetPosition({72.f + 16, 17.f + 16});
     } else {
-        ui->SetPosition({1280 - 72.f, 17.f});
+        ui->SetPosition({1280 - 72.f - 16, 17.f + 16});
         ui->SetAnchor({1, 0});
     }
 
@@ -248,9 +251,9 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     ui->SetSize({32.f, 32.f});
     if(newPlayer->playerData.id == 0)
     {
-        ui->SetPosition({72.f+36.f, 17.f});
+        ui->SetPosition({72.f+36.f + 16, 17.f + 16});
     } else {
-        ui->SetPosition({1280 - 72.f - 36.f, 17.f});
+        ui->SetPosition({1280 - 72.f - 36.f - 16, 17.f + 16});
         ui->SetAnchor({1, 0});
     }
 }
