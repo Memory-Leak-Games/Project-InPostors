@@ -1,6 +1,7 @@
 #include "Levels/NavigationGraph.h"
 
 #include <fstream>
+#include <glm/fwd.hpp>
 
 #include "Core/Math.h"
 #include "Rendering/Gizmos/Gizmos.h"
@@ -13,6 +14,7 @@ NavigationGraph::NavigationGraph(const std::string& levelPath) {
 
     tileSize = levelJson.value("tile-size", 1.f);
     crossCharacter = levelJson.value("cross-character", 'x');
+    roadCharacter = levelJson.value("road-character", '#');
     layout = levelJson["navigation"];
 
     layoutSize.y = layout.size();
@@ -39,9 +41,9 @@ void NavigationGraph::DrawNodes() {
     for (const auto& node : nodes) {
         for (const auto& connectedNode : node->connectedNodes) {
             mlg::Gizmos::DrawLine(
-                mlg::Math::ProjectTo3D(node->position),
-                mlg::Math::ProjectTo3D(connectedNode->position),
-                mlg::RGBA::green);
+                    mlg::Math::ProjectTo3D(node->position),
+                    mlg::Math::ProjectTo3D(connectedNode->position),
+                    mlg::RGBA::green);
         }
     }
 #endif
@@ -59,11 +61,14 @@ void NavigationGraph::ParseLayout() {
             newNode->position -= citySize / 2.f;
             newNode->position -= glm::vec2{0.f, 1.f} + tileSize / 2.f;
 
+            newNode->layoutPosition = {x, y};
+
             nodes.push_back(newNode);
         }
     }
 
     OptimizeNodes();
+    FindConnections();
 }
 
 void NavigationGraph::OptimizeNodes() {
@@ -91,4 +96,44 @@ void NavigationGraph::OptimizeNodes() {
     for (const auto& node : nodesToRemove) {
         unsigned long x = nodes.remove(node);
     }
+}
+
+void NavigationGraph::FindConnections() {
+    for (auto& nodeOne : nodes) {
+        for (auto& nodeTwo : nodes) {
+            glm::ivec2 manhattanDistance = nodeOne->layoutPosition - nodeTwo->layoutPosition;
+            if (manhattanDistance.x == 0 && manhattanDistance.y == 0)
+                continue;
+
+            if (manhattanDistance.x != 0 && manhattanDistance.y != 0)
+                continue;
+
+            if (TraceConnection(nodeOne->layoutPosition, nodeTwo->layoutPosition))
+                continue;   
+
+            nodeOne->connectedNodes.insert(nodeTwo);
+        }
+    }
+}
+
+bool NavigationGraph::TraceConnection(glm::ivec2 start, glm::ivec2 end) {
+    int minX = std::min(start.x, end.x);
+    int maxX = std::max(start.x, end.x);
+
+    for (int i = minX; i < maxX; ++i) {
+        char character = layout[start.y][i];
+        if (character != roadCharacter && character != crossCharacter)
+            return true;
+    }
+
+    int minY = std::min(start.y, end.y);
+    int maxY = std::max(start.y, end.y);
+
+    for (int i = minY; i < maxY; ++i) {
+        char character = layout[i][start.x];
+        if (character != roadCharacter && character != crossCharacter)
+            return true;
+    }
+
+    return false;
 }

@@ -4,7 +4,8 @@ class NavigationGraph {
 public:
     struct Node {
         glm::vec2 position;
-        std::vector<std::shared_ptr<Node>> connectedNodes;
+        glm::ivec2 layoutPosition;
+        std::unordered_set<std::shared_ptr<Node>> connectedNodes;
 
         bool operator==(const Node &other) const { return position == other.position; }
         bool operator!=(const Node &other) const { return !(*this == other); }
@@ -15,6 +16,7 @@ private:
 
     std::vector<std::string> layout;
     char crossCharacter;
+    char roadCharacter;
 
     float tileSize;
     glm::vec2 citySize {};
@@ -30,4 +32,7 @@ public:
 private:
     void ParseLayout();
     void OptimizeNodes();
+    void FindConnections();
+
+    bool TraceConnection(glm::ivec2 start, glm::ivec2 end);
 };
