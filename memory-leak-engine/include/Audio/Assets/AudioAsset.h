@@ -8,7 +8,6 @@ namespace mlg {
     class AudioAsset : public Asset {
     private:
         std::unique_ptr<class Audio> audio;
-
     public:
         explicit AudioAsset(const std::string& path);
         ~AudioAsset() override;

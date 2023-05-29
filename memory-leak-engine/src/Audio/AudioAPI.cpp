@@ -4,11 +4,14 @@
 #include <soloud.h>
 
 #include "Core/Settings/SettingsManager.h"
+#include "Audio/Assets/AudioAsset.h"
 
 #include "Macros.h"
 
 namespace mlg {
     AudioAPI* AudioAPI::instance;
+    std::shared_ptr<mlg::AudioAsset> cityAmbientSound;
+
 
     void AudioAPI::Initialize() {
         if (instance != nullptr)
@@ -21,6 +24,9 @@ namespace mlg {
 
         instance->soloud->init();
         instance->soloud->setGlobalVolume(mlg::SettingsManager::Get<float>(mlg::SettingsType::Audio, "volume"));
+
+        cityAmbientSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/city_ambient.mp3");
+        cityAmbientSound->PlayBackgroundMusic(2.f);
 
         std::cout << "\n    SoLoud Version: " << SOLOUD_VERSION << "\n\n";
 
