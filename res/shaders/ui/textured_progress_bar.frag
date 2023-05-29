@@ -2,6 +2,7 @@
 
 in vec2 uv;
 
+uniform sampler2D image;
 uniform vec4 outRect = vec4(1.f, 1.f, 1.f, 1.f);
 uniform vec4 inRect = vec4(1.f, 0.f, 0.f, 1.f);
 
@@ -12,7 +13,7 @@ out vec4 fragColor;
 void main()
 {
     if (uv.x <= percentage)
-        fragColor = inRect;
+        fragColor = texture(image, uv) * inRect;
     else
-        fragColor = outRect;
+        fragColor = texture(image, uv) * outRect;
 }
