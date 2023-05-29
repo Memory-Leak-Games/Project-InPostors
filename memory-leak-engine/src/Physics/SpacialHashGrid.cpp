@@ -3,6 +3,7 @@
 #include "Core/Math.h"
 #include "Physics/Colliders/Collider.h"
 
+#include "Physics/Colliders/ColliderShapes.h"
 #include "Rendering/Gizmos/Gizmos.h"
 #include "Core/RGBA.h"
 
@@ -20,8 +21,10 @@ namespace mlg {
         const glm::vec2 clientPosition = client->GetPosition();
         const float clientRadius = client->GetRadius();
 
-        glm::ivec2 gridCoordMin = CalculateCellIndex(clientPosition - clientRadius * glm::vec2{1.f});
-        glm::ivec2 gridCoordMax = CalculateCellIndex(clientPosition + clientRadius * glm::vec2{1.f});
+        ColliderShape::AABB aabb = client->GetAABB();
+
+        glm::ivec2 gridCoordMin = CalculateCellIndex(aabb.min);
+        glm::ivec2 gridCoordMax = CalculateCellIndex(aabb.max);
 
         client->minCoord = gridCoordMin;
         client->maxCoord = gridCoordMax;
@@ -36,7 +39,7 @@ namespace mlg {
         }
     }
 
-    glm::ivec2 SpacialHashGrid::CalculateCellIndex(glm::vec2 position) const {
+    glm::ivec2 SpacialHashGrid::CalculateCellIndex(const glm::vec2& position) const {
         glm::vec2 positionInBounds;
         positionInBounds.x = Math::Sat((position.x - this->boundsStart.x) / (this->boundsEnd.x - this->boundsStart.x));
         positionInBounds.y = Math::Sat((position.y - this->boundsStart.y) / (this->boundsEnd.y - this->boundsStart.y));
@@ -52,8 +55,10 @@ namespace mlg {
         const glm::vec2 clientPosition = client->GetPosition();
         const float clientRadius = client->GetRadius();
 
-        glm::ivec2 gridCoordMin = CalculateCellIndex(clientPosition - clientRadius * glm::vec2{1.f});
-        glm::ivec2 gridCoordMax = CalculateCellIndex(clientPosition + clientRadius * glm::vec2{1.f});
+        ColliderShape::AABB aabb = client->GetAABB();
+
+        glm::ivec2 gridCoordMin = CalculateCellIndex(aabb.min);
+        glm::ivec2 gridCoordMax = CalculateCellIndex(aabb.max);
 
         if (client->minCoord == gridCoordMin && client->maxCoord == gridCoordMax)
             return;
