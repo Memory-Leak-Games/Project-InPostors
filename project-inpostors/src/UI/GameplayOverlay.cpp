@@ -59,7 +59,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     label->SetText("Furniture");
     label->SetTextColor({0, 0, 0});
 
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/progressBar_material.json");
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/progress_bar_material.json");
     result->questBar = result->AddComponent<mlg::ProgressBar>("QuestLimit", material).lock();
     result->questBar->SetPosition({85.f, 720.f - 95.f});
     result->questBar->SetAnchor({0.0, 1.0});

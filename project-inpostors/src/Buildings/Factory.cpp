@@ -208,7 +208,7 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
 //        uiPanel->SetPosition({0.f, 40.f});
 //        uiPanel->SetBillboardTarget(result);
 
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/progressBar_material.json");
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/progress_bar_material.json");
         result->productionBar = result->AddComponent<mlg::ProgressBar>("Bar", material).lock();
         result->productionBar->SetSize({48.f, 5.f});
         result->productionBar->SetPosition({0.f, 59.f-16.f});
@@ -248,7 +248,7 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
 //        uiPanel->SetPosition({36.f, 40.f});
 //        uiPanel->SetBillboardTarget(result);
 
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/progressBar_material.json");
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/progress_bar_material.json");
         result->productionBar = result->AddComponent<mlg::ProgressBar>("Bar", material).lock();
         result->productionBar->SetSize({128.f, 5.f});
         result->productionBar->SetPosition({0.f, 59.f-16.f});
