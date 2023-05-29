@@ -15,7 +15,7 @@
 namespace mlg {
 
     Label::Label(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<class FontAsset>& font)
-        : UIComponent(std::move(owner), std::move(name)), font(font) {
+        : UIComponent(std::move(owner), std::move(name)), font(font), scale(32.f / font->fontSize) {
         shader = std::make_shared<ShaderProgram>(
                 AssetManager::GetAsset<ShaderAsset>("res/shaders/UI/glyph.vert"),
                 AssetManager::GetAsset<ShaderAsset>("res/shaders/UI/glyph.frag"));
@@ -27,7 +27,7 @@ namespace mlg {
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glDepthMask(GL_FALSE); // Don't write into the depth buffer
+        //glDepthMask(GL_FALSE); // Don't write into the depth buffer
 
         // Activate corresponding render state
         shader->Activate();
@@ -42,23 +42,23 @@ namespace mlg {
         float xpos, ypos, w, h;
 
         // Iterate through all characters
-        float cursor = actualPosition.x;
+        glm::vec2 cursor = actualPosition;
         for (char8_t c : text) {
 
             // Skip rendering space
-            if (c == ' ')
-            {
+            if (c == ' ') {
                 ZoneScopedN("Space");
-                cursor += (font->fontSize >> 1) * actualScale;
-            }
-            else
-            {
+                cursor.x += (font->fontSize >> 1) * actualScale;
+            } else if (c == '\n') {
+                cursor.x = actualPosition.x;
+                cursor.y -= font->fontSize * actualScale;
+            } else {
                 ZoneScopedN("Char");
                 ch = font->characters[c - 33];
 
                 // Calculate position and size
-                xpos = cursor + ch.Bearing.x * actualScale;
-                ypos = (actualPosition.y - (float) (ch.Size.y - ch.Bearing.y) * actualScale);
+                xpos = cursor.x + ch.Bearing.x * actualScale;
+                ypos = ((int) cursor.y - (float) (ch.Size.y - ch.Bearing.y) * actualScale);
 
                 w = (float) ch.Size.x * actualScale;
                 h = (float) ch.Size.y * actualScale;
@@ -75,7 +75,7 @@ namespace mlg {
                     glDrawArrays(GL_TRIANGLES, 0, 6);
                 }
                 // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-                cursor += (ch.Advance >> 6) * actualScale;// Bitshift by 6 to get value in pixels (2^6 = 64)
+                cursor.x += (ch.Advance >> 6) * actualScale;// Bitshift by 6 to get value in pixels (2^6 = 64)
             }
         }
         glBindVertexArray(0);
