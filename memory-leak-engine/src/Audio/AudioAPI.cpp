@@ -10,7 +10,6 @@
 
 namespace mlg {
     AudioAPI* AudioAPI::instance;
-    std::shared_ptr<mlg::AudioAsset> cityAmbientSound;
 
 
     void AudioAPI::Initialize() {
@@ -24,9 +23,6 @@ namespace mlg {
 
         instance->soloud->init();
         instance->soloud->setGlobalVolume(mlg::SettingsManager::Get<float>(mlg::SettingsType::Audio, "volume"));
-
-        cityAmbientSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/city_ambient.mp3");
-        cityAmbientSound->PlayBackgroundMusic(2.f);
 
         std::cout << "\n    SoLoud Version: " << SOLOUD_VERSION << "\n\n";
 

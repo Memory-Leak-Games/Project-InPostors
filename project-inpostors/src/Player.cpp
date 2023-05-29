@@ -96,20 +96,6 @@ void Player::Update() {
     if (carInput->GetDropInput())
         Drop();
 
-    //Engine idle sound (when we "stay")
-/*    if (abs(rigidbodyComponent.lock()->GetLocalVelocity().z) < 0.5) {
-        if (!isEngineSoundPlaying) {
-            truckEngineSound->Play(0.6f);
-            isEngineSoundPlaying = true;
-        }
-    }
-    else {
-        if (isEngineSoundPlaying) {
-            truckEngineSound->Stop();
-            isEngineSoundPlaying = false;
-        }
-    }*/
-
     std::vector<std::weak_ptr<mlg::Collider>> overlappingColliders;
     rigidbodyComponent.lock()->GetOverlappingColliders(overlappingColliders);
 
