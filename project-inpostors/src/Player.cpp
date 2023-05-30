@@ -8,6 +8,7 @@
 #include "Gameplay/Components/StaticMeshComponent.h"
 
 #include "Core/AssetManager/AssetManager.h"
+#include "Core/TimerManager.h"
 
 #include "Gameplay/Entity.h"
 #include "Rendering/Assets/MaterialAsset.h"
@@ -86,7 +87,6 @@ void Player::Start() {
     pickUpSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/pick_up.wav");
     dropSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/drop.wav");
     hitSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/hit.wav");
-    //truckEngineSound =  mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/truck_engine.mp3");
 }
 
 void Player::Update() {
@@ -99,9 +99,18 @@ void Player::Update() {
     std::vector<std::weak_ptr<mlg::Collider>> overlappingColliders;
     rigidbodyComponent.lock()->GetOverlappingColliders(overlappingColliders);
 
-    for (const auto& collider : overlappingColliders) {
-        if (collider.lock()->GetTag().empty() && (rigidbodyComponent.lock()->GetAngularSpeed() > 0.5 || rigidbodyComponent.lock()->GetAngularSpeed() < -0.5)) {
-            hitSound->Play();
+    if (canPlaySound)
+    {
+        auto enableSoundLambda = [this]() {
+            canPlaySound = true;
+        };
+
+        for (const auto& collider : overlappingColliders) {
+            if (collider.lock()->GetTag().empty()) {
+                hitSound->Play();
+                canPlaySound = false;
+                canPlaySoundTimerHandle = mlg::TimerManager::Get()->SetTimer(0.2f, false, enableSoundLambda);
+            }
         }
     }
 
