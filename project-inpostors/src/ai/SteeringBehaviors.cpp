@@ -25,7 +25,8 @@ SteeringBehaviors::SteeringBehaviors(AIComponent* agent, const std::string& conf
             {10.f, 20.f}
     };
 
-    path = new Path(waypoints, true);
+//    path = new Path(waypoints, true);
+    path = new Path();
 }
 
 SteeringBehaviors::~SteeringBehaviors() = default;

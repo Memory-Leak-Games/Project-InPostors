@@ -32,7 +32,9 @@ NavigationGraph::NavigationGraph(const std::string& levelPath) {
 std::list<glm::vec2> NavigationGraph::CreatePath() {
     std::list<glm::vec2> path;
 
-    path.push_back(nodes.begin());
+    for (const auto& node : nodes) {
+        path.push_back(node->position);
+    }
 
     return path;
 }

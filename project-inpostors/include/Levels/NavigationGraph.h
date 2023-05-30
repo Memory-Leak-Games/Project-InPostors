@@ -12,6 +12,7 @@ public:
     };
 
 private:
+    //TODO: Ask if this can not be a list (vector probably)
     std::list<std::shared_ptr<Node>> nodes;
 
     std::vector<std::string> layout;

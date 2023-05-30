@@ -21,12 +21,16 @@ void TestScene::Load() {
 
     navigationGraph = std::make_shared<NavigationGraph>("res/levels/maps/test_level.json");
 
+    //TODO: Maybe pass the entire graph into steering behaviours and let them decide (maybe randomly) which of the connected nodes should be next
+
+    auto testCarOnePath = navigationGraph->CreatePath();
+
     TrafficCarData testCarOneData = {0, mlg::RGBA::white};
     auto testCarOne = mlg::EntityManager::SpawnEntity<TrafficCar>("TrafficCar1", false, mlg::SceneGraph::GetRoot(), testCarOneData);
-    testCarOne.lock()->GetComponentByName<AIComponent>("AIComponent").lock()->GetSteering()->SetPath();
+    testCarOne.lock()->GetComponentByName<AIComponent>("AIComponent").lock()->GetSteering()->SetPath(testCarOnePath);
     testCarOne.lock()->GetComponentByName<AIComponent>("AIComponent").lock()->GetSteering()->TrafficDriveOn();
     auto testCarOneRigidbody = testCarOne.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
-    testCarOneRigidbody.lock()->SetPosition({30.f, -5.f});
+    testCarOneRigidbody.lock()->SetPosition(*testCarOnePath.begin());
 
 }
 
