@@ -13,7 +13,7 @@ TestScene::TestScene() : LevelScene("res/levels/maps/test_level.json") {}
 void TestScene::Load() {
     LevelScene::Load();
 
-    navigationGraph = std::make_shared<NavigationGraph>("res/levels/maps/test_level.json");
+    //navigationGraph = std::make_shared<NavigationGraph>("res/levels/maps/test_level.json");
 }
 
 void TestScene::Update() {
@@ -25,6 +25,6 @@ void TestScene::Update() {
     if (navigationGraph == nullptr)
         return;
 
-    navigationGraph->DrawNodes();
+    //navigationGraph->DrawNodes();
 #endif
 }

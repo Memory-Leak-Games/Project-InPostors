@@ -177,7 +177,7 @@ namespace mlg {
                 mapObjectPool.push_back(std::move(ParseObject(jsonMapObject)));
             }
 
-            mapObjects.insert({tileSymbol, MapEntry{mapObjectPool, isPathWay, 0}});
+            mapObjects.insert({tileSymbol, MapEntry{mapObjectPool, isPathWay, false}});
         }
 
         if (levelJson.contains("ignore"))
@@ -189,7 +189,7 @@ namespace mlg {
             return;
 
         // It is safe to assume we have 3 tiers of factories,
-        // which means we need to keep 3 symbols
+        // which means we need to keep 3 symbols.
         factoryCharacters.reserve(3);
         for (const auto& jsonFactory : tileJson["factories"]) {
             MapFactory factory = ParseFactory(jsonFactory);
@@ -238,7 +238,8 @@ namespace mlg {
         MapFactory mf;
 
         const char tileSymbol = jsonObject["symbol"].get<std::string>()[0];
-        factoryCharacters.push_back(tileSymbol);
+        std::pair<char, unsigned int> fac(tileSymbol, 1);
+        factoryCharacters.insert(fac);
 
         mf.configPath = jsonObject["config"].get<std::string>();
         mf.factorySymbol = tileSymbol;
@@ -255,17 +256,15 @@ namespace mlg {
                 ++x;
 
                 //TODO: only for testing purposes
-                if (std::find(factoryCharacters.begin(), factoryCharacters.end(),
-                              character) != factoryCharacters.end())
+                auto got = factoryCharacters.find(character);
+                if (got != factoryCharacters.end()) // we got a match!
                 {
                     for (auto &fac : levelFactories)
                     {
                         if (fac.factorySymbol == character && fac.remaining != 0)
                         {
-                            SPDLOG_WARN("dupa; {}", fac.remaining);
                             PutFactory(fac.configPath, {x - 1, y - 1}, 0.0f);
                             fac.remaining -= 1;
-                            SPDLOG_WARN("kupa; {}", fac.remaining);
                         }
                     }
                 }

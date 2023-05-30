@@ -62,7 +62,7 @@ namespace mlg {
         std::vector<MapFactory> levelFactories; //TODO: use map over vector
 
         std::string ignoredCharacters;
-        std::string factoryCharacters;
+        std::unordered_map<char, unsigned int> factoryCharacters;
         std::unordered_map<char, MapEntry> mapObjects;
         std::string defaultMaterial;
 
