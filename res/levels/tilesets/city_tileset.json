@@ -148,17 +148,17 @@
     {
       "symbol": "1",
       "config": "res/levels/factories/smelter.json",
-      "fallback": "p"
+      "fallback": " "
     },
     {
       "symbol": "2",
       "config": "res/levels/factories/mine.json",
-      "fallback": "p"
+      "fallback": " "
     },
     {
       "symbol": "3",
       "config": "res/levels/factories/ikea.json",
-      "fallback": "p"
+      "fallback": " "
     }
   ],
 

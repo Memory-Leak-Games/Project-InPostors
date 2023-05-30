@@ -42,17 +42,12 @@ namespace mlg {
         levelGenerator.levelJson = json::parse(levelFile);
 
         std::vector<std::string> ret = levelGenerator.LoadLayout();
-        levelGenerator.LoadMapObjects();
 
-        // I need to test full factories not only mesh
+        levelGenerator.LoadMapObjects();
         levelGenerator.LoadFactories();
         levelGenerator.LoadRoads();
-        //levelGenerator.LoadProps(levelJson["props"].get<std::string>()); //todo
 
         levelGenerator.GenerateLevel();
-
-        // TODO: Kris there is my garbage. I would not be offended if you modify
-        // or delete that
 
         if (!levelGenerator.levelJson.contains("sublevels"))
             return ret;
@@ -139,6 +134,66 @@ namespace mlg {
         CollisionManager::SetBounds(cityStart, cityEnd, layoutSize);
     }
 
+    void LevelGenerator::SpawnPlayers(const std::string &path) {
+        std::ifstream levelFile{path};
+        json levelJson = json::parse(levelFile);
+
+        if (!(levelJson.contains("player-one") && levelJson.contains("player-two")))
+            return;
+
+        //first player
+        auto firstPlayerJson = levelJson["player-one"];
+        glm::vec3 firstPlayerPosition = {
+                firstPlayerJson["position"][0].get<float>(),
+                0.3f,
+                firstPlayerJson["position"][1].get<float>(),
+        };
+        float firstPlayerRotation = firstPlayerJson.contains("rotation") ?
+                                    firstPlayerJson["rotation"].get<float>() : 0.f;
+        std::string firstPlayerCarData = firstPlayerJson.contains("car-data") ?
+                                         firstPlayerJson["car-data"].get<std::string>() :
+                                         "res/config/cars/van.json";
+
+
+        PlayerData firstPlayerData = {0, mlg::RGBA::red,
+                                      firstPlayerPosition,
+                                      firstPlayerRotation,
+                                      firstPlayerCarData};
+
+
+        //second player
+        auto secondPlayerJson = levelJson["player-two"];
+        glm::vec3 secondPlayerPosition = {
+                secondPlayerJson["position"][0].get<float>(),
+                0.3f,
+                secondPlayerJson["position"][1].get<float>(),
+        };
+        float secondPlayerRotation = secondPlayerJson.contains("rotation") ?
+                                     secondPlayerJson["rotation"].get<float>() : 0.f;
+        std::string secondPlayerCarData = secondPlayerJson.contains("car-data") ?
+                                          secondPlayerJson["car-data"].get<std::string>() :
+                                          "res/config/cars/van.json";
+
+
+        PlayerData secondPlayerData = {1, mlg::RGBA::cyan,
+                                       secondPlayerPosition,
+                                       secondPlayerRotation,
+                                       secondPlayerCarData};
+
+        //spawn players
+        auto player = mlg::EntityManager::SpawnEntity<Player>("PlayerOne", false,
+                                                              mlg::SceneGraph::GetRoot(), firstPlayerData);
+        player.lock()->AddComponent<PlayerOneInput>("PlayerInput");
+
+        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false,
+                                                                 mlg::SceneGraph::GetRoot(), secondPlayerData);
+        playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
+    }
+
+    std::vector<std::string> LevelGenerator::GetLevelLayout() {
+        return levelLayout;
+    }
+
     // ======== PRIVATE METHODS ========
 
     std::vector<std::string> LevelGenerator::LoadLayout() {
@@ -150,7 +205,6 @@ namespace mlg {
         }
 
         tileSize = levelJson["tile-size"].get<float>();
-        citySize = GetCitySize();
         return ret;
     }
 
@@ -222,23 +276,21 @@ namespace mlg {
 
         mapObj.scale = jsonMapObject.value("scale", 1.f);
 
-        if (jsonMapObject.contains("collision-type")) {
-            mapObj.hasCollision = true;
-            mapObj.colliderType = jsonMapObject["collision-type"];
-            mapObj.colliderSize = jsonMapObject.value("collision-size", 1.f);
-            mapObj.colliderOffset = jsonMapObject.value("collision-offset", 0.f);
-            mapObj.isDynamic = jsonMapObject.value("dynamic", false);
-        }
+        if (!jsonMapObject.contains("collision-type"))
+            return mapObj;
+
+        mapObj.hasCollision = true;
+        mapObj.colliderType = jsonMapObject["collision-type"];
+        mapObj.colliderSize = jsonMapObject.value("collision-size", 1.f);
+        mapObj.colliderOffset = jsonMapObject.value("collision-offset", 0.f);
+        mapObj.isDynamic = jsonMapObject.value("dynamic", false);
 
         return mapObj;
     }
 
     LevelGenerator::MapFactory LevelGenerator::ParseFactory(const nlohmann::json& jsonObject)
     {
-        MapFactory mf;
-
         const char tileSymbol = jsonObject["symbol"].get<std::string>()[0];
-
 
         // Count factory occurrences.
         // This is needed for random generation chance.
@@ -256,6 +308,7 @@ namespace mlg {
         }
         factoryCharacters.insert({tileSymbol, occurrences});
 
+        MapFactory mf;
         mf.configPath = jsonObject["config"].get<std::string>();
         mf.factorySymbol = tileSymbol;
         mf.fallbackSymbol = jsonObject["fallback"].get<std::string>()[0];
@@ -269,23 +322,9 @@ namespace mlg {
             ++y;
             for (const char& character : row) {
                 ++x;
-
-                //TODO: move to TryPutFactory()
-                auto got = factoryCharacters.find(character);
-                if (got != factoryCharacters.end()) // we got a match!
-                {
-                    for (auto &fac : levelFactories)
-                    {
-                        if (fac.factorySymbol == character && fac.remaining != 0) {
-                            unsigned int spots = factoryCharacters[character];
-                            float chance = static_cast<float>(fac.remaining) / static_cast<float>(spots);
-                            if (Random::get<bool>(chance)) {
-                                PutFactory(fac.configPath, {x - 1, y - 1}, 0.0f);
-                                fac.remaining -= 1;
-                            }
-                            factoryCharacters[character] -= 1;
-                        }
-                    }
+                if (factoryCharacters.find(character) != factoryCharacters.end()) {// we got a match!
+                    TryPutFactory(character, {x, y});
+                    continue;
                 }
 
                 // Ignore spaces
@@ -310,75 +349,27 @@ namespace mlg {
         }
     }
 
-    void LevelGenerator::SpawnPlayers(const std::string &path) {
-        std::ifstream levelFile{path};
-        json levelJson = json::parse(levelFile);
+    void LevelGenerator::TryPutFactory(const char& character, const glm::vec2& pos) {
+        for (auto &fac : levelFactories)
+        {
+            if (fac.factorySymbol == character && fac.remaining != 0) {
+                unsigned int spots = factoryCharacters[character];
+                float chance = static_cast<float>(fac.remaining) / static_cast<float>(spots);
+                if (chance > 1.f)
+                    SPDLOG_WARN("More factories in pool than allowed to spawn.");
 
-        if (!(levelJson.contains("player-one") && levelJson.contains("player-two")))
-            return;
+                if (Random::get<bool>(chance)) {
+                    PutFactory(fac.configPath, {pos.x - 1, pos.y - 1}, 0.0f);
+                    fac.remaining -= 1;
+                }
+                else if (fac.fallbackSymbol != ' ')
+                    PutTile(static_cast<int>(pos.x) - 1,
+                            static_cast<int>(pos.y) - 1,
+                            fac.fallbackSymbol);
 
-        //first player
-        auto firstPlayerJson = levelJson["player-one"];
-        glm::vec3 firstPlayerPosition = {
-                firstPlayerJson["position"][0].get<float>(),
-                0.3f,
-                firstPlayerJson["position"][1].get<float>(),
-        };
-        float firstPlayerRotation = firstPlayerJson.contains("rotation") ?
-                                    firstPlayerJson["rotation"].get<float>() : 0.f;
-        std::string firstPlayerCarData = firstPlayerJson.contains("car-data") ?
-                                         firstPlayerJson["car-data"].get<std::string>() :
-                                         "res/config/cars/van.json";
-
-
-        PlayerData firstPlayerData = {0, mlg::RGBA::red,
-                                      firstPlayerPosition,
-                                      firstPlayerRotation,
-                                      firstPlayerCarData};
-
-
-        //second player
-        auto secondPlayerJson = levelJson["player-two"];
-        glm::vec3 secondPlayerPosition = {
-                secondPlayerJson["position"][0].get<float>(),
-                0.3f,
-                secondPlayerJson["position"][1].get<float>(),
-        };
-        float secondPlayerRotation = secondPlayerJson.contains("rotation") ?
-                                     secondPlayerJson["rotation"].get<float>() : 0.f;
-        std::string secondPlayerCarData = secondPlayerJson.contains("car-data") ?
-                                          secondPlayerJson["car-data"].get<std::string>() :
-                                          "res/config/cars/van.json";
-
-
-        PlayerData secondPlayerData = {1, mlg::RGBA::cyan,
-                                       secondPlayerPosition,
-                                       secondPlayerRotation,
-                                       secondPlayerCarData};
-
-        //spawn players
-        auto player = mlg::EntityManager::SpawnEntity<Player>("PlayerOne", false,
-                                                              mlg::SceneGraph::GetRoot(), firstPlayerData);
-        player.lock()->AddComponent<PlayerOneInput>("PlayerInput");
-
-        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false,
-                                                                 mlg::SceneGraph::GetRoot(), secondPlayerData);
-        playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
-    }
-
-    glm::vec2 LevelGenerator::GetCitySize() {
-        citySize = GetLayoutSize() *= tileSize;
-        return citySize;
-    }
-
-    glm::ivec2 LevelGenerator::GetLayoutSize() {
-        glm::ivec2 layoutSize = glm::ivec2{0};
-        for (const std::string& row : levelLayout)
-            layoutSize.x = std::max(layoutSize.x, static_cast<int>(row.size()));
-
-        layoutSize.y = static_cast<int>(levelLayout.size());
-
-        return layoutSize;
+                factoryCharacters[character] -= 1;
+            }
+        }
     }
 
     void LevelGenerator::PutTile(int x, int y, const char& character) {
@@ -401,6 +392,102 @@ namespace mlg {
 
         float smartRotation = GetSmartRotation(x, y);
         PutEntity(mapObject, glm::ivec2{x, y}, glm::radians(smartRotation));
+    }
+
+    void LevelGenerator::PutRoad(int x, int y) {
+        const Neighbours neighbours = GetNeighbours(x, y);
+
+        int neighboursRoadsCount = 0;
+        for (auto row : neighbours.tiles)
+            for (auto tile : row)
+                neighboursRoadsCount += (tile == roadsObjects.symbol ? 1 : 0);
+
+        bool isEdge = neighboursRoadsCount < 8 && neighboursRoadsCount > 4;
+        bool isCorner = neighboursRoadsCount == 8;
+        bool isCross = neighboursRoadsCount == 9;
+
+        bool isVertical = neighbours.up == roadsObjects.symbol ||
+                          neighbours.down == roadsObjects.symbol;
+        isVertical &= neighbours.left != roadsObjects.symbol &&
+                      neighbours.right != roadsObjects.symbol;
+
+        bool isHorizontal = neighbours.left == roadsObjects.symbol ||
+                            neighbours.right == roadsObjects.symbol;
+        isHorizontal &= neighbours.up != roadsObjects.symbol &&
+                        neighbours.down != roadsObjects.symbol;
+
+        if (isEdge) {
+            PutEdgeRoad(x, y);
+        } else if (isCorner) {
+            PutCornerRoad(x, y);
+        } else if (isCross) {
+            PutCrossRoad(x, y);
+        } else if (isVertical) {
+            PutStraightRoad(x, y, false);
+        } else if (isHorizontal) {
+            PutStraightRoad(x, y, true);
+        } else {
+            PutCurveRoad(x, y);
+        }
+    }
+
+    void LevelGenerator::PutStraightRoad(int x, int y, bool isHorizontal) {
+        float angle = isHorizontal ? 90.f : 0.f;
+        auto mapObject = roadsObjects.road;
+
+        PutEntity(roadsObjects.road, glm::ivec2{x, y}, glm::radians(angle));
+    }
+
+    void LevelGenerator::PutEdgeRoad(int x, int y) {
+        float angle;
+        const Neighbours neighbours = GetNeighbours(x, y);
+
+        if (neighbours.left != roadsObjects.symbol)
+            angle = 0.f;
+        else if (neighbours.down != roadsObjects.symbol)
+            angle = 90.f;
+        else if (neighbours.right != roadsObjects.symbol)
+            angle = 180.f;
+        else
+            angle = 270.f;
+
+        PutEntity(roadsObjects.edge, glm::ivec2{x, y}, glm::radians(angle));
+    }
+
+    void LevelGenerator::PutCrossRoad(int x, int y) {
+        PutEntity(roadsObjects.cross, glm::ivec2{x, y}, 0.f);
+    }
+
+    void LevelGenerator::PutCurveRoad(int x, int y) {
+        float angle = 45;
+        const Neighbours neighbours = GetNeighbours(x, y);
+
+        if (neighbours.up == neighbours.right && neighbours.up == roadsObjects.symbol)
+            angle = 0.f;
+        else if (neighbours.up == neighbours.left && neighbours.up == roadsObjects.symbol)
+            angle = 90.f;
+        else if (neighbours.down == neighbours.left && neighbours.down == roadsObjects.symbol)
+            angle = 180.f;
+        else
+            angle = 270.f;
+
+        PutEntity(roadsObjects.curve, glm::ivec2{x, y}, glm::radians(angle));
+    }
+
+    void LevelGenerator::PutCornerRoad(int x, int y) {
+        float angle;
+        const Neighbours neighbours = GetNeighbours(x, y);
+
+        if (neighbours.leftUp != roadsObjects.symbol)
+            angle = 0.f;
+        else if (neighbours.leftDown != roadsObjects.symbol)
+            angle = 90.f;
+        else if (neighbours.rightDown != roadsObjects.symbol)
+            angle = 180.f;
+        else
+            angle = 270.f;
+
+        PutEntity(roadsObjects.corner, glm::ivec2{x, y}, glm::radians(angle));
     }
 
     void LevelGenerator::PutEntity(const MapObject &mapObject, const glm::ivec2 &position, float rotation) const {
@@ -484,100 +571,18 @@ namespace mlg {
         return angle;
     }
 
-    void LevelGenerator::PutRoad(int x, int y) {
-        const Neighbours neighbours = GetNeighbours(x, y);
-
-        int neighboursRoadsCount = 0;
-        for (auto row : neighbours.tiles)
-            for (auto tile : row)
-                neighboursRoadsCount += (tile == roadsObjects.symbol ? 1 : 0);
-
-        bool isEdge = neighboursRoadsCount < 8 && neighboursRoadsCount > 4;
-        bool isCorner = neighboursRoadsCount == 8;
-        bool isCross = neighboursRoadsCount == 9;
-
-        bool isVertical = neighbours.up == roadsObjects.symbol ||
-                          neighbours.down == roadsObjects.symbol;
-        isVertical &= neighbours.left != roadsObjects.symbol &&
-                      neighbours.right != roadsObjects.symbol;
-
-        bool isHorizontal = neighbours.left == roadsObjects.symbol ||
-                            neighbours.right == roadsObjects.symbol;
-        isHorizontal &= neighbours.up != roadsObjects.symbol &&
-                        neighbours.down != roadsObjects.symbol;
-
-        if (isEdge) {
-            PutEdgeRoad(x, y);
-        } else if (isCorner) {
-            PutCornerRoad(x, y);
-        } else if (isCross) {
-            PutCrossRoad(x, y);
-        } else if (isVertical) {
-            PutStraightRoad(x, y, false);
-        } else if (isHorizontal) {
-            PutStraightRoad(x, y, true);
-        } else {
-            PutCurveRoad(x, y);
-        }
+    glm::vec2 LevelGenerator::GetCitySize() const {
+        return GetLayoutSize() *= tileSize;
     }
 
-    void LevelGenerator::PutCrossRoad(int x, int y) {
-        PutEntity(roadsObjects.cross, glm::ivec2{x, y}, 0.f);
-    }
+    glm::ivec2 LevelGenerator::GetLayoutSize() const {
+        glm::ivec2 layoutSize = glm::ivec2{0};
+        for (const std::string& row : levelLayout)
+            layoutSize.x = std::max(layoutSize.x, static_cast<int>(row.size()));
 
-    void LevelGenerator::PutStraightRoad(int x, int y, bool isHorizontal) {
-        float angle = isHorizontal ? 90.f : 0.f;
-        auto mapObject = roadsObjects.road;
+        layoutSize.y = static_cast<int>(levelLayout.size());
 
-        PutEntity(roadsObjects.road, glm::ivec2{x, y}, glm::radians(angle));
-    }
-
-    void LevelGenerator::PutEdgeRoad(int x, int y) {
-        float angle;
-        const Neighbours neighbours = GetNeighbours(x, y);
-
-        if (neighbours.left != roadsObjects.symbol)
-            angle = 0.f;
-        else if (neighbours.down != roadsObjects.symbol)
-            angle = 90.f;
-        else if (neighbours.right != roadsObjects.symbol)
-            angle = 180.f;
-        else
-            angle = 270.f;
-
-        PutEntity(roadsObjects.edge, glm::ivec2{x, y}, glm::radians(angle));
-    }
-
-    void LevelGenerator::PutCornerRoad(int x, int y) {
-        float angle;
-        const Neighbours neighbours = GetNeighbours(x, y);
-
-        if (neighbours.leftUp != roadsObjects.symbol)
-            angle = 0.f;
-        else if (neighbours.leftDown != roadsObjects.symbol)
-            angle = 90.f;
-        else if (neighbours.rightDown != roadsObjects.symbol)
-            angle = 180.f;
-        else
-            angle = 270.f;
-
-        PutEntity(roadsObjects.corner, glm::ivec2{x, y}, glm::radians(angle));
-    }
-
-    void LevelGenerator::PutCurveRoad(int x, int y) {
-        float angle = 45;
-        const Neighbours neighbours = GetNeighbours(x, y);
-
-        if (neighbours.up == neighbours.right && neighbours.up == roadsObjects.symbol)
-            angle = 0.f;
-        else if (neighbours.up == neighbours.left && neighbours.up == roadsObjects.symbol)
-            angle = 90.f;
-        else if (neighbours.down == neighbours.left && neighbours.down == roadsObjects.symbol)
-            angle = 180.f;
-        else
-            angle = 270.f;
-
-        PutEntity(roadsObjects.curve, glm::ivec2{x, y}, glm::radians(angle));
+        return layoutSize;
     }
 
     Neighbours LevelGenerator::GetNeighbours(int x, int y) {
@@ -607,6 +612,7 @@ namespace mlg {
 
     glm::vec3 LevelGenerator::GetLevelPosition(const glm::ivec2 &localPos, bool isRigid) const {
         glm::vec3 levelPos = {0.f, 0.f, 0.f};
+        glm::vec2 citySize = GetCitySize();
         levelPos.x = -static_cast<float>(localPos.x) * tileSize + 0.5f * citySize.x - 0.5f * tileSize + 0.5f;
         float locPos = -static_cast<float>(localPos.y) * tileSize + 0.5f * citySize.y - 0.5f * tileSize - 0.5f;
         if (!isRigid)
@@ -617,7 +623,4 @@ namespace mlg {
         return levelPos;
     }
 
-    std::vector<std::string> LevelGenerator::GetLevelLayout() {
-        return levelLayout;
-    }
 }// namespace mlg

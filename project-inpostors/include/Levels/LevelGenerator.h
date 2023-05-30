@@ -39,7 +39,7 @@ namespace mlg {
             char symbol = ' ';
         } roadsObjects;
 
-        //TODO: needs more info about pools
+        //TODO: more info about pools
         struct MapFactory {
             std::string configPath;
             unsigned int remaining;
@@ -52,7 +52,6 @@ namespace mlg {
             int useCount = 0;
             bool isPathWay = false;
         };
-
 
         LevelGenerator() = default;
         ~LevelGenerator() = default;
@@ -69,21 +68,20 @@ namespace mlg {
         std::string defaultMaterial;
 
         float tileSize = 10.f;
-        glm::vec2 citySize = {0.f, 0.f};
 
-        // ===== METHODS =====
+        // ======== METHODS ========
 
         std::vector<std::string> LoadLayout();
         void LoadMapObjects();
+        void LoadFactories();
         void LoadRoads();
-        void LoadFactories(); //todo
 
         MapObject ParseObject(const nlohmann::json& jsonObject);
         MapFactory ParseFactory(const nlohmann::json& jsonObject);
 
         void GenerateLevel();
 
-        //void TryPutFactory(MapFactory &fac); //TODO: move code from GenerateLevel here
+        void TryPutFactory(const char& character, const glm::vec2& pos); //TODO: move code from GenerateLevel here
 
         void PutTile(int x, int y, const char& character);
         void PutRoad(int x, int y);
@@ -100,11 +98,12 @@ namespace mlg {
 
         float GetSmartRotation(int x, int y);
 
-        glm::vec2 GetCitySize();
+        [[nodiscard]] glm::vec2 GetCitySize() const;
+        [[nodiscard]] glm::ivec2 GetLayoutSize() const;
+
         Neighbours GetNeighbours(int x, int y);
         char GetTileOrZero(int x, int y);
 
-        glm::ivec2 GetLayoutSize();
         [[nodiscard]] glm::vec3 GetLevelPosition(const glm::ivec2 &localPos,
                                                  bool isRigid = false) const;
     };
