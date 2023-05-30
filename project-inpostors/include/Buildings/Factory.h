@@ -39,6 +39,8 @@ private:
         SeparateInputOutput
     } factoryType;
 
+    glm::vec2 meshOffset;
+
     void AddMesh(const nlohmann::json& staticMeshJson);
     void AddCollider(const nlohmann::json& colliderJson, mlg::RigidbodyComponent* rigidbodyComponent);
     void AddEmitter(const nlohmann::json& emitterJson);
