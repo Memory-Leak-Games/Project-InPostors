@@ -16,6 +16,7 @@ namespace mlg {
 
         virtual void Start();
 
+        virtual void AIUpdate();
         virtual void PhysicsUpdate();
         virtual void Update();
         virtual void LateUpdate();

@@ -33,6 +33,14 @@ namespace mlg {
         return instance;
     }
 
+    void ComponentManager::AIUpdate() {
+        ZoneScopedNC("Component AI Update", tracy::Color::ColorType::Green);
+
+        for (const auto& component : instance->components) {
+            component->AIUpdate();
+        }
+    }
+
     void ComponentManager::PhysicsUpdate() {
         ZoneScopedNC("Component Physics Update", tracy::Color::ColorType::Green);
 

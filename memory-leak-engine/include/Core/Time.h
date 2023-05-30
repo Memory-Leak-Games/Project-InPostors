@@ -17,6 +17,7 @@ namespace mlg {
 
         int fpsCap;
         int physicsTickRate;
+        int aiTickRate;
 
     public:
         static void Initialize();
@@ -27,6 +28,7 @@ namespace mlg {
         static float GetDeltaSeconds();
 
         static float GetFixedTimeStep();
+        static float GetAITimeStep();
 
         static void CapFPS();
         static void Sleep(double seconds);

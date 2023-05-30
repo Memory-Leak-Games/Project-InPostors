@@ -597,5 +597,8 @@ namespace mlg {
 
         return levelPos;
     }
-	
+
+    std::vector<std::string> LevelGenerator::GetLevelLayout() {
+        return levelLayout;
+    }
 }// namespace mlg
