@@ -17,14 +17,20 @@ SteeringBehaviors::SteeringBehaviors(AIComponent* agent, const std::string& conf
     : aiComponent(agent), flags(0), deceleration(fast), summingMethod(prioritized) {
     LoadParameters(configPath);
 
-    path = new Path();
-    path->LoopOn();
+    std::list<glm::vec2> waypoints = {
+            {10.f, -5.f},
+            {-10.f, -5.f},
+            {-30.f, -5.f}
+    };
 
-    //TODO: Replace this with Path from level
+    path = new Path(waypoints, true);
+//    path->LoopOn();
+//
+//    //TODO: Replace this with Path from level
 //    path->CreateBasePath(-10, -10, 10, 10);
-    path->AddWaypoint({10.f, -5.f});
-    path->AddWaypoint({-10.f, -5.f});
-    path->AddWaypoint({-30.f, -5.f});
+//    path->AddWaypoint({10.f, -5.f});
+//    path->AddWaypoint({-10.f, -5.f});
+//    path->AddWaypoint({-30.f, -5.f});
 }
 
 SteeringBehaviors::~SteeringBehaviors() = default;

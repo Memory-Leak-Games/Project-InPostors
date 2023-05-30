@@ -3,7 +3,11 @@
 using Random = effolkronium::random_static;
 
 Path::Path() : isLooped(false), currentWaypoint() {
-    currentWaypoint = waypoints.begin();
+}
+
+Path::Path(std::list<glm::vec2> waypoints, bool isLooped)
+    : isLooped(isLooped), waypoints(waypoints) {
+    currentWaypoint = this->waypoints.begin();
 }
 
 Path::Path(float minX, float minY, float maxX,
@@ -19,6 +23,7 @@ glm::vec2 Path::GetCurrentWaypoint() {
     //TODO: Some check required here
 //    MLG_ASSERT(currentWaypoint != waypoints.end());
     SPDLOG_INFO("Current waypoint: ({}, {})", currentWaypoint->x, currentWaypoint->y);
+
     return *currentWaypoint;
 }
 

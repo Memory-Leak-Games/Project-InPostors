@@ -8,6 +8,7 @@ private:
 
 public:
     Path();
+    Path(std::list<glm::vec2> waypoints, bool isLooped);
     Path(float minX, float minY, float maxX, float maxY, bool isLooped);
     ~Path();
 
