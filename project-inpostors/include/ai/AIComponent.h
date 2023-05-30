@@ -17,17 +17,9 @@ private:
     std::shared_ptr<mlg::StaticMeshComponent> staticMeshComponent;
     std::unique_ptr<SteeringBehaviors> steering;
 
-    //Driving
+    //Driving params
     float acceleration;
     float maxSpeed;
-    float backwardMaxSpeed;
-    float engineHandling;
-    float handling;
-
-    //Rotation
-    float rotationSpeed;
-    float rotationRadius;
-
     float maxForce;
     float mass = 1.f;
 
@@ -41,8 +33,8 @@ public:
     void PhysicsUpdate() override;
     void AIUpdate() override;
 
-    float GetMaxForce() const { return maxForce; }
-    float GetMaxSpeed() const { return maxSpeed; }
+    float GetMaxForce() const;
+    float GetMaxSpeed() const;
     glm::vec2 GetPosition() const;
     glm::vec2 GetLinearVelocity() const;
     glm::vec3 GetLocalVelocity() const;

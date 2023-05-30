@@ -15,7 +15,7 @@ public:
     };
 
 private:
-    enum behaviorType {
+    enum BehaviorType {
         none               = 0x00000,
         seek               = 0x00002,
         flee               = 0x00004,
@@ -52,8 +52,6 @@ private:
     glm::vec2 steeringForce;
     glm::vec2 target;
 
-    float viewDistance;
-
     // Weights for adjusting behavior strength
     float separationWeight;
     float alignmentWeight;
@@ -61,7 +59,7 @@ private:
     float arriveWeight;
     float followPathWeight;
 
-    bool BehaviorTypeOn(behaviorType bt) { return (flags & bt) == bt; }
+    bool BehaviorTypeOn(BehaviorType bt) const;
     bool AccumulateForce(glm::vec2& sf, glm::vec2 forceToAdd);
 
     // Behavior declarations
@@ -83,10 +81,10 @@ public:
 
     glm::vec2 Calculate();
 
-    glm::vec2 GetSteeringForce() const { return steeringForce; }
+    glm::vec2 GetSteeringForce() const;
 
-    float GetSeparationWeight() const { return separationWeight; }
-    float GetAlignmentWeight() const { return alignmentWeight; }
+    float GetSeparationWeight() const;
+    float GetAlignmentWeight() const;
 
     std::list<glm::vec2> GetPath() const;
     glm::vec2 GetCurrentWaypoint() const;
@@ -94,29 +92,29 @@ public:
     void SetPath(std::list<glm::vec2> newPath);
     void CreateBasePath(float minX, float minY, float maxX, float maxY) const;
 
-    void SetSummingMethod(SummingMethod sm) { summingMethod = sm; }
-    void SetTarget(const glm::vec2 t) { target = t; }
+    void SetSummingMethod(SummingMethod sm);
+    void SetTarget(const glm::vec2 t);
 
     // Flag checks
-    void SeekOn() { flags |= seek; }
-    void ArriveOn() { flags |= arrive; }
-    void SeparationOn() { flags |= separation; }
-    void AlignmentOn() { flags |= alignment; }
-    void FollowPathOn() { flags |= followPath; }
-    void TrafficDriveOn() { FollowPathOn(); AlignmentOn(); SeparationOn(); }
+    void SeekOn();
+    void ArriveOn();
+    void SeparationOn();
+    void AlignmentOn();
+    void FollowPathOn();
+    void TrafficDriveOn();
 
-    void SeekOff() { if(BehaviorTypeOn(seek)) flags ^= seek; }
-    void ArriveOff() { if(BehaviorTypeOn(arrive)) flags ^= arrive; }
-    void SeparationOff() { if(BehaviorTypeOn(separation)) flags ^= separation; }
-    void AlignmentOff() { if(BehaviorTypeOn(alignment)) flags ^= alignment; }
-    void FollowPathOff() { if(BehaviorTypeOn(followPath)) flags ^= followPath; }
-    void TrafficDriveOff() { FollowPathOff(); AlignmentOff(); SeparationOff(); }
+    void SeekOff();
+    void ArriveOff();
+    void SeparationOff();
+    void AlignmentOff();
+    void FollowPathOff();
+    void TrafficDriveOff();
 
-    bool isSeekOn() { return BehaviorTypeOn(seek); }
-    bool isArriveOn() { return BehaviorTypeOn(arrive); }
-    bool isSeparationOn() { return BehaviorTypeOn(separation); }
-    bool isAlignmentOn() { return BehaviorTypeOn(alignment); }
-    bool isFollowPathOn() { return BehaviorTypeOn(followPath); }
+    bool IsSeekOn();
+    bool IsArriveOn();
+    bool IsSeparationOn();
+    bool IsAlignmentOn();
+    bool IsFollowPathOn();
 
     void LoadParameters(const std::string& path);
 };

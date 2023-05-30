@@ -20,8 +20,6 @@ Path::Path(float minX, float minY, float maxX,
 Path::~Path() = default;
 
 glm::vec2 Path::GetCurrentWaypoint() {
-    //TODO: Some check required here
-//    MLG_ASSERT(currentWaypoint != waypoints.end());
     return *currentWaypoint;
 }
 

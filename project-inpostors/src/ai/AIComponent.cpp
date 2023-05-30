@@ -78,6 +78,14 @@ void AIComponent::LoadParameters(const std::string& path = "res/config/cars/traf
     maxSpeed = parameters["maxSpeed"];
 }
 
+float AIComponent::GetMaxForce() const {
+    return maxForce;
+}
+
+float AIComponent::GetMaxSpeed() const {
+    return maxSpeed;
+}
+
 glm::vec2 AIComponent::GetPosition() const {
     return rigidbodyComponent->GetPosition();
 }

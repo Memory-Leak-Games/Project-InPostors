@@ -174,11 +174,11 @@ public:
         testCarTwo.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->TrafficDriveOn();
         auto testCarTwoRigidbody = testCarTwo.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
         testCarTwoRigidbody.lock()->SetPosition({10.f, 10.f});
-//
-//        auto testCarThree = mlg::EntityManager::SpawnEntity<TrafficCar>("TrafficCar", false, mlg::SceneGraph::GetRoot(), testCarThreeData);
-//        testCarThree.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->TrafficDriveOn();
-//        auto testCarThreeRigidbody = testCarThree.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
-//        testCarThreeRigidbody.lock()->SetPosition({-30.f, 0.f});
+
+        auto testCarThree = mlg::EntityManager::SpawnEntity<TrafficCar>("TrafficCar3", false, mlg::SceneGraph::GetRoot(), testCarThreeData);
+        testCarThree.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->TrafficDriveOn();
+        auto testCarThreeRigidbody = testCarThree.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
+        testCarThreeRigidbody.lock()->SetPosition({20.f, -5.f});
 
         // create factories
         auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("Smelter", false, mlg::SceneGraph::GetRoot(),

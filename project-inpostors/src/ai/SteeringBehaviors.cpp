@@ -17,6 +17,7 @@ SteeringBehaviors::SteeringBehaviors(AIComponent* agent, const std::string& conf
     : aiComponent(agent), flags(0), deceleration(fast), summingMethod(prioritized) {
     LoadParameters(configPath);
 
+    //TODO: Replace this with Path from level
     std::list<glm::vec2> waypoints = {
             {10.f, -5.f},
             {-15.f, -5.f},
@@ -25,13 +26,6 @@ SteeringBehaviors::SteeringBehaviors(AIComponent* agent, const std::string& conf
     };
 
     path = new Path(waypoints, true);
-//    path->LoopOn();
-//
-//    //TODO: Replace this with Path from level
-//    path->CreateBasePath(-10, -10, 10, 10);
-//    path->AddWaypoint({10.f, -5.f});
-//    path->AddWaypoint({-10.f, -5.f});
-//    path->AddWaypoint({-30.f, -5.f});
 }
 
 SteeringBehaviors::~SteeringBehaviors() = default;
@@ -95,14 +89,14 @@ glm::vec2 SteeringBehaviors::CalculatePrioritized() {
     }
 
     if (BehaviorTypeOn(seek)) {
-        force = Seek({10, -20}) * seekWeight;
+        force = Seek(target) * seekWeight;
 
         if (!AccumulateForce(steeringForce, force))
             return steeringForce;
     }
 
     if (BehaviorTypeOn(arrive)) {
-        force = Arrive({10, -20}, deceleration) * arriveWeight;
+        force = Arrive(target, deceleration) * arriveWeight;
 
         if (!AccumulateForce(steeringForce, force))
             return steeringForce;
@@ -118,23 +112,23 @@ glm::vec2 SteeringBehaviors::CalculatePrioritized() {
     return steeringForce;
 }
 
-glm::vec2 SteeringBehaviors::Seek(glm::vec2 TargetPos) {
-    glm::vec2 desiredVelocity = glm::normalize(TargetPos - aiComponent->GetPosition())
+glm::vec2 SteeringBehaviors::Seek(glm::vec2 targetPos) {
+    glm::vec2 desiredVelocity = glm::normalize(targetPos - aiComponent->GetPosition())
                                 * aiComponent->GetMaxSpeed();
 
     glm::vec2 velocity2D = aiComponent->GetLinearVelocity();
     return (desiredVelocity - velocity2D);
 }
 
-glm::vec2 SteeringBehaviors::Arrive(glm::vec2 TargetPos, Deceleration deceleration) {
-    glm::vec2 toTarget = TargetPos - aiComponent->GetPosition();
+glm::vec2 SteeringBehaviors::Arrive(glm::vec2 targetPos, Deceleration dec) {
+    glm::vec2 toTarget = targetPos - aiComponent->GetPosition();
 
     float distance = toTarget.length();
 
     if (distance > 0) {
         const float decelerationTweaker = 0.3;
 
-        float speed = distance / ((float)deceleration * decelerationTweaker);
+        float speed = distance / ((float)dec * decelerationTweaker);
         speed = fmin(speed, aiComponent->GetMaxSpeed());
 
         glm::vec2 desiredVelocity = toTarget * speed / distance;
@@ -185,7 +179,7 @@ glm::vec2 SteeringBehaviors::FollowPath() {
     if (glm::distance2(path->GetCurrentWaypoint(), aiComponent->GetPosition())
         < sqrt(waypointSeekDistance)) {
         path->SetNextWaypoint();
-        SPDLOG_INFO("Waypoint reached - new waypoint: ({}, {})", GetCurrentWaypoint().x, GetCurrentWaypoint().y);
+        SPDLOG_DEBUG("Waypoint reached - new waypoint: ({}, {})", GetCurrentWaypoint().x, GetCurrentWaypoint().y);
     }
 
     if (!path->IsPathCompleted()) {
@@ -217,10 +211,111 @@ void SteeringBehaviors::CreateBasePath(float minX, float minY, float maxX, float
     path->CreateBasePath(minX, minY, maxX, maxY);
 }
 
+glm::vec2 SteeringBehaviors::GetSteeringForce() const {
+    return steeringForce;
+}
+
+float SteeringBehaviors::GetSeparationWeight() const {
+    return separationWeight;
+}
+
+float SteeringBehaviors::GetAlignmentWeight() const {
+    return alignmentWeight;
+}
+
 std::list<glm::vec2> SteeringBehaviors::GetPath() const {
     return path->GetPath();
 }
 
 glm::vec2 SteeringBehaviors::GetCurrentWaypoint() const {
     return path->GetCurrentWaypoint();
+}
+
+bool SteeringBehaviors::BehaviorTypeOn(BehaviorType bt) const {
+    return (flags & bt) == bt;
+}
+
+void SteeringBehaviors::SetSummingMethod(SummingMethod sm) {
+    summingMethod = sm;
+}
+
+void SteeringBehaviors::SetTarget(const glm::vec2 t) {
+    target = t;
+}
+
+void SteeringBehaviors::SeekOn() {
+    flags |= seek;
+}
+
+void SteeringBehaviors::ArriveOn() {
+    flags |= arrive;
+}
+
+void SteeringBehaviors::SeparationOn() {
+    flags |= separation;
+}
+
+void SteeringBehaviors::AlignmentOn() {
+    flags |= alignment;
+}
+
+void SteeringBehaviors::FollowPathOn() {
+    flags |= followPath;
+}
+
+void SteeringBehaviors::TrafficDriveOn() {
+    FollowPathOn();
+    AlignmentOn();
+    SeparationOn();
+}
+
+void SteeringBehaviors::SeekOff() {
+    if(BehaviorTypeOn(seek))
+        flags ^= seek;
+}
+
+void SteeringBehaviors::ArriveOff() {
+    if(BehaviorTypeOn(arrive))
+        flags ^= arrive;
+}
+
+void SteeringBehaviors::SeparationOff() {
+    if(BehaviorTypeOn(separation))
+        flags ^= separation;
+}
+
+void SteeringBehaviors::AlignmentOff() {
+    if(BehaviorTypeOn(alignment))
+        flags ^= alignment;
+}
+
+void SteeringBehaviors::FollowPathOff() {
+    if(BehaviorTypeOn(followPath))
+        flags ^= followPath;
+}
+
+void SteeringBehaviors::TrafficDriveOff() {
+    FollowPathOff();
+    AlignmentOff();
+    SeparationOff();
+}
+
+bool SteeringBehaviors::IsSeekOn() {
+    return BehaviorTypeOn(seek);
+}
+
+bool SteeringBehaviors::IsArriveOn() {
+    return BehaviorTypeOn(arrive);
+}
+
+bool SteeringBehaviors::IsSeparationOn() {
+    return BehaviorTypeOn(separation);
+}
+
+bool SteeringBehaviors::IsAlignmentOn() {
+    return BehaviorTypeOn(alignment);
+}
+
+bool SteeringBehaviors::IsFollowPathOn() {
+    return BehaviorTypeOn(followPath);
 }
