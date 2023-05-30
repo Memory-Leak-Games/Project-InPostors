@@ -106,6 +106,10 @@ namespace mlg {
         return shape->position;
     }
 
+    ColliderShape::AABB Collider::GetAABB() const {
+        return shape->GetAABB();
+    }
+
     float Collider::GetRadius() const {
         return shape->GetRadius();
     }

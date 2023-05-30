@@ -10,6 +10,9 @@
 LevelScene::LevelScene(const std::string& path) : levelPath(path) {}
 
 void LevelScene::Load() {
+    cityAmbientSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/city_ambient.mp3");
+    cityAmbientSound->PlayBackgroundMusic(2.f);
+
     auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
     auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
 

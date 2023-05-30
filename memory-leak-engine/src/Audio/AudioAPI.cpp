@@ -4,11 +4,13 @@
 #include <soloud.h>
 
 #include "Core/Settings/SettingsManager.h"
+#include "Audio/Assets/AudioAsset.h"
 
 #include "Macros.h"
 
 namespace mlg {
     AudioAPI* AudioAPI::instance;
+
 
     void AudioAPI::Initialize() {
         if (instance != nullptr)
