@@ -76,12 +76,6 @@ void AIComponent::LoadParameters(const std::string& path = "res/config/cars/traf
     maxForce = acceleration * mass;
 
     maxSpeed = parameters["maxSpeed"];
-    backwardMaxSpeed = parameters["backwardMaxSpeed"];
-    engineHandling = parameters["engineHandling"];
-    handling = parameters["handling"];
-
-    rotationSpeed = parameters["rotationSpeed"];
-    rotationRadius = parameters["rotationRadius"];
 }
 
 glm::vec2 AIComponent::GetPosition() const {

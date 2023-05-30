@@ -19,8 +19,9 @@ SteeringBehaviors::SteeringBehaviors(AIComponent* agent, const std::string& conf
 
     std::list<glm::vec2> waypoints = {
             {10.f, -5.f},
-            {-10.f, -5.f},
-            {-30.f, -5.f}
+            {-15.f, -5.f},
+            {-15.f, 20.f},
+            {10.f, 20.f}
     };
 
     path = new Path(waypoints, true);
@@ -121,9 +122,7 @@ glm::vec2 SteeringBehaviors::Seek(glm::vec2 TargetPos) {
     glm::vec2 desiredVelocity = glm::normalize(TargetPos - aiComponent->GetPosition())
                                 * aiComponent->GetMaxSpeed();
 
-    glm::vec2 velocity2D;
-    velocity2D.x = aiComponent->GetLocalVelocity().x;
-    velocity2D.y = aiComponent->GetLocalVelocity().z;
+    glm::vec2 velocity2D = aiComponent->GetLinearVelocity();
     return (desiredVelocity - velocity2D);
 }
 

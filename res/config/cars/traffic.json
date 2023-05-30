@@ -2,13 +2,7 @@
   "model": "res/models/Cars/NPC/car.obj",
   "material": "res/materials/Car/chroma_key_material.json",
   "parameters": {
-    "acceleration": 100,
-    "maxSpeed": 15,
-    "backwardMaxSpeed": 5,
-    "engineHandling": 100,
-    "handling": 4000,
-
-    "rotationSpeed": 200,
-    "rotationRadius": 3
+    "acceleration": 10,
+    "maxSpeed": 15
   }
 }

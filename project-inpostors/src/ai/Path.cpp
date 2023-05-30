@@ -22,8 +22,6 @@ Path::~Path() = default;
 glm::vec2 Path::GetCurrentWaypoint() {
     //TODO: Some check required here
 //    MLG_ASSERT(currentWaypoint != waypoints.end());
-    SPDLOG_INFO("Current waypoint: ({}, {})", currentWaypoint->x, currentWaypoint->y);
-
     return *currentWaypoint;
 }
 

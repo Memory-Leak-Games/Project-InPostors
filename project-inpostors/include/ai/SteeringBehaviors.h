@@ -38,7 +38,6 @@ private:
     uint64_t flags;
 
     AIComponent* aiComponent;
-    TrafficCar* trafficCar;
     Path* path;
 
     enum Deceleration {

@@ -45,7 +45,6 @@ std::shared_ptr<TrafficCar> TrafficCar::Create(uint64_t id, const std::string& n
     material->SetVec4("color", trafficCarData.color);
 
     auto staticMeshComponent = newTrafficCar->AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
-    newTrafficCar->AddComponent<AIComponent>("AIMovementComponent");
 
     staticMeshComponent.lock()->GetTransform().SetPosition({0.f, 0.3f, 0.f});
 
@@ -58,13 +57,10 @@ std::shared_ptr<TrafficCar> TrafficCar::Create(uint64_t id, const std::string& n
 }
 
 void TrafficCar::Start() {
-    //TODO: Implement Start
 }
 
 void TrafficCar::Update() {
-    //TODO: Implement Update
 }
 
 void TrafficCar::AIUpdate() {
-    //TODO: Implement AIUpdate
 }

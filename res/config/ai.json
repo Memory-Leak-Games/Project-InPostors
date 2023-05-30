@@ -2,9 +2,9 @@
   "name": "AI Settings",
   "parameters": {
     "separationWeight": 0.8,
-    "alignmentWeight": 0.5,
+    "alignmentWeight": 0.8,
     "seekWeight": 0.0,
     "arriveWeight": 0.0,
-    "followPathWeight": 0.8
+    "followPathWeight": 0.7
   }
 }
