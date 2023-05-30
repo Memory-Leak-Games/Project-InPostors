@@ -71,16 +71,19 @@ namespace mlg {
         float tileSize = 10.f;
         glm::vec2 citySize = {0.f, 0.f};
 
+        // ===== METHODS =====
+
         std::vector<std::string> LoadLayout();
         void LoadMapObjects();
         void LoadRoads();
         void LoadFactories(); //todo
 
-
         MapObject ParseObject(const nlohmann::json& jsonObject);
         MapFactory ParseFactory(const nlohmann::json& jsonObject);
 
         void GenerateLevel();
+
+        //void TryPutFactory(MapFactory &fac); //TODO: move code from GenerateLevel here
 
         void PutTile(int x, int y, const char& character);
         void PutRoad(int x, int y);

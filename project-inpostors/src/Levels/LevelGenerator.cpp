@@ -238,8 +238,23 @@ namespace mlg {
         MapFactory mf;
 
         const char tileSymbol = jsonObject["symbol"].get<std::string>()[0];
-        std::pair<char, unsigned int> fac(tileSymbol, 1);
-        factoryCharacters.insert(fac);
+
+
+        // Count factory occurrences.
+        // This is needed for random generation chance.
+        int x = 0, y = 0;
+        unsigned int occurrences = 0;
+
+        for (const std::string& row : levelLayout) {
+            ++y;
+            for (const char& character : row) {
+                ++x;
+                if (character == tileSymbol)
+                    ++occurrences;
+            }
+            x = 0;
+        }
+        factoryCharacters.insert({tileSymbol, occurrences});
 
         mf.configPath = jsonObject["config"].get<std::string>();
         mf.factorySymbol = tileSymbol;
@@ -255,16 +270,20 @@ namespace mlg {
             for (const char& character : row) {
                 ++x;
 
-                //TODO: only for testing purposes
+                //TODO: move to TryPutFactory()
                 auto got = factoryCharacters.find(character);
                 if (got != factoryCharacters.end()) // we got a match!
                 {
                     for (auto &fac : levelFactories)
                     {
-                        if (fac.factorySymbol == character && fac.remaining != 0)
-                        {
-                            PutFactory(fac.configPath, {x - 1, y - 1}, 0.0f);
-                            fac.remaining -= 1;
+                        if (fac.factorySymbol == character && fac.remaining != 0) {
+                            unsigned int spots = factoryCharacters[character];
+                            float chance = static_cast<float>(fac.remaining) / static_cast<float>(spots);
+                            if (Random::get<bool>(chance)) {
+                                PutFactory(fac.configPath, {x - 1, y - 1}, 0.0f);
+                                fac.remaining -= 1;
+                            }
+                            factoryCharacters[character] -= 1;
                         }
                     }
                 }
