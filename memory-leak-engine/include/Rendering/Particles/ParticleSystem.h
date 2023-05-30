@@ -3,6 +3,7 @@
 #include "Rendering/LateRenderable.h"
 
 #include "Particles.h"
+#include "SceneGraph/Transform.h"
 
 namespace mlg {
 
@@ -28,6 +29,7 @@ namespace mlg {
         ParticleSystem(const std::shared_ptr<MaterialAsset>& material, uint32_t maxParticlesCount);
         ~ParticleSystem();
 
+        void Start(const class Transform& transfomr);
         void Update(const class Transform& transform);
 
         virtual std::shared_ptr<ParticleSystem> Clone() = 0;
@@ -36,11 +38,10 @@ namespace mlg {
 
         virtual void Emit(const ParticleProps& particleProps);
 
-        void LateDraw(struct Renderer *renderer) override;
+        void LateDraw(struct Renderer* renderer) override;
 
     private:
         void InitializeVao();
-
     };
 
-} // mlg
+}// namespace mlg

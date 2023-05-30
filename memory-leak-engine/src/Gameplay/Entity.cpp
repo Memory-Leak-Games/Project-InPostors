@@ -48,6 +48,9 @@ namespace mlg {
     void Entity::QueueForDeletion() {
         isQueuedForDeletion = true;
         for (auto& component : components) {
+            if (component.expired())
+                continue;
+
             component.lock()->QueueForDeletion();
         }
     }

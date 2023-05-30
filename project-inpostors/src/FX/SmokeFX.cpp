@@ -9,7 +9,6 @@
 using Random = effolkronium::random_static;
 
 void SmokeFX::UpdateSystem(const mlg::Transform& transform) {
-    static float timeAccumulator;
     const float timeToSpawn = 0.1f;
 
     timeAccumulator += mlg::Time::GetDeltaSeconds();
@@ -36,7 +35,7 @@ void SmokeFX::UpdateSystem(const mlg::Transform& transform) {
     }
 }
 
-SmokeFX::SmokeFX() : mlg::ParticleSystem(30) {
+SmokeFX::SmokeFX() : mlg::ParticleSystem(100) {
     SetMaterial(mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/particles/smoke_fx.json"));
 }
 

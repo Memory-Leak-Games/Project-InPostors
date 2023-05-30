@@ -82,7 +82,7 @@ void mlg::TimerManager::ClearTimer(uint32_t id) {
     timersMap.erase(foundIterator);
 }
 
-bool mlg::TimerManager::IsTimerValid(uint32_t id) {
+bool mlg::TimerManager::IsTimerValid(unsigned int id) {
     return timersMap.find(id) != timersMap.end() && timersMap.at(id).valid;
 }
 

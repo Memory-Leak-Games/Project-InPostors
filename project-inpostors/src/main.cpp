@@ -1,202 +1,74 @@
-#include "Rendering/Model.h"
-#include "Rendering/Renderer.h"
-
-#include <Rendering/RenderingAPI.h>
-
-#include <Audio/Assets/AudioAsset.h>
-#include <Audio/AudioAPI.h>
-
-#include <Rendering/Assets/MaterialAsset.h>
-#include <Rendering/Assets/ModelAsset.h>
-
-#include <Core/AssetManager/AssetManager.h>
-#include <Core/HID/Input.h>
-
-#include "Core/Core.h"
-#include "Core/Time.h"
-
-#include "Buildings/Factory.h"
-#include "Car/PlayerOneInput.h"
-#include "Car/PlayerTwoInput.h"
-#include "Core/TimerManager.h"
-#include "Core/Settings/SettingsManager.h"
-
-#include "Gameplay/Components/CameraComponent.h"
-#include "Levels/LevelGenerator.h"
-#include "Player.h"
-#include "SceneGraph/SceneGraph.h"
-#include "Car/PlayerOneInput.h"
-#include "Car/PlayerTwoInput.h"
-#include "Buildings/Factory.h"
-#include "ai/TrafficCar.h"
-#include "ai/AIComponent.h"
-#include "ai/SteeringBehaviors.h"
-#include "ai/Path.h"
-
-#include <Gameplay/ComponentManager.h>
-#include <Gameplay/Components/RigidbodyComponent.h>
-#include <Gameplay/Components/StaticMeshComponent.h>
-#include <Gameplay/EntityManager.h>
-#include <Gameplay/AI/AI.h>
-#include <Physics/Physics.h>
-#include <Rendering/CommonUniformBuffer.h>
-#include <Rendering/Gizmos/Gizmos.h>
-
-#include <Gameplay/Components/AudioComponent.h>
-
-#include <UI/Assets/FontAsset.h>
-#include <UI/Components/Image.h>
-#include <UI/Components/Label.h>
-#include <UI/Components/ProgressBar.h>
-#include <UI/Components/Button.h>
-#include <UI/UIRenderer.h>
-
-#include <Physics/Colliders/Collider.h>
-#include <cstdint>
-#include <spdlog/spdlog.h>
-#include <UI/UIController.h>
+#include <exception>
+#include <iostream>
+#include <cxxopts.hpp>
+#include <memory>
 #include <string>
+#include <utility>
 
-class ComponentTest : public mlg::Component {
-public:
-    ComponentTest(const std::weak_ptr<mlg::Entity>& owner, const std::string& name) : Component(owner, name) {}
+#include "Core/SceneManager/SceneManager.h"
+#include "Core/Core.h"
 
-    void Update() override {
-        glm::vec3 position = GetOwner().lock()->GetTransform().GetPosition();
-        position.z = glm::sin(mlg::Time::GetSeconds() * 2.f) * 8.f;
+#include "Initializer.h"
 
-        GetOwner().lock()->GetTransform().SetRotation({{0.f, mlg::Time::GetSeconds(), 0.f}});
-        GetOwner().lock()->GetTransform().SetPosition(position);
-
-        if (mlg::Input::IsActionPressed("test_button")) {
-            GetOwner().lock()->QueueForDeletion();
-        }
-    }
-
-    ~ComponentTest() override {
-    }
-};
+#include "Scenes/LevelScene.h"
+#include "Scenes/TestScene.h"
 
 class ProjectInpostors {
-    std::shared_ptr<mlg::AudioAsset> sound;
-    std::shared_ptr<mlg::AudioAsset> music;
-
 public:
     ProjectInpostors() = default;
+    std::unique_ptr<mlg::Scene> startupScene;
 
-    int Main(int argc, char* argv[]) {
-        mlg::SettingsManager::Initialize();
+    bool ParseArguments(int argc, char* argv[]) {
+        cxxopts::Options options("Project Inpostors", "A game about couriers");
+        options.allow_unrecognised_options();
+        options.add_options()
+            ("h,help", "Show this help")
+            ("test-scene", "Run test scene")
+            ("l,level", "provide level path", cxxopts::value<std::string>());
 
-        mlg::Time::Initialize();
-        mlg::TimerManager::Initialize();
-        mlg::AssetManager::Initialize();
-        mlg::Window::Initialize("Memory Leak Engine");
-        mlg::RenderingAPI::Initialize();
-        mlg::Renderer::Initialize();
-        mlg::UIRenderer::Initialize();
-        mlg::Gizmos::Initialize();
-        mlg::CommonUniformBuffer::Initialize();
-        mlg::SceneGraph::Initialize();
-        mlg::AudioAPI::Initialize();
+        auto resutl = options.parse(argc, argv);
 
-        mlg::AudioAPI::GetSoLoud()->setGlobalVolume(mlg::SettingsManager::Get<float>(mlg::SettingsType::Audio, "volume"));
+        if (resutl.count("help")) {
+            std::cout << options.help() << std::endl;
+            return true;
+        }
 
-        mlg::Physics::Initialize();
+        if (resutl.count("test-scene")) {
+            startupScene = std::move(std::make_unique<TestScene>());
 
-        mlg::ComponentManager::Initialize();
-        mlg::EntityManager::Initialize();
+            return false;
+        }
 
-        mlg::AI::Initialize();
+        if (resutl.count("level")) {
+            std::string path = resutl["level"].as<std::string>();
 
-        mlg::Core::Initialize();
-        mlg::Input::Initialize();
-        mlg::UIController::Initialize();
+            auto levelScene = std::make_unique<LevelScene>(path);
+            startupScene = std::move(levelScene);
 
-        mlg::Core* engine = mlg::Core::GetInstance();
-        PrepareScene();
-        engine->MainLoop();
+            return false;
+        }
 
-        mlg::AI::Stop();
+        std::string path = "res/levels/maps/detroit.json";
+        startupScene = std::move(std::make_unique<LevelScene>(path));
 
-        mlg::EntityManager::Stop();
-        mlg::ComponentManager::Stop();
-
-        mlg::Physics::Stop();
-
-        mlg::AudioAPI::Stop();
-        mlg::SceneGraph::Stop();
-        mlg::UIController::Stop();
-        mlg::Input::Stop();
-        mlg::Core::Stop();
-        mlg::Gizmos::Stop();
-        mlg::UIRenderer::Stop();
-        mlg::Renderer::Stop();
-        mlg::RenderingAPI::Stop();
-        mlg::Window::Stop();
-        mlg::AssetManager::Stop();
-        mlg::Time::Stop();
-        mlg::TimerManager::Stop();
-
-        mlg::SettingsManager::Stop();
-
-        return 0;
+        return false;
     }
 
-    void PrepareScene() {
-        auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
-        auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
 
-        std::vector<std::string> levelLayout;
+    int Main() {
 
-        const std::string testLevelPath = "res/levels/maps/detroit.json";
-        const std::string testLevelPropsPath = "res/levels/maps/detroit_props.json";
+        mlg::Initializer::InitializeCoreComponents();
+        mlg::Initializer::InitializeSceneComponents();
 
-        levelLayout = mlg::LevelGenerator::LoadMap(testLevelPath);
-        mlg::LevelGenerator::LoadMap(testLevelPath);
-        mlg::LevelGenerator::SpawnGround(testLevelPath);
-        mlg::LevelGenerator::SetCityBounds(testLevelPath);
-        mlg::LevelGenerator::LoadCameraSettings(testLevelPath, *cameraComponent.lock());
-        mlg::LevelGenerator::SpawnPlayers(testLevelPath);
+        mlg::Core* engine = mlg::Core::GetInstance();
 
-        // load props
-        mlg::LevelGenerator::LoadMap(testLevelPropsPath);
+        mlg::SceneManager::LoadScene(std::move(startupScene));
+        engine->MainLoop();
 
-        TrafficCarData testCarOneData = {0, mlg::RGBA::white};
-        TrafficCarData testCarTwoData = {1, mlg::RGBA::gray};
-        TrafficCarData testCarThreeData = {2, mlg::RGBA::black};
+        mlg::Initializer::StopSceneComponents();
+        mlg::Initializer::StopCoreComponents();
 
-        auto testCarOne = mlg::EntityManager::SpawnEntity<TrafficCar>("TrafficCar1", false, mlg::SceneGraph::GetRoot(), testCarOneData);
-        testCarOne.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->TrafficDriveOn();
-        auto testCarOneRigidbody = testCarOne.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
-        testCarOneRigidbody.lock()->SetPosition({30.f, -5.f});
-
-        auto testCarTwo = mlg::EntityManager::SpawnEntity<TrafficCar>("TrafficCar2", false, mlg::SceneGraph::GetRoot(), testCarTwoData);
-        testCarTwo.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->TrafficDriveOn();
-        auto testCarTwoRigidbody = testCarTwo.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
-        testCarTwoRigidbody.lock()->SetPosition({10.f, 10.f});
-
-        auto testCarThree = mlg::EntityManager::SpawnEntity<TrafficCar>("TrafficCar3", false, mlg::SceneGraph::GetRoot(), testCarThreeData);
-        testCarThree.lock()->GetComponentByName<AIComponent>("AIMovementComponent").lock()->GetSteering()->TrafficDriveOn();
-        auto testCarThreeRigidbody = testCarThree.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
-        testCarThreeRigidbody.lock()->SetPosition({20.f, -5.f});
-
-        // create factories
-        auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("Smelter", false, mlg::SceneGraph::GetRoot(),
-                                                                  "res/levels/factories/smelter.json");
-        auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
-        testFactoryRigidBody.lock()->SetPosition({22.f, 8.f});
-
-        auto testMine = mlg::EntityManager::SpawnEntity<Factory>("Mine", false, mlg::SceneGraph::GetRoot(),
-                                                                    "res/levels/factories/mine.json");
-        auto testMineRigidBody = testMine.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
-        testMineRigidBody.lock()->SetPosition({-60.f, -5.f});
-        testMineRigidBody.lock()->SetRotation(glm::radians(-90.f));
-
-        auto testIkea = mlg::EntityManager::SpawnEntity<Factory>("Szwedzki sklep z meblami", false, mlg::SceneGraph::GetRoot(),
-                                                                 "res/levels/factories/ikea.json");
-        auto testIkeaRigidBody = testIkea.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
-        testIkeaRigidBody.lock()->SetPosition({55.f, -5.f});
-        testIkeaRigidBody.lock()->SetRotation(glm::radians(-90.f));
+        return 0;
     }
 
     virtual ~ProjectInpostors() {
@@ -207,5 +79,10 @@ int main(int argc, char* argv[]) {
     LoggingMacros::InitializeSPDLog();
 
     ProjectInpostors game;
-    return game.Main(argc, argv);
+    bool exit = game.ParseArguments(argc, argv);
+
+    if (exit)
+        return 0;
+
+    return game.Main();
 }

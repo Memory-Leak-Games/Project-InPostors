@@ -31,10 +31,7 @@ namespace mlg {
         result /= AVERAGED_FRAMES;
 
         // To prevent strange behaviour
-        if (result > 1.)
-            result = 1.;
-
-        return result;
+        return std::min(result, 1.f/20.f);
     }
 
     void Time::Initialize() {

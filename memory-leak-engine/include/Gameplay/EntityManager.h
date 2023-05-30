@@ -11,7 +11,7 @@ namespace mlg {
         static EntityManager* instance;
 
         std::vector<std::shared_ptr<Entity>> entities;
-        uint64_t entitiesIndex = 0;
+        uint64_t entitiesIndex = 1;
 
         EntityManager() = default;
     public:

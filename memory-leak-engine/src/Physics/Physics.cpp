@@ -6,6 +6,7 @@
 #include "Physics/CollisionManager.h"
 
 #include "Macros.h"
+#include <cstddef>
 
 namespace mlg {
     Physics* Physics::instance;
@@ -31,6 +32,8 @@ namespace mlg {
         SPDLOG_INFO("Stopping Physics Engine");
 
         delete instance;
+        instance = nullptr;
+
         CollisionManager::Stop();
     }
 

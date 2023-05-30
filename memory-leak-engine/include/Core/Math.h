@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glm/fwd.hpp>
 namespace mlg {
 
     class Math {
@@ -43,6 +44,10 @@ namespace mlg {
                 return T{0};
 
             return (glm::dot(a, b) / glm::dot(b, b)) * b;
+        }
+
+        static constexpr glm::vec3 ProjectTo3D(const glm::vec2& v) {
+            return {v.x, 0.f, v.y};
         }
     };
 

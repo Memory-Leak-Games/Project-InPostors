@@ -22,6 +22,7 @@ namespace mlg {
         SPDLOG_INFO("Deleting SceneRoot");
 
         delete root;
+        root = nullptr;
     }
 
     void SceneGraph::CalculateGlobalTransforms() {
