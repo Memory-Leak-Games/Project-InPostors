@@ -2,5 +2,6 @@
   "showColliders": false,
   "showForces": false,
   "showSpacialGrid": false,
-  "showNavigation": true
+  "showNavigation": true,
+  "showAiForces": true
 }

@@ -42,6 +42,7 @@ namespace mlg {
 
         instance->fpsCap = SettingsManager::Get<int>(SettingsType::Engine, "fpsCAP");
         instance->physicsTickRate = SettingsManager::Get<int>(SettingsType::Engine, "physicsTickRate");
+        instance->aiTickRate = SettingsManager::Get<int>(SettingsType::Engine, "aiTickRate");
 
         instance->frameCount = 0;
         for (double& deltaTime : instance->lastFramesDeltaSeconds) {
@@ -80,6 +81,10 @@ namespace mlg {
 
     float Time::GetFixedTimeStep() {
         return 1.f / (float) instance->physicsTickRate;
+    }
+
+    float Time::GetAITimeStep() {
+        return 1.f / (float) instance->aiTickRate;
     }
 
 }// namespace mlg

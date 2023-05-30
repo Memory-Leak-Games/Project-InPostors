@@ -54,7 +54,7 @@ namespace mlg {
         instance->timeAccumulator += deltaTime;
 
         // skip very long frames
-        if (deltaTime > 0.5f)
+        if (deltaTime > 0.25f)
             return;
 
         while (instance->timeAccumulator >= Time::GetFixedTimeStep()) {

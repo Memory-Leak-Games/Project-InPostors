@@ -26,6 +26,7 @@ namespace mlg {
 
         static void Start();
 
+        static void AIUpdate();
         static void PhysicsUpdate();
         static void Update();
         static void LateUpdate();

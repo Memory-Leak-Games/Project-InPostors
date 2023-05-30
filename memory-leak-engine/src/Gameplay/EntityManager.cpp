@@ -33,6 +33,17 @@ namespace mlg {
         }
     }
 
+    void EntityManager::AIUpdate() {
+        ZoneScopedNC("Entity AI Update", tracy::Color::ColorType::Green);
+
+        for (const auto& entity : instance->entities) {
+            if (entity->IsStatic())
+                continue;
+
+            entity->AIUpdate();
+        }
+    }
+
     void EntityManager::PhysicsUpdate() {
         ZoneScopedNC("Entity Physics Update", tracy::Color::ColorType::Green);
 

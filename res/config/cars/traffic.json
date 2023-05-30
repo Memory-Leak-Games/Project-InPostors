@@ -1,0 +1,8 @@
+{
+  "model": "res/models/Cars/NPC/car.obj",
+  "material": "res/materials/Car/chroma_key_material.json",
+  "parameters": {
+    "acceleration": 100,
+    "maxSpeed": 20
+  }
+}
