@@ -324,6 +324,10 @@ namespace mlg {
         playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
     }
 
+    void LevelGenerator::SpawnTraffic(const std::string& path) {
+        //TODO: Add proper traffic spawning here?
+    }
+
     glm::vec2 LevelGenerator::GetCitySize() {
         citySize = GetLayoutSize() *= tileSize;
         return citySize;

@@ -27,6 +27,8 @@ public:
 
     Node GetNearestNode(const glm::vec2& position);
 
+    std::list<glm::vec2> CreatePath();
+
     void DrawNodes();
 
 private:
