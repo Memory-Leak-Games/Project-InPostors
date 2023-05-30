@@ -16,17 +16,6 @@ set(stb_image_SOURCE_DIR ${STB_IMAGE_DIR} CACHE INTERNAL "")
 add_library(stb_image STATIC ${STB_IMAGE_DIR}/stb_image.cpp)
 target_include_directories(stb_image PRIVATE ${STB_IMAGE_DIR})
 
-
-# assimp
-find_package(Assimp QUIET)
-if (${Assimp_FOUND})
-    message("Using System Assimp")
-else ()
-    message("Downloading Assimp")
-    CPMAddPackage("gh:assimp/assimp@5.2.5")
-    set_target_properties(assimp PROPERTIES FOLDER "thirdparty")
-endif ()
-
 # SoLoud
 INCLUDE(SoLoud.cmake)
 
@@ -34,7 +23,18 @@ target_include_directories(soloud PUBLIC ${soloud_SOURCE_DIR}/include)
 set_target_properties(soloud PROPERTIES FOLDER thirdparty)
 
 # Other
-CPMAddPackage("gh:glfw/glfw#3.3.8")
+CPMAddPackage(
+    GITHUB_REPOSITORY glfw/glfw
+    GIT_TAG 3.3.8
+    OPTIONS "GLFW_BUILD_DOCS OFF" "GLFW_BUILD_TESTS OFF" "GLFW_BUILD_EXAMPLES"
+)
+
+CPMAddPackage(
+  GITHUB_REPOSITORY jarro2783/cxxopts
+  VERSION 3.1.1
+  OPTIONS "CXXOPTS_BUILD_EXAMPLES NO" "CXXOPTS_BUILD_TESTS NO" "CXXOPTS_ENABLE_INSTALL YES"
+)
+
 CPMAddPackage("gh:g-truc/glm#0.9.9.8")
 CPMAddPackage("gh:gabime/spdlog@1.10.0")
 CPMAddPackage("gh:effolkronium/random@1.4.1")
@@ -44,12 +44,7 @@ CPMAddPackage("gh:Neargye/magic_enum@0.8.2")
 CPMAddPackage("gh:freetype/freetype#VER-2-13-0")
 CPMAddPackage("gh:wolfpld/tracy@0.9.1")
 CPMAddPackage("gh:Neargye/magic_enum@0.8.2")
-
-CPMAddPackage(
-  GITHUB_REPOSITORY jarro2783/cxxopts
-  VERSION 3.1.1
-  OPTIONS "CXXOPTS_BUILD_EXAMPLES NO" "CXXOPTS_BUILD_TESTS NO" "CXXOPTS_ENABLE_INSTALL YES"
-)
+CPMAddPackage("gh:tinyobjloader/tinyobjloader@2.0.0rc10")
 
 set_target_properties(glad
         stb_image
@@ -61,6 +56,7 @@ set_target_properties(glad
         freetype
         TracyClient
         magic_enum
+        tinyobjloader
         spdlog PROPERTIES FOLDER "thirdparty")
 
 if (TARGET zlibstatic)

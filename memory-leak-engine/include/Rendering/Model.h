@@ -1,25 +1,57 @@
 #pragma once
 
-#include "Mesh.h"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
+#include <cstddef>
+#include <string>
+
+#include "glm/gtx/hash.hpp"
 
 namespace mlg {
+    struct Vertex;
+
     class Model {
     private:
-        std::vector<std::shared_ptr<Mesh>> meshes;
-        std::string modelPath;
+        uint32_t vao;
+        uint32_t vbo;
+        uint32_t ebo;
+
+        int32_t indiciesCount;
 
     public:
-        explicit Model(const std::string &Path);
+        explicit Model(const std::string& Path);
 
         void Draw();
 
-        [[nodiscard]] const std::vector<std::shared_ptr<Mesh>> &GetMeshes() const;
     private:
-        void ProcessNode(aiNode *NodePtr, const aiScene *ScenePtr);
-        std::shared_ptr<Mesh> ProcessMesh(aiMesh *MeshPtr, const aiScene *ScenePtr);
+        void SetupBuffers(
+                const std::vector<Vertex>& vertices,
+                const std::vector<int>& indices);
 
-        static Vertex GetVertexFromAIMesh(const aiMesh *MeshPtr, unsigned int i);
+        void LoadObj(const std::string& Path);
     };
-}
+
+    struct Vertex {
+        glm::vec3 position;
+        glm::vec3 normal;
+        glm::vec2 uv;
+
+        bool operator==(const Vertex& other) const {
+            return position == other.position &&
+                   normal == other.normal &&
+                   uv == other.uv;
+        }
+    };
+
+}// namespace mlg
+
+namespace std {
+    template<>
+    struct hash<mlg::Vertex> {
+        size_t operator()(const mlg::Vertex& vertex) const {
+            size_t seed = hash<glm::vec3>()(vertex.position);
+            seed ^= (hash<glm::vec3>()(vertex.normal) << 1) >> 1;
+            seed ^= (hash<glm::vec2>()(vertex.uv) << 1);
+
+            return seed;
+        }
+    };
+}// namespace std

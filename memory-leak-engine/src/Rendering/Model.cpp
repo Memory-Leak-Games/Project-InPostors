@@ -1,91 +1,103 @@
 #include "Rendering/Model.h"
+#include "Core/Math.h"
+#include <cassert>
+#include <cstdint>
+#include <spdlog/spdlog.h>
+#include <vector>
 
-#include "assimp/Importer.hpp"
-#include <filesystem>
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "tiny_obj_loader.h"
 
 #include "Macros.h"
-#include "stb_image.h"
 
 using namespace mlg;
 
 void Model::Draw() {
-    for (const std::shared_ptr<Mesh>& item : meshes) {
-        item->Draw();
-    }
+    glBindVertexArray(vao);
+    glDrawElements(GL_TRIANGLES, indiciesCount, GL_UNSIGNED_INT, nullptr);
 }
 
-Model::Model(const std::string& Path)
-        : modelPath(Path) {
-    Assimp::Importer AssimpImporter;
-    uint32_t AssimpProcessFlags = aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_OptimizeMeshes;
-    const aiScene* AssimpScene = AssimpImporter.ReadFile(Path, AssimpProcessFlags);
-
-    if (!AssimpScene || AssimpScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !AssimpScene->mRootNode) {
-        SPDLOG_ERROR("ASSIMP {}", AssimpImporter.GetErrorString());
-        return;
-    }
-
-    ProcessNode(AssimpScene->mRootNode, AssimpScene);
+Model::Model(const std::string& path) {
+    LoadObj(path);
 }
 
-void Model::ProcessNode(aiNode* NodePtr, const aiScene* ScenePtr) {
-    for (uint32_t i = 0; i < NodePtr->mNumMeshes; ++i) {
-        aiMesh* MeshPtr = ScenePtr->mMeshes[NodePtr->mMeshes[i]];
-        meshes.push_back(ProcessMesh(MeshPtr, ScenePtr));
-    }
+void mlg::Model::SetupBuffers(
+        const std::vector<Vertex>& vertices, const std::vector<int>& indices) {
+    glCreateVertexArrays(1, &vao);
+    glCreateBuffers(1, &vbo);
+    glCreateBuffers(1, &ebo);
 
-    for (int i = 0; i < NodePtr->mNumChildren; ++i) {
-        ProcessNode(NodePtr->mChildren[i], ScenePtr);
-    }
+    glNamedBufferStorage(vbo, vertices.size() * sizeof(Vertex), &vertices[0], 0);
+    glNamedBufferStorage(ebo, indices.size() * sizeof(uint32_t), &indices[0], 0);
+
+    // Positions
+    glEnableVertexArrayAttrib(vao, 0);
+    glVertexArrayAttribBinding(vao, 0, 0);
+    glVertexArrayAttribFormat(vao, 0, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, position));
+
+    // normals
+    glEnableVertexArrayAttrib(vao, 1);
+    glVertexArrayAttribBinding(vao, 1, 0);
+    glVertexArrayAttribFormat(vao, 1, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
+
+    // UV's
+    glEnableVertexArrayAttrib(vao, 2);
+    glVertexArrayAttribBinding(vao, 2, 0);
+    glVertexArrayAttribFormat(vao, 2, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, uv));
+
+    glVertexArrayVertexBuffer(vao, 0, vbo, 0, sizeof(Vertex));
+    glVertexArrayElementBuffer(vao, ebo);
 }
 
-std::shared_ptr<Mesh> Model::ProcessMesh(aiMesh* MeshPtr, const aiScene* ScenePtr) {
-    std::vector<Vertex> Vertices;
-    std::vector<GLuint> Indices;
+void mlg::Model::LoadObj(const std::string& path) {
+    tinyobj::ObjReaderConfig objReaderConfig;
+    objReaderConfig.vertex_color = false; 
 
-    for (uint32_t i = 0; i < MeshPtr->mNumVertices; i++) {
-        Vertices.push_back(GetVertexFromAIMesh(MeshPtr, i));
-    }
+    tinyobj::ObjReader objReader;
 
-    for (uint32_t i = 0; i < MeshPtr->mNumFaces; i++) {
-        aiFace face = MeshPtr->mFaces[i];
-        for (uint32_t j = 0; j < face.mNumIndices; j++) {
-            Indices.push_back(face.mIndices[j]);
+    bool result = objReader.ParseFromFile(path, objReaderConfig);
+    MLG_ASSERT_MSG(result, "TinyObj error: " + objReader.Error());
+
+    if (!objReader.Warning().empty())
+        SPDLOG_WARN("TinyObj: {}", objReader.Warning());
+
+    std::vector<Vertex> vertices;
+    std::vector<int> indices;
+
+    const tinyobj::attrib_t& attrib = objReader.GetAttrib();
+
+    std::unordered_map<Vertex, uint32_t> visitedVertices;
+
+    for (const auto& shape : objReader.GetShapes()) {
+        for (const auto& index : shape.mesh.indices) {
+
+
+            Vertex vertex{};
+            vertex.position = {
+                    attrib.vertices[3 * size_t(index.vertex_index) + 0],
+                    attrib.vertices[3 * size_t(index.vertex_index) + 1],
+                    attrib.vertices[3 * size_t(index.vertex_index) + 2]};
+
+            vertex.uv = {
+                    attrib.texcoords[2 * index.texcoord_index + 0],
+                    attrib.texcoords[2 * index.texcoord_index + 1]};
+
+            vertex.normal = {
+                    attrib.normals[3 * index.normal_index + 0],
+                    attrib.normals[3 * index.normal_index + 1],
+                    attrib.normals[3 * index.normal_index + 2]};
+
+            vertex.normal = Math::SafeNormal(vertex.normal);
+
+            if (!visitedVertices.contains(vertex)) {
+                visitedVertices.insert({vertex, vertices.size()});
+                vertices.push_back(vertex);
+            }
+
+            indices.push_back(visitedVertices[vertex]);
         }
+
+        indiciesCount = indices.size();
+        SetupBuffers(vertices, indices);
     }
-
-    return std::make_shared<Mesh>(Vertices, Indices);
 }
-
-Vertex Model::GetVertexFromAIMesh(const aiMesh* MeshPtr, unsigned int i) {
-    Vertex NewVertex{};
-
-    glm::vec3 Position, Normal;
-    glm::vec2 TextureCoords;
-
-    Position.x = MeshPtr->mVertices[i].x;
-    Position.y = MeshPtr->mVertices[i].y;
-    Position.z = MeshPtr->mVertices[i].z;
-
-    Normal.x = MeshPtr->mNormals[i].x;
-    Normal.y = MeshPtr->mNormals[i].y;
-    Normal.z = MeshPtr->mNormals[i].z;
-
-    if (MeshPtr->mTextureCoords[0]) {
-        TextureCoords.x = MeshPtr->mTextureCoords[0][i].x;
-        TextureCoords.y = MeshPtr->mTextureCoords[0][i].y;
-    } else {
-        TextureCoords = glm::vec2(0.0f, 0.0f);
-    }
-
-    NewVertex.position = Position;
-    NewVertex.normal = Normal;
-    NewVertex.uv = TextureCoords;
-
-    return NewVertex;
-}
-
-const std::vector<std::shared_ptr<Mesh>>& Model::GetMeshes() const {
-    return meshes;
-}
-
