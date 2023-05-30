@@ -176,11 +176,15 @@ void Factory::Update() {
     ImGui::End();
 #endif
 
-    //auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
-    //barReq1->percentage = equipmentComponent->Has(blueprint.GetInput()[0]);
-    //barReq2->percentage = equipmentComponent->Has(blueprint.GetInput()[1]);
-    //barArrow->percentage = mlg::TimerManager::Get()->GetTimerRate(produceTimerHandle);
-    //barRes->percentage = equipmentComponent->Has(blueprint.GetOutput());
+    auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
+    if (!blueprint.GetInput().empty() && barReq1)
+        barReq1->percentage = equipmentComponent->Has(blueprint.GetInput()[0]);
+    if (blueprint.GetInput().size() > 1  && barReq2)
+        barReq2->percentage = equipmentComponent->Has(blueprint.GetInput()[1]);
+    if (barArrow)
+        barArrow->percentage = mlg::TimerManager::Get()->GetTimerElapsedTime(produceTimerHandle) / 4;
+    if (barRes)
+        barRes->percentage = equipmentComponent->Has(blueprint.GetOutput());
 
 
 //    productionBar->percentage += mlg::Time::GetDeltaSeconds() * 0.5;
