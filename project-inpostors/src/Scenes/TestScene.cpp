@@ -10,7 +10,7 @@ TestScene::TestScene() : LevelScene("res/levels/maps/test_level.json") { }
 
 void TestScene::Load() {
     LevelScene::Load();
-
+/*
     auto testFactory = mlg::EntityManager::SpawnEntity<Factory>("Smelter", false, mlg::SceneGraph::GetRoot(),
                                                                 "res/levels/factories/smelter.json");
     auto testFactoryRigidBody = testFactory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
@@ -26,5 +26,5 @@ void TestScene::Load() {
                                                                 "res/levels/factories/ikea.json");
     auto testIkeaRigidBody = testIkea.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
     testIkeaRigidBody.lock()->SetPosition({55.f, -5.f});
-    testIkeaRigidBody.lock()->SetRotation(glm::radians(-90.f));
+    testIkeaRigidBody.lock()->SetRotation(glm::radians(-90.f));*/
 }

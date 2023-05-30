@@ -26,21 +26,21 @@ public:
             ("test-scene", "Run test scene")
             ("l,level", "provide level path", cxxopts::value<std::string>());
 
-        auto resutl = options.parse(argc, argv);
+        auto result = options.parse(argc, argv);
 
-        if (resutl.count("help")) {
+        if (result.count("help")) {
             std::cout << options.help() << std::endl;
             return true;
         }
 
-        if (resutl.count("test-scene")) {
+        if (result.count("test-scene")) {
             startupScene = std::move(std::make_unique<TestScene>());
 
             return false;
         }
 
-        if (resutl.count("level")) {
-            std::string path = resutl["level"].as<std::string>();
+        if (result.count("level")) {
+            std::string path = result["level"].as<std::string>();
 
             auto levelScene = std::make_unique<LevelScene>(path);
             startupScene = std::move(levelScene);

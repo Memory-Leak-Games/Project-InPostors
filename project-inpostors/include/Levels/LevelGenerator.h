@@ -37,10 +37,12 @@ namespace mlg {
             char symbol = ' ';
         } roadsObjects;
 
-        struct FactoryObject {
-            MapObject mesh;
-            //std::string blueprint;
-            //std::string type;
+        //TODO: needs more info about pools
+        struct MapFactory {
+            std::string configPath;
+            unsigned int remaining;
+            char factorySymbol;
+            char fallbackSymbol;
         };
 
         struct MapEntry {
@@ -49,6 +51,7 @@ namespace mlg {
             bool isPathWay = false;
         };
 
+
         LevelGenerator() = default;
         ~LevelGenerator() = default;
 
@@ -56,8 +59,10 @@ namespace mlg {
         nlohmann::json tileJson;
 
         std::vector<std::string> levelLayout;
+        std::vector<MapFactory> levelFactories; //TODO: use map over vector
 
         std::string ignoredCharacters;
+        std::string factoryCharacters;
         std::unordered_map<char, MapEntry> mapObjects;
         std::string defaultMaterial;
 
@@ -71,9 +76,9 @@ namespace mlg {
 
 
         MapObject ParseObject(const nlohmann::json& jsonObject);
+        MapFactory ParseFactory(const nlohmann::json& jsonObject);
 
         void GenerateLevel();
-
 
         void PutTile(int x, int y, const char& character);
         void PutRoad(int x, int y);

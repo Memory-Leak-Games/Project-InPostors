@@ -45,7 +45,7 @@ namespace mlg {
         levelGenerator.LoadMapObjects();
 
         // I need to test full factories not only mesh
-        // levelGenerator.LoadFactories();
+        levelGenerator.LoadFactories();
         levelGenerator.LoadRoads();
         //levelGenerator.LoadProps(levelJson["props"].get<std::string>()); //todo
 
@@ -188,14 +188,13 @@ namespace mlg {
         if (!tileJson.contains("factories"))
             return;
 
-        for (const auto& jsonFactories : tileJson["factories"]) {
-            const char tileSymbol = jsonFactories["symbol"].get<std::string>()[0];
-            std::string configPath = jsonFactories["config"].get<std::string>();
-            //FactoryObject factoryTile = LoadFactoryData(configPath);
-            //std::vector<MapObject> mapObjectPool; //ugly.
-            //mapObjectPool.push_back(factoryTile.mesh);
-            //mapObjects.insert({tileSymbol, MapEntry{mapObjectPool, false, 0}});
-
+        // It is safe to assume we have 3 tiers of factories,
+        // which means we need to keep 3 symbols
+        factoryCharacters.reserve(3);
+        for (const auto& jsonFactory : tileJson["factories"]) {
+            MapFactory factory = ParseFactory(jsonFactory);
+            factory.remaining = 1;
+            levelFactories.push_back(factory);
         }
     }
 
@@ -234,6 +233,20 @@ namespace mlg {
         return mapObj;
     }
 
+    LevelGenerator::MapFactory LevelGenerator::ParseFactory(const nlohmann::json& jsonObject)
+    {
+        MapFactory mf;
+
+        const char tileSymbol = jsonObject["symbol"].get<std::string>()[0];
+        factoryCharacters.push_back(tileSymbol);
+
+        mf.configPath = jsonObject["config"].get<std::string>();
+        mf.factorySymbol = tileSymbol;
+        mf.fallbackSymbol = jsonObject["fallback"].get<std::string>()[0];
+
+        return mf;
+    }
+
     void LevelGenerator::GenerateLevel() {
         int x = 0, y = 0;
         for (const std::string& row : levelLayout) {
@@ -241,10 +254,21 @@ namespace mlg {
             for (const char& character : row) {
                 ++x;
 
-                //todo: only for testing purposes, remove later
-                if (character == '8')
-                    PutFactory("res/levels/factories/smelter.json",
-                               {x - 1, y - 1}, 0.0f);
+                //TODO: only for testing purposes
+                if (std::find(factoryCharacters.begin(), factoryCharacters.end(),
+                              character) != factoryCharacters.end())
+                {
+                    for (auto &fac : levelFactories)
+                    {
+                        if (fac.factorySymbol == character && fac.remaining != 0)
+                        {
+                            SPDLOG_WARN("dupa; {}", fac.remaining);
+                            PutFactory(fac.configPath, {x - 1, y - 1}, 0.0f);
+                            fac.remaining -= 1;
+                            SPDLOG_WARN("kupa; {}", fac.remaining);
+                        }
+                    }
+                }
 
                 // Ignore spaces
                 if (character == ' ')
