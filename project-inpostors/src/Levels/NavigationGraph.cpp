@@ -32,6 +32,22 @@ NavigationGraph::NavigationGraph(const std::string& levelPath) {
     ParseLayout();
 }
 
+const NavigationGraph::Node& NavigationGraph::GetNearestNode(const glm::vec2& position) {
+    auto byDistance =
+            [&position](const NodeSharedPtr& nodeOne, const NodeSharedPtr& nodeTwo) {
+                float distanceOne = glm::length(position - nodeOne->position);
+                float distanceTwo = glm::length(position - nodeTwo->position);
+                return distanceOne > distanceTwo;
+            };
+
+    auto nearestNode = std::max_element(
+            nodes.begin(),
+            nodes.end(),
+            byDistance);
+
+    return **nearestNode;
+}
+
 void NavigationGraph::DrawNodes() {
 #ifdef DEBUG
     // draw points
@@ -77,7 +93,7 @@ void NavigationGraph::ParseLayout() {
 }
 
 void NavigationGraph::OptimizeNodes() {
-    std::vector<std::shared_ptr<Node>> nodesToRemove;
+    std::vector<NodeSharedPtr> nodesToRemove;
     std::unordered_set<Node*> visitedNodes;
 
     for (auto& nodeOne : nodes) {
@@ -112,8 +128,8 @@ void NavigationGraph::FindConnections() {
 }
 
 void NavigationGraph::AddConnectionWhenParametersMeet(
-        const std::shared_ptr<NavigationGraph::Node>& nodeOne,
-        const std::shared_ptr<NavigationGraph::Node>& nodeTwo) {
+        const NodeSharedPtr& nodeOne,
+        const NodeSharedPtr& nodeTwo) {
     glm::ivec2 manhattanDistance = nodeOne->layoutPosition - nodeTwo->layoutPosition;
     if (manhattanDistance.x == 0 && manhattanDistance.y == 0)
         return;
@@ -136,7 +152,7 @@ void NavigationGraph::AddConnectionWhenParametersMeet(
         // replace longer connection
         std::erase_if(
                 nodeOne->connectedNodes,
-                [anotherNodeWithSameDirection](const auto& item) {
+                [anotherNodeWithSameDirection](const NodeSharedPtr& item) {
                     return anotherNodeWithSameDirection == item.get();
                 });
     }
@@ -185,8 +201,4 @@ glm::ivec2 NavigationGraph::CalculateLayoutDirection(const Node& nodeOne, const 
     direction.y = direction.y > 0 ? 1 : 0;
 
     return direction;
-}
-
-std::list<std::shared_ptr<NavigationGraph::Node>> NavigationGraph::GetNodes() {
-    return nodes;
 }

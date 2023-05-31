@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstddef>
-#include <glm/fwd.hpp>
 class NavigationGraph {
 public:
     struct Node {
@@ -14,8 +12,10 @@ public:
         bool operator!=(const Node &other) const { return !(*this == other); }
     };
 
+    using NodeSharedPtr = std::shared_ptr<Node>;
+
 private:
-    std::list<std::shared_ptr<Node>> nodes;
+    std::list<NodeSharedPtr> nodes;
 
     std::vector<std::string> layout;
     char crossCharacter;
@@ -30,9 +30,7 @@ private:
 public:
     explicit NavigationGraph(const std::string& levelPath);
 
-    Node GetNearestNode(const glm::vec2& position);
-    std::list<std::shared_ptr<Node>> GetNodes();
-
+    const Node& GetNearestNode(const glm::vec2& position);
     void DrawNodes();
 
 private:
@@ -40,8 +38,8 @@ private:
     void OptimizeNodes();
     void FindConnections();
     void AddConnectionWhenParametersMeet(
-            const std::shared_ptr<NavigationGraph::Node>& nodeOne,
-            const std::shared_ptr<NavigationGraph::Node>& nodeTwo);
+            const NodeSharedPtr& nodeOne,
+            const NodeSharedPtr& nodeTwo);
 
     bool TraceConnection(glm::ivec2 start, glm::ivec2 end);
     NavigationGraph::Node* HasDirection(Node& nodeOne, Node& nodeTwo);

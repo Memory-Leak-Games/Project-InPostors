@@ -28,6 +28,8 @@ void AIComponent::Start() {
     rigidbodyComponent->SetAngularDrag(100.f);
 
     staticMeshComponent = GetOwner().lock()->GetComponentByClass<mlg::StaticMeshComponent>().lock();
+
+    steering->CreatePath();
 }
 
 AIComponent::AIComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,

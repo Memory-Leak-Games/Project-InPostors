@@ -1,17 +1,17 @@
 #include <utility>
 
-#include <nlohmann/json.hpp>
 #include <fstream>
+#include <nlohmann/json.hpp>
 
-#include "ai/SteeringBehaviors.h"
-#include "ai/TrafficCar.h"
 #include "ai/AIComponent.h"
 #include "ai/Path.h"
+#include "ai/SteeringBehaviors.h"
+#include "ai/TrafficCar.h"
 
 #include "Levels/NavigationGraph.h"
 
-#include "Gameplay/EntityManager.h"
 #include "Gameplay/Entity.h"
+#include "Gameplay/EntityManager.h"
 
 using json = nlohmann::json;
 using Random = effolkronium::random_static;
@@ -21,13 +21,13 @@ SteeringBehaviors::SteeringBehaviors(AIComponent* agent, const std::string& conf
     LoadParameters(configPath);
 
     //TODO: Replace this with Path from level
-//    std::list<glm::vec2> waypoints;
-//
-//    for (const auto& node : navigationGraph->GetNodes()) {
-//        waypoints.push_back(node->position);
-//    }
+    //    std::list<glm::vec2> waypoints;
+    //
+    //    for (const auto& node : navigationGraph->GetNodes()) {
+    //        waypoints.push_back(node->position);
+    //    }
 
-//    path = new Path(waypoints, true);
+    //    path = new Path(waypoints, true);
     path = new Path();
 }
 
@@ -52,22 +52,22 @@ bool SteeringBehaviors::AccumulateForce(glm::vec2& total, glm::vec2 forceToAdd) 
 }
 
 glm::vec2 SteeringBehaviors::Calculate() {
-    steeringForce = { 0, 0 };
+    steeringForce = {0, 0};
 
     switch (summingMethod) {
         case weightedAverage:
             //TODO: Implement weighted average in the future
-            steeringForce = { 0, 0 };
+            steeringForce = {0, 0};
             break;
         case prioritized:
             steeringForce = CalculatePrioritized();
             break;
         case dithered:
             //TODO: Implement dithering in the future
-            steeringForce = { 0, 0 };
+            steeringForce = {0, 0};
             break;
         default:
-            steeringForce = { 0, 0 };
+            steeringForce = {0, 0};
     }
 
     return steeringForce;
@@ -116,8 +116,7 @@ glm::vec2 SteeringBehaviors::CalculatePrioritized() {
 }
 
 glm::vec2 SteeringBehaviors::Seek(glm::vec2 targetPos) {
-    glm::vec2 desiredVelocity = glm::normalize(targetPos - aiComponent->GetPosition())
-                                * aiComponent->GetMaxSpeed();
+    glm::vec2 desiredVelocity = glm::normalize(targetPos - aiComponent->GetPosition()) * aiComponent->GetMaxSpeed();
 
     glm::vec2 velocity2D = aiComponent->GetLinearVelocity();
     return (desiredVelocity - velocity2D);
@@ -131,7 +130,7 @@ glm::vec2 SteeringBehaviors::Arrive(glm::vec2 targetPos, Deceleration dec) {
     if (distance > 0) {
         const float decelerationTweaker = 0.3;
 
-        float speed = distance / ((float)dec * decelerationTweaker);
+        float speed = distance / ((float) dec * decelerationTweaker);
         speed = fmin(speed, aiComponent->GetMaxSpeed());
 
         glm::vec2 desiredVelocity = toTarget * speed / distance;
@@ -144,13 +143,13 @@ glm::vec2 SteeringBehaviors::Arrive(glm::vec2 targetPos, Deceleration dec) {
 glm::vec2 SteeringBehaviors::Separation(const std::vector<std::weak_ptr<TrafficCar>>& agents) {
     glm::vec2 steerForce;
 
-    for (const auto & agent : agents) {
+    for (const auto& agent : agents) {
         if (agent != aiComponent->GetOwner()) {
             glm::vec2 toAgent = aiComponent->GetPosition() - agent.lock()->GetComponentByClass<AIComponent>().lock()->GetPosition();
 
             glm::vec2 normToAgent = glm::normalize(toAgent);
-//            normToAgent.x /= toAgent.length();
-//            normToAgent.y /= toAgent.length();
+            //            normToAgent.x /= toAgent.length();
+            //            normToAgent.y /= toAgent.length();
             steerForce += normToAgent;
         }
     }
@@ -161,7 +160,7 @@ glm::vec2 SteeringBehaviors::Separation(const std::vector<std::weak_ptr<TrafficC
 glm::vec2 SteeringBehaviors::Alignment(const std::vector<std::weak_ptr<TrafficCar>>& agents) {
     glm::vec2 avgHeading;
 
-    for (const auto & agent : agents) {
+    for (const auto& agent : agents) {
         if (agent != aiComponent->GetOwner()) {
             glm::vec2 heading2D;
             heading2D.x = agent.lock()->GetTransform().GetForwardVector().x;
@@ -171,7 +170,7 @@ glm::vec2 SteeringBehaviors::Alignment(const std::vector<std::weak_ptr<TrafficCa
         }
     }
 
-    avgHeading /= (float)agents.size();
+    avgHeading /= (float) agents.size();
     avgHeading.x -= aiComponent->GetOwner().lock()->GetTransform().GetForwardVector().x;
     avgHeading.y -= aiComponent->GetOwner().lock()->GetTransform().GetForwardVector().z;
 
@@ -179,16 +178,14 @@ glm::vec2 SteeringBehaviors::Alignment(const std::vector<std::weak_ptr<TrafficCa
 }
 
 glm::vec2 SteeringBehaviors::FollowPath() {
-    if (glm::distance2(path->GetCurrentWaypoint(), aiComponent->GetPosition())
-        < sqrt(waypointSeekDistance)) {
+    if (glm::distance2(path->GetCurrentWaypoint(), aiComponent->GetPosition()) < sqrt(waypointSeekDistance)) {
         path->SetNextWaypoint();
         SPDLOG_DEBUG("Waypoint reached - new waypoint: ({}, {})", GetCurrentWaypoint().x, GetCurrentWaypoint().y);
     }
 
     if (!path->IsPathCompleted()) {
         return Seek(path->GetCurrentWaypoint());
-    }
-    else {
+    } else {
         return Arrive(path->GetCurrentWaypoint(), normal);
     }
 }
@@ -208,15 +205,19 @@ void SteeringBehaviors::LoadParameters(const std::string& path) {
 
 void SteeringBehaviors::SetNavigationGraph(std::shared_ptr<NavigationGraph> navGraph) {
     navigationGraph = navGraph;
+}
 
+void SteeringBehaviors::CreatePath() {
     std::list<glm::vec2> waypoints;
 
-    NavigationGraph::Node* currentNode = &(*navGraph->GetNodes().back());
+    const NavigationGraph::Node* currentNode =
+            &navigationGraph->GetNearestNode(aiComponent->GetPosition());
 
     for (int i = 0; i < 30; ++i) {
         waypoints.push_back(currentNode->position);
         auto nodesIterator = currentNode->connectedNodes.begin();
         int randI = Random::get<int>(0, currentNode->connectedNodes.size() - 1);
+
         for (int j = 0; j < randI; ++j) {
             nodesIterator++;
         }
@@ -298,27 +299,27 @@ void SteeringBehaviors::TrafficDriveOn() {
 }
 
 void SteeringBehaviors::SeekOff() {
-    if(BehaviorTypeOn(seek))
+    if (BehaviorTypeOn(seek))
         flags ^= seek;
 }
 
 void SteeringBehaviors::ArriveOff() {
-    if(BehaviorTypeOn(arrive))
+    if (BehaviorTypeOn(arrive))
         flags ^= arrive;
 }
 
 void SteeringBehaviors::SeparationOff() {
-    if(BehaviorTypeOn(separation))
+    if (BehaviorTypeOn(separation))
         flags ^= separation;
 }
 
 void SteeringBehaviors::AlignmentOff() {
-    if(BehaviorTypeOn(alignment))
+    if (BehaviorTypeOn(alignment))
         flags ^= alignment;
 }
 
 void SteeringBehaviors::FollowPathOff() {
-    if(BehaviorTypeOn(followPath))
+    if (BehaviorTypeOn(followPath))
         flags ^= followPath;
 }
 
