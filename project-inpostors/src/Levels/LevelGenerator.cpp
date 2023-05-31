@@ -42,17 +42,12 @@ namespace mlg {
         levelGenerator.levelJson = json::parse(levelFile);
 
         std::vector<std::string> ret = levelGenerator.LoadLayout();
-        levelGenerator.LoadMapObjects();
 
-        // I need to test full factories not only mesh
-        // levelGenerator.LoadFactories();
+        levelGenerator.LoadMapObjects();
+        levelGenerator.LoadFactories();
         levelGenerator.LoadRoads();
-        //levelGenerator.LoadProps(levelJson["props"].get<std::string>()); //todo
 
         levelGenerator.GenerateLevel();
-
-        // TODO: Kris there is my garbage. I would not be offended if you modify
-        // or delete that
 
         if (!levelGenerator.levelJson.contains("sublevels"))
             return ret;
@@ -139,135 +134,6 @@ namespace mlg {
         CollisionManager::SetBounds(cityStart, cityEnd, layoutSize);
     }
 
-    // ======== PRIVATE METHODS ========
-
-    std::vector<std::string> LevelGenerator::LoadLayout() {
-        std::vector<std::string> ret;
-        for (const auto& jsonLayoutString : levelJson["layout"]) {
-            std::string layoutString = jsonLayoutString.get<std::string>();
-            levelLayout.push_back(layoutString);
-            ret.push_back(layoutString);
-        }
-
-        tileSize = levelJson["tile-size"].get<float>();
-        citySize = GetCitySize();
-        return ret;
-    }
-
-    void LevelGenerator::LoadMapObjects() {
-        std::ifstream tileFile{levelJson["tileset"].get<std::string>()};
-        tileJson = json::parse(tileFile);
-
-        defaultMaterial = tileJson["default-material"].get<std::string>();
-
-        for (const auto& jsonTile : tileJson["tiles"]) {
-            const char tileSymbol = jsonTile["symbol"].get<std::string>()[0];
-
-            if (tileSymbol == roadsObjects.symbol)
-                continue;
-
-            std::vector<MapObject> mapObjectPool;
-
-            bool isPathWay = false;
-            if (jsonTile.contains("is-path-way")) {
-                isPathWay = jsonTile["is-path-way"].get<bool>();
-            }
-
-            for (const auto& jsonMapObject : jsonTile["objects"]) {
-                mapObjectPool.push_back(std::move(ParseObject(jsonMapObject)));
-            }
-
-            mapObjects.insert({tileSymbol, MapEntry{mapObjectPool, isPathWay, 0}});
-        }
-
-        if (levelJson.contains("ignore"))
-            ignoredCharacters = levelJson["ignore"].get<std::string>();
-    }
-
-    void LevelGenerator::LoadFactories() {
-        if (!tileJson.contains("factories"))
-            return;
-
-        for (const auto& jsonFactories : tileJson["factories"]) {
-            const char tileSymbol = jsonFactories["symbol"].get<std::string>()[0];
-            std::string configPath = jsonFactories["config"].get<std::string>();
-            //FactoryObject factoryTile = LoadFactoryData(configPath);
-            //std::vector<MapObject> mapObjectPool; //ugly.
-            //mapObjectPool.push_back(factoryTile.mesh);
-            //mapObjects.insert({tileSymbol, MapEntry{mapObjectPool, false, 0}});
-
-        }
-    }
-
-    void LevelGenerator::LoadRoads() {
-        if (!tileJson.contains("road"))
-            return;
-
-        json roadJson = tileJson["road"];
-        roadsObjects.symbol = roadJson["symbol"].get<std::string>()[0];
-
-        roadsObjects.road = ParseObject(roadJson["road"]);
-        roadsObjects.edge = ParseObject(roadJson["edge"]);
-        roadsObjects.cross = ParseObject(roadJson["cross"]);
-        roadsObjects.curve = ParseObject(roadJson["curve"]);
-        roadsObjects.corner = ParseObject(roadJson["corner"]);
-    }
-
-    LevelGenerator::MapObject LevelGenerator::ParseObject(const json& jsonMapObject) {
-        MapObject mapObj;
-        mapObj.modelPath = jsonMapObject["model"];
-        mapObj.materialPath = jsonMapObject.value("material", defaultMaterial);
-
-        mapObj.worldRot = jsonMapObject.value("rotation", 0.f);
-        mapObj.worldRot = glm::radians(mapObj.worldRot);
-
-        mapObj.scale = jsonMapObject.value("scale", 1.f);
-
-        if (jsonMapObject.contains("collision-type")) {
-            mapObj.hasCollision = true;
-            mapObj.colliderType = jsonMapObject["collision-type"];
-            mapObj.colliderSize = jsonMapObject.value("collision-size", 1.f);
-            mapObj.colliderOffset = jsonMapObject.value("collision-offset", 0.f);
-            mapObj.isDynamic = jsonMapObject.value("dynamic", false);
-        }
-
-        return mapObj;
-    }
-
-    void LevelGenerator::GenerateLevel() {
-        int x = 0, y = 0;
-        for (const std::string& row : levelLayout) {
-            ++y;
-            for (const char& character : row) {
-                ++x;
-
-                //todo: only for testing purposes, remove later
-                if (character == '8')
-                    PutFactory("res/levels/factories/smelter.json",
-                               {x - 1, y - 1}, 0.0f);
-
-                // Ignore spaces
-                if (character == ' ')
-                    continue;
-
-                // Ignore specified characters
-                if (std::find(ignoredCharacters.begin(), ignoredCharacters.end(),
-                              character) != ignoredCharacters.end())
-                    continue;
-
-                // Place a road if required
-                if (character == roadsObjects.symbol) {
-                    PutRoad(x - 1, y - 1);
-                    continue;
-                }
-
-                // Place a simple building if nothing special is required
-                PutTile(x - 1, y - 1, character);
-            }
-            x = 0;
-        }
-    }
-
     void LevelGenerator::SpawnPlayers(const std::string &path) {
         std::ifstream levelFile{path};
         json levelJson = json::parse(levelFile);
@@ -324,19 +190,191 @@ namespace mlg {
         playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
     }
 
-    glm::vec2 LevelGenerator::GetCitySize() {
-        citySize = GetLayoutSize() *= tileSize;
-        return citySize;
+    std::vector<std::string> LevelGenerator::GetLevelLayout() {
+        return levelLayout;
     }
 
-    glm::ivec2 LevelGenerator::GetLayoutSize() {
-        glm::ivec2 layoutSize = glm::ivec2{0};
-        for (const std::string& row : levelLayout)
-            layoutSize.x = std::max(layoutSize.x, static_cast<int>(row.size()));
+    // ======== PRIVATE METHODS ========
 
-        layoutSize.y = static_cast<int>(levelLayout.size());
+    std::vector<std::string> LevelGenerator::LoadLayout() {
+        std::vector<std::string> ret;
+        for (const auto& jsonLayoutString : levelJson["layout"]) {
+            std::string layoutString = jsonLayoutString.get<std::string>();
+            levelLayout.push_back(layoutString);
+            ret.push_back(layoutString);
+        }
 
-        return layoutSize;
+        tileSize = levelJson["tile-size"].get<float>();
+        return ret;
+    }
+
+    void LevelGenerator::LoadMapObjects() {
+        std::ifstream tileFile{levelJson["tileset"].get<std::string>()};
+        tileJson = json::parse(tileFile);
+
+        defaultMaterial = tileJson["default-material"].get<std::string>();
+
+        for (const auto& jsonTile : tileJson["tiles"]) {
+            const char tileSymbol = jsonTile["symbol"].get<std::string>()[0];
+
+            if (tileSymbol == roadsObjects.symbol)
+                continue;
+
+            std::vector<MapObject> mapObjectPool;
+
+            bool isPathWay = false;
+            if (jsonTile.contains("is-path-way")) {
+                isPathWay = jsonTile["is-path-way"].get<bool>();
+            }
+
+            for (const auto& jsonMapObject : jsonTile["objects"]) {
+                mapObjectPool.push_back(std::move(ParseObject(jsonMapObject)));
+            }
+
+            mapObjects.insert({tileSymbol, MapEntry{mapObjectPool, isPathWay, false}});
+        }
+
+        if (levelJson.contains("ignore"))
+            ignoredCharacters = levelJson["ignore"].get<std::string>();
+    }
+
+    void LevelGenerator::LoadFactories() {
+        if (!tileJson.contains("factory-pool"))
+            return;
+
+        std::ifstream factoryPool{tileJson["factory-pool"].get<std::string>()};
+        json poolJson = json::parse(factoryPool);
+
+        // Assuming we have 3 tiers of factories,
+        // we need to keep 3 symbols.
+        // TODO: increase size if we happen to have move factories in pool
+        factoryCharacters.reserve(3);
+        for (const auto& jsonFactory : poolJson["pool"]) {
+            SPDLOG_WARN("dupa");
+            MapFactory factory = ParseFactory(jsonFactory);
+            factory.remaining = 1;
+            levelFactories.push_back(factory);
+        }
+    }
+
+    void LevelGenerator::LoadRoads() {
+        if (!tileJson.contains("road"))
+            return;
+
+        json roadJson = tileJson["road"];
+        roadsObjects.symbol = roadJson["symbol"].get<std::string>()[0];
+
+        roadsObjects.road = ParseObject(roadJson["road"]);
+        roadsObjects.edge = ParseObject(roadJson["edge"]);
+        roadsObjects.cross = ParseObject(roadJson["cross"]);
+        roadsObjects.curve = ParseObject(roadJson["curve"]);
+        roadsObjects.corner = ParseObject(roadJson["corner"]);
+    }
+
+    LevelGenerator::MapObject LevelGenerator::ParseObject(const json& jsonMapObject) {
+        MapObject mapObj;
+        mapObj.modelPath = jsonMapObject["model"];
+        mapObj.materialPath = jsonMapObject.value("material", defaultMaterial);
+
+        mapObj.worldRot = jsonMapObject.value("rotation", 0.f);
+        mapObj.worldRot = glm::radians(mapObj.worldRot);
+
+        mapObj.scale = jsonMapObject.value("scale", 1.f);
+
+        if (!jsonMapObject.contains("collision-type"))
+            return mapObj;
+
+        mapObj.hasCollision = true;
+        mapObj.colliderType = jsonMapObject["collision-type"];
+        mapObj.colliderSize = jsonMapObject.value("collision-size", 1.f);
+        mapObj.colliderOffset = jsonMapObject.value("collision-offset", 0.f);
+        mapObj.isDynamic = jsonMapObject.value("dynamic", false);
+
+        return mapObj;
+    }
+
+    LevelGenerator::MapFactory LevelGenerator::ParseFactory(const nlohmann::json& jsonObject)
+    {
+        const char tileSymbol = jsonObject["symbol"].get<std::string>()[0];
+
+        // Count factory occurrences.
+        // This is needed for random generation chance.
+        int x = 0, y = 0;
+        unsigned int occurrences = 0;
+
+        for (const std::string& row : levelLayout) {
+            ++y;
+            for (const char& character : row) {
+                ++x;
+                if (character == tileSymbol)
+                    ++occurrences;
+            }
+            x = 0;
+        }
+        factoryCharacters.insert({tileSymbol, occurrences});
+
+        MapFactory mf;
+        mf.configPath = jsonObject["config"].get<std::string>();
+        mf.factorySymbol = tileSymbol;
+        mf.fallbackSymbol = jsonObject["fallback"].get<std::string>()[0];
+
+        return mf;
+    }
+
+    void LevelGenerator::GenerateLevel() {
+        int x = 0, y = 0;
+        for (const std::string& row : levelLayout) {
+            ++y;
+            for (const char& character : row) {
+                ++x;
+                if (factoryCharacters.find(character) != factoryCharacters.end()) {// we got a match!
+                    TryPutFactory(character, {x, y});
+                    continue;
+                }
+
+                // Ignore spaces
+                if (character == ' ')
+                    continue;
+
+                // Ignore specified characters
+                if (std::find(ignoredCharacters.begin(), ignoredCharacters.end(),
+                              character) != ignoredCharacters.end())
+                    continue;
+
+                // Place a road if required
+                if (character == roadsObjects.symbol) {
+                    PutRoad(x - 1, y - 1);
+                    continue;
+                }
+
+                // Place a simple building if nothing special is required
+                PutTile(x - 1, y - 1, character);
+            }
+            x = 0;
+        }
+    }
+
+    void LevelGenerator::TryPutFactory(const char& character, const glm::vec2& pos) {
+        for (auto &fac : levelFactories)
+        {
+            if (fac.factorySymbol == character && fac.remaining != 0) {
+                unsigned int spots = factoryCharacters[character];
+                float chance = static_cast<float>(fac.remaining) / static_cast<float>(spots);
+                if (chance > 1.f)
+                    SPDLOG_WARN("More factories in pool than allowed to spawn.");
+
+                if (Random::get<bool>(chance)) {
+                    PutFactory(fac.configPath, {pos.x - 1, pos.y - 1}, 0.0f);
+                    fac.remaining -= 1;
+                }
+                else if (fac.fallbackSymbol != ' ')
+                    PutTile(static_cast<int>(pos.x) - 1,
+                            static_cast<int>(pos.y) - 1,
+                            fac.fallbackSymbol);
+
+                factoryCharacters[character] -= 1;
+            }
+        }
     }
 
     void LevelGenerator::PutTile(int x, int y, const char& character) {
@@ -359,6 +397,102 @@ namespace mlg {
 
         float smartRotation = GetSmartRotation(x, y);
         PutEntity(mapObject, glm::ivec2{x, y}, glm::radians(smartRotation));
+    }
+
+    void LevelGenerator::PutRoad(int x, int y) {
+        const Neighbours neighbours = GetNeighbours(x, y);
+
+        int neighboursRoadsCount = 0;
+        for (auto row : neighbours.tiles)
+            for (auto tile : row)
+                neighboursRoadsCount += (tile == roadsObjects.symbol ? 1 : 0);
+
+        bool isEdge = neighboursRoadsCount < 8 && neighboursRoadsCount > 4;
+        bool isCorner = neighboursRoadsCount == 8;
+        bool isCross = neighboursRoadsCount == 9;
+
+        bool isVertical = neighbours.up == roadsObjects.symbol ||
+                          neighbours.down == roadsObjects.symbol;
+        isVertical &= neighbours.left != roadsObjects.symbol &&
+                      neighbours.right != roadsObjects.symbol;
+
+        bool isHorizontal = neighbours.left == roadsObjects.symbol ||
+                            neighbours.right == roadsObjects.symbol;
+        isHorizontal &= neighbours.up != roadsObjects.symbol &&
+                        neighbours.down != roadsObjects.symbol;
+
+        if (isEdge) {
+            PutEdgeRoad(x, y);
+        } else if (isCorner) {
+            PutCornerRoad(x, y);
+        } else if (isCross) {
+            PutCrossRoad(x, y);
+        } else if (isVertical) {
+            PutStraightRoad(x, y, false);
+        } else if (isHorizontal) {
+            PutStraightRoad(x, y, true);
+        } else {
+            PutCurveRoad(x, y);
+        }
+    }
+
+    void LevelGenerator::PutStraightRoad(int x, int y, bool isHorizontal) {
+        float angle = isHorizontal ? 90.f : 0.f;
+        auto mapObject = roadsObjects.road;
+
+        PutEntity(roadsObjects.road, glm::ivec2{x, y}, glm::radians(angle));
+    }
+
+    void LevelGenerator::PutEdgeRoad(int x, int y) {
+        float angle;
+        const Neighbours neighbours = GetNeighbours(x, y);
+
+        if (neighbours.left != roadsObjects.symbol)
+            angle = 0.f;
+        else if (neighbours.down != roadsObjects.symbol)
+            angle = 90.f;
+        else if (neighbours.right != roadsObjects.symbol)
+            angle = 180.f;
+        else
+            angle = 270.f;
+
+        PutEntity(roadsObjects.edge, glm::ivec2{x, y}, glm::radians(angle));
+    }
+
+    void LevelGenerator::PutCrossRoad(int x, int y) {
+        PutEntity(roadsObjects.cross, glm::ivec2{x, y}, 0.f);
+    }
+
+    void LevelGenerator::PutCurveRoad(int x, int y) {
+        float angle = 45;
+        const Neighbours neighbours = GetNeighbours(x, y);
+
+        if (neighbours.up == neighbours.right && neighbours.up == roadsObjects.symbol)
+            angle = 0.f;
+        else if (neighbours.up == neighbours.left && neighbours.up == roadsObjects.symbol)
+            angle = 90.f;
+        else if (neighbours.down == neighbours.left && neighbours.down == roadsObjects.symbol)
+            angle = 180.f;
+        else
+            angle = 270.f;
+
+        PutEntity(roadsObjects.curve, glm::ivec2{x, y}, glm::radians(angle));
+    }
+
+    void LevelGenerator::PutCornerRoad(int x, int y) {
+        float angle;
+        const Neighbours neighbours = GetNeighbours(x, y);
+
+        if (neighbours.leftUp != roadsObjects.symbol)
+            angle = 0.f;
+        else if (neighbours.leftDown != roadsObjects.symbol)
+            angle = 90.f;
+        else if (neighbours.rightDown != roadsObjects.symbol)
+            angle = 180.f;
+        else
+            angle = 270.f;
+
+        PutEntity(roadsObjects.corner, glm::ivec2{x, y}, glm::radians(angle));
     }
 
     void LevelGenerator::PutEntity(const MapObject &mapObject, const glm::ivec2 &position, float rotation) const {
@@ -442,100 +576,18 @@ namespace mlg {
         return angle;
     }
 
-    void LevelGenerator::PutRoad(int x, int y) {
-        const Neighbours neighbours = GetNeighbours(x, y);
-
-        int neighboursRoadsCount = 0;
-        for (auto row : neighbours.tiles)
-            for (auto tile : row)
-                neighboursRoadsCount += (tile == roadsObjects.symbol ? 1 : 0);
-
-        bool isEdge = neighboursRoadsCount < 8 && neighboursRoadsCount > 4;
-        bool isCorner = neighboursRoadsCount == 8;
-        bool isCross = neighboursRoadsCount == 9;
-
-        bool isVertical = neighbours.up == roadsObjects.symbol ||
-                          neighbours.down == roadsObjects.symbol;
-        isVertical &= neighbours.left != roadsObjects.symbol &&
-                      neighbours.right != roadsObjects.symbol;
-
-        bool isHorizontal = neighbours.left == roadsObjects.symbol ||
-                            neighbours.right == roadsObjects.symbol;
-        isHorizontal &= neighbours.up != roadsObjects.symbol &&
-                        neighbours.down != roadsObjects.symbol;
-
-        if (isEdge) {
-            PutEdgeRoad(x, y);
-        } else if (isCorner) {
-            PutCornerRoad(x, y);
-        } else if (isCross) {
-            PutCrossRoad(x, y);
-        } else if (isVertical) {
-            PutStraightRoad(x, y, false);
-        } else if (isHorizontal) {
-            PutStraightRoad(x, y, true);
-        } else {
-            PutCurveRoad(x, y);
-        }
+    glm::vec2 LevelGenerator::GetCitySize() const {
+        return GetLayoutSize() *= tileSize;
     }
 
-    void LevelGenerator::PutCrossRoad(int x, int y) {
-        PutEntity(roadsObjects.cross, glm::ivec2{x, y}, 0.f);
-    }
+    glm::ivec2 LevelGenerator::GetLayoutSize() const {
+        glm::ivec2 layoutSize = glm::ivec2{0};
+        for (const std::string& row : levelLayout)
+            layoutSize.x = std::max(layoutSize.x, static_cast<int>(row.size()));
 
-    void LevelGenerator::PutStraightRoad(int x, int y, bool isHorizontal) {
-        float angle = isHorizontal ? 90.f : 0.f;
-        auto mapObject = roadsObjects.road;
+        layoutSize.y = static_cast<int>(levelLayout.size());
 
-        PutEntity(roadsObjects.road, glm::ivec2{x, y}, glm::radians(angle));
-    }
-
-    void LevelGenerator::PutEdgeRoad(int x, int y) {
-        float angle;
-        const Neighbours neighbours = GetNeighbours(x, y);
-
-        if (neighbours.left != roadsObjects.symbol)
-            angle = 0.f;
-        else if (neighbours.down != roadsObjects.symbol)
-            angle = 90.f;
-        else if (neighbours.right != roadsObjects.symbol)
-            angle = 180.f;
-        else
-            angle = 270.f;
-
-        PutEntity(roadsObjects.edge, glm::ivec2{x, y}, glm::radians(angle));
-    }
-
-    void LevelGenerator::PutCornerRoad(int x, int y) {
-        float angle;
-        const Neighbours neighbours = GetNeighbours(x, y);
-
-        if (neighbours.leftUp != roadsObjects.symbol)
-            angle = 0.f;
-        else if (neighbours.leftDown != roadsObjects.symbol)
-            angle = 90.f;
-        else if (neighbours.rightDown != roadsObjects.symbol)
-            angle = 180.f;
-        else
-            angle = 270.f;
-
-        PutEntity(roadsObjects.corner, glm::ivec2{x, y}, glm::radians(angle));
-    }
-
-    void LevelGenerator::PutCurveRoad(int x, int y) {
-        float angle = 45;
-        const Neighbours neighbours = GetNeighbours(x, y);
-
-        if (neighbours.up == neighbours.right && neighbours.up == roadsObjects.symbol)
-            angle = 0.f;
-        else if (neighbours.up == neighbours.left && neighbours.up == roadsObjects.symbol)
-            angle = 90.f;
-        else if (neighbours.down == neighbours.left && neighbours.down == roadsObjects.symbol)
-            angle = 180.f;
-        else
-            angle = 270.f;
-
-        PutEntity(roadsObjects.curve, glm::ivec2{x, y}, glm::radians(angle));
+        return layoutSize;
     }
 
     Neighbours LevelGenerator::GetNeighbours(int x, int y) {
@@ -565,6 +617,7 @@ namespace mlg {
 
     glm::vec3 LevelGenerator::GetLevelPosition(const glm::ivec2 &localPos, bool isRigid) const {
         glm::vec3 levelPos = {0.f, 0.f, 0.f};
+        glm::vec2 citySize = GetCitySize();
         levelPos.x = -static_cast<float>(localPos.x) * tileSize + 0.5f * citySize.x - 0.5f * tileSize + 0.5f;
         float locPos = -static_cast<float>(localPos.y) * tileSize + 0.5f * citySize.y - 0.5f * tileSize - 0.5f;
         if (!isRigid)
@@ -575,7 +628,4 @@ namespace mlg {
         return levelPos;
     }
 
-    std::vector<std::string> LevelGenerator::GetLevelLayout() {
-        return levelLayout;
-    }
 }// namespace mlg
