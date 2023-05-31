@@ -27,7 +27,7 @@ namespace mlg {
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        //glDepthMask(GL_FALSE); // Don't write into the depth buffer
+        glDepthMask(GL_FALSE); // Don't write into the depth buffer
 
         // Activate corresponding render state
         shader->Activate();

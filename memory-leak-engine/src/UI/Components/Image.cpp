@@ -19,6 +19,7 @@ namespace mlg {
         ZoneScopedN("Draw Image");
         UIComponent::Draw(renderer);
 
+        glEnable(GL_BLEND);
         material->Activate();
 
         material->GetShaderProgram()->SetVec2F("size", size * renderer->uiScale);
@@ -32,7 +33,6 @@ namespace mlg {
         glBindVertexArray(0);
 
         material->DeActivate();
-        glDepthMask(GL_TRUE);
     }
 
     const glm::vec2& Image::GetSize() const {
