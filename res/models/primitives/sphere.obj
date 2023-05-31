@@ -1,6 +1,5 @@
 # Blender 3.4.1
 # www.blender.org
-mtllib Sphere.mtl
 o Icosphere
 v 0.000000 -0.500000 0.000000
 v 0.361804 -0.223610 0.262863
