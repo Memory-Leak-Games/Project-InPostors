@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Gameplay/Entity.h>
+#include "Audio/Assets/AudioAsset.h"
 
 namespace mlg {
     class RigidbodyComponent;
@@ -23,6 +24,13 @@ private:
     std::shared_ptr<class EquipmentComponent> equipment;
 
     std::weak_ptr<class mlg::Image> uiArrow;
+
+    std::shared_ptr<class mlg::AudioAsset> pickUpSound;
+    std::shared_ptr<class mlg::AudioAsset> dropSound;
+    std::shared_ptr<class mlg::AudioAsset> hitSound;
+    //std::shared_ptr<class mlg::AudioAsset> truckEngineSound;
+
+    //bool isEngineSoundPlaying = false;
 
     PlayerData playerData;
 

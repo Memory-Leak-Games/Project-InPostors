@@ -50,6 +50,7 @@ namespace mlg {
 
         const Rigidbody* GetOwner() const;
         glm::vec2 GetPosition() const;
+        ColliderShape::AABB GetAABB() const;
         float GetRadius() const;
         bool GetIsTrigger() const;
         const std::string& GetTag() const;

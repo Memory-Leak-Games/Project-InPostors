@@ -11,6 +11,7 @@ namespace mlg {
     }
 
     void Entity::Start() {}
+    void Entity::AIUpdate() {}
     void Entity::PhysicsUpdate() {}
     void Entity::Update() {}
     void Entity::LateUpdate() {}

@@ -96,8 +96,9 @@ void mlg::Gizmos::Initialize() {
 
         glCreateBuffers(1, &sphereVBO);
         glCreateBuffers(1, &sphereEBO);
-        glNamedBufferData(sphereVBO, SphereVertices.size() * sizeof(GLfloat), &SphereVertices[0], GL_STATIC_DRAW);
-        glNamedBufferData(sphereEBO, SphereIndices.size() * sizeof(GLuint), &SphereIndices[0], GL_STATIC_DRAW);
+
+        glNamedBufferData(sphereVBO, SphereVertices.size() * sizeof(float), &SphereVertices[0], GL_STATIC_DRAW);
+        glNamedBufferData(sphereEBO, SphereIndices.size() * sizeof(int), &SphereIndices[0], GL_STATIC_DRAW);
 
         glEnableVertexArrayAttrib(sphereVAO, 0);
         glVertexArrayAttribBinding(sphereVAO, 0, 0);
