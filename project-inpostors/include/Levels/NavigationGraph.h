@@ -31,6 +31,7 @@ public:
     explicit NavigationGraph(const std::string& levelPath);
 
     const Node& GetNearestNode(const glm::vec2& position);
+    const std::list<NodeSharedPtr>& GetAllNodes();
     void DrawNodes();
 
 private:
@@ -42,7 +43,7 @@ private:
             const NodeSharedPtr& nodeTwo);
 
     bool TraceConnection(glm::ivec2 start, glm::ivec2 end);
-    NavigationGraph::Node* HasDirection(Node& nodeOne, Node& nodeTwo);
+    NavigationGraph::Node* HasNodeWithSameDirection(Node& nodeOne, Node& nodeTwo);
     glm::ivec2 CalculateLayoutDirection(const Node& nodeOne, const Node& nodeTwo);
 
 };

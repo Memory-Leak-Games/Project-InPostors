@@ -29,7 +29,7 @@ void AIComponent::Start() {
 
     staticMeshComponent = GetOwner().lock()->GetComponentByClass<mlg::StaticMeshComponent>().lock();
 
-    steering->CreatePath();
+    steering->CreatePath(256);
 }
 
 AIComponent::AIComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,

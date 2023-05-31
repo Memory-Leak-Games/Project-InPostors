@@ -18,36 +18,5 @@ TestScene::TestScene() : LevelScene("res/levels/maps/test_level.json") {}
 
 void TestScene::Load() {
     LevelScene::Load();
-
-    navigationGraph = std::make_shared<NavigationGraph>("res/levels/maps/test_level.json");
-
-    TrafficCarData testCarOneData = {0, mlg::RGBA::white};
-    auto testCarOne = mlg::EntityManager::SpawnEntity<TrafficCar>("TrafficCar1", false, mlg::SceneGraph::GetRoot(), testCarOneData);
-    auto testCarOneRigidbody = testCarOne.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
-    testCarOneRigidbody.lock()->SetPosition({5, 5});
-
-    testCarOne.lock()->GetComponentByName<AIComponent>("AIComponent").lock()->GetSteering()->SetNavigationGraph(navigationGraph);
-    testCarOne.lock()->GetComponentByName<AIComponent>("AIComponent").lock()->GetSteering()->TrafficDriveOn();
-
-    TrafficCarData testCarTwoData = {0, mlg::RGBA::white};
-    auto testCarTwo = mlg::EntityManager::SpawnEntity<TrafficCar>("TrafficCar1", false, mlg::SceneGraph::GetRoot(), testCarOneData);
-    auto testCarTwoRigidbody = testCarOne.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
-    testCarTwoRigidbody.lock()->SetPosition({-5, -5});
-
-    testCarTwo.lock()->GetComponentByName<AIComponent>("AIComponent").lock()->GetSteering()->SetNavigationGraph(navigationGraph);
-    testCarTwo.lock()->GetComponentByName<AIComponent>("AIComponent").lock()->GetSteering()->TrafficDriveOn();
-
 }
 
-void TestScene::Update() {
-#ifdef DEBUG
-    if (!mlg::SettingsManager::Get<bool>(
-                mlg::SettingsType::Debug, "showNavigation"))
-        return;
-
-    if (navigationGraph == nullptr)
-        return;
-
-    navigationGraph->DrawNodes();
-#endif
-}

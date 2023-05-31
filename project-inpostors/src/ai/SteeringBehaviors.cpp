@@ -1,3 +1,4 @@
+#include <spdlog/spdlog.h>
 #include <utility>
 
 #include <fstream>
@@ -180,7 +181,6 @@ glm::vec2 SteeringBehaviors::Alignment(const std::vector<std::weak_ptr<TrafficCa
 glm::vec2 SteeringBehaviors::FollowPath() {
     if (glm::distance2(path->GetCurrentWaypoint(), aiComponent->GetPosition()) < sqrt(waypointSeekDistance)) {
         path->SetNextWaypoint();
-        SPDLOG_DEBUG("Waypoint reached - new waypoint: ({}, {})", GetCurrentWaypoint().x, GetCurrentWaypoint().y);
     }
 
     if (!path->IsPathCompleted()) {
@@ -207,24 +207,48 @@ void SteeringBehaviors::SetNavigationGraph(std::shared_ptr<NavigationGraph> navG
     navigationGraph = navGraph;
 }
 
-void SteeringBehaviors::CreatePath() {
+// TODO: this is hacky approach. So if you have better idea, implement it here. 
+// TODO: It's good idea to keep visited nodes and try to avoid them (until car
+//       visits all)
+void SteeringBehaviors::CreatePath(int numberOfNodes) {
     std::list<glm::vec2> waypoints;
 
     const NavigationGraph::Node* currentNode =
             &navigationGraph->GetNearestNode(aiComponent->GetPosition());
 
-    for (int i = 0; i < 30; ++i) {
-        waypoints.push_back(currentNode->position);
-        auto nodesIterator = currentNode->connectedNodes.begin();
-        int randI = Random::get<int>(0, currentNode->connectedNodes.size() - 1);
+    const NavigationGraph::Node* previousNode = currentNode;
 
-        for (int j = 0; j < randI; ++j) {
-            nodesIterator++;
-        }
-        currentNode = nodesIterator->get();
+    // create path
+    for (int i = 0; i < numberOfNodes; ++i) {
+        waypoints.push_back(currentNode->position);
+
+        const NavigationGraph::Node* nextNode;
+        do {
+            nextNode = Random::get(currentNode->connectedNodes)->get();
+
+            if (currentNode->connectedNodes.size() <= 1)
+                break;
+
+        } while (nextNode->id == previousNode->id);
+
+        previousNode = currentNode;
+        currentNode = nextNode;
+    }
+
+    // create path loop
+    auto waypointRIt = waypoints.rend();
+
+    // skip first element
+    waypointRIt++;
+    waypointRIt++;
+
+    for (int i = 0; i < numberOfNodes - 2; ++i) {
+        waypoints.push_back(*waypointRIt);
+        waypointRIt++;
     }
 
     SetPath(waypoints);
+    path->LoopOn();
 }
 
 void SteeringBehaviors::SetPath(std::list<glm::vec2> newPath) {

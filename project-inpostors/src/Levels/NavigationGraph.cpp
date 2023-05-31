@@ -1,10 +1,12 @@
 #include "Levels/NavigationGraph.h"
 
 #include <algorithm>
+#include <cmath>
 #include <fstream>
 #include <glm/fwd.hpp>
 #include <glm/geometric.hpp>
 #include <memory>
+#include <spdlog/spdlog.h>
 
 #include "Core/Math.h"
 #include "Rendering/Gizmos/Gizmos.h"
@@ -16,8 +18,8 @@ NavigationGraph::NavigationGraph(const std::string& levelPath) {
     json levelJson = json::parse(levelFile);
 
     tileSize = levelJson.value("tile-size", 1.f);
-    crossCharacter = levelJson.value("cross-character", 'x');
-    roadCharacter = levelJson.value("road-character", '#');
+    crossCharacter = levelJson.value("cross-character", "x")[0];
+    roadCharacter = levelJson.value("road-character", "#")[0];
     layout = levelJson["navigation"];
 
     layoutSize.y = layout.size();
@@ -46,6 +48,10 @@ const NavigationGraph::Node& NavigationGraph::GetNearestNode(const glm::vec2& po
             byDistance);
 
     return **nearestNode;
+}
+
+const std::list<NavigationGraph::NodeSharedPtr>& NavigationGraph::GetAllNodes() {
+    return nodes;
 }
 
 void NavigationGraph::DrawNodes() {
@@ -90,6 +96,8 @@ void NavigationGraph::ParseLayout() {
 
     OptimizeNodes();
     FindConnections();
+
+    SPDLOG_INFO("Found nodes: {}", nodes.size());
 }
 
 void NavigationGraph::OptimizeNodes() {
@@ -104,7 +112,7 @@ void NavigationGraph::OptimizeNodes() {
             if (&nodeOne == &nodeTwo)
                 continue;
 
-            if (glm::length(nodeOne->position - nodeTwo->position) > tileSize)
+            if (glm::length(nodeOne->position - nodeTwo->position) > tileSize * std::sqrt(2.f))
                 continue;
 
             nodeOne->position = (nodeOne->position + nodeTwo->position) / 2.f;
@@ -131,6 +139,7 @@ void NavigationGraph::AddConnectionWhenParametersMeet(
         const NodeSharedPtr& nodeOne,
         const NodeSharedPtr& nodeTwo) {
     glm::ivec2 manhattanDistance = nodeOne->layoutPosition - nodeTwo->layoutPosition;
+
     if (manhattanDistance.x == 0 && manhattanDistance.y == 0)
         return;
 
@@ -140,24 +149,27 @@ void NavigationGraph::AddConnectionWhenParametersMeet(
     if (TraceConnection(nodeOne->layoutPosition, nodeTwo->layoutPosition))
         return;
 
-    Node* anotherNodeWithSameDirection = HasDirection(*nodeOne, *nodeTwo);
+    Node* anotherNodeWithSameDirection = HasNodeWithSameDirection(*nodeOne, *nodeTwo);
     if (anotherNodeWithSameDirection != nullptr) {
         glm::vec2 distanceToTwo = nodeTwo->layoutPosition - nodeOne->layoutPosition;
         glm::vec2 distanceToAnother =
                 anotherNodeWithSameDirection->layoutPosition - nodeOne->layoutPosition;
 
+
         if (glm::length(distanceToAnother) < glm::length(distanceToTwo))
             return;
 
         // replace longer connection
-        std::erase_if(
-                nodeOne->connectedNodes,
+        auto sameNodePredicate =
                 [anotherNodeWithSameDirection](const NodeSharedPtr& item) {
                     return anotherNodeWithSameDirection == item.get();
-                });
+                };
+        std::erase_if(nodeOne->connectedNodes, sameNodePredicate);
     }
 
     nodeOne->connectedNodes.insert(nodeTwo);
+
+    SPDLOG_DEBUG("{} -> {}", nodeOne->id, nodeTwo->id);
 }
 
 bool NavigationGraph::TraceConnection(glm::ivec2 start, glm::ivec2 end) {
@@ -182,7 +194,7 @@ bool NavigationGraph::TraceConnection(glm::ivec2 start, glm::ivec2 end) {
     return false;
 }
 
-NavigationGraph::Node* NavigationGraph::HasDirection(Node& nodeOne, Node& nodeTwo) {
+NavigationGraph::Node* NavigationGraph::HasNodeWithSameDirection(Node& nodeOne, Node& nodeTwo) {
     glm::ivec2 directionToTwo = CalculateLayoutDirection(nodeOne, nodeTwo);
 
     for (const auto& connectedNode : nodeOne.connectedNodes) {
@@ -197,8 +209,8 @@ NavigationGraph::Node* NavigationGraph::HasDirection(Node& nodeOne, Node& nodeTw
 
 glm::ivec2 NavigationGraph::CalculateLayoutDirection(const Node& nodeOne, const Node& nodeTwo) {
     glm::ivec2 direction = nodeTwo.layoutPosition - nodeOne.layoutPosition;
-    direction.x = direction.x > 0 ? 1 : 0;
-    direction.y = direction.y > 0 ? 1 : 0;
+    direction.x = std::abs(direction.x) > 0 ? 1 : 0;
+    direction.y = std::abs(direction.y) > 0 ? 1 : 0;
 
     return direction;
 }

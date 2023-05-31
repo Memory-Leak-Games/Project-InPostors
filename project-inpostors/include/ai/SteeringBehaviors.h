@@ -93,7 +93,7 @@ public:
     std::shared_ptr<NavigationGraph> GetNavigationGraph() const;
 
     void SetNavigationGraph(std::shared_ptr<NavigationGraph> navGraph);
-    void CreatePath();
+    void CreatePath(int numberOfNodes);
     void SetPath(std::list<glm::vec2> newPath);
     void CreateBasePath(float minX, float minY, float maxX, float maxY) const;
 
