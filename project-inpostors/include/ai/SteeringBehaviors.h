@@ -3,6 +3,7 @@
 class AIComponent;
 class TrafficCar;
 class Path;
+class NavigationGraph;
 
 const float waypointSeekDistance = 20;
 
@@ -39,6 +40,7 @@ private:
 
     AIComponent* aiComponent;
     Path* path;
+    std::shared_ptr<NavigationGraph> navigationGraph;
 
     enum Deceleration {
         slow = 3,
@@ -88,7 +90,9 @@ public:
 
     std::list<glm::vec2> GetPath() const;
     glm::vec2 GetCurrentWaypoint() const;
+    std::shared_ptr<NavigationGraph> GetNavigationGraph() const;
 
+    void SetNavigationGraph(std::shared_ptr<NavigationGraph> navGraph);
     void SetPath(std::list<glm::vec2> newPath);
     void CreateBasePath(float minX, float minY, float maxX, float maxY) const;
 

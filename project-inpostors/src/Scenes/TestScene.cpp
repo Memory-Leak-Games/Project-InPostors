@@ -21,16 +21,19 @@ void TestScene::Load() {
 
     navigationGraph = std::make_shared<NavigationGraph>("res/levels/maps/test_level.json");
 
-    //TODO: Maybe pass the entire graph into steering behaviours and let them decide (maybe randomly) which of the connected nodes should be next
-
-    auto testCarOnePath = navigationGraph->CreatePath();
-
     TrafficCarData testCarOneData = {0, mlg::RGBA::white};
     auto testCarOne = mlg::EntityManager::SpawnEntity<TrafficCar>("TrafficCar1", false, mlg::SceneGraph::GetRoot(), testCarOneData);
-    testCarOne.lock()->GetComponentByName<AIComponent>("AIComponent").lock()->GetSteering()->SetPath(testCarOnePath);
-    testCarOne.lock()->GetComponentByName<AIComponent>("AIComponent").lock()->GetSteering()->TrafficDriveOn();
+    testCarOne.lock()->GetComponentByName<AIComponent>("AIComponent").lock()->GetSteering()->SetNavigationGraph(navigationGraph);
     auto testCarOneRigidbody = testCarOne.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
-    testCarOneRigidbody.lock()->SetPosition(*testCarOnePath.begin());
+    testCarOneRigidbody.lock()->SetPosition({5, 5});
+    testCarOne.lock()->GetComponentByName<AIComponent>("AIComponent").lock()->GetSteering()->TrafficDriveOn();
+
+    TrafficCarData testCarTwoData = {0, mlg::RGBA::white};
+    auto testCarTwo = mlg::EntityManager::SpawnEntity<TrafficCar>("TrafficCar1", false, mlg::SceneGraph::GetRoot(), testCarOneData);
+    testCarTwo.lock()->GetComponentByName<AIComponent>("AIComponent").lock()->GetSteering()->SetNavigationGraph(navigationGraph);
+    auto testCarTwoRigidbody = testCarOne.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
+    testCarTwoRigidbody.lock()->SetPosition({-5, -5});
+    testCarTwo.lock()->GetComponentByName<AIComponent>("AIComponent").lock()->GetSteering()->TrafficDriveOn();
 
 }
 

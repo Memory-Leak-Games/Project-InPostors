@@ -43,24 +43,26 @@ void AIComponent::Update() {
 }
 
 void AIComponent::PhysicsUpdate() {
-    glm::vec2 steeringForce = steering->Calculate();
-    rigidbodyComponent->AddForce(steeringForce);
+    if (steering->GetNavigationGraph() != nullptr) {
+        glm::vec2 steeringForce = steering->Calculate();
+        rigidbodyComponent->AddForce(steeringForce);
 
-    const glm::vec2 velocityDirection = mlg::Math::SafeNormal(rigidbodyComponent->GetLinearVelocity());
-    if (glm::length(velocityDirection) > 0.f) {
-        float angle = -std::atan2(velocityDirection.y, velocityDirection.x) - glm::half_pi<float>();
-        rigidbodyComponent->SetRotation(angle);
-    }
+        const glm::vec2 velocityDirection = mlg::Math::SafeNormal(rigidbodyComponent->GetLinearVelocity());
+        if (glm::length(velocityDirection) > 0.f) {
+            float angle = -std::atan2(velocityDirection.y, velocityDirection.x) - glm::half_pi<float>();
+            rigidbodyComponent->SetRotation(angle);
+        }
 
 #ifdef DEBUG
-    if (mlg::SettingsManager::Get<bool>(mlg::SettingsType::Debug, "showAiForces")) {
-        glm::vec3 steeringForce3D = {steeringForce.x, 0.f, steeringForce.y};
-        glm::vec3 nextWaypoint = {steering->GetCurrentWaypoint().x, 0.f, steering->GetCurrentWaypoint().y};
-        glm::vec3 position = GetOwner().lock()->GetTransform().GetPosition();
-        mlg::Gizmos::DrawLine(position, position + steeringForce3D, mlg::RGBA::magenta);
-        mlg::Gizmos::DrawLine(position, nextWaypoint, mlg::RGBA::red);
-    }
+        if (mlg::SettingsManager::Get<bool>(mlg::SettingsType::Debug, "showAiForces")) {
+            glm::vec3 steeringForce3D = {steeringForce.x, 0.f, steeringForce.y};
+            glm::vec3 nextWaypoint = {steering->GetCurrentWaypoint().x, 0.f, steering->GetCurrentWaypoint().y};
+            glm::vec3 position = GetOwner().lock()->GetTransform().GetPosition();
+            mlg::Gizmos::DrawLine(position, position + steeringForce3D, mlg::RGBA::magenta);
+            mlg::Gizmos::DrawLine(position, nextWaypoint, mlg::RGBA::red);
+        }
 #endif
+    }
 }
 
 void AIComponent::AIUpdate() {
@@ -100,4 +102,8 @@ glm::vec3 AIComponent::GetLocalVelocity() const {
 
 SteeringBehaviors* AIComponent::GetSteering() const {
     return steering.get();
+}
+
+void AIComponent::SetNavigationGraph(std::shared_ptr<NavigationGraph> navGraph) {
+    steering->SetNavigationGraph(navGraph);
 }

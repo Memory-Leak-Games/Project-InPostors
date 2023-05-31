@@ -12,7 +12,6 @@ public:
     };
 
 private:
-    //TODO: Ask if this can not be a list (vector probably)
     std::list<std::shared_ptr<Node>> nodes;
 
     std::vector<std::string> layout;
@@ -27,8 +26,7 @@ public:
     explicit NavigationGraph(const std::string& levelPath);
 
     Node GetNearestNode(const glm::vec2& position);
-
-    std::list<glm::vec2> CreatePath();
+    std::list<std::shared_ptr<Node>> GetNodes();
 
     void DrawNodes();
 

@@ -29,16 +29,6 @@ NavigationGraph::NavigationGraph(const std::string& levelPath) {
     ParseLayout();
 }
 
-std::list<glm::vec2> NavigationGraph::CreatePath() {
-    std::list<glm::vec2> path;
-
-    for (const auto& node : nodes) {
-        path.push_back(node->position);
-    }
-
-    return path;
-}
-
 void NavigationGraph::DrawNodes() {
 #ifdef DEBUG
     // draw points
@@ -146,4 +136,8 @@ bool NavigationGraph::TraceConnection(glm::ivec2 start, glm::ivec2 end) {
     }
 
     return false;
+}
+
+std::list<std::shared_ptr<NavigationGraph::Node>> NavigationGraph::GetNodes() {
+    return nodes;
 }

@@ -8,22 +8,24 @@
 #include "ai/AIComponent.h"
 #include "ai/Path.h"
 
+#include "Levels/NavigationGraph.h"
+
 #include "Gameplay/EntityManager.h"
 #include "Gameplay/Entity.h"
 
 using json = nlohmann::json;
+using random = effolkronium::random_static;
 
 SteeringBehaviors::SteeringBehaviors(AIComponent* agent, const std::string& configPath)
     : aiComponent(agent), flags(0), deceleration(fast), summingMethod(prioritized) {
     LoadParameters(configPath);
 
     //TODO: Replace this with Path from level
-    std::list<glm::vec2> waypoints = {
-            {10.f, -5.f},
-            {-15.f, -5.f},
-            {-15.f, 20.f},
-            {10.f, 20.f}
-    };
+//    std::list<glm::vec2> waypoints;
+//
+//    for (const auto& node : navigationGraph->GetNodes()) {
+//        waypoints.push_back(node->position);
+//    }
 
 //    path = new Path(waypoints, true);
     path = new Path();
@@ -204,8 +206,29 @@ void SteeringBehaviors::LoadParameters(const std::string& path) {
     followPathWeight = parameters["followPathWeight"];
 }
 
+void SteeringBehaviors::SetNavigationGraph(std::shared_ptr<NavigationGraph> navGraph) {
+    navigationGraph = navGraph;
+
+    std::list<glm::vec2> waypoints;
+
+    NavigationGraph::Node* currentNode = &(*navGraph->GetNodes().back());
+
+    for (int i = 0; i < 30; ++i) {
+        waypoints.push_back(currentNode->position);
+        auto nodesIterator = currentNode->connectedNodes.begin();
+        int randI = random::get<int>(0, currentNode->connectedNodes.size() - 1);
+        for (int j = 0; j < randI; ++j) {
+            nodesIterator++;
+        }
+        currentNode = nodesIterator->get();
+    }
+
+    SetPath(waypoints);
+}
+
 void SteeringBehaviors::SetPath(std::list<glm::vec2> newPath) {
     path->Set(newPath);
+    path->LoopOn();
 }
 
 void SteeringBehaviors::CreateBasePath(float minX, float minY, float maxX, float maxY) const {
@@ -230,6 +253,10 @@ std::list<glm::vec2> SteeringBehaviors::GetPath() const {
 
 glm::vec2 SteeringBehaviors::GetCurrentWaypoint() const {
     return path->GetCurrentWaypoint();
+}
+
+std::shared_ptr<NavigationGraph> SteeringBehaviors::GetNavigationGraph() const {
+    return navigationGraph;
 }
 
 bool SteeringBehaviors::BehaviorTypeOn(BehaviorType bt) const {
