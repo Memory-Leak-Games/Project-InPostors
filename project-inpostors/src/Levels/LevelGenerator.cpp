@@ -239,13 +239,18 @@ namespace mlg {
     }
 
     void LevelGenerator::LoadFactories() {
-        if (!tileJson.contains("factories"))
+        if (!tileJson.contains("factory-pool"))
             return;
 
-        // It is safe to assume we have 3 tiers of factories,
-        // which means we need to keep 3 symbols.
+        std::ifstream factoryPool{tileJson["factory-pool"].get<std::string>()};
+        json poolJson = json::parse(factoryPool);
+
+        // Assuming we have 3 tiers of factories,
+        // we need to keep 3 symbols.
+        // TODO: increase size if we happen to have move factories in pool
         factoryCharacters.reserve(3);
-        for (const auto& jsonFactory : tileJson["factories"]) {
+        for (const auto& jsonFactory : poolJson["pool"]) {
+            SPDLOG_WARN("dupa");
             MapFactory factory = ParseFactory(jsonFactory);
             factory.remaining = 1;
             levelFactories.push_back(factory);
