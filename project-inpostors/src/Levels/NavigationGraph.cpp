@@ -1,7 +1,10 @@
 #include "Levels/NavigationGraph.h"
 
+#include <algorithm>
 #include <fstream>
 #include <glm/fwd.hpp>
+#include <glm/geometric.hpp>
+#include <memory>
 
 #include "Core/Math.h"
 #include "Rendering/Gizmos/Gizmos.h"
@@ -62,6 +65,8 @@ void NavigationGraph::ParseLayout() {
             newNode->position -= glm::vec2{0.f, 1.f} + tileSize / 2.f;
 
             newNode->layoutPosition = {x, y};
+            newNode->id = idCounter;
+            idCounter++;
 
             nodes.push_back(newNode);
         }
@@ -101,19 +106,42 @@ void NavigationGraph::OptimizeNodes() {
 void NavigationGraph::FindConnections() {
     for (auto& nodeOne : nodes) {
         for (auto& nodeTwo : nodes) {
-            glm::ivec2 manhattanDistance = nodeOne->layoutPosition - nodeTwo->layoutPosition;
-            if (manhattanDistance.x == 0 && manhattanDistance.y == 0)
-                continue;
-
-            if (manhattanDistance.x != 0 && manhattanDistance.y != 0)
-                continue;
-
-            if (TraceConnection(nodeOne->layoutPosition, nodeTwo->layoutPosition))
-                continue;   
-
-            nodeOne->connectedNodes.insert(nodeTwo);
+            AddConnectionWhenParametersMeet(nodeOne, nodeTwo);
         }
     }
+}
+
+void NavigationGraph::AddConnectionWhenParametersMeet(
+        const std::shared_ptr<NavigationGraph::Node>& nodeOne,
+        const std::shared_ptr<NavigationGraph::Node>& nodeTwo) {
+    glm::ivec2 manhattanDistance = nodeOne->layoutPosition - nodeTwo->layoutPosition;
+    if (manhattanDistance.x == 0 && manhattanDistance.y == 0)
+        return;
+
+    if (manhattanDistance.x != 0 && manhattanDistance.y != 0)
+        return;
+
+    if (TraceConnection(nodeOne->layoutPosition, nodeTwo->layoutPosition))
+        return;
+
+    Node* anotherNodeWithSameDirection = HasDirection(*nodeOne, *nodeTwo);
+    if (anotherNodeWithSameDirection != nullptr) {
+        glm::vec2 distanceToTwo = nodeTwo->layoutPosition - nodeOne->layoutPosition;
+        glm::vec2 distanceToAnother =
+                anotherNodeWithSameDirection->layoutPosition - nodeOne->layoutPosition;
+
+        if (glm::length(distanceToAnother) < glm::length(distanceToTwo))
+            return;
+
+        // replace longer connection
+        std::erase_if(
+                nodeOne->connectedNodes,
+                [anotherNodeWithSameDirection](const auto& item) {
+                    return anotherNodeWithSameDirection == item.get();
+                });
+    }
+
+    nodeOne->connectedNodes.insert(nodeTwo);
 }
 
 bool NavigationGraph::TraceConnection(glm::ivec2 start, glm::ivec2 end) {
@@ -136,6 +164,27 @@ bool NavigationGraph::TraceConnection(glm::ivec2 start, glm::ivec2 end) {
     }
 
     return false;
+}
+
+NavigationGraph::Node* NavigationGraph::HasDirection(Node& nodeOne, Node& nodeTwo) {
+    glm::ivec2 directionToTwo = CalculateLayoutDirection(nodeOne, nodeTwo);
+
+    for (const auto& connectedNode : nodeOne.connectedNodes) {
+        glm::ivec2 directionToConnected = CalculateLayoutDirection(nodeOne, *connectedNode);
+
+        if (directionToTwo == directionToConnected)
+            return connectedNode.get();
+    }
+
+    return nullptr;
+}
+
+glm::ivec2 NavigationGraph::CalculateLayoutDirection(const Node& nodeOne, const Node& nodeTwo) {
+    glm::ivec2 direction = nodeTwo.layoutPosition - nodeOne.layoutPosition;
+    direction.x = direction.x > 0 ? 1 : 0;
+    direction.y = direction.y > 0 ? 1 : 0;
+
+    return direction;
 }
 
 std::list<std::shared_ptr<NavigationGraph::Node>> NavigationGraph::GetNodes() {

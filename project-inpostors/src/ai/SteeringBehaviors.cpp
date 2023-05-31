@@ -14,7 +14,7 @@
 #include "Gameplay/Entity.h"
 
 using json = nlohmann::json;
-using random = effolkronium::random_static;
+using Random = effolkronium::random_static;
 
 SteeringBehaviors::SteeringBehaviors(AIComponent* agent, const std::string& configPath)
     : aiComponent(agent), flags(0), deceleration(fast), summingMethod(prioritized) {
@@ -216,7 +216,7 @@ void SteeringBehaviors::SetNavigationGraph(std::shared_ptr<NavigationGraph> navG
     for (int i = 0; i < 30; ++i) {
         waypoints.push_back(currentNode->position);
         auto nodesIterator = currentNode->connectedNodes.begin();
-        int randI = random::get<int>(0, currentNode->connectedNodes.size() - 1);
+        int randI = Random::get<int>(0, currentNode->connectedNodes.size() - 1);
         for (int j = 0; j < randI; ++j) {
             nodesIterator++;
         }
