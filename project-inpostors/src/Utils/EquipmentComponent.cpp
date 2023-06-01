@@ -38,6 +38,16 @@ bool EquipmentComponent::Has(const std::string& product) const {
     return std::find(equipment.begin(), equipment.end(), product) != equipment.end();
 }
 
+int EquipmentComponent::GetNumberOfProduct(const std::string& productId) const {
+    int count = 0;
+    for (const auto& product : equipment) {
+        if (product == productId)
+            count++;
+    }
+
+    return count;
+}
+
 std::string EquipmentComponent::ToString() const {
     std::string result = "Eq: ";
 
