@@ -25,9 +25,9 @@ private:
     std::shared_ptr<class mlg::AudioAsset> pickUpSound;
     std::shared_ptr<class mlg::AudioAsset> dropSound;
     std::shared_ptr<class mlg::AudioAsset> hitSound;
-    //std::shared_ptr<class mlg::AudioAsset> truckEngineSound;
 
-    //bool isEngineSoundPlaying = false;
+    bool canPlaySound = true;
+    unsigned int canPlaySoundTimerHandle = 0;
 
     PlayerData playerData;
 
