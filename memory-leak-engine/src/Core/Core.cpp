@@ -56,12 +56,12 @@ void Core::MainLoop() {
     ComponentManager::Start();
     EntityManager::Start();
 
-    Time::UpdateStartFrameTime();
+    Time::Update();
 
     while (!shouldClose) {
         ZoneScoped;
 
-        Time::UpdateStartFrameTime();
+        Time::Update();
         RenderingAPI::GetInstance()->Clear();
 
 #ifdef DEBUG
@@ -143,7 +143,9 @@ void Core::RenderImGUI() const {
     ImGui::Begin("FPS");
     ImGui::Text("True Framerate: %.3f (%.1f FPS)", Time::GetTrueDeltaSeconds(), 1 / Time::GetTrueDeltaSeconds());
     ImGui::Text("Logic Framerate: %.3f (%.1f FPS)", Time::GetDeltaSeconds(), 1 / Time::GetDeltaSeconds());
-    ImGui::Text("Time: %.3f", Time::GetSeconds());
+    ImGui::Text("True Time: %.3f", Time::GetTrueSeconds());
+    ImGui::Text("Logic Time: %.3f", Time::GetSeconds());
+    ImGui::Text("Paused: %i", Time::IsGamePaused());
 
     static float timeAccumulator;
     static std::deque<float> frameTimes;

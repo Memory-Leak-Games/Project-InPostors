@@ -31,10 +31,6 @@ std::shared_ptr<TrafficCar> TrafficCar::Create(uint64_t id, const std::string& n
                                                const std::string& configPath) {
     auto newTrafficCar = std::shared_ptr<TrafficCar>(new TrafficCar(id, name, isStatic, parent));
 
-    newTrafficCar->rigidbodyComponent = newTrafficCar->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
-    newTrafficCar->rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f, -0.5f), 0.5f);
-    newTrafficCar->rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(glm::vec2(0.f, 0.5f), 0.5f);
-    newTrafficCar->rigidbodyComponent.lock()->SetBounciness(0.5f);
 
     std::ifstream configFile{configPath};
     json configJson = json::parse(configFile);
@@ -45,13 +41,11 @@ std::shared_ptr<TrafficCar> TrafficCar::Create(uint64_t id, const std::string& n
     material->SetVec4("color", trafficCarData.color);
 
     auto staticMeshComponent = newTrafficCar->AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
-
     staticMeshComponent.lock()->GetTransform().SetPosition({0.f, 0.3f, 0.f});
 
-    newTrafficCar->AddComponent<AIComponent>("AIComponent", configPath);
+    newTrafficCar->AddRigidbody(configJson);
 
-    auto smoke = std::make_shared<SmokeFX>();
-    auto smokeComponent = newTrafficCar->AddComponent<mlg::ParticleSystemComponent>("SmokeFX", smoke);
+    newTrafficCar->AddComponent<AIComponent>("AIComponent", configPath);
 
     return newTrafficCar;
 }
@@ -63,4 +57,21 @@ void TrafficCar::Update() {
 }
 
 void TrafficCar::AIUpdate() {
+}
+
+void TrafficCar::AddRigidbody(const nlohmann::json& configJson) {
+    this->rigidbodyComponent = this->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
+
+    float bounciness = configJson["parameters"].value("bounciness", 0.5f);
+    this->rigidbodyComponent.lock()->SetBounciness(bounciness);
+
+    for (const auto& collider : configJson["colliders"]) {
+        const glm::vec2 offset{
+                collider["offset"][0].get<float>(),
+                collider["offset"][1].get<float>(),
+        };
+        const float size = collider["size"].get<float>();
+
+        this->rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(offset, size);
+    }
 }

@@ -27,4 +27,8 @@ public:
     void AIUpdate() override;
 
     ~TrafficCar() = default;
+
+private:
+    void AddRigidbody(const nlohmann::json& configJson);
+    void LoadModel(const nlohmann::json& configJson);
 };

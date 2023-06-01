@@ -40,12 +40,11 @@ Player::Player(uint64_t id, const std::string& name, bool isStatic, mlg::Transfo
 std::shared_ptr<Player> Player::Create(uint64_t id, const std::string& name, bool isStatic,
                                        mlg::Transform* parent, const PlayerData& playerData) {
     auto newPlayer = std::shared_ptr<Player>(new Player(id, name, isStatic, parent, playerData));
-    newPlayer->GetTransform().SetPosition(playerData.initialPosition);
 
     std::ifstream configFile{playerData.carData};
     json configJson = json::parse(configFile);
 
-    newPlayer->AddRigidbody(configJson, playerData.initialRotation);
+    newPlayer->AddRigidbody(configJson);
     newPlayer->LoadModel(configJson);
 
     newPlayer->AddComponent<CarMovementComponent>("MovementComponent", playerData.carData);
@@ -57,10 +56,12 @@ std::shared_ptr<Player> Player::Create(uint64_t id, const std::string& name, boo
     return newPlayer;
 }
 
-void Player::AddRigidbody(const json& configJson, float rotation = 0.f) {
+void Player::AddRigidbody(const json& configJson) {
     this->rigidbodyComponent = this->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
-    this->rigidbodyComponent.lock()->SetBounciness(0.5f);
-    this->rigidbodyComponent.lock()->SetRotation(rotation);
+
+    float bounciness = configJson["parameters"].value("bounciness", 0.5f);
+    this->rigidbodyComponent.lock()->SetBounciness(bounciness);
+
     for (const auto& collider : configJson["colliders"]) {
         const glm::vec2 offset{
                 collider["offset"][0].get<float>(),
@@ -119,6 +120,14 @@ void Player::Update() {
     ImGui::Text("%s", equipment->ToString().c_str());
     ImGui::End();
 #endif
+}
+
+void Player::SetPlayerPosition(const glm::vec2& position) {
+    rigidbodyComponent.lock()->SetPosition(position);
+}
+
+void Player::SetPlayerRotation(float angle) {
+    rigidbodyComponent.lock()->SetRotation(angle);
 }
 
 void Player::PickUp() {

@@ -19,6 +19,7 @@ public:
     std::string RequestProduct();
 
     bool Has(const std::string& productId) const;
+    int GetNumberOfProduct(const std::string& productId) const;
     bool IsFull() const;
 
     std::string ToString() const;
