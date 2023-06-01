@@ -41,13 +41,19 @@
   },
 
   "player-one": {
+    "id": 0,
+    "car-type": "res/config/cars/van.json",
+    "color": [1.0, 0.0, 0.0],
+
     "position": [32.0, -12.0],
-    "rotation": 180.0,
-    "car-type": "res/config/cars/van.json"
+    "rotation": 180.0
   },
 
   "player-two": {
-    "position": [-16.0, -12.0],
-    "car-type": "res/config/cars/van.json"
+    "id": 1,
+    "car-type": "res/config/cars/van.json",
+    "color": [0.0, 1.0, 1.0],
+
+    "position": [-24.0, 10.0]
   }
 }
