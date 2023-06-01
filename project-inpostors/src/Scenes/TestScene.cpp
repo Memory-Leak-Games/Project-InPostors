@@ -19,4 +19,3 @@ TestScene::TestScene() : LevelScene("res/levels/maps/test_level.json") {}
 void TestScene::Load() {
     LevelScene::Load();
 }
-
