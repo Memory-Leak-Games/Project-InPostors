@@ -77,7 +77,7 @@ namespace mlg {
     }
 
     void Time::Sleep(double seconds) {
-        double startSleepTime = GetSeconds();
+        double startSleepTime = GetTrueSeconds();
         while (GetSeconds() - startSleepTime <= seconds) {
             // This is sleep method so I am empty
         }
@@ -87,7 +87,7 @@ namespace mlg {
         ZoneScoped;
 
         double minFramerate = 1 / (double) instance->fpsCap;
-        while (GetSeconds() - instance->frameStart <= minFramerate) {
+        while (GetTrueSeconds() - instance->frameStart <= minFramerate) {
             // This is sleep method so I am empty
         }
     }
