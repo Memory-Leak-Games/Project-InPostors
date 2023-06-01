@@ -14,6 +14,7 @@ namespace mlg {
         static void SpawnGround(const std::string& path);
         static void SetCityBounds(const std::string& path);
         static void SpawnPlayers(const std::string& path);
+        static void SpawnTraffic(const std::string& path);
 
         std::vector<std::string> GetLevelLayout();
 

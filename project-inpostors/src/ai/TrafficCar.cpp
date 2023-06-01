@@ -48,7 +48,7 @@ std::shared_ptr<TrafficCar> TrafficCar::Create(uint64_t id, const std::string& n
 
     staticMeshComponent.lock()->GetTransform().SetPosition({0.f, 0.3f, 0.f});
 
-    newTrafficCar->AddComponent<AIComponent>("AIMovementComponent", configPath);
+    newTrafficCar->AddComponent<AIComponent>("AIComponent", configPath);
 
     auto smoke = std::make_shared<SmokeFX>();
     auto smokeComponent = newTrafficCar->AddComponent<mlg::ParticleSystemComponent>("SmokeFX", smoke);

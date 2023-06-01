@@ -3,5 +3,5 @@
   "showForces": false,
   "showSpacialGrid": false,
   "showNavigation": true,
-  "showAiForces": true
+  "showAiForces": false
 }
