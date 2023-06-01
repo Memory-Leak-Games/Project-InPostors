@@ -190,6 +190,16 @@ namespace mlg {
         playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
     }
 
+    LevelGenerator::TrafficData LevelGenerator::LoadTrafficData(const std::string& path) {
+        std::ifstream levelFile{path};
+        json levelJson = json::parse(levelFile);
+
+        TrafficData trafficData;
+        trafficData.numberOfAgents = levelJson.value("number-of-agents", 0);
+
+        return trafficData;
+    }
+
     std::vector<std::string> LevelGenerator::GetLevelLayout() {
         return levelLayout;
     }

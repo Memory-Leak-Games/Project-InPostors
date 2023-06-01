@@ -21,23 +21,27 @@ void mlg::SceneManager::Stop() {
 
     SPDLOG_DEBUG("Stopping SceneManager");
 
-    instance->actualScene->UnLoad();
+    instance->currentScene->UnLoad();
 
     delete instance;
     instance = nullptr;
 }
 
 void mlg::SceneManager::LoadScene(std::unique_ptr<Scene> scene) {
-    if (instance->actualScene != nullptr)
-        instance->actualScene->UnLoad();
+    if (instance->currentScene != nullptr)
+        instance->currentScene->UnLoad();
     
     Initializer::StopSceneComponents();
     Initializer::InitializeSceneComponents();
     
-    instance->actualScene = std::move(scene);
-    instance->actualScene->Load();
+    instance->currentScene = std::move(scene);
+    instance->currentScene->Load();
 }
 
 void mlg::SceneManager::Update() {
-    instance->actualScene->Update();
+    instance->currentScene->Update();
+}
+
+mlg::Scene* mlg::SceneManager::GetCurrentScene() {
+    return instance->currentScene.get();
 }

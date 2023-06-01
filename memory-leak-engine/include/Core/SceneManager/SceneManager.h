@@ -6,7 +6,7 @@ namespace mlg {
     private:
         static SceneManager* instance;
 
-        std::unique_ptr<class Scene> actualScene;
+        std::unique_ptr<class Scene> currentScene;
 
         SceneManager() = default;
     public:
@@ -14,7 +14,9 @@ namespace mlg {
 
         static void Initialize();
         static void Stop();
-    
+
+        static Scene* GetCurrentScene();
+
         static void LoadScene(std::unique_ptr<class Scene> scene);
         static void Update();
     };

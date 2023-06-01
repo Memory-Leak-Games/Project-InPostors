@@ -44,6 +44,7 @@
   ],
 
   "cross-character": "x",
+  "number-of-agents": 5,
 
   "camera-settings": {
     "position": [16.0, 50.0, -14.0],

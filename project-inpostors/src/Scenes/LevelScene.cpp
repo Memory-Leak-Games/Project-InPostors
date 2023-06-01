@@ -15,6 +15,8 @@
 #include "Levels/NavigationGraph.h"
 #include "ai/AIComponent.h"
 #include "ai/SteeringBehaviors.h"
+#include <cstdint>
+#include <sys/types.h>
 
 LevelScene::LevelScene(const std::string& path) : levelPath(path) {}
 
@@ -35,9 +37,15 @@ void LevelScene::Load() {
 
     navigationGraph = std::make_shared<NavigationGraph>(levelPath);
 
-    // TODO: remove me
-    int i = 0;
+    // TODO: 
+    mlg::LevelGenerator::TrafficData trafficData = mlg::LevelGenerator::LoadTrafficData(levelPath);
+
+    uint32_t i = 0;
+
     for (const auto& node : navigationGraph->GetAllNodes()) {
+        if (i >= trafficData.numberOfAgents)
+            break;
+
         TrafficCarData aiCarData = {0, mlg::RGBA::white};
         auto aiCar =
                 mlg::EntityManager::SpawnEntity<TrafficCar>(
@@ -51,13 +59,8 @@ void LevelScene::Load() {
         auto aiComponent =
                 aiCar.lock()->GetComponentByName<AIComponent>("AIComponent").lock();
 
-        aiComponent->GetSteering()->SetNavigationGraph(navigationGraph);
-        aiComponent->GetSteering()->TrafficDriveOn();
-
         i++;
 
-        if (i > 4)
-            break;
     }
 }
 
@@ -72,4 +75,8 @@ void LevelScene::Update() {
 
     navigationGraph->DrawNodes();
 #endif
+}
+
+const std::shared_ptr<NavigationGraph>& LevelScene::GetNavigationGraph() const {
+    return navigationGraph;
 }

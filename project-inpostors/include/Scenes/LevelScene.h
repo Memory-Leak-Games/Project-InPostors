@@ -17,4 +17,6 @@ public:
 
     void Load() override;
     void Update() override;
+
+    [[nodiscard]] const std::shared_ptr<NavigationGraph>& GetNavigationGraph() const;
 };
