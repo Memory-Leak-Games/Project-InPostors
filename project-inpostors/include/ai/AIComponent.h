@@ -10,6 +10,7 @@ namespace mlg {
 }
 
 class SteeringBehaviors;
+class NavigationGraph;
 
 class AIComponent : public mlg::Component {
 private:
@@ -39,6 +40,8 @@ public:
     glm::vec2 GetLinearVelocity() const;
     glm::vec3 GetLocalVelocity() const;
     SteeringBehaviors* GetSteering() const;
+
+    void SetNavigationGraph(std::shared_ptr<NavigationGraph> navGraph);
 
     void LoadParameters(const std::string& path);
 

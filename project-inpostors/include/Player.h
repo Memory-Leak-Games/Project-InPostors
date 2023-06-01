@@ -10,8 +10,6 @@ namespace mlg {
 struct PlayerData {
     int id;
     glm::vec4 color;
-    glm::vec3 initialPosition = {0.f, 0.3f, 0.f};
-    float initialRotation;
     std::string carData;
 };
 
@@ -25,9 +23,9 @@ private:
     std::shared_ptr<class mlg::AudioAsset> pickUpSound;
     std::shared_ptr<class mlg::AudioAsset> dropSound;
     std::shared_ptr<class mlg::AudioAsset> hitSound;
-    //std::shared_ptr<class mlg::AudioAsset> truckEngineSound;
 
-    //bool isEngineSoundPlaying = false;
+    bool canPlaySound = true;
+    unsigned int canPlaySoundTimerHandle = 0;
 
     PlayerData playerData;
 
@@ -41,10 +39,13 @@ public:
     void Start() override;
     void Update() override;
 
+    void SetPlayerPosition(const glm::vec2& position);
+    void SetPlayerRotation(float angle);
+
     ~Player() override = default;
 
 private:
-    void AddRigidbody(const nlohmann::json& configJson, const float rotation);
+    void AddRigidbody(const nlohmann::json& configJson);
     void LoadModel(const nlohmann::json& configJson);
 
     void PickUp();

@@ -30,11 +30,19 @@ bool Path::IsPathCompleted() {
 void Path::SetNextWaypoint() {
     MLG_ASSERT(!waypoints.empty());
 
-    if (++currentWaypoint == waypoints.end()) {
+    auto nextWaypoint = currentWaypoint;
+    nextWaypoint++;
+
+    if (nextWaypoint == waypoints.end())
+    {
         if (isLooped) {
             currentWaypoint = waypoints.begin();
         }
+
+        return ;
     }
+
+    currentWaypoint++;
 }
 
 std::list<glm::vec2> Path::CreateBasePath(float minX, float minY,

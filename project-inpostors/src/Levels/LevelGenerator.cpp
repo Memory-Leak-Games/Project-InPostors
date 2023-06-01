@@ -26,8 +26,8 @@
 #include "Physics/CollisionManager.h"
 #include "Player.h"
 
-#include "Buildings/Factory.h"
 #include "Buildings/AutoDestroyComponent.h"
+#include "Buildings/Factory.h"
 
 
 using json = nlohmann::json;
@@ -134,60 +134,56 @@ namespace mlg {
         CollisionManager::SetBounds(cityStart, cityEnd, layoutSize);
     }
 
-    void LevelGenerator::SpawnPlayers(const std::string &path) {
+    void LevelGenerator::SpawnPlayers(const std::string& path) {
         std::ifstream levelFile{path};
         json levelJson = json::parse(levelFile);
 
         if (!(levelJson.contains("player-one") && levelJson.contains("player-two")))
             return;
 
-        //first player
-        auto firstPlayerJson = levelJson["player-one"];
-        glm::vec3 firstPlayerPosition = {
-                firstPlayerJson["position"][0].get<float>(),
-                0.3f,
-                firstPlayerJson["position"][1].get<float>(),
-        };
-        float firstPlayerRotation = firstPlayerJson.contains("rotation") ?
-                                    firstPlayerJson["rotation"].get<float>() : 0.f;
-        std::string firstPlayerCarData = firstPlayerJson.contains("car-data") ?
-                                         firstPlayerJson["car-data"].get<std::string>() :
-                                         "res/config/cars/van.json";
+        auto playerJsons = {levelJson["player-one"], levelJson["player-two"]};
+        std::vector<std::weak_ptr<Entity>> players;
 
+        int i = 0;
 
-        PlayerData firstPlayerData = {0, mlg::RGBA::red,
-                                      firstPlayerPosition,
-                                      firstPlayerRotation,
-                                      firstPlayerCarData};
+        for (const auto& playerJson : playerJsons) {
+            glm::vec2 position = { playerJson["position"][0], playerJson["position"][1]};
 
+            float rotation = playerJson.value("rotation", 0.f);
+            std::string data = playerJson.value("car-data", "res/config/cars/van.json");
 
-        //second player
-        auto secondPlayerJson = levelJson["player-two"];
-        glm::vec3 secondPlayerPosition = {
-                secondPlayerJson["position"][0].get<float>(),
-                0.3f,
-                secondPlayerJson["position"][1].get<float>(),
-        };
-        float secondPlayerRotation = secondPlayerJson.contains("rotation") ?
-                                     secondPlayerJson["rotation"].get<float>() : 0.f;
-        std::string secondPlayerCarData = secondPlayerJson.contains("car-data") ?
-                                          secondPlayerJson["car-data"].get<std::string>() :
-                                          "res/config/cars/van.json";
+            int id = playerJson.value("id", i);
+            glm::vec4 color = {
+                    playerJson["color"][0],
+                    playerJson["color"][1],
+                    playerJson["color"][2],
+                    1.f};
 
+            PlayerData playerData = {id, color, data};
+            auto playerEntity = mlg::EntityManager::SpawnEntity<Player>(
+                    "Player", false, mlg::SceneGraph::GetRoot(), playerData);
+            
+            auto player = std::dynamic_pointer_cast<Player>(playerEntity.lock());
+            player->SetPlayerPosition(position);
+            player->SetPlayerRotation(rotation);
 
-        PlayerData secondPlayerData = {1, mlg::RGBA::cyan,
-                                       secondPlayerPosition,
-                                       secondPlayerRotation,
-                                       secondPlayerCarData};
+            players.push_back(playerEntity);
 
-        //spawn players
-        auto player = mlg::EntityManager::SpawnEntity<Player>("PlayerOne", false,
-                                                              mlg::SceneGraph::GetRoot(), firstPlayerData);
-        player.lock()->AddComponent<PlayerOneInput>("PlayerInput");
+            i++;
+        }
 
-        auto playerTwo = mlg::EntityManager::SpawnEntity<Player>("PlayerTwo", false,
-                                                                 mlg::SceneGraph::GetRoot(), secondPlayerData);
-        playerTwo.lock()->AddComponent<PlayerTwoInput>("PlayerInput");
+        players[0].lock()->AddComponent<PlayerOneInput>("PlayerInput");
+        players[1].lock()->AddComponent<PlayerTwoInput>("PlayerInput");
+    }
+
+    LevelGenerator::TrafficData LevelGenerator::LoadTrafficData(const std::string& path) {
+        std::ifstream levelFile{path};
+        json levelJson = json::parse(levelFile);
+
+        TrafficData trafficData;
+        trafficData.numberOfAgents = levelJson.value("number-of-agents", 0);
+
+        return trafficData;
     }
 
     std::vector<std::string> LevelGenerator::GetLevelLayout() {
@@ -293,8 +289,7 @@ namespace mlg {
         return mapObj;
     }
 
-    LevelGenerator::MapFactory LevelGenerator::ParseFactory(const nlohmann::json& jsonObject)
-    {
+    LevelGenerator::MapFactory LevelGenerator::ParseFactory(const nlohmann::json& jsonObject) {
         const char tileSymbol = jsonObject["symbol"].get<std::string>()[0];
 
         // Count factory occurrences.
@@ -355,8 +350,7 @@ namespace mlg {
     }
 
     void LevelGenerator::TryPutFactory(const char& character, const glm::vec2& pos) {
-        for (auto &fac : levelFactories)
-        {
+        for (auto& fac : levelFactories) {
             if (fac.factorySymbol == character && fac.remaining != 0) {
                 unsigned int spots = factoryCharacters[character];
                 float chance = static_cast<float>(fac.remaining) / static_cast<float>(spots);
@@ -366,8 +360,7 @@ namespace mlg {
                 if (Random::get<bool>(chance)) {
                     PutFactory(fac.configPath, {pos.x - 1, pos.y - 1}, 0.0f);
                     fac.remaining -= 1;
-                }
-                else if (fac.fallbackSymbol != ' ')
+                } else if (fac.fallbackSymbol != ' ')
                     PutTile(static_cast<int>(pos.x) - 1,
                             static_cast<int>(pos.y) - 1,
                             fac.fallbackSymbol);
@@ -495,9 +488,10 @@ namespace mlg {
         PutEntity(roadsObjects.corner, glm::ivec2{x, y}, glm::radians(angle));
     }
 
-    void LevelGenerator::PutEntity(const MapObject &mapObject, const glm::ivec2 &position, float rotation) const {
+    void LevelGenerator::PutEntity(const MapObject& mapObject, const glm::ivec2& position, float rotation) const {
         auto newEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>(
-                "MapObject", !mapObject.isDynamic, mlg::SceneGraph::GetRoot()).lock();
+                                 "MapObject", !mapObject.isDynamic, mlg::SceneGraph::GetRoot())
+                                 .lock();
 
         auto model = mlg::AssetManager::GetAsset<ModelAsset>(mapObject.modelPath);
         auto material = mlg::AssetManager::GetAsset<MaterialAsset>(mapObject.materialPath);
@@ -545,12 +539,10 @@ namespace mlg {
         }
     }
 
-    void LevelGenerator::PutFactory(const std::string &configPath, const glm::ivec2 &position,
+    void LevelGenerator::PutFactory(const std::string& configPath, const glm::ivec2& position,
                                     float rotation) const {
-        auto factory = mlg::EntityManager::SpawnEntity<Factory>
-                ("Factory", false, mlg::SceneGraph::GetRoot(), configPath);
-        auto factoryRigidBody = factory.lock()->
-                GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
+        auto factory = mlg::EntityManager::SpawnEntity<Factory>("Factory", false, mlg::SceneGraph::GetRoot(), configPath);
+        auto factoryRigidBody = factory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
 
         glm::vec2 factoryPosition = GetLevelPosition(position, true);
 
@@ -615,7 +607,7 @@ namespace mlg {
         return levelLayout[y][x];
     }
 
-    glm::vec3 LevelGenerator::GetLevelPosition(const glm::ivec2 &localPos, bool isRigid) const {
+    glm::vec3 LevelGenerator::GetLevelPosition(const glm::ivec2& localPos, bool isRigid) const {
         glm::vec3 levelPos = {0.f, 0.f, 0.f};
         glm::vec2 citySize = GetCitySize();
         levelPos.x = -static_cast<float>(localPos.x) * tileSize + 0.5f * citySize.x - 0.5f * tileSize + 0.5f;

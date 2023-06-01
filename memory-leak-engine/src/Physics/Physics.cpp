@@ -51,11 +51,11 @@ namespace mlg {
     void Physics::TickFixedTimeSteps() {
         float deltaTime = Time::GetDeltaSeconds();
 
-        instance->timeAccumulator += deltaTime;
-
         // skip very long frames
         if (deltaTime > 0.25f)
             return;
+
+        instance->timeAccumulator += deltaTime;
 
         while (instance->timeAccumulator >= Time::GetFixedTimeStep()) {
             ZoneScopedNC("Tick Physics", tracy::Color::ColorType::Green);

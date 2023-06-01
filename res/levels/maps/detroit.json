@@ -13,10 +13,10 @@
     "     s###############sbbbb  ",
     "     s##ssss#############b  ",
     "     s##pppp###sss#######b  ",
-    "     s##pp8p###bbs###sb##b  ",
+    "     s##pp2p###bbs###sb##b  ",
     "  sssc##pppp###Lsf###ob##bbbbb ",
     "ppp#########################ppp",
-    "ppp#########################ppp",
+    "p3p#########################p1p",
     "ppp#########################ppp",
     "  sss##spwps###bssss##ssssssss ",
     "    s##Lppps###bbbsb##b     ",
@@ -27,23 +27,24 @@
 
   "navigation": [
     "                            ",
-    "      xx#####x#####x#       ",
-    "      xx#####x#####x#       ",
-    "      ##    ###########xx   ",
-    "      ##    ###   #x###xx   ",
+    "      ###############       ",
+    "      #######x#####x#       ",
+    "      ##    #############   ",
+    "      ##    ###   #x###x#   ",
     "      ##    ###   ###  ##   ",
     "      ##    ###   ###  ##      ",
     "   #########################   ",
-    "   ##xxx#####x#####x###xx###   ",
+    "   ##xx######x#####x#x#x####   ",
     "   #########################   ",
     "     ##     ###     ##         ",
     "     ##     ###     ##      ",
-    "     xx######x######xx      ",
-    "     xx######x######xx      ",
+    "     xx######x#######x      ",
+    "     #################      ",
     "                            "
   ],
 
   "cross-character": "x",
+  "number-of-agents": 5,
 
   "camera-settings": {
     "position": [16.0, 50.0, -14.0],
@@ -55,12 +56,19 @@
   },
 
   "player-one": {
-    "position": [16.0, -4.0],
-    "rotation": 180.0,
-    "car-type": "res/config/cars/van.json"
+    "id": 0,
+    "car-type": "res/config/cars/van.json",
+    "color": [1.0, 0.0, 0.0],
+
+    "position": [-16.0, -5.0],
+    "rotation": 180.0
   },
 
   "player-two": {
-    "position": [-16.0, 4.0]
+    "id": 1,
+    "car-type": "res/config/cars/van.json",
+    "color": [0.0, 1.0, 1.0],
+
+    "position": [4.0, -5.0]
   }
 }

@@ -109,10 +109,9 @@ void Factory::AddEmitter(const json& emitterJson) {
     std::shared_ptr<mlg::ParticleSystem> emitter = FXLibrary::Get(id);
     auto emitterComponent = AddComponent<mlg::ParticleSystemComponent>(id, emitter);
     glm::vec3 emitterPosition = {
-        emitterJson["position"][0],
-        emitterJson["position"][1],
-        emitterJson["position"][2]
-    };
+            emitterJson["position"][0],
+            emitterJson["position"][1],
+            emitterJson["position"][2]};
     emitterPosition.x += meshOffset.x;
     emitterPosition.z += meshOffset.y;
     emitterComponent.lock()->GetTransform().SetPosition(emitterPosition);
@@ -137,7 +136,7 @@ void Factory::CheckBlueprintAndStartWorking() {
 
     if (!blueprint.CheckBlueprint(*equipmentComponent))
         return;
-    
+
     // Remove inputs from eq
     for (const auto& item : blueprint.GetInput()) {
         equipmentComponent->RequestProduct(item);
@@ -161,9 +160,14 @@ void Factory::Start() {
 
 void Factory::Update() {
 #ifdef DEBUG
+    auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
+
     ImGui::Begin("Factories");
-    ImGui::Text("%s, %s, timeToProduce: %f", GetName().c_str(), equipmentComponent->ToString().c_str(),
-                mlg::TimerManager::Get()->GetTimerRemainingTime(produceTimerHandle));
+    ImGui::Text("%s, %s, timeToProduce: %f, output: %i",
+                GetName().c_str(),
+                equipmentComponent->ToString().c_str(),
+                mlg::TimerManager::Get()->GetTimerRemainingTime(produceTimerHandle),
+                equipmentComponent->GetNumberOfProduct(blueprint.GetOutput()) );
     ImGui::End();
 #endif
 }
