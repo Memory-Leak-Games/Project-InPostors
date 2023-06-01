@@ -168,8 +168,6 @@ void NavigationGraph::AddConnectionWhenParametersMeet(
     }
 
     nodeOne->connectedNodes.insert(nodeTwo);
-
-    SPDLOG_DEBUG("{} -> {}", nodeOne->id, nodeTwo->id);
 }
 
 bool NavigationGraph::TraceConnection(glm::ivec2 start, glm::ivec2 end) {
@@ -209,8 +207,8 @@ NavigationGraph::Node* NavigationGraph::HasNodeWithSameDirection(Node& nodeOne, 
 
 glm::ivec2 NavigationGraph::CalculateLayoutDirection(const Node& nodeOne, const Node& nodeTwo) {
     glm::ivec2 direction = nodeTwo.layoutPosition - nodeOne.layoutPosition;
-    direction.x = std::abs(direction.x) > 0 ? 1 : 0;
-    direction.y = std::abs(direction.y) > 0 ? 1 : 0;
+    direction.x = mlg::Math::Sign(direction.x);
+    direction.y = mlg::Math::Sign(direction.y);
 
     return direction;
 }
