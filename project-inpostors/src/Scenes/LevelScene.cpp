@@ -1,6 +1,8 @@
 #include "Scenes/LevelScene.h"
 
+#include "Core/HID/Input.h"
 #include "Core/RGBA.h"
+#include "Core/Time.h"
 #include "Gameplay/Components/CameraComponent.h"
 #include "Gameplay/EntityManager.h"
 
@@ -65,6 +67,8 @@ void LevelScene::Load() {
 }
 
 void LevelScene::Update() {
+    HandlePauseGame();
+
 #ifdef DEBUG
     if (!mlg::SettingsManager::Get<bool>(
                 mlg::SettingsType::Debug, "showNavigation"))
@@ -75,6 +79,13 @@ void LevelScene::Update() {
 
     navigationGraph->DrawNodes();
 #endif
+}
+
+void LevelScene::HandlePauseGame() {
+    if (mlg::Input::IsActionJustPressed("pause")) {
+        bool isGamePaused = mlg::Time::IsGamePaused();
+        mlg::Time::PauseGame(!isGamePaused);
+    }
 }
 
 const std::shared_ptr<NavigationGraph>& LevelScene::GetNavigationGraph() const {

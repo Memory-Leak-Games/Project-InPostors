@@ -18,5 +18,7 @@ public:
     void Load() override;
     void Update() override;
 
+    void HandlePauseGame();
+
     [[nodiscard]] const std::shared_ptr<NavigationGraph>& GetNavigationGraph() const;
 };

@@ -214,5 +214,26 @@
         "code": 68
       }
     ]
+  },
+  {
+    "name": "pause",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 256
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": false,
+        "code": 7
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": false,
+        "code": 7
+      }
+    ]
   }
 ]
