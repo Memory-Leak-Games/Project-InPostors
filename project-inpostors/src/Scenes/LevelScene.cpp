@@ -19,6 +19,7 @@
 #include "ai/TrafficCar.h"
 
 #include "TaskManager.h"
+#include "ScoreManager.h"
 
 LevelScene::LevelScene(const std::string& path) : levelPath(path) {}
 
@@ -28,6 +29,17 @@ void LevelScene::Load() {
     LoadLevel();
 
     taskManager = std::make_unique<TaskManager>();
+    scoreManager = std::make_unique<ScoreManager>();
+    taskManager->OnTaskFinished.append([this](const TaskData& taskData) {
+        int reward = taskData.reward;
+
+        if (taskData.time > 0.0f) {
+            reward += taskData.bonus;
+        }
+
+        scoreManager->AddScore(reward);
+    });
+
     navigationGraph = std::make_shared<NavigationGraph>(levelPath);
 
     SpawnTraffic();
@@ -50,12 +62,15 @@ void LevelScene::Update() {
     // IMGUI: Task manager
     ImGui::Begin("Task manager");
     {
+        ImGui::Text("Score: %i", scoreManager->GetScore());
+        ImGui::Separator();
+
         auto activeTasks = taskManager->GetActiveTasks();
         for (const auto& task : activeTasks) {
             ImGui::Text("Task: %s", task.productId.c_str());
             ImGui::Text("Time left: %f", task.time);
-            ImGui::Text("Reward: %f", task.reward);
-            ImGui::Text("Bonus: %f", task.bonus);
+            ImGui::Text("Reward: %i", task.reward);
+            ImGui::Text("Bonus: %i", task.bonus);
             ImGui::Separator();
         }
     }
@@ -77,6 +92,10 @@ const std::shared_ptr<NavigationGraph>& LevelScene::GetNavigationGraph() const {
 
 TaskManager* LevelScene::GetTaskManager() {
     return taskManager.get();
+}
+
+ScoreManager* LevelScene::GetScoreManager() {
+    return scoreManager.get();
 }
 
 void LevelScene::SpawnTraffic() {
@@ -111,6 +130,7 @@ void LevelScene::LoadLevel() {
     mlg::LevelGenerator::SetCityBounds(levelPath);
     mlg::LevelGenerator::LoadCameraSettings(levelPath, *cameraComponent.lock());
     mlg::LevelGenerator::SpawnPlayers(levelPath);
+    levelName = mlg::LevelGenerator::LoadLevelName(levelPath);
 }
 
 void LevelScene::LoadSounds() {

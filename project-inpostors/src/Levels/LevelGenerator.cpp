@@ -186,6 +186,13 @@ namespace mlg {
         return trafficData;
     }
 
+    std::string LevelGenerator::LoadLevelName(const std::string& path) {
+        std::ifstream levelFile{path};
+        json levelJson = json::parse(levelFile);
+
+        return levelJson["name"];
+    }
+
     std::vector<std::string> LevelGenerator::GetLevelLayout() {
         return levelLayout;
     }
