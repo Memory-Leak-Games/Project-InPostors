@@ -25,7 +25,7 @@ private:
     std::shared_ptr<class mlg::AudioAsset> hitSound;
 
     bool canPlaySound = true;
-    unsigned int canPlaySoundTimerHandle = 0;
+    size_t canPlaySoundTimerHandle = 0;
 
     PlayerData playerData;
 

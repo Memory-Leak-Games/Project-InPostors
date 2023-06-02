@@ -20,7 +20,6 @@
   ],
 
   "blueprintID": "iron",
-  "equipmentSize": 3,
   "type": "OneInputOutput",
 
   "input": {

@@ -14,6 +14,11 @@
       "symbol": "3",
       "config": "res/levels/factories/ikea.json",
       "fallback": " "
+    },
+    {
+      "symbol": "4",
+      "config": "res/levels/factories/storage.json",
+      "fallback": " "
     }
   ]
 }

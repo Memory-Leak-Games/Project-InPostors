@@ -6,7 +6,7 @@ namespace mlg {
 
     class TimerManager {
         struct Timer {
-            uint32_t id;
+            size_t id;
             double startTimePoint;
 
             float timeToTrigger;
@@ -20,8 +20,8 @@ namespace mlg {
         static TimerManager* instance;
         TimerManager() = default;
 
-        uint32_t idCounter = 1;
-        std::unordered_map<uint32_t, Timer> timersMap;
+        size_t idCounter = 1;
+        std::unordered_map<size_t, Timer> timersMap;
 
     public:
         static void Initialize();
@@ -31,13 +31,13 @@ namespace mlg {
 
         static void Update();
 
-        uint32_t SetTimer(float time, bool repeat, const std::function<void()>& function);
-        void ClearTimer(uint32_t id);
+        size_t SetTimer(float time, bool repeat, const std::function<void()>& function);
+        void ClearTimer(size_t id);
 
-        bool IsTimerValid(uint32_t id);
-        float GetTimerRemainingTime(uint32_t id);
-        float GetTimerElapsedTime(uint32_t id);
-        float GetTimerRate(uint32_t id);
+        bool IsTimerValid(size_t id);
+        float GetTimerRemainingTime(size_t id);
+        float GetTimerElapsedTime(size_t id);
+        float GetTimerRate(size_t id);
 
     };
 

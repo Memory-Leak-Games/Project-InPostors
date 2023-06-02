@@ -235,5 +235,14 @@
         "code": 7
       }
     ]
+  },
+  {
+    "name": "accept_task",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 334
+      }
+    ]
   }
 ]

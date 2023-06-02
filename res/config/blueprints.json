@@ -3,7 +3,7 @@
         "name": "ore",
         "input": [ ],
         "output": "ore",
-        "time": 4.0
+        "time": 1.0
     },
     {
         "name": "iron",
