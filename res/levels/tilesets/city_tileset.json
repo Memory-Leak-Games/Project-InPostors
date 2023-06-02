@@ -144,20 +144,7 @@
     }
   ],
 
-  "factories": [
-    {
-      "symbol": "8",
-      "config": "res/levels/factories/smelter.json"
-    },
-    {
-      "symbol": "9",
-      "config": "res/levels/factories/mine.json"
-    },
-    {
-      "symbol": "&",
-      "config": "res/levels/factories/ikea.json"
-    }
-  ],
+  "factory-pool": "res/levels/factories/pools/furniture.json",
 
   "road": {
     "symbol": "#",

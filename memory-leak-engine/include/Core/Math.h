@@ -13,6 +13,10 @@ namespace mlg {
             return x != 0.f ? x / std::abs(x) : 0.f;
         }
 
+        static constexpr int Sign(int x) {
+            return x != 0 ? x / std::abs(x) : 0;
+        }
+
         template<typename T>
         static constexpr T SafeNormal(const T& x) {
             return glm::length(x) == 0.f ? T{0.f} : glm::normalize(x);
@@ -49,6 +53,7 @@ namespace mlg {
         static constexpr glm::vec3 ProjectTo3D(const glm::vec2& v) {
             return {v.x, 0.f, v.y};
         }
+
     };
 
 } // mlg
