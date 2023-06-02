@@ -2,20 +2,19 @@
 
 #include "Audio/Assets/AudioAsset.h"
 #include "Core/SceneManager/Scene.h"
-#include "Gameplay/TaskManager.h"
-#include "Levels/NavigationGraph.h"
 
 class LevelScene : public mlg::Scene {
 private:
     const std::string levelPath;
 
     std::shared_ptr<mlg::AudioAsset> cityAmbientSound;
-    std::shared_ptr<NavigationGraph> navigationGraph;
+    std::shared_ptr<class NavigationGraph> navigationGraph;
 
-    std::unique_ptr<TaskManager> taskManager;
+    std::unique_ptr<class TaskManager> taskManager;
 
 public:
     explicit LevelScene(const std::string& path);
+    ~LevelScene() override;
 
     void Load() override;
     void Update() override;
