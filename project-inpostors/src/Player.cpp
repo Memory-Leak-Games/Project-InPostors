@@ -156,9 +156,6 @@ void Player::PickUp() {
 
         equipment->AddProduct(factoryOutput);
         pickUpSound->Play(4.f);
-
-        // TODO: remove me
-        SPDLOG_WARN("{} : PickUp {} from {}", GetName(), factoryOutput, factory->GetName());
     }
 }
 
@@ -188,8 +185,7 @@ void Player::Drop() {
 
             equipment->RequestProduct(item);
             dropSound->Play(4.f);
-            // TODO: remove me
-            SPDLOG_WARN("{} : Drop {} to {}", GetName(), item, factory->GetName());
+
             return;
         }
     }

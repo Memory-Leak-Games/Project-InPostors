@@ -1,10 +1,6 @@
 #pragma once
 
 #include "Gameplay/Entity.h"
-#include <cstddef>
-#include <memory>
-#include <string>
-#include <vector>
 
 namespace mlg {
     class RigidbodyComponent;

@@ -1,10 +1,6 @@
 #include "Buildings/Factory.h"
 
 #include <fstream>
-#include <nlohmann/json.hpp>
-#include <spdlog/spdlog.h>
-#include <string>
-#include <vector>
 
 #include "Core/SceneManager/SceneManager.h"
 #include "Core/TimerManager.h"
@@ -172,7 +168,6 @@ void Factory::CheckBlueprintAndStartWorking() {
     // Remove inputs from eq
     for (const auto& item : blueprint.GetInput()) {
         equipmentComponent->RequestProduct(item);
-        SPDLOG_DEBUG("Requested {}", item);
     }
 
     auto productionLambda = [this, blueprint]() {
