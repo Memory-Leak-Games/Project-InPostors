@@ -207,65 +207,66 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
     auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/panel_material.json");
     auto blueprint = BlueprintManager::Get()->GetBlueprint(result->GetBlueprintId());
 
-    switch (result->factoryType) {
+    if(blueprint.GetOutput() != "") {
+        result->barRes = result->AddComponent<mlg::ProgressBar>("BarRes", material).lock();
+        result->barRes->SetSize({32.f, 32.f});
+        result->barRes->SetBillboardTarget(result);
 
-        case FactoryType::OneOutput: {
-            result->barRes = result->AddComponent<mlg::ProgressBar>("PanelRecipe", material).lock();
-            result->barRes->SetSize({32.f, 32.f});
-            result->barRes->SetPosition({0.f, 75.f - 16.f});
-            result->barRes->SetBillboardTarget(result);
+        material = ProductManager::GetInstance()->GetProduct(blueprint.GetOutput()).icon;
+        auto iconRes = result->AddComponent<mlg::Image>("IconRes", material).lock();
+        iconRes->SetSize({24.f, 24.f});
+        iconRes->SetBillboardTarget(result);
 
-            material = ProductManager::GetInstance()->GetProduct(blueprint.GetOutput()).icon;
-            auto uiWood = result->AddComponent<mlg::Image>("Wood", material).lock();
-            uiWood->SetSize({24.f, 24.f});
-            uiWood->SetPosition({0.f, 75.f - 16.f});
-            uiWood->SetBillboardTarget(result);
-            break;
-        }
-
-        case FactoryType::OneInputOutput: {
-            result->barReq1 = result->AddComponent<mlg::ProgressBar>("BarReq1", material).lock();
-            result->barReq1->SetSize({32.f, 32.f});
-            result->barReq1->SetPosition({-48.f, 75.f - 16.f});
-            result->barReq1->SetBillboardTarget(result);
-
-            result->barReq2 = result->AddComponent<mlg::ProgressBar>("BarReq2", material).lock();
-            result->barReq2->SetSize({32.f, 32.f});
-            result->barReq2->SetPosition({-16.f, 75.f - 16.f});
-            result->barReq2->SetBillboardTarget(result);
-
-            result->barRes = result->AddComponent<mlg::ProgressBar>("BarRes", material).lock();
-            result->barRes->SetSize({32.f, 32.f});
-            result->barRes->SetPosition({48.f, 75.f - 16.f});
-            result->barRes->SetBillboardTarget(result);
-
+        if(blueprint.GetInput().size() > 0) {
             material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/arrow_panel_material.json");
             result->barArrow = result->AddComponent<mlg::ProgressBar>("RecipeArrow", material).lock();
             result->barArrow->SetSize({32.f, 32.f});
             result->barArrow->SetPosition({16.f, 75.f - 16.f});
             result->barArrow->SetBillboardTarget(result);
 
+            material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/panel_material.json");
+            result->barReq1 = result->AddComponent<mlg::ProgressBar>("BarReq1", material).lock();
+            result->barReq1->SetSize({32.f, 32.f});
+            result->barReq1->SetPosition({-48.f, 75.f - 16.f});
+            result->barReq1->SetBillboardTarget(result);
+
             material = ProductManager::GetInstance()->GetProduct(blueprint.GetInput()[0]).icon;
-            auto icon = result->AddComponent<mlg::Image>("Recipe1", material).lock();
-            icon->SetSize({24.f, 24.f});
-            icon->SetPosition({-48.f, 75.f - 16.f});
-            icon->SetBillboardTarget(result);
+            auto iconReq1 = result->AddComponent<mlg::Image>("IconReq1", material).lock();
+            iconReq1->SetSize({24.f, 24.f});
+            iconReq1->SetPosition({-48.f, 75.f - 16.f});
+            iconReq1->SetBillboardTarget(result);
 
-            if(blueprint.GetInput().size() >= 2)
-            {
+            if(blueprint.GetInput().size() > 1) {
+                material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/panel_material.json");
+                result->barReq2 = result->AddComponent<mlg::ProgressBar>("BarReq2", material).lock();
+                result->barReq2->SetSize({32.f, 32.f});
+                result->barReq2->SetBillboardTarget(result);
+
                 material = ProductManager::GetInstance()->GetProduct(blueprint.GetInput()[1]).icon;
-                icon = result->AddComponent<mlg::Image>("Recipe2", material).lock();
-                icon->SetSize({24.f, 24.f});
-                icon->SetPosition({-16.f, 75.f - 16.f});
-                icon->SetBillboardTarget(result);
-            }
+                auto iconReq2 = result->AddComponent<mlg::Image>("IconReq2", material).lock();
+                iconReq2->SetSize({24.f, 24.f});
+                iconReq2->SetBillboardTarget(result);
 
-            material = ProductManager::GetInstance()->GetProduct(blueprint.GetOutput()).icon;
-            icon = result->AddComponent<mlg::Image>("Recipe3", material).lock();
-            icon->SetSize({24.f, 24.f});
-            icon->SetPosition({48.f, 75.f - 16.f});
-            icon->SetBillboardTarget(result);
-            break;
+                // Positioning for 2 inputs and 1 output
+                result->barRes->SetPosition({48.f, 75.f - 16.f});
+                iconRes->SetPosition({48.f, 75.f - 16.f});
+                result->barArrow->SetPosition({16.f, 75.f - 16.f});
+                result->barReq1->SetPosition({-48.f, 75.f - 16.f});
+                iconReq1->SetPosition({-48.f, 75.f - 16.f});
+                result->barReq2->SetPosition({-16.f, 75.f - 16.f});
+                iconReq2->SetPosition({-16.f, 75.f - 16.f});
+            } else {
+                // Positioning for 1 input and 1 output
+                result->barRes->SetPosition({32.f, 75.f - 16.f});
+                iconRes->SetPosition({32.f, 75.f - 16.f});
+                result->barArrow->SetPosition({0.f, 75.f - 16.f});
+                result->barReq1->SetPosition({-32.f, 75.f - 16.f});
+                iconReq1->SetPosition({-32.f, 75.f - 16.f});
+            }
+        } else {
+            // Positioning for only output
+            result->barRes->SetPosition({0.f, 75.f - 16.f});
+            iconRes->SetPosition({0.f, 75.f - 16.f});
         }
     }
 }
