@@ -2,6 +2,7 @@
 
 #include "Gameplay/Component.h"
 #include <string>
+#include <vector>
 
 class EquipmentComponent : public mlg::Component {
 private:
@@ -17,6 +18,7 @@ public:
     bool AddProduct(const std::string& productId);
     bool RequestProduct(const std::string& productId);
     std::string RequestProduct();
+    const std::vector<std::string>& GetProducts() const;
 
     bool Has(const std::string& productId) const;
     int GetNumberOfProduct(const std::string& productId) const;

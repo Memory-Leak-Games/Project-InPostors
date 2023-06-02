@@ -177,15 +177,11 @@ void Player::Drop() {
         if (!factory)
             continue;
 
-        const std::vector<std::string> factoryInputs =
-                BlueprintManager::Get()->GetBlueprint(factory->GetBlueprintId()).GetInput();
+        const std::vector<std::string> factoryInputs = factory->GetInputs();
 
         for (const auto& item : factoryInputs) {
             if (!equipment->Has(item))
                 continue;
-
-            // TODO: this may cause problems when factory needs multiple types of inputs,
-            //       but factory eq is full of garbage.
 
             if (!factory->GetEquipmentComponent()->AddProduct(item))
                 continue;

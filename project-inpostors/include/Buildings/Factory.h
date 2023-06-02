@@ -2,6 +2,8 @@
 
 #include "Gameplay/Entity.h"
 #include <memory>
+#include <string>
+#include <vector>
 
 namespace mlg {
     class RigidbodyComponent;
@@ -11,6 +13,7 @@ class Factory : public mlg::Entity {
 private:
     Factory(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent);
 
+    std::shared_ptr<mlg::RigidbodyComponent> mainRigidbody;
     std::shared_ptr<class EquipmentComponent> equipmentComponent;
 
     std::string blueprintId;
@@ -31,12 +34,15 @@ public:
 
     bool IsWorking() const;
 
+    const std::vector<std::string> GetInputs() const;
+
 private:
     enum class FactoryType {
         OneInput,
         OneOutput,
         OneInputOutput,
-        SeparateInputOutput
+        SeparateInputOutput,
+        Storage
     } factoryType;
 
     glm::vec2 meshOffset;
@@ -44,9 +50,13 @@ private:
     void AddMesh(const nlohmann::json& staticMeshJson);
     void AddCollider(const nlohmann::json& colliderJson, mlg::RigidbodyComponent* rigidbodyComponent);
     void AddEmitter(const nlohmann::json& emitterJson);
+    void AddTriggers(const nlohmann::json& config);
     void AddTrigger(const nlohmann::json& triggerJson, const std::string& triggerName,
                     mlg::RigidbodyComponent* rigidbodyComponent);
 
+
     void CheckBlueprintAndStartWorking();
     void ProduceItem();
+
+    void FinishTask();
 };
