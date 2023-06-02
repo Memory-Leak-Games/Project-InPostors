@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <nlohmann/json.hpp>
+#include <spdlog/spdlog.h>
 #include <string>
 #include <vector>
 
@@ -158,8 +159,7 @@ void Factory::AddTrigger(const json& triggerJson, const std::string& triggerName
 }
 
 void Factory::CheckBlueprintAndStartWorking() {
-    // If factory is producing do not add another timer
-    if (mlg::TimerManager::Get()->IsTimerValid(produceTimerHandle) || equipmentComponent->IsFull())
+    if (working || equipmentComponent->IsFull())
         return;
 
     const Blueprint& blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
@@ -167,13 +167,17 @@ void Factory::CheckBlueprintAndStartWorking() {
     if (!blueprint.CheckBlueprint(*equipmentComponent))
         return;
 
+    working = true;
+
     // Remove inputs from eq
     for (const auto& item : blueprint.GetInput()) {
         equipmentComponent->RequestProduct(item);
+        SPDLOG_DEBUG("Requested {}", item);
     }
 
     auto productionLambda = [this, blueprint]() {
         equipmentComponent->AddProduct(blueprint.GetOutput());
+        working = false;
         CheckBlueprintAndStartWorking();
     };
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Gameplay/Component.h"
+#include <cstddef>
 
 namespace mlg {
     class Entity;
@@ -9,7 +10,7 @@ namespace mlg {
 class AutoDestroyComponent : public mlg::Component {
 private:
     float timeToDestroy;
-    uint32_t timerHandle;
+    size_t timerHandle;
 
 public:
     explicit AutoDestroyComponent(

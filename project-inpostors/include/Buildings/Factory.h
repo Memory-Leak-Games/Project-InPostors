@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Gameplay/Entity.h"
+#include <cstddef>
 #include <memory>
 #include <string>
 #include <vector>
@@ -17,7 +18,8 @@ private:
     std::shared_ptr<class EquipmentComponent> equipmentComponent;
 
     std::string blueprintId;
-    unsigned int produceTimerHandle = 0;
+    size_t produceTimerHandle = 0;
+    bool working = false;
 
 public:
     ~Factory() override;
