@@ -5,8 +5,8 @@
 struct TaskData {
     std::string productId;
     float time;
-    float reward;
-    float bonus;
+    int reward;
+    int bonus;
 };
 
 class TaskManager {
@@ -15,8 +15,8 @@ private:
         size_t id;
         std::string productId;
         float timeLeft;
-        float reward;
-        float bonus;
+        int reward;
+        int bonus;
 
         bool active = false;
     };
