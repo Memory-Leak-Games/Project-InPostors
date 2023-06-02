@@ -34,6 +34,10 @@ std::string EquipmentComponent::RequestProduct() {
     return product;
 }
 
+const std::vector<std::string>& EquipmentComponent::GetProducts() const {
+    return equipment;
+}
+
 bool EquipmentComponent::Has(const std::string& product) const {
     return std::find(equipment.begin(), equipment.end(), product) != equipment.end();
 }

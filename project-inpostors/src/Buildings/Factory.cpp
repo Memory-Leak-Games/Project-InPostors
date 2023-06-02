@@ -1,14 +1,15 @@
 #include "Buildings/Factory.h"
 
 #include <fstream>
-#include <nlohmann/json.hpp>
 
+#include "Core/SceneManager/SceneManager.h"
 #include "Core/TimerManager.h"
 #include "Gameplay/Components/RigidbodyComponent.h"
 #include "Gameplay/Components/StaticMeshComponent.h"
 
 #include "Core/AssetManager/AssetManager.h"
 
+#include "TaskManager.h"
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
 
@@ -20,6 +21,7 @@
 
 #include "Physics/Colliders/Collider.h"
 
+#include "Scenes/LevelScene.h"
 #include "Utils/Blueprint.h"
 #include "Utils/BlueprintManager.h"
 
@@ -35,50 +37,49 @@ Factory::~Factory() = default;
 
 std::shared_ptr<Factory> Factory::Create(uint64_t id, const std::string& name, bool isStatic,
                                          mlg::Transform* parent, const std::string& configPath) {
-    auto result = std::shared_ptr<Factory>(new Factory(id, name, isStatic, parent));
+    auto result =
+            std::shared_ptr<Factory>(new Factory(id, name, isStatic, parent));
 
     std::ifstream configFile{configPath};
     json configJson = json::parse(configFile);
 
+    std::string factoryType = configJson["type"];
+    result->factoryType = magic_enum::enum_cast<FactoryType>(factoryType).value();
+
     result->AddMesh(configJson["static-mesh"]);
-    auto mainRigidbody = result->AddComponent<mlg::RigidbodyComponent>("MainRigidbody").lock();
+    result->mainRigidbody = result->AddComponent<mlg::RigidbodyComponent>("MainRigidbody").lock();
 
-    result->blueprintId = configJson["blueprintID"];
+    result->blueprintId = configJson.value("blueprintID", "None");
 
-    const int equipmentSize = configJson["equipmentSize"];
-    result->equipmentComponent = result->AddComponent<EquipmentComponent>("Equipment", equipmentSize).lock();
+    const int equipmentSize = configJson.value("equipmentSize", 256);
+    result->equipmentComponent =
+            result->AddComponent<EquipmentComponent>("Equipment", equipmentSize).lock();
 
 
     for (const auto& colliderJson : configJson["colliders"]) {
-        result->AddCollider(colliderJson, mainRigidbody.get());
+        result->AddCollider(colliderJson, result->mainRigidbody.get());
     }
 
     for (const auto& emitterJson : configJson["emitters"]) {
         result->AddEmitter(emitterJson);
     }
 
-    result->factoryType = magic_enum::enum_cast<FactoryType>(configJson["type"].get<std::string>()).value();
-    if (result->factoryType == FactoryType::OneInput || result->factoryType == FactoryType::SeparateInputOutput) {
-        result->AddTrigger(configJson["input"], "input", mainRigidbody.get());
-    }
-
-    if (result->factoryType == FactoryType::OneOutput || result->factoryType == FactoryType::SeparateInputOutput) {
-        result->AddTrigger(configJson["output"], "output", mainRigidbody.get());
-    }
-
-    if (result->factoryType == FactoryType::OneInputOutput) {
-        result->AddTrigger(configJson["input"], "inputOutput", mainRigidbody.get());
-    }
-
-    mainRigidbody->SetKinematic(true);
+    result->AddTriggers(configJson);
+    result->mainRigidbody->SetKinematic(true);
     return result;
 }
 
 void Factory::AddMesh(const json& staticMeshJson) {
-    auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>(staticMeshJson["model"].get<std::string>());
-    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(staticMeshJson["material"].get<std::string>());
+    auto model =
+            mlg::AssetManager::GetAsset<mlg::ModelAsset>(
+                    staticMeshJson["model"]);
+    auto material =
+            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
+                    staticMeshJson["material"].get<std::string>());
 
-    auto staticMeshComponent = AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
+    auto staticMeshComponent =
+            AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
+
     staticMeshComponent.lock()->GetTransform().SetPosition({
             staticMeshJson["position"][0],
             0.0,
@@ -117,6 +118,32 @@ void Factory::AddEmitter(const json& emitterJson) {
     emitterComponent.lock()->GetTransform().SetPosition(emitterPosition);
 }
 
+void Factory::AddTriggers(const nlohmann::json& configJson) {
+    if (factoryType == FactoryType::OneInput ||
+        factoryType == FactoryType::SeparateInputOutput ||
+        factoryType == FactoryType::Storage) {
+        AddTrigger(
+                configJson["input"],
+                "input",
+                mainRigidbody.get());
+    }
+
+    if (factoryType == FactoryType::OneOutput ||
+        factoryType == FactoryType::SeparateInputOutput) {
+        AddTrigger(
+                configJson["output"],
+                "output",
+                mainRigidbody.get());
+    }
+
+    if (factoryType == FactoryType::OneInputOutput) {
+        AddTrigger(
+                configJson["input"],
+                "inputOutput",
+                mainRigidbody.get());
+    }
+}
+
 void Factory::AddTrigger(const json& triggerJson, const std::string& triggerName,
                          mlg::RigidbodyComponent* rigidbodyComponent) {
 
@@ -128,14 +155,15 @@ void Factory::AddTrigger(const json& triggerJson, const std::string& triggerName
 }
 
 void Factory::CheckBlueprintAndStartWorking() {
-    // If factory is producing do not add another timer
-    if (mlg::TimerManager::Get()->IsTimerValid(produceTimerHandle) || equipmentComponent->IsFull())
+    if (working || equipmentComponent->IsFull())
         return;
 
     const Blueprint& blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
 
     if (!blueprint.CheckBlueprint(*equipmentComponent))
         return;
+
+    working = true;
 
     // Remove inputs from eq
     for (const auto& item : blueprint.GetInput()) {
@@ -144,13 +172,30 @@ void Factory::CheckBlueprintAndStartWorking() {
 
     auto productionLambda = [this, blueprint]() {
         equipmentComponent->AddProduct(blueprint.GetOutput());
+        working = false;
         CheckBlueprintAndStartWorking();
     };
 
     produceTimerHandle = mlg::TimerManager::Get()->SetTimer(blueprint.GetTimeToProcess(), false, productionLambda);
 }
 
+void Factory::FinishTask() {
+    for (auto& product : equipmentComponent->GetProducts()) {
+        mlg::Scene* currentScene = mlg::SceneManager::GetCurrentScene();
+        auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
+
+        levelScene->GetTaskManager()->FinishTask(product);
+    }
+}
+
 void Factory::Start() {
+    if (factoryType == FactoryType::Storage) {
+        equipmentComponent->equipmentChanged.append([this]() {
+            FinishTask();
+        });
+        return;
+    }
+
     CheckBlueprintAndStartWorking();
 
     equipmentComponent->equipmentChanged.append([this]() {
@@ -160,6 +205,14 @@ void Factory::Start() {
 
 void Factory::Update() {
 #ifdef DEBUG
+    if (factoryType == FactoryType::Storage) {
+        ImGui::Begin("Factories");
+        ImGui::Text("Storage: %s", GetName().c_str());
+        ImGui::End();
+
+        return;
+    }
+
     auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
 
     ImGui::Begin("Factories");
@@ -167,13 +220,32 @@ void Factory::Update() {
                 GetName().c_str(),
                 equipmentComponent->ToString().c_str(),
                 mlg::TimerManager::Get()->GetTimerRemainingTime(produceTimerHandle),
-                equipmentComponent->GetNumberOfProduct(blueprint.GetOutput()) );
+                equipmentComponent->GetNumberOfProduct(blueprint.GetOutput()));
     ImGui::End();
 #endif
 }
 
 bool Factory::IsWorking() const {
     return mlg::TimerManager::Get()->IsTimerValid(produceTimerHandle);
+}
+
+const std::vector<std::string> Factory::GetInputs() const {
+    std::vector<std::string> result;
+
+    if (factoryType != FactoryType::Storage) {
+        result = BlueprintManager::Get()->GetBlueprint(blueprintId).GetInput();
+        return result;
+    }
+
+    mlg::Scene* currentScene = mlg::SceneManager::GetCurrentScene();
+    auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
+
+    std::vector<TaskData> tasks = levelScene->GetTaskManager()->GetActiveTasks();
+    for (const auto& task : tasks) {
+        result.push_back(task.productId);
+    }
+
+    return result;
 }
 
 const std::shared_ptr<EquipmentComponent>& Factory::GetEquipmentComponent() const {

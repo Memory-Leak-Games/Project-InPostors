@@ -186,6 +186,13 @@ namespace mlg {
         return trafficData;
     }
 
+    std::string LevelGenerator::LoadLevelName(const std::string& path) {
+        std::ifstream levelFile{path};
+        json levelJson = json::parse(levelFile);
+
+        return levelJson["name"];
+    }
+
     std::vector<std::string> LevelGenerator::GetLevelLayout() {
         return levelLayout;
     }
@@ -241,10 +248,10 @@ namespace mlg {
         std::ifstream factoryPool{tileJson["factory-pool"].get<std::string>()};
         json poolJson = json::parse(factoryPool);
 
-        // Assuming we have 3 tiers of factories,
-        // we need to keep 3 symbols.
+        // Assuming we have 4 tiers of factories,
+        // we need to keep 4 symbols.
         // TODO: increase size if we happen to have move factories in pool
-        factoryCharacters.reserve(3);
+        factoryCharacters.reserve(4);
         for (const auto& jsonFactory : poolJson["pool"]) {
             SPDLOG_WARN("dupa");
             MapFactory factory = ParseFactory(jsonFactory);

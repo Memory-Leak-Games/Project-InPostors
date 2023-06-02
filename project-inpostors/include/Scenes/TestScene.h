@@ -8,4 +8,5 @@ public:
     explicit TestScene();
 
     void Load() override;
+    void Update() override;
 };

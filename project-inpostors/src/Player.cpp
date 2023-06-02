@@ -156,9 +156,6 @@ void Player::PickUp() {
 
         equipment->AddProduct(factoryOutput);
         pickUpSound->Play(4.f);
-
-        // TODO: remove me
-        SPDLOG_WARN("{} : PickUp {} from {}", GetName(), factoryOutput, factory->GetName());
     }
 }
 
@@ -177,23 +174,18 @@ void Player::Drop() {
         if (!factory)
             continue;
 
-        const std::vector<std::string> factoryInputs =
-                BlueprintManager::Get()->GetBlueprint(factory->GetBlueprintId()).GetInput();
+        const std::vector<std::string> factoryInputs = factory->GetInputs();
 
         for (const auto& item : factoryInputs) {
             if (!equipment->Has(item))
                 continue;
-
-            // TODO: this may cause problems when factory needs multiple types of inputs,
-            //       but factory eq is full of garbage.
 
             if (!factory->GetEquipmentComponent()->AddProduct(item))
                 continue;
 
             equipment->RequestProduct(item);
             dropSound->Play(4.f);
-            // TODO: remove me
-            SPDLOG_WARN("{} : Drop {} to {}", GetName(), item, factory->GetName());
+
             return;
         }
     }
