@@ -18,7 +18,11 @@
 #include "ai/SteeringBehaviors.h"
 #include "ai/TrafficCar.h"
 
+#include "TaskManager.h"
+
 LevelScene::LevelScene(const std::string& path) : levelPath(path) {}
+
+LevelScene::~LevelScene() = default;
 
 void LevelScene::Load() {
     LoadLevel();

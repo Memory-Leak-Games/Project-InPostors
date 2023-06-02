@@ -1,7 +1,7 @@
 #include "Scenes/TestScene.h"
 
 #include "Core/HID/Input.h"
-#include "Gameplay/TaskManager.h"
+#include "TaskManager.h"
 
 #include "ai/TrafficCar.h"
 #include "ai/AIComponent.h"
@@ -16,7 +16,7 @@ void TestScene::Load() {
     TaskManager* taskManager = GetTaskManager();
     TaskData ironTask {
         "iron",
-        5.0f,
+        20.0f,
         100.0f,
         10.0f,
     };
@@ -30,7 +30,7 @@ void TestScene::Load() {
 
     for (int i = 0; i < 5; ++i) {
         taskManager->AddTaskToPool(ironTask);
-        taskManager->AddTaskToPool(furnitureTask);
+        // taskManager->AddTaskToPool(furnitureTask);
     }
 }
 

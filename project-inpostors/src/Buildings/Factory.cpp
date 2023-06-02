@@ -9,7 +9,7 @@
 
 #include "Core/AssetManager/AssetManager.h"
 
-#include "Gameplay/TaskManager.h"
+#include "TaskManager.h"
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
 
