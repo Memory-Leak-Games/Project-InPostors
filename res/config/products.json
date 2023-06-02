@@ -1,22 +1,22 @@
 [
     {
         "name": "iron",
-        "icon": "None",
+        "icon": "res/materials/ui/icon/iron_material.json",
         "color": [ 0.647, 0.612, 0.58 ]
     },
     {
         "name": "ore",
-        "icon": "None",
+        "icon": "res/materials/ui/icon/ore_material.json",
         "color": [ 0.0, 0.698, 0.663 ]
     },
     {
         "name": "wood",
-        "icon": "None",
+        "icon": "res/materials/ui/icon/wood_material.json",
         "color": [ 0.643, 0.455, 0.286 ]
     },
     {
         "name": "furniture",
-        "icon": "None",
+        "icon": "res/materials/ui/icon/furniture_material.json",
         "color": [ 0.643, 0.455, 0.286 ]
     }
 ]

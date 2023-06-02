@@ -5,14 +5,14 @@
     {
       "type": "vec4",
       "name": "tint",
-      "value": [0.643, 0.455, 0.286, 1.0]
+      "value": [0.0, 0.698, 0.663, 1.0]
     }
   ],
   "textures": [
     {
       "name": "image",
       "index": 0,
-      "path": "res/textures/ui/wood_icon.png"
+      "path": "res/textures/ui/ore_icon.png"
     }
   ]
 }

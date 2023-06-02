@@ -29,6 +29,7 @@
 #include "UI/Components/Label.h"
 #include "UI/Components/ProgressBar.h"
 #include "Utils/EquipmentComponent.h"
+#include "Utils/ProductManager.h"
 
 
 using json = nlohmann::json;
@@ -118,9 +119,9 @@ void Factory::AddEmitter(const json& emitterJson) {
     std::shared_ptr<mlg::ParticleSystem> emitter = FXLibrary::Get(id);
     auto emitterComponent = AddComponent<mlg::ParticleSystemComponent>(id, emitter);
     glm::vec3 emitterPosition = {
-        emitterJson["position"][0],
-        emitterJson["position"][1],
-        emitterJson["position"][2]
+            emitterJson["position"][0],
+            emitterJson["position"][1],
+            emitterJson["position"][2]
     };
     emitterPosition.x += meshOffset.x;
     emitterPosition.z += meshOffset.y;
@@ -176,21 +177,18 @@ void Factory::Update() {
     ImGui::End();
 #endif
 
+    float produceElapsed = mlg::TimerManager::Get()->GetTimerElapsedTime(produceTimerHandle);
+    float timeToProcess = BlueprintManager::Get()->GetBlueprint(blueprintId).GetTimeToProcess();
+
     auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
     if (!blueprint.GetInput().empty() && barReq1)
-        barReq1->percentage = equipmentComponent->Has(blueprint.GetInput()[0]);
-    if (blueprint.GetInput().size() > 1  && barReq2)
-        barReq2->percentage = equipmentComponent->Has(blueprint.GetInput()[1]);
+        barReq1->percentage = equipmentComponent->Has(blueprint.GetInput()[0]) /*|| produceElapsed >= 0.0*/;
+    if (blueprint.GetInput().size() > 1 && barReq2)
+        barReq2->percentage = equipmentComponent->Has(blueprint.GetInput()[1]) /*|| produceElapsed >= 0.0*/;
     if (barArrow)
-        barArrow->percentage = mlg::TimerManager::Get()->GetTimerElapsedTime(produceTimerHandle) / 4;
+        barArrow->percentage = produceElapsed / timeToProcess;
     if (barRes)
         barRes->percentage = equipmentComponent->Has(blueprint.GetOutput());
-
-
-//    productionBar->percentage += mlg::Time::GetDeltaSeconds() * 0.5;
-//    if (productionBar->percentage > 1.f){
-//        productionBar->percentage = Random::get(-5.0f, 0.f);
-//    }
 }
 
 bool Factory::IsWorking() const {
@@ -206,136 +204,68 @@ std::string Factory::GetBlueprintId() const { return blueprintId; }
 void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
 
     auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/arialbd.ttf");
+    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/panel_material.json");
+    auto blueprint = BlueprintManager::Get()->GetBlueprint(result->GetBlueprintId());
 
-    if(result->factoryType == FactoryType::OneInput || result->factoryType == FactoryType::OneOutput) {
-        auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/panel_material.json");
-        auto uiPanel = result->AddComponent<mlg::Image>("PanelRecipe", material).lock();
-        uiPanel->SetSize({32.f, 32.f});
-        uiPanel->SetPosition({0.f, 75.f-16.f});
-        uiPanel->SetBillboardTarget(result);
+    switch (result->factoryType) {
 
-//        uiPanel = result->AddComponent<mlg::Image>("PanelRes", material).lock();
-//        uiPanel->SetSize({64.f, 20.f});
-//        uiPanel->SetPosition({0.f, 40.f});
-//        uiPanel->SetBillboardTarget(result);
+        case FactoryType::OneOutput: {
+            result->barRes = result->AddComponent<mlg::ProgressBar>("PanelRecipe", material).lock();
+            result->barRes->SetSize({32.f, 32.f});
+            result->barRes->SetPosition({0.f, 75.f - 16.f});
+            result->barRes->SetBillboardTarget(result);
 
-//        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/progress_bar_material.json");
-//        result->productionBar = result->AddComponent<mlg::ProgressBar>("Bar", material).lock();
-//        result->productionBar->SetSize({48.f, 5.f});
-//        result->productionBar->SetPosition({0.f, 59.f-16.f});
-//        result->productionBar->SetBillboardTarget(result);
+            material = ProductManager::GetInstance()->GetProduct(blueprint.GetOutput()).icon;
+            auto uiWood = result->AddComponent<mlg::Image>("Wood", material).lock();
+            uiWood->SetSize({24.f, 24.f});
+            uiWood->SetPosition({0.f, 75.f - 16.f});
+            uiWood->SetBillboardTarget(result);
+            break;
+        }
 
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/wood_material.json");
-        auto uiWood = result->AddComponent<mlg::Image>("Wood", material).lock();
-        uiWood->SetSize({24.f, 24.f});
-        uiWood->SetPosition({0.f, 75.f-16.f});
-        uiWood->SetBillboardTarget(result);
+        case FactoryType::OneInputOutput: {
+            result->barReq1 = result->AddComponent<mlg::ProgressBar>("BarReq1", material).lock();
+            result->barReq1->SetSize({32.f, 32.f});
+            result->barReq1->SetPosition({-48.f, 75.f - 16.f});
+            result->barReq1->SetBillboardTarget(result);
 
-//        auto uiEq = result->AddComponent<mlg::Image>("Eq", material).lock();
-//        uiEq->SetSize({16.f, 16.f});
-//        uiEq->SetPosition({0.f-12.f, 44.f-16.f});
-//        uiEq->SetBillboardTarget(result);
-//
-//        result->amount1 = result->AddComponent<mlg::Label>("Amount1", font).lock();
-//        result->amount1->SetSize(18);
-//        result->amount1->SetPosition({0.f, 40.f-16.f});
-//        result->amount1->SetText("x1");
-//        result->amount1->SetTextColor({1.0, 0.8, 0.0});
-//        result->amount1->SetBillboardTarget(result);
-    } else {
-//        auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/panel_material.json");
-//        auto uiPanel = result->AddComponent<mlg::Image>("PanelRecipe", material).lock();
-//        uiPanel->SetSize({128.f, 36.f});
-//        uiPanel->SetPosition({0.f, 75.f-16.f});
-//        uiPanel->SetBillboardTarget(result);
+            result->barReq2 = result->AddComponent<mlg::ProgressBar>("BarReq2", material).lock();
+            result->barReq2->SetSize({32.f, 32.f});
+            result->barReq2->SetPosition({-16.f, 75.f - 16.f});
+            result->barReq2->SetBillboardTarget(result);
 
-//        uiPanel = result->AddComponent<mlg::Image>("PanelRes", material).lock();
-//        uiPanel->SetSize({64.f, 20.f});
-//        uiPanel->SetPosition({-36.f, 40.f});
-//        uiPanel->SetBillboardTarget(result);
-//
-//        uiPanel = result->AddComponent<mlg::Image>("PanelProd", material).lock();
-//        uiPanel->SetSize({64.f, 20.f});
-//        uiPanel->SetPosition({36.f, 40.f});
-//        uiPanel->SetBillboardTarget(result);
+            result->barRes = result->AddComponent<mlg::ProgressBar>("BarRes", material).lock();
+            result->barRes->SetSize({32.f, 32.f});
+            result->barRes->SetPosition({48.f, 75.f - 16.f});
+            result->barRes->SetBillboardTarget(result);
 
-        auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/panel_material.json");
-        result->barReq1 = result->AddComponent<mlg::ProgressBar>("BarReq1", material).lock();
-        result->barReq1->SetSize({32.f, 32.f});
-        result->barReq1->SetPosition({-48.f, 75.f-16.f});
-        result->barReq1->SetBillboardTarget(result);
+            material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/arrow_panel_material.json");
+            result->barArrow = result->AddComponent<mlg::ProgressBar>("RecipeArrow", material).lock();
+            result->barArrow->SetSize({32.f, 32.f});
+            result->barArrow->SetPosition({16.f, 75.f - 16.f});
+            result->barArrow->SetBillboardTarget(result);
 
-        result->barReq2 = result->AddComponent<mlg::ProgressBar>("BarReq2", material).lock();
-        result->barReq2->SetSize({32.f, 32.f});
-        result->barReq2->SetPosition({-16.f, 75.f-16.f});
-        result->barReq2->SetBillboardTarget(result);
+            material = ProductManager::GetInstance()->GetProduct(blueprint.GetInput()[0]).icon;
+            auto icon = result->AddComponent<mlg::Image>("Recipe1", material).lock();
+            icon->SetSize({24.f, 24.f});
+            icon->SetPosition({-48.f, 75.f - 16.f});
+            icon->SetBillboardTarget(result);
 
-        result->barRes = result->AddComponent<mlg::ProgressBar>("BarRes", material).lock();
-        result->barRes->SetSize({32.f, 32.f});
-        result->barRes->SetPosition({48.f, 75.f-16.f});
-        result->barRes->SetBillboardTarget(result);
+            if(blueprint.GetInput().size() >= 2)
+            {
+                material = ProductManager::GetInstance()->GetProduct(blueprint.GetInput()[1]).icon;
+                icon = result->AddComponent<mlg::Image>("Recipe2", material).lock();
+                icon->SetSize({24.f, 24.f});
+                icon->SetPosition({-16.f, 75.f - 16.f});
+                icon->SetBillboardTarget(result);
+            }
 
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/arrow_panel_material.json");
-        result->barArrow = result->AddComponent<mlg::ProgressBar>("RecipeArrow", material).lock();
-        result->barArrow->SetSize({32.f, 32.f});
-        result->barArrow->SetPosition({16.f, 75.f-16.f});
-        result->barArrow->SetBillboardTarget(result);
-
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/wood_material.json");
-        auto uiWood = result->AddComponent<mlg::Image>("Recipe1", material).lock();
-        uiWood->SetSize({24.f, 24.f});
-        uiWood->SetPosition({-48.f, 75.f-16.f});
-        uiWood->SetBillboardTarget(result);
-
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/metal_material.json");
-        auto uiMetal = result->AddComponent<mlg::Image>("Recipe2", material).lock();
-        uiMetal->SetSize({24.f, 24.f});
-        uiMetal->SetPosition({-16.f, 75.f-16.f});
-        uiMetal->SetBillboardTarget(result);
-
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/furniture_material.json");
-        auto uiFurniture = result->AddComponent<mlg::Image>("Recipe3", material).lock();
-        uiFurniture->SetSize({24.f, 24.f});
-        uiFurniture->SetPosition({48.f, 75.f-16.f});
-        uiFurniture->SetBillboardTarget(result);
-//
-//        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/wood_material.json");
-//        auto uiEq = result->AddComponent<mlg::Image>("Eq", material).lock();
-//        uiEq->SetSize({16.f, 16.f});
-//        uiEq->SetPosition({-42.f-12.f, 44.f-16.f});
-//        uiEq->SetBillboardTarget(result);
-//
-//        result->amount1 = result->AddComponent<mlg::Label>("Amount1", font).lock();
-//        result->amount1->SetSize(18);
-//        result->amount1->SetPosition({-42.f, 40.f-16.f});
-//        result->amount1->SetText("x1");
-//        result->amount1->SetTextColor({1.0, 0.8, 0.0});
-//        result->amount1->SetBillboardTarget(result);
-//
-//        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/metal_material.json");
-//        uiEq = result->AddComponent<mlg::Image>("Eq", material).lock();
-//        uiEq->SetSize({16.f, 16.f});
-//        uiEq->SetPosition({0.f-12.f, 44.f-16.f});
-//        uiEq->SetBillboardTarget(result);
-//
-//        result->amount2 = result->AddComponent<mlg::Label>("Amount2", font).lock();
-//        result->amount2->SetSize(18);
-//        result->amount2->SetPosition({0.f, 40.f-16.f});
-//        result->amount2->SetText("x1");
-//        result->amount2->SetTextColor({0.8, 0.8, 1.0});
-//        result->amount2->SetBillboardTarget(result);
-//
-//        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/furniture_material.json");
-//        uiEq = result->AddComponent<mlg::Image>("Eq", material).lock();
-//        uiEq->SetSize({16.f, 16.f});
-//        uiEq->SetPosition({42.f-12.f, 44.f-16.f});
-//        uiEq->SetBillboardTarget(result);
-//
-//        result->amount3 = result->AddComponent<mlg::Label>("Amount3", font).lock();
-//        result->amount3->SetSize(18);
-//        result->amount3->SetPosition({42.f, 40.f-16.f});
-//        result->amount3->SetText("x1");
-//        result->amount3->SetTextColor({1.0, 0.5, 0.1});
-//        result->amount3->SetBillboardTarget(result);
+            material = ProductManager::GetInstance()->GetProduct(blueprint.GetOutput()).icon;
+            icon = result->AddComponent<mlg::Image>("Recipe3", material).lock();
+            icon->SetSize({24.f, 24.f});
+            icon->SetPosition({48.f, 75.f - 16.f});
+            icon->SetBillboardTarget(result);
+            break;
+        }
     }
 }

@@ -1,7 +1,7 @@
 [
     {
         "name": "ore",
-        "input": [ ],
+        "input": [],
         "output": "ore",
         "time": 4.0
     },

@@ -205,7 +205,7 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     ui->SetSize({14.f, 14.f});
     ui->SetPosition({7.f, 53.f});
 
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/metal_material.json");
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/iron_material.json");
     ui = newPlayer->AddComponent<mlg::Image>("MetalEq", material).lock();
     ui->SetBillboardTarget(newPlayer);
     ui->SetSize({14.f, 14.f});
@@ -261,7 +261,7 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
         ui->SetAnchor({1, 0});
     }
 
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/metal_material.json");
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/iron_material.json");
     ui = newPlayer->AddComponent<mlg::Image>("MetalEq", material).lock();
     ui->SetSize({32.f, 32.f});
     if(newPlayer->playerData.id == 0)

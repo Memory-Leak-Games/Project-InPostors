@@ -1,3 +1,4 @@
+#include "Rendering/Assets/MaterialAsset.h"
 #include <Utils/Blueprint.h>
 #include <Utils/EquipmentComponent.h>
 #include <math.h>
@@ -34,4 +35,3 @@ bool Blueprint::CheckBlueprint(const EquipmentComponent& component) const {
 
     return true;
 }
-
