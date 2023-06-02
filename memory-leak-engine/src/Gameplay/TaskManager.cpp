@@ -1,7 +1,17 @@
 #include "Gameplay/TaskManager.h"
-#include <vector>
 
 using Random = effolkronium::random_static;
+
+void TaskManager::Update() {
+    float deltaTime = mlg::Time::GetDeltaSeconds();
+
+    for (auto& [id, task] : tasks) {
+        if (!task.active)
+            continue;
+
+        task.timeLeft -= deltaTime;
+    }
+}
 
 void TaskManager::AddTaskToPool(const TaskData& newTaskData) {
     Task newTask{};
@@ -56,7 +66,7 @@ std::vector<TaskData> TaskManager::GetActiveTasks() {
         if (task.active) {
             activeTasks.push_back(TaskData{
                     task.productId,
-                    task.timeLeft,
+                    task.timeLeft > 0 ? task.timeLeft : 0,
                     task.reward,
                     task.bonus});
         }
