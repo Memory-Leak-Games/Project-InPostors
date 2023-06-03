@@ -64,9 +64,10 @@ namespace mlg {
 
         nlohmann::json levelJson;
         nlohmann::json tileJson;
+        nlohmann::json poolJson;
 
         std::vector<std::string> levelLayout;
-        std::vector<MapFactory> levelFactories; //TODO: use map over vector
+        std::vector<MapFactory> levelFactories;
 
         std::string ignoredCharacters;
         std::unordered_map<char, unsigned int> factoryCharacters;

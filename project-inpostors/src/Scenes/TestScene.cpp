@@ -44,7 +44,6 @@ void TestScene::Load() {
     ScoreManager::SaveScore("TestLevel", "Beans", 100);
     ScoreManager::SaveScore("MLGLevel", "_MLG_", 2137);
 
-
 }
 
 void TestScene::Update() {

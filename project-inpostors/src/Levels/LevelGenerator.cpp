@@ -28,6 +28,7 @@
 
 #include "Buildings/AutoDestroyComponent.h"
 #include "Buildings/Factory.h"
+#include "TaskManager.h"
 
 
 using json = nlohmann::json;
@@ -246,16 +247,15 @@ namespace mlg {
             return;
 
         std::ifstream factoryPool{tileJson["factory-pool"].get<std::string>()};
-        json poolJson = json::parse(factoryPool);
+        poolJson = json::parse(factoryPool);
 
         // Assuming we have 4 tiers of factories,
         // we need to keep 4 symbols.
         // TODO: increase size if we happen to have move factories in pool
         factoryCharacters.reserve(4);
-        for (const auto& jsonFactory : poolJson["pool"]) {
-            SPDLOG_WARN("dupa");
+        for (const auto& jsonFactory : poolJson["factories"]) {
             MapFactory factory = ParseFactory(jsonFactory);
-            factory.remaining = 1;
+            factory.remaining += 1;
             levelFactories.push_back(factory);
         }
     }
@@ -362,7 +362,10 @@ namespace mlg {
                 unsigned int spots = factoryCharacters[character];
                 float chance = static_cast<float>(fac.remaining) / static_cast<float>(spots);
                 if (chance > 1.f)
+                {
                     SPDLOG_WARN("More factories in pool than allowed to spawn.");
+                    chance = 1.f;
+                }
 
                 if (Random::get<bool>(chance)) {
                     PutFactory(fac.configPath, {pos.x - 1, pos.y - 1}, 0.0f);

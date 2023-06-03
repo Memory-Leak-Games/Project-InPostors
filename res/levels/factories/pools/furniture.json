@@ -1,5 +1,5 @@
 {
-  "pool": [
+  "factories": [
     {
       "symbol": "1",
       "config": "res/levels/factories/mine.json",
@@ -19,6 +19,22 @@
       "symbol": "4",
       "config": "res/levels/factories/storage.json",
       "fallback": " "
+    }
+  ],
+  "tasks": [
+    {
+      "product-id":"iron",
+      "time": 10,
+      "quantity": 3,
+      "reward": 100,
+      "bonus": 50
+    },
+    {
+      "product-id":"furniture",
+      "time": 5,
+      "quantity": 2,
+      "reward": 100,
+      "bonus": 50
     }
   ]
 }
