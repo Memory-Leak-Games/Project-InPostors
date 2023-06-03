@@ -148,9 +148,15 @@ glm::vec2 SteeringBehaviors::Separation(const std::vector<std::weak_ptr<TrafficC
         if (agent != aiComponent->GetOwner()) {
             glm::vec2 toAgent = aiComponent->GetPosition() - agent.lock()->GetComponentByClass<AIComponent>().lock()->GetPosition();
 
+            if (glm::length(toAgent) > aiComponent->GetViewDistance())
+                continue;
+
+            SPDLOG_INFO("Separate");
             glm::vec2 normToAgent = glm::normalize(toAgent);
-            //            normToAgent.x /= toAgent.length();
-            //            normToAgent.y /= toAgent.length();
+            normToAgent.x /= glm::length(toAgent);
+            normToAgent.y /= glm::length(toAgent);
+//            normToAgent.x *= 5;
+//            normToAgent.y *= 5;
             steerForce += normToAgent;
         }
     }

@@ -89,6 +89,7 @@ void AIComponent::LoadParameters(const std::string& path = "res/config/cars/traf
     maxForce = acceleration * mass;
 
     maxSpeed = parameters["maxSpeed"];
+    viewDistance = parameters["viewDistance"];
 }
 
 float AIComponent::GetMaxForce() const {
@@ -97,6 +98,10 @@ float AIComponent::GetMaxForce() const {
 
 float AIComponent::GetMaxSpeed() const {
     return maxSpeed;
+}
+
+float AIComponent::GetViewDistance() const {
+    return viewDistance;
 }
 
 glm::vec2 AIComponent::GetPosition() const {
