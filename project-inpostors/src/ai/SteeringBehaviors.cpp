@@ -78,6 +78,12 @@ glm::vec2 SteeringBehaviors::CalculatePrioritized() {
     glm::vec2 force;
     std::vector<std::weak_ptr<TrafficCar>> cars = mlg::EntityManager::FindAllByType<TrafficCar>();
 
+    // remove this car from cars vector
+    cars.erase(std::remove_if(cars.begin(), cars.end(), [this](const std::weak_ptr<TrafficCar>& car) {
+        return car.lock()->GetId() == aiComponent->GetOwner().lock()->GetId();
+    }), cars.end());
+
+
     if (BehaviorTypeOn(separation)) {
         force = Separation(cars) * separationWeight;
 
@@ -142,7 +148,7 @@ glm::vec2 SteeringBehaviors::Arrive(glm::vec2 targetPos, Deceleration dec) {
 }
 
 glm::vec2 SteeringBehaviors::Separation(const std::vector<std::weak_ptr<TrafficCar>>& agents) {
-    glm::vec2 steerForce;
+    glm::vec2 steerForce {};
 
     for (const auto& agent : agents) {
         if (agent != aiComponent->GetOwner()) {
@@ -159,7 +165,10 @@ glm::vec2 SteeringBehaviors::Separation(const std::vector<std::weak_ptr<TrafficC
 }
 
 glm::vec2 SteeringBehaviors::Alignment(const std::vector<std::weak_ptr<TrafficCar>>& agents) {
-    glm::vec2 avgHeading;
+    if (agents.empty())
+        return {0, 0};
+
+    glm::vec2 avgHeading {};
 
     for (const auto& agent : agents) {
         if (agent != aiComponent->GetOwner()) {
