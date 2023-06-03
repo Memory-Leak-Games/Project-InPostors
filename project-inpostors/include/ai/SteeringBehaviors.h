@@ -39,7 +39,7 @@ private:
     uint64_t flags;
 
     AIComponent* aiComponent;
-    Path* path;
+    std::unique_ptr<Path> path;
     std::shared_ptr<NavigationGraph> navigationGraph;
 
     enum Deceleration {
