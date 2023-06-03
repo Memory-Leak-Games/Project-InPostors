@@ -135,7 +135,7 @@ glm::vec2 SteeringBehaviors::Arrive(glm::vec2 targetPos, Deceleration dec) {
     float distance = toTarget.length();
 
     if (distance > 0) {
-        const float decelerationTweaker = 0.3;
+        const float decelerationTweaker = 0.2;
 
         float speed = distance / ((float) dec * decelerationTweaker);
         speed = fmin(speed, aiComponent->GetMaxSpeed());
@@ -157,10 +157,13 @@ glm::vec2 SteeringBehaviors::Separation(const std::vector<std::weak_ptr<TrafficC
             continue;
 
         glm::vec2 normToAgent = glm::normalize(toAgent);
-        normToAgent.x /= glm::length(toAgent);
-        normToAgent.y /= glm::length(toAgent);
-//            normToAgent.x *= 5;
-//            normToAgent.y *= 5;
+        // This is better for long distances
+//        normToAgent.x /= glm::length(toAgent);
+//        normToAgent.y /= glm::length(toAgent);
+
+        // This is better for corners and turns
+        normToAgent.x *= 2;
+        normToAgent.y *= 2;
         steerForce += normToAgent;
     }
 
