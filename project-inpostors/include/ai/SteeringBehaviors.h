@@ -5,7 +5,7 @@ class TrafficCar;
 class Path;
 class NavigationGraph;
 
-const float waypointSeekDistance = 100;
+const float waypointSeekDistance = 400;
 
 class SteeringBehaviors {
 public:
@@ -60,12 +60,14 @@ private:
     float seekWeight;
     float arriveWeight;
     float followPathWeight;
+    float evadeWeight;
 
     bool BehaviorTypeOn(BehaviorType bt) const;
     bool AccumulateForce(glm::vec2& sf, glm::vec2 forceToAdd);
 
     // Behavior declarations
     glm::vec2 Seek(glm::vec2 targetPos);
+    glm::vec2 Evade();
     glm::vec2 Arrive(glm::vec2 targetPos, Deceleration deceleration);
     glm::vec2 FollowPath();
 
@@ -103,6 +105,7 @@ public:
     // Flag checks
     void SeekOn();
     void ArriveOn();
+    void EvadeOn();
     void SeparationOn();
     void AlignmentOn();
     void FollowPathOn();
@@ -110,6 +113,7 @@ public:
 
     void SeekOff();
     void ArriveOff();
+    void EvadeOff();
     void SeparationOff();
     void AlignmentOff();
     void FollowPathOff();
@@ -117,6 +121,7 @@ public:
 
     bool IsSeekOn();
     bool IsArriveOn();
+    bool IsEvadeOn();
     bool IsSeparationOn();
     bool IsAlignmentOn();
     bool IsFollowPathOn();

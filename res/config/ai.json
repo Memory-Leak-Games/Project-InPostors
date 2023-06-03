@@ -5,6 +5,7 @@
     "alignmentWeight": 1.0,
     "seekWeight": 0.0,
     "arriveWeight": 0.0,
+    "evadeWeight": 1.0,
     "followPathWeight": 0.75
   }
 }
