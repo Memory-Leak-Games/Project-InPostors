@@ -151,20 +151,17 @@ glm::vec2 SteeringBehaviors::Separation(const std::vector<std::weak_ptr<TrafficC
     glm::vec2 steerForce {};
 
     for (const auto& agent : agents) {
-        if (agent != aiComponent->GetOwner()) {
-            glm::vec2 toAgent = aiComponent->GetPosition() - agent.lock()->GetComponentByClass<AIComponent>().lock()->GetPosition();
+        glm::vec2 toAgent = aiComponent->GetPosition() - agent.lock()->GetComponentByClass<AIComponent>().lock()->GetPosition();
 
-            if (glm::length(toAgent) > aiComponent->GetViewDistance())
-                continue;
+        if (glm::length(toAgent) > aiComponent->GetViewDistance())
+            continue;
 
-            SPDLOG_INFO("Separate");
-            glm::vec2 normToAgent = glm::normalize(toAgent);
-            normToAgent.x /= glm::length(toAgent);
-            normToAgent.y /= glm::length(toAgent);
+        glm::vec2 normToAgent = glm::normalize(toAgent);
+        normToAgent.x /= glm::length(toAgent);
+        normToAgent.y /= glm::length(toAgent);
 //            normToAgent.x *= 5;
 //            normToAgent.y *= 5;
-            steerForce += normToAgent;
-        }
+        steerForce += normToAgent;
     }
 
     return steerForce;
@@ -177,13 +174,15 @@ glm::vec2 SteeringBehaviors::Alignment(const std::vector<std::weak_ptr<TrafficCa
     glm::vec2 avgHeading {};
 
     for (const auto& agent : agents) {
-        if (agent != aiComponent->GetOwner()) {
-            glm::vec2 heading2D;
-            heading2D.x = agent.lock()->GetTransform().GetForwardVector().x;
-            heading2D.y = agent.lock()->GetTransform().GetForwardVector().z;
+        glm::vec2 toAgent = aiComponent->GetPosition() - agent.lock()->GetComponentByClass<AIComponent>().lock()->GetPosition();
+        if (glm::length(toAgent) > aiComponent->GetViewDistance())
+            continue;
 
-            avgHeading += heading2D;
-        }
+        glm::vec2 heading2D;
+        heading2D.x = agent.lock()->GetTransform().GetForwardVector().x;
+        heading2D.y = agent.lock()->GetTransform().GetForwardVector().z;
+
+        avgHeading += heading2D;
     }
 
     avgHeading /= (float) agents.size();
