@@ -22,7 +22,7 @@ SteeringBehaviors::SteeringBehaviors(AIComponent* agent, const std::string& conf
     : aiComponent(agent), flags(0), deceleration(fast), summingMethod(prioritized) {
     LoadParameters(configPath);
 
-    path = new Path();
+    path = std::make_unique<Path>();
 }
 
 SteeringBehaviors::~SteeringBehaviors() = default;
