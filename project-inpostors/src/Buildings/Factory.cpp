@@ -23,7 +23,6 @@
 #include "Utils/Blueprint.h"
 #include "Utils/BlueprintManager.h"
 
-#include "Core/Time.h"
 #include "UI/Assets/FontAsset.h"
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
@@ -207,6 +206,7 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
     auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/panel_material.json");
     auto blueprint = BlueprintManager::Get()->GetBlueprint(result->GetBlueprintId());
 
+    // Lack of containers gave birth to this monstrosity
     if(blueprint.GetOutput() != "") {
         result->barRes = result->AddComponent<mlg::ProgressBar>("BarRes", material).lock();
         result->barRes->SetSize({32.f, 32.f});
