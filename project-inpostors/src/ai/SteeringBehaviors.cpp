@@ -29,7 +29,7 @@ SteeringBehaviors::SteeringBehaviors(AIComponent* agent, const std::string& conf
     //    }
 
     //    path = new Path(waypoints, true);
-    path = new Path();
+    path = std::make_unique<Path>();
 }
 
 SteeringBehaviors::~SteeringBehaviors() = default;
