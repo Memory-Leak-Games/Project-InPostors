@@ -52,6 +52,10 @@ bool EquipmentComponent::IsFull() const {
     return equipment.size() >= size;
 }
 
+const std::vector<std::string> EquipmentComponent::GetEquipment() const {
+    return equipment;
+}
+
 EquipmentComponent::EquipmentComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name, int size)
     : Component(owner, name), size(size) {}
 

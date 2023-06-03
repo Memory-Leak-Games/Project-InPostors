@@ -23,6 +23,10 @@ namespace mlg {
         bool isBillboard = false;
         std::weak_ptr<class Entity> billboardTarget;
 
+        bool visible = true;
+
+
+    protected:
         void CalculateActualPosition(const struct UIRenderer* renderer);
         void FollowTarget(const struct UIRenderer* renderer);
 
@@ -38,10 +42,12 @@ namespace mlg {
         [[nodiscard]] const glm::vec2& GetAnchor() const;
         [[nodiscard]] bool IsBillboard1() const;
         [[nodiscard]] const std::weak_ptr<struct Entity>& GetBillboardTarget() const;
+        [[nodiscard]] bool IsVisible() const;
 
         void SetPosition(const glm::vec2& position);
         void SetAnchor(const glm::vec2& anchor);
         void SetIsBillboard(bool isBillboard);
         void SetBillboardTarget(const std::weak_ptr<struct Entity>& billboardTarget);
+        void SetVisible(bool visible);
     };
 }

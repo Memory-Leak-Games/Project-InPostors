@@ -20,6 +20,7 @@ public:
 
     bool Has(const std::string& productId) const;
     bool IsFull() const;
+    const std::vector<std::string> GetEquipment() const;
 
     std::string ToString() const;
 };

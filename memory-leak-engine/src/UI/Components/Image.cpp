@@ -17,6 +17,8 @@ namespace mlg {
 
     void Image::Draw(const UIRenderer* renderer) {
         ZoneScopedN("Draw Image");
+        if(!visible)
+            return;
         UIComponent::Draw(renderer);
 
         glEnable(GL_BLEND);

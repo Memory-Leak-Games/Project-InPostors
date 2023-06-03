@@ -23,6 +23,8 @@ namespace mlg {
 
     void Label::Draw(const UIRenderer* renderer) {
         ZoneScopedN("Draw Label");
+        if(!visible)
+            return;
         UIComponent::Draw(renderer);
 
         glEnable(GL_BLEND);

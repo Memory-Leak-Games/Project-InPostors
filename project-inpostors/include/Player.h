@@ -24,6 +24,8 @@ private:
     std::shared_ptr<class EquipmentComponent> equipment;
 
     std::weak_ptr<class mlg::Image> uiArrow;
+    std::shared_ptr<class mlg::Image> eqBillboards[3];
+    std::shared_ptr<class mlg::Image> eqIcons[3];
 
     std::shared_ptr<class mlg::AudioAsset> pickUpSound;
     std::shared_ptr<class mlg::AudioAsset> dropSound;

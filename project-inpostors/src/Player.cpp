@@ -189,6 +189,7 @@ void Player::Drop() {
 }
 
 void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
+
     auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/arialbd.ttf");
 
     auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/player/arrow_material.json");
@@ -200,16 +201,23 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     ui->tint = newPlayer->playerData.color;
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/wood_material.json");
-    ui = newPlayer->AddComponent<mlg::Image>("WoodEq", material).lock();
-    ui->SetBillboardTarget(newPlayer);
-    ui->SetSize({14.f, 14.f});
-    ui->SetPosition({7.f, 53.f});
+    for(int i = 0; i < 3; ++i) {
+        newPlayer->eqBillboards[i] = newPlayer->AddComponent<mlg::Image>("eqBillboard", material).lock();
+        newPlayer->eqBillboards[i]->SetBillboardTarget(newPlayer);
+        newPlayer->eqBillboards[i]->SetSize({14.f, 14.f});
+        newPlayer->eqBillboards[i]->SetVisible(false);
+    }
 
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/iron_material.json");
-    ui = newPlayer->AddComponent<mlg::Image>("MetalEq", material).lock();
-    ui->SetBillboardTarget(newPlayer);
-    ui->SetSize({14.f, 14.f});
-    ui->SetPosition({-7.f, 53.f});
+//    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/wood_material.json");
+//    ui = newPlayer->AddComponent<mlg::Image>("WoodEq", material).lock();
+//    ui->SetSize({14.f, 14.f});
+//    ui->SetPosition({7.f, 53.f});
+//
+//    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/iron_material.json");
+//    ui = newPlayer->AddComponent<mlg::Image>("MetalEq", material).lock();
+//    ui->SetBillboardTarget(newPlayer);
+//    ui->SetSize({14.f, 14.f});
+//    ui->SetPosition({-7.f, 53.f});
 
     auto label = newPlayer->AddComponent<mlg::Label>("PlayerTag", font).lock();
     label->SetSize(12);
@@ -251,24 +259,50 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     }
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/wood_material.json");
-    ui = newPlayer->AddComponent<mlg::Image>("WoodEq", material).lock();
-    ui->SetSize({32.f, 32.f});
-    if(newPlayer->playerData.id == 0)
-    {
-        ui->SetPosition({72.f + 16, 17.f + 16});
-    } else {
-        ui->SetPosition({1280 - 72.f - 16, 17.f + 16});
-        ui->SetAnchor({1, 0});
+
+    for(int i = 0; i < 3; ++i) {
+        newPlayer->eqIcons[i] = newPlayer->AddComponent<mlg::Image>("eqIcon", material).lock();
+        newPlayer->eqIcons[i]->SetSize({32.f, 32.f});
+        newPlayer->eqIcons[i]->SetVisible(false);
     }
 
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/iron_material.json");
-    ui = newPlayer->AddComponent<mlg::Image>("MetalEq", material).lock();
-    ui->SetSize({32.f, 32.f});
-    if(newPlayer->playerData.id == 0)
-    {
-        ui->SetPosition({72.f+36.f + 16, 17.f + 16});
+    if(newPlayer->playerData.id == 0) {
+        newPlayer->eqIcons[0]->SetPosition({72.f + 16, 17.f + 16});
+        newPlayer->eqIcons[1]->SetPosition({72.f+36.f + 16, 17.f + 16});
+        newPlayer->eqIcons[2]->SetPosition({72.f+72.f + 16, 17.f + 16});
     } else {
-        ui->SetPosition({1280 - 72.f - 36.f - 16, 17.f + 16});
-        ui->SetAnchor({1, 0});
+        newPlayer->eqIcons[0]->SetPosition({1280 - 72.f - 16, 17.f + 16});
+        newPlayer->eqIcons[1]->SetPosition({1280 - 72.f - 36.f - 16, 17.f + 16});
+        newPlayer->eqIcons[2]->SetPosition({1280 - 72.f - 72.f - 16, 17.f + 16});
+        for(int i = 0; i < 3; ++i)
+            newPlayer->eqIcons[i]->SetAnchor({1, 0});
     }
+
+    // Update equipment ui callback
+    newPlayer->equipment->equipmentChanged.append([newPlayer]() {
+        auto productManager = ProductManager::GetInstance();
+        auto items = newPlayer->equipment->GetEquipment();
+
+        for(int i = 0; i < 3; ++i) {
+            if (!newPlayer->eqIcons[i] || !newPlayer->eqBillboards[i])
+                return;
+
+            if(items.size() > i) {
+                newPlayer->eqIcons[i]->material = productManager->GetProduct(items[i]).icon;
+                newPlayer->eqBillboards[i]->material = productManager->GetProduct(items[i]).icon;
+                newPlayer->eqIcons[i]->SetVisible(true);
+                newPlayer->eqBillboards[i]->SetVisible(true);
+            } else {
+                newPlayer->eqIcons[i]->SetVisible(false);
+                newPlayer->eqBillboards[i]->SetVisible(false);
+            }
+        }
+
+        SPDLOG_DEBUG(std::to_string(items.size() - 1.5f));
+        glm::vec2 billboardPos = {-7.f * (items.size() - 1.f), 53.f};
+        for(int i = 0; i < items.size(); ++i) {
+            newPlayer->eqBillboards[i]->SetPosition(billboardPos);
+            billboardPos.x += 14.f;
+        }
+    });
 }
