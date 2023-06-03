@@ -1,13 +1,50 @@
 {
-  "model": "res/models/cars/npc/car.obj",
+  "model1": "res/models/cars/npc/car.obj",
+  "model2": "res/models/cars/npc/car_jeep.obj",
+  "model3": "res/models/cars/npc/car_long.obj",
+  "model4": "res/models/cars/npc/car_pickup.obj",
   "material": "res/materials/car/chroma_key_material.json",
 
   "parameters": {
     "acceleration": 100,
-    "maxSpeed": 20
+    "maxSpeed": 25,
+    "viewDistance": 25
   },
 
-  "colliders": [
+  "colliders1": [
+    {
+      "offset": [0.0, -0.6],
+      "size": 0.6
+    },
+    {
+      "offset": [0.0, 0.6],
+      "size": 0.6
+    }
+  ],
+
+  "colliders2": [
+    {
+      "offset": [0.0, -0.5],
+      "size": 0.6
+    },
+    {
+      "offset": [0.0, 0.5],
+      "size": 0.6
+    }
+  ],
+
+  "colliders3": [
+    {
+      "offset": [0.0, -1.2],
+      "size": 0.6
+    },
+    {
+      "offset": [0.0, 1.2],
+      "size": 0.6
+    }
+  ],
+
+  "colliders4": [
     {
       "offset": [0.0, -0.6],
       "size": 0.6
