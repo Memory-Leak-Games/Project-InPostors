@@ -5,7 +5,7 @@ class TrafficCar;
 class Path;
 class NavigationGraph;
 
-const float waypointSeekDistance = 50;
+const float waypointSeekDistance = 100;
 
 class SteeringBehaviors {
 public:

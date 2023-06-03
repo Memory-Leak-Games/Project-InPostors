@@ -5,7 +5,7 @@
   "parameters": {
     "acceleration": 100,
     "maxSpeed": 25,
-    "viewDistance": 20
+    "viewDistance": 25
   },
 
   "colliders": [
