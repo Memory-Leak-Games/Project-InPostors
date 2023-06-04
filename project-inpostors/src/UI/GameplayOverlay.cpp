@@ -17,7 +17,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
 
     auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/arialbd.ttf");
     result->clock = result->AddComponent<mlg::Label>("Clock", font).lock();
-    result->clock->SetPosition({640.f - 50.f, 720.f - 32.f});
+    result->clock->SetPosition({640.f - 50.f, 720.f - 32.f}); //TODO: Use label's property when I teach it to center text
     result->clock->SetAnchor({0.5, 1.0});
     //result->clock->SetSize(32);
 

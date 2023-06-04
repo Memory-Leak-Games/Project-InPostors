@@ -88,7 +88,6 @@ void Player::LoadModel(const json& configJson) {
 
 void Player::Start() {
     carInput = GetComponentByClass<CarInput>().lock();
-    uiArrow.lock()->tint = playerData.color;
 
     pickUpSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/pick_up.wav");
     dropSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/drop.wav");
@@ -208,24 +207,13 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
         newPlayer->eqBillboards[i]->SetVisible(false);
     }
 
-//    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/wood_material.json");
-//    ui = newPlayer->AddComponent<mlg::Image>("WoodEq", material).lock();
-//    ui->SetSize({14.f, 14.f});
-//    ui->SetPosition({7.f, 53.f});
-//
-//    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/iron_material.json");
-//    ui = newPlayer->AddComponent<mlg::Image>("MetalEq", material).lock();
-//    ui->SetBillboardTarget(newPlayer);
-//    ui->SetSize({14.f, 14.f});
-//    ui->SetPosition({-7.f, 53.f});
-
     auto label = newPlayer->AddComponent<mlg::Label>("PlayerTag", font).lock();
     label->SetSize(12);
     label->SetTextColor(newPlayer->playerData.color);
     label->SetBillboardTarget(newPlayer);
-    label->SetPosition({-6.f, 35.f});
-    if(newPlayer->playerData.id == 0)
-    {
+    label->SetPosition({-8.f, 35.f}); //TODO: Use label's property when I teach it to center text
+    label->SetTextColor(newPlayer->playerData.color);
+    if(newPlayer->playerData.id == 0) {
         label->SetText("P1");
     } else {
         label->SetText("P2");
@@ -234,14 +222,14 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/player/panel_material.json");
     ui = newPlayer->AddComponent<mlg::Image>("Panel", material).lock();
     ui->SetSize({200.f, 38.f});
+    ui->tint = newPlayer->playerData.color;
+    ui->tint.a = 0.7f;
     if(newPlayer->playerData.id == 0)
     {
         ui->SetPosition(ui->GetSize() * 0.5f + glm::vec2(16, 16));
-        ui->tint = {1.0, 0.0, 0.0, 0.7};
     } else {
         ui->SetPosition({1280 - ui->GetSize().x * 0.5f - 16, ui->GetSize().y * 0.5 + 16});
         ui->SetAnchor({1, 0});
-        ui->tint = {0.0, 1.0, 1.0, 0.7};
     }
     ui->tint += glm::vec4(0.5, 0.5, 0.5, 0.0);
 
@@ -284,8 +272,10 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
         auto items = newPlayer->equipment->GetEquipment();
 
         for(int i = 0; i < 3; ++i) {
+
+            // Wouldn't game crash be more appropriate?
             if (!newPlayer->eqIcons[i] || !newPlayer->eqBillboards[i])
-                return;
+                break;
 
             if(items.size() > i) {
                 newPlayer->eqIcons[i]->material = productManager->GetProduct(items[i]).icon;
@@ -295,10 +285,11 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
             } else {
                 newPlayer->eqIcons[i]->SetVisible(false);
                 newPlayer->eqBillboards[i]->SetVisible(false);
+                break; // It ain't much, but it's honest optimization
             }
         }
 
-        SPDLOG_DEBUG(std::to_string(items.size() - 1.5f));
+        // Discount HBoxContainer
         glm::vec2 billboardPos = {-7.f * (items.size() - 1.f), 53.f};
         for(int i = 0; i < items.size(); ++i) {
             newPlayer->eqBillboards[i]->SetPosition(billboardPos);
