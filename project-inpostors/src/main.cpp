@@ -1,7 +1,9 @@
 #include <exception>
+#include <glm/fwd.hpp>
 #include <iostream>
 #include <cxxopts.hpp>
 #include <memory>
+#include <spdlog/spdlog.h>
 #include <string>
 #include <utility>
 
