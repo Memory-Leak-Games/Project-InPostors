@@ -115,7 +115,7 @@ namespace mlg {
         SPDLOG_DEBUG("City size: ({}, {})", citySize.x, citySize.y);
         SPDLOG_DEBUG("Tile size: {}", tileSize);
 
-        ground.lock()->GetTransform().SetScale(groundScale);
+        ground.lock()->GetTransform().SetScale(groundScale * 10.f);
     }
 
     void LevelGenerator::SetCityBounds(const std::string& path) {
