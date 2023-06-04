@@ -193,6 +193,13 @@ namespace mlg {
         return levelJson["name"];
     }
 
+    float LevelGenerator::LoadLevelTimeLimit(const std::string& path) {
+        std::ifstream levelFile{path};
+        json levelJson = json::parse(levelFile);
+
+        return levelJson.value("time-limit", -1.f);
+    }
+
     std::vector<std::string> LevelGenerator::GetLevelLayout() {
         return levelLayout;
     }

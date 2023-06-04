@@ -3,6 +3,8 @@
   "tile-size": 4.0,
   "tileset": "res/levels/tilesets/city_tileset.json",
 
+  "time-limit": 240.0,
+
   "sublevels": [ "res/levels/maps/detroit_props.json" ],
 
   "ground-color": [0.463, 0.761, 0.404, 1.0],

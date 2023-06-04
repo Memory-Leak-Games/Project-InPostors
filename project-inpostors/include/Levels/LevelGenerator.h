@@ -20,6 +20,7 @@ namespace mlg {
         static void SpawnPlayers(const std::string& path);
         static TrafficData LoadTrafficData(const std::string& path);
         static std::string LoadLevelName(const std::string& path);
+        static float LoadLevelTimeLimit(const std::string& path);
 
         std::vector<std::string> GetLevelLayout();
 
