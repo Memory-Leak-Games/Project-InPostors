@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Neighbours.h"
+#include "TaskManager.h" //todo: this should not belong here.
 #include <string>
 
 namespace mlg {
@@ -20,6 +21,8 @@ namespace mlg {
         static void SpawnPlayers(const std::string& path);
         static TrafficData LoadTrafficData(const std::string& path);
         static std::string LoadLevelName(const std::string& path);
+        //todo: i really need to separate level generator from level data...
+        static std::vector<TaskData> GetTasks(const std::string& path);
 
         std::vector<std::string> GetLevelLayout();
 

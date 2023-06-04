@@ -57,6 +57,8 @@ namespace mlg {
             LoadMap(sublevel);
         }
 
+        levelFile.close();
+
         return ret;
     }
 
@@ -81,6 +83,8 @@ namespace mlg {
         cameraComponent.GetTransform().SetPosition(position);
         cameraComponent.GetTransform().SetRotation(glm::radians(eulerRotation));
         cameraComponent.SetOrtho(size, near, far);
+
+        levelFile.close();
     }
 
     void LevelGenerator::SpawnGround(const std::string& path) {
@@ -117,6 +121,8 @@ namespace mlg {
         SPDLOG_DEBUG("Tile size: {}", tileSize);
 
         ground.lock()->GetTransform().SetScale(groundScale);
+
+        levelFile.close();
     }
 
     void LevelGenerator::SetCityBounds(const std::string& path) {
@@ -133,14 +139,18 @@ namespace mlg {
         const glm::vec2 cityEnd = 0.5f * citySize;
 
         CollisionManager::SetBounds(cityStart, cityEnd, layoutSize);
+
+        levelFile.close();
     }
 
     void LevelGenerator::SpawnPlayers(const std::string& path) {
         std::ifstream levelFile{path};
         json levelJson = json::parse(levelFile);
 
-        if (!(levelJson.contains("player-one") && levelJson.contains("player-two")))
+        if (!(levelJson.contains("player-one") && levelJson.contains("player-two"))) {
+            levelFile.close();
             return;
+        }
 
         auto playerJsons = {levelJson["player-one"], levelJson["player-two"]};
         std::vector<std::weak_ptr<Entity>> players;
@@ -175,6 +185,8 @@ namespace mlg {
 
         players[0].lock()->AddComponent<PlayerOneInput>("PlayerInput");
         players[1].lock()->AddComponent<PlayerTwoInput>("PlayerInput");
+
+        levelFile.close();
     }
 
     LevelGenerator::TrafficData LevelGenerator::LoadTrafficData(const std::string& path) {
@@ -184,6 +196,8 @@ namespace mlg {
         TrafficData trafficData;
         trafficData.numberOfAgents = levelJson.value("number-of-agents", 0);
 
+        levelFile.close();
+
         return trafficData;
     }
 
@@ -191,7 +205,42 @@ namespace mlg {
         std::ifstream levelFile{path};
         json levelJson = json::parse(levelFile);
 
+        levelFile.close();
+
         return levelJson["name"];
+    }
+
+    std::vector<TaskData> LevelGenerator::GetTasks(const std::string &path) {
+        std::vector<TaskData> tasks = {};
+
+        // This is straight up stupid. But it works.
+        std::ifstream levelFile{path};
+        json levelJson = json::parse(levelFile);
+
+        std::ifstream tileFile{levelJson["tileset"].get<std::string>()};
+        json tileJson = json::parse(tileFile);
+
+        std::ifstream poolFile{tileJson["factory-pool"].get<std::string>()};
+        json poolJson = json::parse(poolFile);
+
+        for (const auto &jsonTask : poolJson["tasks"]) {
+            int quant = jsonTask["quantity"].get<int>();
+            tasks.reserve(quant);
+            TaskData newTask;
+            newTask.productId = jsonTask["product-id"].get<std::string>();
+            newTask.time = jsonTask["time"].get<float>();
+            newTask.reward = jsonTask["reward"].get<int>();
+            newTask.bonus = jsonTask["bonus"].get<int>();
+
+            for (int i = 0; i < quant; ++i)
+                tasks.push_back(newTask);
+        }
+
+        poolFile.close();
+        tileFile.close();
+        levelFile.close();
+
+        return tasks;
     }
 
     std::vector<std::string> LevelGenerator::GetLevelLayout() {
@@ -240,6 +289,8 @@ namespace mlg {
 
         if (levelJson.contains("ignore"))
             ignoredCharacters = levelJson["ignore"].get<std::string>();
+
+        tileFile.close();
     }
 
     void LevelGenerator::LoadFactories() {
@@ -258,6 +309,8 @@ namespace mlg {
             factory.remaining += 1;
             levelFactories.push_back(factory);
         }
+
+        factoryPool.close();
     }
 
     void LevelGenerator::LoadRoads() {
