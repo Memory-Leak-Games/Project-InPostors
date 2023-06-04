@@ -6,7 +6,7 @@
     {
       "name": "image",
       "index": 0,
-      "path": "res/textures/ui/Chat_window.png"
+      "path": "res/textures/ui/chat_window.png"
     }
   ]
 }

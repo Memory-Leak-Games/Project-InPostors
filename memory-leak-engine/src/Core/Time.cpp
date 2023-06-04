@@ -6,11 +6,16 @@
 
 #include "Macros.h"
 
+
 namespace mlg {
     Time* Time::instance;
 
-    double Time::GetSeconds() {
+    double Time::GetTrueSeconds() {
         return glfwGetTime();
+    }
+
+    double Time::GetSeconds() {
+        return GetTrueSeconds() - instance->timePaused;
     }
 
     float Time::GetTrueDeltaSeconds() {
@@ -18,20 +23,25 @@ namespace mlg {
     }
 
     float Time::GetDeltaSeconds() {
+        if (instance->gamePaused)
+            return 0.f;
+
         instance->lastFramesDeltaSeconds[instance->frameCount % AVERAGED_FRAMES] = GetTrueDeltaSeconds();
 
         float result = 0.f;
+        int averagedFrames = 0;
         for (double& deltaSeconds : instance->lastFramesDeltaSeconds) {
-            if (deltaSeconds < 0.f)
+            if (deltaSeconds <= 0.f)
                 continue;
 
             result += (float) deltaSeconds;
+            averagedFrames++;
         }
 
-        result /= AVERAGED_FRAMES;
+        result /= (float) averagedFrames;
 
         // To prevent strange behaviour
-        return std::min(result, 1.f/20.f);
+        return std::min(result, MINIMAL_DELTA_SECONDS);
     }
 
     void Time::Initialize() {
@@ -57,14 +67,17 @@ namespace mlg {
         SPDLOG_INFO("Stopping Time");
     }
 
-    void Time::UpdateStartFrameTime() {
+    void Time::Update() {
         instance->lastFrameStart = instance->frameStart;
         instance->frameStart = glfwGetTime();
         instance->frameCount++;
+
+        if (instance->gamePaused)
+            instance->timePaused += GetTrueDeltaSeconds();
     }
 
     void Time::Sleep(double seconds) {
-        double startSleepTime = GetSeconds();
+        double startSleepTime = GetTrueSeconds();
         while (GetSeconds() - startSleepTime <= seconds) {
             // This is sleep method so I am empty
         }
@@ -74,7 +87,7 @@ namespace mlg {
         ZoneScoped;
 
         double minFramerate = 1 / (double) instance->fpsCap;
-        while (GetSeconds() - instance->frameStart <= minFramerate) {
+        while (GetTrueSeconds() - instance->frameStart <= minFramerate) {
             // This is sleep method so I am empty
         }
     }
@@ -85,6 +98,14 @@ namespace mlg {
 
     float Time::GetAITimeStep() {
         return 1.f / (float) instance->aiTickRate;
+    }
+
+    bool Time::IsGamePaused() {
+        return instance->gamePaused;
+    }
+
+    void Time::PauseGame(bool gamePaused) {
+        instance->gamePaused = gamePaused;
     }
 
 }// namespace mlg

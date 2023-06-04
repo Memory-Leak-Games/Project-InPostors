@@ -1,8 +1,8 @@
 #include "Buildings/Factory.h"
 
 #include <fstream>
-#include <nlohmann/json.hpp>
 
+#include "Core/SceneManager/SceneManager.h"
 #include "Core/TimerManager.h"
 #include "Gameplay/Components/RigidbodyComponent.h"
 #include "Gameplay/Components/StaticMeshComponent.h"
@@ -11,6 +11,7 @@
 
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
+#include "TaskManager.h"
 
 #include "Rendering/Particles/ParticleSystem.h"
 
@@ -20,6 +21,7 @@
 
 #include "Physics/Colliders/Collider.h"
 
+#include "Scenes/LevelScene.h"
 #include "Utils/Blueprint.h"
 #include "Utils/BlueprintManager.h"
 
@@ -41,53 +43,51 @@ Factory::~Factory() = default;
 
 std::shared_ptr<Factory> Factory::Create(uint64_t id, const std::string& name, bool isStatic,
                                          mlg::Transform* parent, const std::string& configPath) {
-    auto result = std::shared_ptr<Factory>(new Factory(id, name, isStatic, parent));
+    auto result =
+            std::shared_ptr<Factory>(new Factory(id, name, isStatic, parent));
 
     std::ifstream configFile{configPath};
     json configJson = json::parse(configFile);
 
+    std::string factoryType = configJson["type"];
+    result->factoryType = magic_enum::enum_cast<FactoryType>(factoryType).value();
+
     result->AddMesh(configJson["static-mesh"]);
-    auto mainRigidbody = result->AddComponent<mlg::RigidbodyComponent>("MainRigidbody").lock();
+    result->mainRigidbody = result->AddComponent<mlg::RigidbodyComponent>("MainRigidbody").lock();
 
-    result->blueprintId = configJson["blueprintID"];
+    result->blueprintId = configJson.value("blueprintID", "None");
 
-    const int equipmentSize = configJson["equipmentSize"];
-    result->equipmentComponent = result->AddComponent<EquipmentComponent>("Equipment", equipmentSize).lock();
+    const int equipmentSize = configJson.value("equipmentSize", 256);
+    result->equipmentComponent =
+            result->AddComponent<EquipmentComponent>("Equipment", equipmentSize).lock();
 
 
     for (const auto& colliderJson : configJson["colliders"]) {
-        result->AddCollider(colliderJson, mainRigidbody.get());
+        result->AddCollider(colliderJson, result->mainRigidbody.get());
     }
 
     for (const auto& emitterJson : configJson["emitters"]) {
         result->AddEmitter(emitterJson);
     }
 
-    result->factoryType = magic_enum::enum_cast<FactoryType>(configJson["type"].get<std::string>()).value();
-    if (result->factoryType == FactoryType::OneInput || result->factoryType == FactoryType::SeparateInputOutput) {
-        result->AddTrigger(configJson["input"], "input", mainRigidbody.get());
-    }
-
-    if (result->factoryType == FactoryType::OneOutput || result->factoryType == FactoryType::SeparateInputOutput) {
-        result->AddTrigger(configJson["output"], "output", mainRigidbody.get());
-    }
-
-    if (result->factoryType == FactoryType::OneInputOutput) {
-        result->AddTrigger(configJson["input"], "inputOutput", mainRigidbody.get());
-    }
-
-    mainRigidbody->SetKinematic(true);
-
     GenerateUI(result);
 
+    result->AddTriggers(configJson);
+    result->mainRigidbody->SetKinematic(true);
     return result;
 }
 
 void Factory::AddMesh(const json& staticMeshJson) {
-    auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>(staticMeshJson["model"].get<std::string>());
-    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(staticMeshJson["material"].get<std::string>());
+    auto model =
+            mlg::AssetManager::GetAsset<mlg::ModelAsset>(
+                    staticMeshJson["model"]);
+    auto material =
+            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
+                    staticMeshJson["material"].get<std::string>());
 
-    auto staticMeshComponent = AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
+    auto staticMeshComponent =
+            AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
+
     staticMeshComponent.lock()->GetTransform().SetPosition({
             staticMeshJson["position"][0],
             0.0,
@@ -120,11 +120,36 @@ void Factory::AddEmitter(const json& emitterJson) {
     glm::vec3 emitterPosition = {
             emitterJson["position"][0],
             emitterJson["position"][1],
-            emitterJson["position"][2]
-    };
+            emitterJson["position"][2]};
     emitterPosition.x += meshOffset.x;
     emitterPosition.z += meshOffset.y;
     emitterComponent.lock()->GetTransform().SetPosition(emitterPosition);
+}
+
+void Factory::AddTriggers(const nlohmann::json& configJson) {
+    if (factoryType == FactoryType::OneInput ||
+        factoryType == FactoryType::SeparateInputOutput ||
+        factoryType == FactoryType::Storage) {
+        AddTrigger(
+                configJson["input"],
+                "input",
+                mainRigidbody.get());
+    }
+
+    if (factoryType == FactoryType::OneOutput ||
+        factoryType == FactoryType::SeparateInputOutput) {
+        AddTrigger(
+                configJson["output"],
+                "output",
+                mainRigidbody.get());
+    }
+
+    if (factoryType == FactoryType::OneInputOutput) {
+        AddTrigger(
+                configJson["input"],
+                "inputOutput",
+                mainRigidbody.get());
+    }
 }
 
 void Factory::AddTrigger(const json& triggerJson, const std::string& triggerName,
@@ -138,15 +163,16 @@ void Factory::AddTrigger(const json& triggerJson, const std::string& triggerName
 }
 
 void Factory::CheckBlueprintAndStartWorking() {
-    // If factory is producing do not add another timer
-    if (mlg::TimerManager::Get()->IsTimerValid(produceTimerHandle) || equipmentComponent->IsFull())
+    if (working || equipmentComponent->IsFull())
         return;
 
     const Blueprint& blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
 
     if (!blueprint.CheckBlueprint(*equipmentComponent))
         return;
-    
+
+    working = true;
+
     // Remove inputs from eq
     for (const auto& item : blueprint.GetInput()) {
         equipmentComponent->RequestProduct(item);
@@ -154,13 +180,30 @@ void Factory::CheckBlueprintAndStartWorking() {
 
     auto productionLambda = [this, blueprint]() {
         equipmentComponent->AddProduct(blueprint.GetOutput());
+        working = false;
         CheckBlueprintAndStartWorking();
     };
 
     produceTimerHandle = mlg::TimerManager::Get()->SetTimer(blueprint.GetTimeToProcess(), false, productionLambda);
 }
 
+void Factory::FinishTask() {
+    for (auto& product : equipmentComponent->GetProducts()) {
+        mlg::Scene* currentScene = mlg::SceneManager::GetCurrentScene();
+        auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
+
+        levelScene->GetTaskManager()->FinishTask(product);
+    }
+}
+
 void Factory::Start() {
+    if (factoryType == FactoryType::Storage) {
+        equipmentComponent->equipmentChanged.append([this]() {
+            FinishTask();
+        });
+        return;
+    }
+
     CheckBlueprintAndStartWorking();
 
     equipmentComponent->equipmentChanged.append([this]() {
@@ -169,29 +212,63 @@ void Factory::Start() {
 }
 
 void Factory::Update() {
-#ifdef DEBUG
-    ImGui::Begin("Factories");
-    ImGui::Text("%s, %s, timeToProduce: %f", GetName().c_str(), equipmentComponent->ToString().c_str(),
-                mlg::TimerManager::Get()->GetTimerRemainingTime(produceTimerHandle));
-    ImGui::End();
-#endif
+        if (blueprintId == "None")
+            return;
 
-    float produceElapsed = mlg::TimerManager::Get()->GetTimerElapsedTime(produceTimerHandle);
-    float timeToProcess = BlueprintManager::Get()->GetBlueprint(blueprintId).GetTimeToProcess();
+        auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
 
-    auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
-    if (!blueprint.GetInput().empty() && barReq1)
-        barReq1->percentage = equipmentComponent->Has(blueprint.GetInput()[0]) /*|| produceElapsed >= 0.0*/;
-    if (blueprint.GetInput().size() > 1 && barReq2)
-        barReq2->percentage = equipmentComponent->Has(blueprint.GetInput()[1]) /*|| produceElapsed >= 0.0*/;
-    if (barArrow)
-        barArrow->percentage = produceElapsed / timeToProcess;
-    if (barRes)
-        barRes->percentage = equipmentComponent->Has(blueprint.GetOutput());
+    #ifdef DEBUG
+        if (factoryType == FactoryType::Storage) {
+            ImGui::Begin("Factories");
+            ImGui::Text("Storage: %s", GetName().c_str());
+            ImGui::End();
+
+            return;
+        }
+
+        ImGui::Begin("Factories");
+        ImGui::Text("%s, %s, timeToProduce: %f, output: %i",
+                    GetName().c_str(),
+                    equipmentComponent->ToString().c_str(),
+                    mlg::TimerManager::Get()->GetTimerRemainingTime(produceTimerHandle),
+                    equipmentComponent->GetNumberOfProduct(blueprint.GetOutput()));
+        ImGui::End();
+    #endif
+
+        float produceElapsed = mlg::TimerManager::Get()->GetTimerElapsedTime(produceTimerHandle);
+        float timeToProcess = BlueprintManager::Get()->GetBlueprint(blueprintId).GetTimeToProcess();
+
+        if (!blueprint.GetInput().empty() && barReq1)
+            barReq1->percentage = equipmentComponent->Has(blueprint.GetInput()[0]) /*|| produceElapsed >= 0.0*/;
+        if (blueprint.GetInput().size() > 1 && barReq2)
+            barReq2->percentage = equipmentComponent->Has(blueprint.GetInput()[1]) /*|| produceElapsed >= 0.0*/;
+        if (barArrow)
+            barArrow->percentage = produceElapsed / timeToProcess;
+        if (barRes)
+            barRes->percentage = equipmentComponent->Has(blueprint.GetOutput());
 }
 
 bool Factory::IsWorking() const {
     return mlg::TimerManager::Get()->IsTimerValid(produceTimerHandle);
+}
+
+const std::vector<std::string> Factory::GetInputs() const {
+    std::vector<std::string> result;
+
+    if (factoryType != FactoryType::Storage) {
+        result = BlueprintManager::Get()->GetBlueprint(blueprintId).GetInput();
+        return result;
+    }
+
+    mlg::Scene* currentScene = mlg::SceneManager::GetCurrentScene();
+    auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
+
+    std::vector<TaskData> tasks = levelScene->GetTaskManager()->GetActiveTasks();
+    for (const auto& task : tasks) {
+        result.push_back(task.productId);
+    }
+
+    return result;
 }
 
 const std::shared_ptr<EquipmentComponent>& Factory::GetEquipmentComponent() const {
@@ -202,12 +279,18 @@ std::string Factory::GetBlueprintId() const { return blueprintId; }
 
 void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
 
-    auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/arialbd.ttf");
-    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/panel_material.json");
+    auto font =
+            mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/arialbd.ttf");
+    auto material =
+            mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/panel_material.json");
+
+    if (result->GetBlueprintId() == "None")
+        return;
+    
     auto blueprint = BlueprintManager::Get()->GetBlueprint(result->GetBlueprintId());
 
     // Lack of containers gave birth to this monstrosity
-    if(blueprint.GetOutput() != "") {
+    if (blueprint.GetOutput() != "") {
         result->barRes = result->AddComponent<mlg::ProgressBar>("BarRes", material).lock();
         result->barRes->SetSize({32.f, 32.f});
         result->barRes->SetBillboardTarget(result);
@@ -217,7 +300,7 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
         iconRes->SetSize({24.f, 24.f});
         iconRes->SetBillboardTarget(result);
 
-        if(blueprint.GetInput().size() > 0) {
+        if (blueprint.GetInput().size() > 0) {
             material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/arrow_panel_material.json");
             result->barArrow = result->AddComponent<mlg::ProgressBar>("RecipeArrow", material).lock();
             result->barArrow->SetSize({32.f, 32.f});
@@ -236,7 +319,7 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
             iconReq1->SetPosition({-48.f, 75.f - 16.f});
             iconReq1->SetBillboardTarget(result);
 
-            if(blueprint.GetInput().size() > 1) {
+            if (blueprint.GetInput().size() > 1) {
                 material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/panel_material.json");
                 result->barReq2 = result->AddComponent<mlg::ProgressBar>("BarReq2", material).lock();
                 result->barReq2->SetSize({32.f, 32.f});

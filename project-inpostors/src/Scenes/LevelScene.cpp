@@ -1,6 +1,9 @@
 #include "Scenes/LevelScene.h"
 
+#include "Core/HID/Input.h"
 #include "Core/RGBA.h"
+#include "Core/Time.h"
+#include "Core/TimerManager.h"
 #include "Gameplay/Components/CameraComponent.h"
 #include "Gameplay/EntityManager.h"
 
@@ -8,42 +11,123 @@
 
 #include "Core/Settings/SettingsManager.h"
 
+#include "Gameplay/Components/RigidbodyComponent.h"
+#include "Levels/NavigationGraph.h"
 #include "SceneGraph/SceneGraph.h"
+
+#include "ai/AIComponent.h"
+#include "ai/Path.h"
+#include "ai/SteeringBehaviors.h"
+#include "ai/TrafficCar.h"
 
 #include "UI/GameplayOverlay.h"
 
-#include "ai/Path.h"
-#include "ai/TrafficCar.h"
-#include "Gameplay/Components/RigidbodyComponent.h"
-#include "Levels/NavigationGraph.h"
-#include "ai/AIComponent.h"
-#include "ai/SteeringBehaviors.h"
-
+#include "ScoreManager.h"
+#include "TaskManager.h"
 
 LevelScene::LevelScene(const std::string& path) : levelPath(path) {}
 
+LevelScene::~LevelScene() = default;
+
 void LevelScene::Load() {
-    cityAmbientSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/city_ambient.mp3");
-    cityAmbientSound->PlayBackgroundMusic(2.f);
+    LoadLevel();
 
-    auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
-    auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
+    taskManager = std::make_unique<TaskManager>();
+    scoreManager = std::make_unique<ScoreManager>();
+    taskManager->OnTaskFinished.append([this](const TaskData& taskData) {
+        int reward = taskData.reward;
 
-    std::vector<std::string> levelLayout;
+        if (taskData.time > 0.0f) {
+            reward += taskData.bonus;
+        }
 
-    levelLayout = mlg::LevelGenerator::LoadMap(levelPath);
-    mlg::LevelGenerator::SpawnGround(levelPath);
-    mlg::LevelGenerator::SetCityBounds(levelPath);
-    mlg::LevelGenerator::LoadCameraSettings(levelPath, *cameraComponent.lock());
-    mlg::LevelGenerator::SpawnPlayers(levelPath);
+        scoreManager->AddScore(reward);
+        gameplayOverlay->SetScore(scoreManager->GetScore());
+    });
 
-    auto gameplayOverlay = mlg::EntityManager::SpawnEntity<GameplayOverlay>("Overlay", false, mlg::SceneGraph::GetRoot());
+    gameplayOverlay = mlg::EntityManager::SpawnEntity<GameplayOverlay>(
+                              "Overlay",
+                              false,
+                              mlg::SceneGraph::GetRoot())
+                              .lock();
 
     navigationGraph = std::make_shared<NavigationGraph>(levelPath);
 
-    // TODO: remove me
-    int i = 0;
+    SpawnTraffic();
+    LoadSounds();
+
+    SetTimeLimit();
+
+    // TODO: Remove me
+    gameplayOverlay->SetChat(fmt::format(
+            "Welcome to {}, useless piece of meat!", levelName));
+}
+
+void LevelScene::Update() {
+    HandlePauseGame();
+    taskManager->Update();
+
+    float timeLeft = mlg::TimerManager::Get()->GetTimerRemainingTime(timeLimitTimer);
+    gameplayOverlay->SetClock(timeLeft);
+
+#ifdef DEBUG
+    // Debug: Navigation graph
+    if (mlg::SettingsManager::Get<bool>(
+                mlg::SettingsType::Debug, "showNavigation") &&
+        navigationGraph != nullptr) {
+
+        navigationGraph->DrawNodes();
+    }
+
+    // IMGUI: Task manager
+    ImGui::Begin("Task manager");
+    {
+        ImGui::Text("Score: %i", scoreManager->GetScore());
+        ImGui::Separator();
+
+        auto activeTasks = taskManager->GetActiveTasks();
+        for (const auto& task : activeTasks) {
+            ImGui::Text("Task: %s", task.productId.c_str());
+            ImGui::Text("Time left: %f", task.time);
+            ImGui::Text("Reward: %i", task.reward);
+            ImGui::Text("Bonus: %i", task.bonus);
+            ImGui::Separator();
+        }
+    }
+    ImGui::End();
+
+#endif
+}
+
+void LevelScene::HandlePauseGame() {
+    if (mlg::Input::IsActionJustPressed("pause")) {
+        bool isGamePaused = mlg::Time::IsGamePaused();
+        mlg::Time::PauseGame(!isGamePaused);
+    }
+}
+
+const std::shared_ptr<NavigationGraph>& LevelScene::GetNavigationGraph() const {
+    return navigationGraph;
+}
+
+TaskManager* LevelScene::GetTaskManager() {
+    return taskManager.get();
+}
+
+ScoreManager* LevelScene::GetScoreManager() {
+    return scoreManager.get();
+}
+
+void LevelScene::SpawnTraffic() {
+    // TODO: AI cars should be spawned on the road
+    mlg::LevelGenerator::TrafficData trafficData = mlg::LevelGenerator::LoadTrafficData(levelPath);
+
+    uint32_t i = 0;
+
     for (const auto& node : navigationGraph->GetAllNodes()) {
+        if (i >= trafficData.numberOfAgents)
+            break;
+
         TrafficCarData aiCarData = {0, mlg::RGBA::white};
         auto aiCar =
                 mlg::EntityManager::SpawnEntity<TrafficCar>(
@@ -53,29 +137,37 @@ void LevelScene::Load() {
                 aiCar.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
 
         aiCarRigidbody.lock()->SetPosition(node->position);
-
-        auto aiComponent =
-                aiCar.lock()->GetComponentByName<AIComponent>("AIComponent").lock();
-
-        aiComponent->GetSteering()->SetNavigationGraph(navigationGraph);
-        aiComponent->GetSteering()->TrafficDriveOn();
-
         i++;
-
-        if (i > 4)
-            break;
     }
 }
 
-void LevelScene::Update() {
-#ifdef DEBUG
-    if (!mlg::SettingsManager::Get<bool>(
-                mlg::SettingsType::Debug, "showNavigation"))
-        return;
+void LevelScene::LoadLevel() {
+    auto cameraEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>("Camera", false, mlg::SceneGraph::GetRoot());
+    auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
 
-    if (navigationGraph == nullptr)
-        return;
+    mlg::LevelGenerator::LoadMap(levelPath);
+    mlg::LevelGenerator::SpawnGround(levelPath);
+    mlg::LevelGenerator::SetCityBounds(levelPath);
+    mlg::LevelGenerator::LoadCameraSettings(levelPath, *cameraComponent.lock());
+    mlg::LevelGenerator::SpawnPlayers(levelPath);
+    levelName = mlg::LevelGenerator::LoadLevelName(levelPath);
+}
 
-    navigationGraph->DrawNodes();
-#endif
+void LevelScene::LoadSounds() {
+    cityAmbientSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/city_ambient.mp3");
+    cityAmbientSound->PlayBackgroundMusic(2.f);
+}
+
+void LevelScene::SetTimeLimit() {
+    float timeLimit = mlg::LevelGenerator::LoadLevelTimeLimit(levelPath);
+
+    if (timeLimit > 0.f) {
+        timeLimitTimer = mlg::TimerManager::Get()->SetTimer(
+                timeLimit,
+                false,
+                [this]() {
+                    mlg::Time::PauseGame(true);
+                    SPDLOG_INFO("GameOver, Score: {}", scoreManager->GetScore());
+                });
+    }
 }

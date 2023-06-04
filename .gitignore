@@ -22,3 +22,5 @@ install_manifest.txt
 
 # other
 imgui.ini
+todo.md
+res/runtime_files/*

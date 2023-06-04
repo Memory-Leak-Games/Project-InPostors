@@ -22,6 +22,7 @@ private:
     float acceleration;
     float maxSpeed;
     float maxForce;
+    float viewDistance;
     float mass = 1.f;
 
 public:
@@ -36,6 +37,7 @@ public:
 
     float GetMaxForce() const;
     float GetMaxSpeed() const;
+    float GetViewDistance() const;
     glm::vec2 GetPosition() const;
     glm::vec2 GetLinearVelocity() const;
     glm::vec3 GetLocalVelocity() const;

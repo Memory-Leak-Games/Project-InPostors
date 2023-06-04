@@ -19,17 +19,11 @@
     }
   ],
 
-  "blueprintID": "furniture",
-  "type": "OneInputOutput",
+  "type": "Storage",
 
   "input": {
     "offset": [-5.0, 1.0],
     "size": [5.0, 12.0]
-  },
-
-  "output": {
-    "offset": [-0.0, 0.0],
-    "size": [1.0, 1.0]
   },
 
   "emitters": [

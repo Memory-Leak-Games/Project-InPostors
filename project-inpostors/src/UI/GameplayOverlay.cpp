@@ -8,6 +8,8 @@
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
 #include "UI/Components/ProgressBar.h"
+#include <spdlog/fmt/bundled/format.h>
+#include <string>
 
 GameplayOverlay::GameplayOverlay(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent)
     : mlg::Entity(id, name, isStatic, parent) {}
@@ -41,31 +43,31 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     result->chat->SetText("As a language model, I am unable\nto drive vehicles myself. That is\nwhy you were hired to deliver\npackages.");
 
     // THIS IS VERY MUCH MOCK
-//    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/player/panel_material.json");
-//    ui = result->AddComponent<mlg::Image>("QuestPanel", material).lock();
-//    ui->SetPosition({85.f, 720 - 50.f});
-//    ui->SetAnchor({0, 1});
-//    ui->SetSize({150, 100});
-//
-//    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/furniture_material.json");
-//    ui = result->AddComponent<mlg::Image>("QuestItem", material).lock();
-//    ui->SetPosition({85.f, 720.f - 30.f});
-//    ui->SetAnchor({0, 1});
-//    ui->SetSize({32, 32});
-//
-//    font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/arialbd.ttf");
-//    auto label = result->AddComponent<mlg::Label>("QuestLabel", font).lock();
-//    label->SetPosition({40.f, 720.f - 75.f});
-//    label->SetAnchor({0.0, 1.0});
-//    label->SetSize(20);
-//    label->SetText("Furniture");
-//    label->SetTextColor({0, 0, 0});
-//
-//    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/progress_bar_material.json");
-//    result->questBar = result->AddComponent<mlg::ProgressBar>("QuestLimit", material).lock();
-//    result->questBar->SetPosition({85.f, 720.f - 95.f});
-//    result->questBar->SetAnchor({0.0, 1.0});
-//    result->questBar->SetSize({150, 5});
+    //    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/player/panel_material.json");
+    //    ui = result->AddComponent<mlg::Image>("QuestPanel", material).lock();
+    //    ui->SetPosition({85.f, 720 - 50.f});
+    //    ui->SetAnchor({0, 1});
+    //    ui->SetSize({150, 100});
+    //
+    //    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/furniture_material.json");
+    //    ui = result->AddComponent<mlg::Image>("QuestItem", material).lock();
+    //    ui->SetPosition({85.f, 720.f - 30.f});
+    //    ui->SetAnchor({0, 1});
+    //    ui->SetSize({32, 32});
+    //
+    //    font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/arialbd.ttf");
+    //    auto label = result->AddComponent<mlg::Label>("QuestLabel", font).lock();
+    //    label->SetPosition({40.f, 720.f - 75.f});
+    //    label->SetAnchor({0.0, 1.0});
+    //    label->SetSize(20);
+    //    label->SetText("Furniture");
+    //    label->SetTextColor({0, 0, 0});
+    //
+    //    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/progress_bar_material.json");
+    //    result->questBar = result->AddComponent<mlg::ProgressBar>("QuestLimit", material).lock();
+    //    result->questBar->SetPosition({85.f, 720.f - 95.f});
+    //    result->questBar->SetAnchor({0.0, 1.0});
+    //    result->questBar->SetSize({150, 5});
 
     return result;
 }
@@ -75,22 +77,32 @@ void GameplayOverlay::Start() {
     });
 }
 
-void GameplayOverlay::Update() {
-    int timeLeft = mlg::TimerManager::Get()->GetTimerRemainingTime(timer);
-    if (timeLeft <= 0) {
-        clock->SetText("00:00");
-    } else {
-        std::stringstream ss;
-        ss << "0" << timeLeft / 60 << ":" << timeLeft/10 % 6 << timeLeft % 10;
-        clock->SetText(ss.str());
+void GameplayOverlay::Update() { }
+
+void GameplayOverlay::SetScore(int score) {
+    this->score->SetText(fmt::format("${}", score));
+}
+
+void GameplayOverlay::SetChat(const std::string& message) {
+    std::string text = fmt::format("AIPost: {}", message);
+
+    constexpr int chatLimit = 34;
+    // wrap text
+    for (int i = 0; i < text.size(); i++) {
+        if (i % chatLimit == 0 && i != 0) {
+            text.insert(i, "\n");
+        }
     }
 
-    if(timeLeft <= 60) {
-        clock->SetTextColor({1.0, 0.3, 0.0});
-    }
+    this->chat->SetText(text);
+}
 
-//    questBar->percentage -= mlg::Time::GetDeltaSeconds() * 0.1f;
-//    if (questBar->percentage <= 0.f){
-//        questBar->percentage = 1.0f;
-//    }
+void GameplayOverlay::SetClock(float time) {
+    if (time < 0.f)
+        time = 0.f;
+
+    int minutes = std::floor(time / 60.f);
+    int seconds = std::floor(time - minutes * 60);
+
+    this->clock->SetText(fmt::format("{:02d}:{:02d}", minutes, seconds));
 }

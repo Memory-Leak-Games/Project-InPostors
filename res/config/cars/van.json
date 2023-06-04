@@ -10,17 +10,18 @@
     "rotationSpeed": 200,
     "rotationRadius": 3,
     "sideDrag": 80,
-    "counterTorque": 5
+    "counterTorque": 5,
+    "bounciness": 0.5
   },
 
   "colliders": [
     {
-      "offset": [0.0, -0.5],
-      "size": 0.5
+      "offset": [0.0, -0.6],
+      "size": 0.6
     },
     {
-      "offset": [0.0, 0.5],
-      "size": 0.5
+      "offset": [0.0, 0.6],
+      "size": 0.6
     }
   ]
 }
