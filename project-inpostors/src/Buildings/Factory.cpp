@@ -9,9 +9,9 @@
 
 #include "Core/AssetManager/AssetManager.h"
 
-#include "TaskManager.h"
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
+#include "TaskManager.h"
 
 #include "Rendering/Particles/ParticleSystem.h"
 
@@ -25,10 +25,16 @@
 #include "Utils/Blueprint.h"
 #include "Utils/BlueprintManager.h"
 
+#include "UI/Assets/FontAsset.h"
+#include "UI/Components/Image.h"
+#include "UI/Components/Label.h"
+#include "UI/Components/ProgressBar.h"
 #include "Utils/EquipmentComponent.h"
+#include "Utils/ProductManager.h"
 
 
 using json = nlohmann::json;
+using Random = effolkronium::random_static;
 
 Factory::Factory(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent)
     : Entity(id, name, isStatic, parent) {}
@@ -63,6 +69,8 @@ std::shared_ptr<Factory> Factory::Create(uint64_t id, const std::string& name, b
     for (const auto& emitterJson : configJson["emitters"]) {
         result->AddEmitter(emitterJson);
     }
+
+    GenerateUI(result);
 
     result->AddTriggers(configJson);
     result->mainRigidbody->SetKinematic(true);
@@ -204,25 +212,40 @@ void Factory::Start() {
 }
 
 void Factory::Update() {
-#ifdef DEBUG
-    if (factoryType == FactoryType::Storage) {
+        if (blueprintId == "None")
+            return;
+
+        auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
+
+    #ifdef DEBUG
+        if (factoryType == FactoryType::Storage) {
+            ImGui::Begin("Factories");
+            ImGui::Text("Storage: %s", GetName().c_str());
+            ImGui::End();
+
+            return;
+        }
+
         ImGui::Begin("Factories");
-        ImGui::Text("Storage: %s", GetName().c_str());
+        ImGui::Text("%s, %s, timeToProduce: %f, output: %i",
+                    GetName().c_str(),
+                    equipmentComponent->ToString().c_str(),
+                    mlg::TimerManager::Get()->GetTimerRemainingTime(produceTimerHandle),
+                    equipmentComponent->GetNumberOfProduct(blueprint.GetOutput()));
         ImGui::End();
+    #endif
 
-        return;
-    }
+        float produceElapsed = mlg::TimerManager::Get()->GetTimerElapsedTime(produceTimerHandle);
+        float timeToProcess = BlueprintManager::Get()->GetBlueprint(blueprintId).GetTimeToProcess();
 
-    auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
-
-    ImGui::Begin("Factories");
-    ImGui::Text("%s, %s, timeToProduce: %f, output: %i",
-                GetName().c_str(),
-                equipmentComponent->ToString().c_str(),
-                mlg::TimerManager::Get()->GetTimerRemainingTime(produceTimerHandle),
-                equipmentComponent->GetNumberOfProduct(blueprint.GetOutput()));
-    ImGui::End();
-#endif
+        if (!blueprint.GetInput().empty() && barReq1)
+            barReq1->percentage = equipmentComponent->Has(blueprint.GetInput()[0]) /*|| produceElapsed >= 0.0*/;
+        if (blueprint.GetInput().size() > 1 && barReq2)
+            barReq2->percentage = equipmentComponent->Has(blueprint.GetInput()[1]) /*|| produceElapsed >= 0.0*/;
+        if (barArrow)
+            barArrow->percentage = produceElapsed / timeToProcess;
+        if (barRes)
+            barRes->percentage = equipmentComponent->Has(blueprint.GetOutput());
 }
 
 bool Factory::IsWorking() const {
@@ -253,3 +276,80 @@ const std::shared_ptr<EquipmentComponent>& Factory::GetEquipmentComponent() cons
 }
 
 std::string Factory::GetBlueprintId() const { return blueprintId; }
+
+void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
+
+    auto font =
+            mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/arialbd.ttf");
+    auto material =
+            mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/panel_material.json");
+
+    if (result->GetBlueprintId() == "None")
+        return;
+    
+    auto blueprint = BlueprintManager::Get()->GetBlueprint(result->GetBlueprintId());
+
+    // Lack of containers gave birth to this monstrosity
+    if (blueprint.GetOutput() != "") {
+        result->barRes = result->AddComponent<mlg::ProgressBar>("BarRes", material).lock();
+        result->barRes->SetSize({32.f, 32.f});
+        result->barRes->SetBillboardTarget(result);
+
+        material = ProductManager::GetInstance()->GetProduct(blueprint.GetOutput()).icon;
+        auto iconRes = result->AddComponent<mlg::Image>("IconRes", material).lock();
+        iconRes->SetSize({24.f, 24.f});
+        iconRes->SetBillboardTarget(result);
+
+        if (blueprint.GetInput().size() > 0) {
+            material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/arrow_panel_material.json");
+            result->barArrow = result->AddComponent<mlg::ProgressBar>("RecipeArrow", material).lock();
+            result->barArrow->SetSize({32.f, 32.f});
+            result->barArrow->SetPosition({16.f, 75.f - 16.f});
+            result->barArrow->SetBillboardTarget(result);
+
+            material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/panel_material.json");
+            result->barReq1 = result->AddComponent<mlg::ProgressBar>("BarReq1", material).lock();
+            result->barReq1->SetSize({32.f, 32.f});
+            result->barReq1->SetPosition({-48.f, 75.f - 16.f});
+            result->barReq1->SetBillboardTarget(result);
+
+            material = ProductManager::GetInstance()->GetProduct(blueprint.GetInput()[0]).icon;
+            auto iconReq1 = result->AddComponent<mlg::Image>("IconReq1", material).lock();
+            iconReq1->SetSize({24.f, 24.f});
+            iconReq1->SetPosition({-48.f, 75.f - 16.f});
+            iconReq1->SetBillboardTarget(result);
+
+            if (blueprint.GetInput().size() > 1) {
+                material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/panel_material.json");
+                result->barReq2 = result->AddComponent<mlg::ProgressBar>("BarReq2", material).lock();
+                result->barReq2->SetSize({32.f, 32.f});
+                result->barReq2->SetBillboardTarget(result);
+
+                material = ProductManager::GetInstance()->GetProduct(blueprint.GetInput()[1]).icon;
+                auto iconReq2 = result->AddComponent<mlg::Image>("IconReq2", material).lock();
+                iconReq2->SetSize({24.f, 24.f});
+                iconReq2->SetBillboardTarget(result);
+
+                // Positioning for 2 inputs and 1 output
+                result->barRes->SetPosition({48.f, 75.f - 16.f});
+                iconRes->SetPosition({48.f, 75.f - 16.f});
+                result->barArrow->SetPosition({16.f, 75.f - 16.f});
+                result->barReq1->SetPosition({-48.f, 75.f - 16.f});
+                iconReq1->SetPosition({-48.f, 75.f - 16.f});
+                result->barReq2->SetPosition({-16.f, 75.f - 16.f});
+                iconReq2->SetPosition({-16.f, 75.f - 16.f});
+            } else {
+                // Positioning for 1 input and 1 output
+                result->barRes->SetPosition({32.f, 75.f - 16.f});
+                iconRes->SetPosition({32.f, 75.f - 16.f});
+                result->barArrow->SetPosition({0.f, 75.f - 16.f});
+                result->barReq1->SetPosition({-32.f, 75.f - 16.f});
+                iconReq1->SetPosition({-32.f, 75.f - 16.f});
+            }
+        } else {
+            // Positioning for only output
+            result->barRes->SetPosition({0.f, 75.f - 16.f});
+            iconRes->SetPosition({0.f, 75.f - 16.f});
+        }
+    }
+}

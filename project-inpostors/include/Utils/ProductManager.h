@@ -1,8 +1,12 @@
 #pragma once
 
+namespace mlg {
+    class MaterialAsset;
+}
+
 struct Product {
     std::string name;
-    std::shared_ptr<class TextureAsset> icon;
+    std::shared_ptr<class mlg::MaterialAsset> icon;
     glm::vec3 color;
 };
 

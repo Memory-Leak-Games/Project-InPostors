@@ -3,6 +3,7 @@
 #include "Core/HID/Input.h"
 #include "Core/RGBA.h"
 #include "Core/Time.h"
+#include "Core/TimerManager.h"
 #include "Gameplay/Components/CameraComponent.h"
 #include "Gameplay/EntityManager.h"
 
@@ -13,13 +14,16 @@
 #include "Gameplay/Components/RigidbodyComponent.h"
 #include "Levels/NavigationGraph.h"
 #include "SceneGraph/SceneGraph.h"
+
 #include "ai/AIComponent.h"
 #include "ai/Path.h"
 #include "ai/SteeringBehaviors.h"
 #include "ai/TrafficCar.h"
 
-#include "TaskManager.h"
+#include "UI/GameplayOverlay.h"
+
 #include "ScoreManager.h"
+#include "TaskManager.h"
 
 LevelScene::LevelScene(const std::string& path) : levelPath(path) {}
 
@@ -38,17 +42,33 @@ void LevelScene::Load() {
         }
 
         scoreManager->AddScore(reward);
+        gameplayOverlay->SetScore(scoreManager->GetScore());
     });
+
+    gameplayOverlay = mlg::EntityManager::SpawnEntity<GameplayOverlay>(
+                              "Overlay",
+                              false,
+                              mlg::SceneGraph::GetRoot())
+                              .lock();
 
     navigationGraph = std::make_shared<NavigationGraph>(levelPath);
 
     SpawnTraffic();
     LoadSounds();
+
+    SetTimeLimit();
+
+    // TODO: Remove me
+    gameplayOverlay->SetChat(fmt::format(
+            "Welcome to {}, useless piece of meat!", levelName));
 }
 
 void LevelScene::Update() {
     HandlePauseGame();
     taskManager->Update();
+
+    float timeLeft = mlg::TimerManager::Get()->GetTimerRemainingTime(timeLimitTimer);
+    gameplayOverlay->SetClock(timeLeft);
 
 #ifdef DEBUG
     // Debug: Navigation graph
@@ -136,4 +156,18 @@ void LevelScene::LoadLevel() {
 void LevelScene::LoadSounds() {
     cityAmbientSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/city_ambient.mp3");
     cityAmbientSound->PlayBackgroundMusic(2.f);
+}
+
+void LevelScene::SetTimeLimit() {
+    float timeLimit = mlg::LevelGenerator::LoadLevelTimeLimit(levelPath);
+
+    if (timeLimit > 0.f) {
+        timeLimitTimer = mlg::TimerManager::Get()->SetTimer(
+                timeLimit,
+                false,
+                [this]() {
+                    mlg::Time::PauseGame(true);
+                    SPDLOG_INFO("GameOver, Score: {}", scoreManager->GetScore());
+                });
+    }
 }

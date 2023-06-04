@@ -1,4 +1,5 @@
 #include "Utils/ProductManager.h"
+#include "Rendering/Assets/MaterialAsset.h"
 
 #include <fstream>
 #include <nlohmann/json.hpp>
@@ -32,8 +33,8 @@ void ProductManager::LoadConfig(const std::string& path) {
         Product newProduct;
 
         newProduct.name = productJson["name"];
+        newProduct.icon = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(productJson["icon"]);
         newProduct.color = {productJson["color"][0], productJson["color"][1], productJson["color"][2]};
-        // todo: load icon
 
         productMap[newProduct.name] = newProduct;
     }

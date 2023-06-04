@@ -40,6 +40,7 @@
 #include "Core/AssetManager/AssetManager.h"
 #include "Macros.h"
 #include "Core/Time.h"
+#include "Core/Formatters.h"
 
 // Debug
 #ifdef DEBUG

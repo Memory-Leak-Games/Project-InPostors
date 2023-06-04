@@ -3,6 +3,7 @@
 #include "Audio/Assets/AudioAsset.h"
 #include "Core/SceneManager/Scene.h"
 #include "ScoreManager.h"
+#include <cstddef>
 
 class LevelScene : public mlg::Scene {
 private:
@@ -13,8 +14,12 @@ private:
     std::shared_ptr<mlg::AudioAsset> cityAmbientSound;
     std::shared_ptr<class NavigationGraph> navigationGraph;
 
+    std::shared_ptr<class GameplayOverlay> gameplayOverlay;
+
     std::unique_ptr<class TaskManager> taskManager;
     std::unique_ptr<class ScoreManager> scoreManager;
+
+    size_t timeLimitTimer;
 
 public:
     explicit LevelScene(const std::string& path);
@@ -33,4 +38,5 @@ private:
     void SpawnTraffic();
     void LoadLevel();
     void LoadSounds();
+    void SetTimeLimit();
 };

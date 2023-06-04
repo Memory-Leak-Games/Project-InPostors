@@ -2,12 +2,13 @@
 
 #include <string>
 #include <vector>
+
 class Blueprint {
     std::string name;
     std::vector<std::string> input;
     std::string output;
-    float timeToProcess;
 
+    float timeToProcess;
 public:
     explicit Blueprint(const nlohmann::json& blueprintJson);
 

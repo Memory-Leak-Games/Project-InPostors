@@ -19,13 +19,22 @@ float when_ge(float x, float y) {
 
 void main()
 {
-    float glyphShape = texture(text, TexCoords).r;
+    float cutoff = 0.5f;
+    float dist = (cutoff - texture(text, TexCoords).r);
+
+    vec2 ddist = vec2(dFdx(dist), dFdy(dist));
+
+    float pixelDist = dist / length(ddist);
+
+    color = vec4(textColor, clamp(0.5 - pixelDist, 0.0, 1.0));
 
     // Smooth out glyph using MUAA (Made Up AntiAliasing)
-    glyphShape *= when_ge(glyphShape, 0.492);
-    glyphShape += (1 - glyphShape) * when_ge(glyphShape, (0.525 - correction));
+//    glyphShape *= when_ge(glyphShape, 0.492);
+//    glyphShape += (1 - glyphShape) * when_ge(glyphShape, (0.525 - correction));
+//
+//    color = vec4(textColor, glyphShape);
 
-    color = vec4(textColor, glyphShape);
+
 
 //  if (glyphShape < 0.49)
 //      discard;
