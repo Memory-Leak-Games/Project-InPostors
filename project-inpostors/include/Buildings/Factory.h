@@ -4,6 +4,9 @@
 
 namespace mlg {
     class RigidbodyComponent;
+    class Image;
+    class Label;
+    class ProgressBar;
 }
 
 class Factory : public mlg::Entity {
@@ -13,8 +16,19 @@ private:
     std::shared_ptr<mlg::RigidbodyComponent> mainRigidbody;
     std::shared_ptr<class EquipmentComponent> equipmentComponent;
 
+
     std::string blueprintId;
-    size_t produceTimerHandle = 0;
+
+    std::shared_ptr<class mlg::ProgressBar> barReq1;
+    std::shared_ptr<class mlg::ProgressBar> barReq2;
+    std::shared_ptr<class mlg::ProgressBar> barArrow;
+    std::shared_ptr<class mlg::ProgressBar> barRes;
+
+    std::shared_ptr<class mlg::Label> amount1;
+    std::shared_ptr<class mlg::Label> amount2;
+    std::shared_ptr<class mlg::Label> amount3;
+
+    unsigned int produceTimerHandle = 0;
     bool working = false;
 
 public:
@@ -56,5 +70,6 @@ private:
     void CheckBlueprintAndStartWorking();
     void ProduceItem();
 
+    static void GenerateUI(const std::shared_ptr<Factory>& result);
     void FinishTask();
 };

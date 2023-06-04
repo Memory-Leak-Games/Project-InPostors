@@ -14,7 +14,7 @@ namespace mlg {
         };
 
         //TODO: Load font resolution? Changing this also requires re-tweaking glyph shader!
-        int fontSize = 32;
+        int fontSize = 64;
         std::vector<Character> characters;
 
         explicit FontAsset(const std::string& path);

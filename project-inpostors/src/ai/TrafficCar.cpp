@@ -22,6 +22,7 @@
 #include "ai/AIComponent.h"
 
 using json = nlohmann::json;
+using Random = effolkronium::random_static;
 
 TrafficCar::TrafficCar(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent)
     : mlg::Entity(id, name, isStatic, parent){}
@@ -34,7 +35,8 @@ std::shared_ptr<TrafficCar> TrafficCar::Create(uint64_t id, const std::string& n
 
     std::ifstream configFile{configPath};
     json configJson = json::parse(configFile);
-    auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>(configJson["model"].get<std::string>());
+    uint32_t modelNumber = Random::get<uint32_t>(1, 4);
+    auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>(configJson["model" + std::to_string(modelNumber)].get<std::string>());
     auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(configJson["material"].get<std::string>());
 
     material = material->CreateDynamicInstance();
@@ -43,7 +45,7 @@ std::shared_ptr<TrafficCar> TrafficCar::Create(uint64_t id, const std::string& n
     auto staticMeshComponent = newTrafficCar->AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
     staticMeshComponent.lock()->GetTransform().SetPosition({0.f, 0.3f, 0.f});
 
-    newTrafficCar->AddRigidbody(configJson);
+    newTrafficCar->AddRigidbody(configJson, modelNumber);
 
     newTrafficCar->AddComponent<AIComponent>("AIComponent", configPath);
 
@@ -59,13 +61,13 @@ void TrafficCar::Update() {
 void TrafficCar::AIUpdate() {
 }
 
-void TrafficCar::AddRigidbody(const nlohmann::json& configJson) {
+void TrafficCar::AddRigidbody(const nlohmann::json& configJson, const uint32_t modelNumber) {
     this->rigidbodyComponent = this->AddComponent<mlg::RigidbodyComponent>("Rigidbody");
 
     float bounciness = configJson["parameters"].value("bounciness", 0.5f);
     this->rigidbodyComponent.lock()->SetBounciness(bounciness);
 
-    for (const auto& collider : configJson["colliders"]) {
+    for (const auto& collider : configJson["colliders" + std::to_string(modelNumber)]) {
         const glm::vec2 offset{
                 collider["offset"][0].get<float>(),
                 collider["offset"][1].get<float>(),

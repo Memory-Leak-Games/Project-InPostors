@@ -120,7 +120,7 @@ namespace mlg {
         SPDLOG_DEBUG("City size: ({}, {})", citySize.x, citySize.y);
         SPDLOG_DEBUG("Tile size: {}", tileSize);
 
-        ground.lock()->GetTransform().SetScale(groundScale);
+        ground.lock()->GetTransform().SetScale(groundScale * 10.f);
 
         levelFile.close();
     }
@@ -210,6 +210,14 @@ namespace mlg {
         return levelJson["name"];
     }
 
+
+    float LevelGenerator::LoadLevelTimeLimit(const std::string& path) {
+        std::ifstream levelFile{path};
+        json levelJson = json::parse(levelFile);
+
+        return levelJson.value("time-limit", -1.f);
+    }
+
     std::vector<TaskData> LevelGenerator::GetTasks(const std::string &path) {
         std::vector<TaskData> tasks = {};
 
@@ -223,7 +231,7 @@ namespace mlg {
         std::ifstream poolFile{tileJson["factory-pool"].get<std::string>()};
         json poolJson = json::parse(poolFile);
 
-        for (const auto &jsonTask : poolJson["tasks"]) {
+        for (const auto &jsonTask: poolJson["tasks"]) {
             int quant = jsonTask["quantity"].get<int>();
             tasks.reserve(quant);
             TaskData newTask;
@@ -242,6 +250,7 @@ namespace mlg {
 
         return tasks;
     }
+
 
     std::vector<std::string> LevelGenerator::GetLevelLayout() {
         return levelLayout;

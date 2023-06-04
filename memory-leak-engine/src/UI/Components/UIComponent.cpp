@@ -45,6 +45,9 @@ namespace mlg {
     }
 
     void UIComponent::Draw(const UIRenderer* renderer) {
+        if(!visible)
+            return;
+
         if(!isBillboard) {
             if (renderer->windowSizeDirty || actualPositionDirty) {
                 CalculateActualPosition(renderer);
@@ -94,6 +97,12 @@ namespace mlg {
         actualPositionDirty = true;
     }
 
+    bool UIComponent::IsVisible() const {
+        return visible;
+    }
 
+    void UIComponent::SetVisible(bool visible) {
+        UIComponent::visible = visible;
+    }
 
 }
