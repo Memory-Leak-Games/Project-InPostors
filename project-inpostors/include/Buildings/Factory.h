@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Gameplay/Entity.h"
-#include <memory>
 
 namespace mlg {
     class RigidbodyComponent;
@@ -14,6 +13,7 @@ class Factory : public mlg::Entity {
 private:
     Factory(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent);
 
+    std::shared_ptr<mlg::RigidbodyComponent> mainRigidbody;
     std::shared_ptr<class EquipmentComponent> equipmentComponent;
 
 
@@ -29,6 +29,7 @@ private:
     std::shared_ptr<class mlg::Label> amount3;
 
     unsigned int produceTimerHandle = 0;
+    bool working = false;
 
 public:
     ~Factory() override;
@@ -45,12 +46,15 @@ public:
 
     bool IsWorking() const;
 
+    const std::vector<std::string> GetInputs() const;
+
 private:
     enum class FactoryType {
         OneInput,
         OneOutput,
         OneInputOutput,
-        SeparateInputOutput
+        SeparateInputOutput,
+        Storage
     } factoryType;
 
     glm::vec2 meshOffset;
@@ -58,12 +62,14 @@ private:
     void AddMesh(const nlohmann::json& staticMeshJson);
     void AddCollider(const nlohmann::json& colliderJson, mlg::RigidbodyComponent* rigidbodyComponent);
     void AddEmitter(const nlohmann::json& emitterJson);
+    void AddTriggers(const nlohmann::json& config);
     void AddTrigger(const nlohmann::json& triggerJson, const std::string& triggerName,
                     mlg::RigidbodyComponent* rigidbodyComponent);
 
+
     void CheckBlueprintAndStartWorking();
     void ProduceItem();
-    //void Update() override;
 
     static void GenerateUI(const std::shared_ptr<Factory>& result);
+    void FinishTask();
 };

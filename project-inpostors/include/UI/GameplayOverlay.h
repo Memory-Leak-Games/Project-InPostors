@@ -25,4 +25,8 @@ public:
 
     void Start() override;
     void Update() override;
+
+    void SetScore(int score);
+    void SetChat(const std::string& chat);
+    void SetClock(float time);
 };

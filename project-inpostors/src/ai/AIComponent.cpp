@@ -7,12 +7,15 @@
 #include <nlohmann/json.hpp>
 
 #include "Core/RGBA.h"
+#include "Core/SceneManager/Scene.h"
+#include "Core/SceneManager/SceneManager.h"
 #include "Core/Settings/SettingsManager.h"
 #include "Gameplay/Components/RigidbodyComponent.h"
 #include "Gameplay/Components/StaticMeshComponent.h"
 #include "Gameplay/Entity.h"
 
 #include "Rendering/Gizmos/Gizmos.h"
+#include "Scenes/LevelScene.h"
 #include "ai/SteeringBehaviors.h"
 
 #include "Core/Math.h"
@@ -29,7 +32,13 @@ void AIComponent::Start() {
 
     staticMeshComponent = GetOwner().lock()->GetComponentByClass<mlg::StaticMeshComponent>().lock();
 
+    mlg::Scene* currentScene = mlg::SceneManager::GetCurrentScene();
+    auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
+    steering->SetNavigationGraph(levelScene->GetNavigationGraph());
+
     steering->CreatePath(256);
+
+    GetSteering()->TrafficDriveOn();
 }
 
 AIComponent::AIComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
@@ -80,6 +89,7 @@ void AIComponent::LoadParameters(const std::string& path = "res/config/cars/traf
     maxForce = acceleration * mass;
 
     maxSpeed = parameters["maxSpeed"];
+    viewDistance = parameters["viewDistance"];
 }
 
 float AIComponent::GetMaxForce() const {
@@ -88,6 +98,10 @@ float AIComponent::GetMaxForce() const {
 
 float AIComponent::GetMaxSpeed() const {
     return maxSpeed;
+}
+
+float AIComponent::GetViewDistance() const {
+    return viewDistance;
 }
 
 glm::vec2 AIComponent::GetPosition() const {

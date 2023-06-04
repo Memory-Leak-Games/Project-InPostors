@@ -8,6 +8,7 @@
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
 #include "UI/Components/ProgressBar.h"
+#include <string>
 
 GameplayOverlay::GameplayOverlay(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent)
     : mlg::Entity(id, name, isStatic, parent) {}
@@ -93,4 +94,8 @@ void GameplayOverlay::Update() {
 //    if (questBar->percentage <= 0.f){
 //        questBar->percentage = 1.0f;
 //    }
+}
+
+void GameplayOverlay::SetScore(int score) {
+    this->score->SetText(fmt::format("Score: {}", score));
 }

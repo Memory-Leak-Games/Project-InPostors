@@ -17,8 +17,8 @@ namespace mlg {
     Label::Label(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<class FontAsset>& font)
         : UIComponent(std::move(owner), std::move(name)), font(font), scale(32.f / font->fontSize) {
         shader = std::make_shared<ShaderProgram>(
-                AssetManager::GetAsset<ShaderAsset>("res/shaders/UI/glyph.vert"),
-                AssetManager::GetAsset<ShaderAsset>("res/shaders/UI/glyph.frag"));
+                AssetManager::GetAsset<ShaderAsset>("res/shaders/ui/glyph.vert"),
+                AssetManager::GetAsset<ShaderAsset>("res/shaders/ui/glyph.frag"));
     }
 
     void Label::Draw(const UIRenderer* renderer) {

@@ -34,8 +34,22 @@ std::string EquipmentComponent::RequestProduct() {
     return product;
 }
 
+const std::vector<std::string>& EquipmentComponent::GetProducts() const {
+    return equipment;
+}
+
 bool EquipmentComponent::Has(const std::string& product) const {
     return std::find(equipment.begin(), equipment.end(), product) != equipment.end();
+}
+
+int EquipmentComponent::GetNumberOfProduct(const std::string& productId) const {
+    int count = 0;
+    for (const auto& product : equipment) {
+        if (product == productId)
+            count++;
+    }
+
+    return count;
 }
 
 std::string EquipmentComponent::ToString() const {
