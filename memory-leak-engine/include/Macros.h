@@ -53,6 +53,8 @@ namespace LoggingMacros {
 #undef TRACY_ENABLE
 #endif
 
+#define TRACY_ON_DEMAND
+
 #include "common/TracyColor.hpp"
 #include "glad/glad.h"
 #include "tracy/Tracy.hpp"
