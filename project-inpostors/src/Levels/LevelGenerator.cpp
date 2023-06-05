@@ -357,9 +357,9 @@ namespace mlg {
         if (!mapObj.isDynamic)
             return mapObj;
 
-        mapObj.lifetime = jsonMapObject.value("lifetime", 0.5);
-        mapObj.linearDrag = jsonMapObject.value("linear-drag", 20.0);
-        mapObj.angualrDrag = jsonMapObject.value("angular-drag", 10.0);
+        mapObj.lifetime = jsonMapObject.value("lifetime", 0.5f);
+        mapObj.linearDrag = jsonMapObject.value("linear-drag", 20.0f);
+        mapObj.angularDrag = jsonMapObject.value("angular-drag", 10.0f);
 
         return mapObj;
     }
