@@ -47,8 +47,6 @@ namespace mlg {
         instance->fxaa = std::make_unique<FXAAFrameBuffer>(windowWidth, windowHeight);
 
         Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, OnWindowResize);
-
-        TracyGpuContext;
     }
 
     void Renderer::OnWindowResize(const Event &event) {
@@ -76,9 +74,6 @@ namespace mlg {
     }
 
     void Renderer::DrawRenderables(FrameBuffer *currentFramebuffer) {
-        ZoneScopedN("Draw Renderables");
-        TracyGpuZone("Draw Renderables");
-
         glViewport(0, 0, Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
         currentFramebuffer->Activate();
         for (auto &renderable: renderables) {
@@ -87,9 +82,6 @@ namespace mlg {
     }
 
     void Renderer::DrawShadowMap() {
-        ZoneScopedN("Draw ShadowMap");
-        TracyGpuZone("Draw ShadowMap");
-
         DirectionalLight::GetInstance()->BindShadowMap();
         DirectionalLight::GetInstance()->BindShadowMapShader();
 
@@ -105,9 +97,6 @@ namespace mlg {
     }
 
     void Renderer::LateDraw() {
-        ZoneScopedN("Late Draw");
-        TracyGpuZone("Late Draw");
-
         for (auto &lateRenderable: lateRenderables) {
             if (lateRenderable.expired())
                 continue;
@@ -143,9 +132,6 @@ namespace mlg {
     }
 
     void Renderer::DrawFrame() {
-        ZoneScopedN("Renderer DrawFrame");
-        TracyGpuZone("Renderer DrawFrame");
-
         GeometryPass();
 
         SSAOPass();
@@ -168,15 +154,11 @@ namespace mlg {
         glDisable(GL_DEPTH_TEST);
 
         if (isFXAAActive) {
-            ZoneScopedN("FXAA");
-            TracyGpuZone("FXAA");
             postProcess->Activate();
             fxaa->Draw();
         }
 
         {
-            ZoneScopedN("PostProcess");
-            TracyGpuZone("PostProcess");
             RenderingAPI::SetDefaultFrameBuffer();
             postProcess->Draw();
 //            postProcess->CopyDepthBuffer(0);
@@ -184,9 +166,6 @@ namespace mlg {
     }
 
     void Renderer::GeometryPass() {
-        ZoneScopedN("Geometry Pass");
-        TracyGpuZone("Geometry Pass");
-
         gBuffer->Activate();
         gBuffer->Clear();
 
@@ -199,8 +178,6 @@ namespace mlg {
             gBuffer->BindTextures(0);
             return;
         }
-        ZoneScopedN("SSAO");
-        TracyGpuZone("SSAO");
 
         ssaoFrameBuffer->BindTextureUnits(gBuffer->GetPositionTexture(), gBuffer->GetNormalTexture());
         ssaoFrameBuffer->Draw();

@@ -22,7 +22,6 @@ namespace mlg {
     }
 
     void Label::Draw(const UIRenderer* renderer) {
-        ZoneScopedN("Draw Label");
         if(!visible)
             return;
         UIComponent::Draw(renderer);
@@ -49,13 +48,11 @@ namespace mlg {
 
             // Skip rendering space
             if (c == ' ') {
-                ZoneScopedN("Space");
                 cursor.x += (font->fontSize >> 1) * actualScale;
             } else if (c == '\n') {
                 cursor.x = actualPosition.x;
                 cursor.y -= font->fontSize * actualScale;
             } else {
-                ZoneScopedN("Char");
                 ch = font->characters[c - 33];
 
                 // Calculate position and size
@@ -73,7 +70,6 @@ namespace mlg {
 
                 // Render quad
                 {
-                    ZoneScopedN("Draw call");
                     glDrawArrays(GL_TRIANGLES, 0, 6);
                 }
                 // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)

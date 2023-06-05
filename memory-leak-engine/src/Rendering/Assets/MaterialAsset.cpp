@@ -82,7 +82,6 @@ namespace mlg {
     }
 
     void MaterialAsset::Load() {
-        ZoneScopedN("Load MaterialAsset");
         std::string path = GetPath();
         SPDLOG_DEBUG("Loading Material at path: {}", path);
 

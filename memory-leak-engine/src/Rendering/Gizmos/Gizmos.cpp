@@ -140,9 +140,6 @@ void mlg::Gizmos::Stop() {
 }
 
 void Gizmos::DrawGizmos() {
-    ZoneScoped;
-    TracyGpuZone("Draw Gizmos")
-
     glEnable(GL_DEPTH_TEST);
     shader->Activate();
     glEnable(GL_PROGRAM_POINT_SIZE);

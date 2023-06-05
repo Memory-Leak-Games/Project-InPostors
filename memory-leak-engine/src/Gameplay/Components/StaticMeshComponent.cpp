@@ -30,17 +30,10 @@ namespace mlg {
         if (!visible)
             return;
 
-        ZoneScopedN("Draw StaticMesh");
-        {
-            ZoneScopedN("Send Matrices");
-            material->Activate();
-            material->GetShaderProgram()->SetMat4F("world", GetTransform().GetWorldMatrix());
-        }
+        material->Activate();
+        material->GetShaderProgram()->SetMat4F("world", GetTransform().GetWorldMatrix());
 
-        {
-            ZoneScopedN("Draw Model");
-            renderer->DrawModel(model.get());
-        }
+        renderer->DrawModel(model.get());
     }
 
     void StaticMeshComponent::DrawShadowMap(struct Renderer* renderer, struct ShaderProgram* shaderProgram) {
