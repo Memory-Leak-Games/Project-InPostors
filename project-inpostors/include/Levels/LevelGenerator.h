@@ -36,6 +36,9 @@ namespace mlg {
             float scale;
             float colliderSize = 1.0f;
             float colliderOffset = 0.0f;
+            float lifetime = -1.f; // Only valid when isDynamic is set to true
+            float linearDrag = 20.f;
+            float angularDrag = 10.f;
             bool hasCollision = false;
             bool isDynamic = false;
         };
@@ -49,7 +52,7 @@ namespace mlg {
             char symbol = ' ';
         } roadsObjects;
 
-        //TODO: more info about pools
+        //TODO: more info about pools?
         struct MapFactory {
             std::string configPath;
             unsigned int remaining;
