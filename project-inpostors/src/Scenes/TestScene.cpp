@@ -9,6 +9,7 @@
 #include "ai/Path.h"
 
 #include "ScoreManager.h"
+#include "Levels/LevelGenerator.h" //todo: remove when done testing
 #include <spdlog/spdlog.h>
 
 TestScene::TestScene() : LevelScene("res/levels/maps/test_level.json") {}
@@ -17,7 +18,7 @@ void TestScene::Load() {
     LevelScene::Load();
 
     TaskManager* taskManager = GetTaskManager();
-    TaskData ironTask {
+   /* TaskData ironTask {
         "iron",
         20.0f,
         100,
@@ -34,6 +35,12 @@ void TestScene::Load() {
     for (int i = 0; i < 5; ++i) {
         taskManager->AddTaskToPool(ironTask);
         // taskManager->AddTaskToPool(furnitureTask);
+    }*/
+    //todo: testing only
+    std::vector<TaskData> tasks = mlg::LevelGenerator::GetTasks("res/levels/maps/test_level.json");
+    for (const auto& task : tasks)
+    {
+        taskManager->AddTaskToPool(task);
     }
 
     auto scoreboard = ScoreManager::GetScoreBoard("TestLevel");
@@ -43,7 +50,6 @@ void TestScene::Load() {
 
     ScoreManager::SaveScore("TestLevel", "Beans", 100);
     ScoreManager::SaveScore("MLGLevel", "_MLG_", 2137);
-
 
 }
 

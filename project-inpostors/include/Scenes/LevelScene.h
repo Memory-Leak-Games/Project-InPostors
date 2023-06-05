@@ -22,7 +22,7 @@ private:
     size_t timeLimitTimer;
 
 public:
-    explicit LevelScene(const std::string& path);
+    explicit LevelScene(std::string  path);
     ~LevelScene() override;
 
     void Load() override;

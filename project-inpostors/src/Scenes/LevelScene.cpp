@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "Scenes/LevelScene.h"
 
 #include "Core/HID/Input.h"
@@ -25,7 +27,7 @@
 #include "ScoreManager.h"
 #include "TaskManager.h"
 
-LevelScene::LevelScene(const std::string& path) : levelPath(path) {}
+LevelScene::LevelScene(std::string path) : levelPath(std::move(path)) {}
 
 LevelScene::~LevelScene() = default;
 
