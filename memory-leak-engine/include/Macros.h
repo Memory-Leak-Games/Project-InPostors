@@ -71,3 +71,5 @@ namespace LoggingMacros {
 #define MLG_SETMASK(x, mask) x |= mask
 #define MLG_UNSETMASK(x, mask) x &= ~mask
 #define MLG_TOGGLEMASK(x, mask) x ^= mask
+
+#define RUNTIME_FILES_PATH "res/runtime_files/"

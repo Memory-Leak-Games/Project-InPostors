@@ -1,5 +1,6 @@
 #include "ScoreManager.h"
 
+#include <filesystem>
 #include <fstream>
 
 using json = nlohmann::json;
@@ -15,9 +16,15 @@ int ScoreManager::GetScore() const {
 
 std::vector<ScoreManager::ScoreBoardEntry> ScoreManager::GetScoreBoard(
         const std::string& levelName) {
+    
+    json scoreboardJson;
 
-    std::ifstream file{SCOREBOARD_PATH};
-    json scoreboardJson = json::parse(file);
+    if (exists(std::filesystem::path(SCOREBOARD_PATH))) {
+        std::ifstream file{SCOREBOARD_PATH};
+        scoreboardJson = json::parse(file);
+    } else {
+        scoreboardJson = json::object();
+    }
 
     std::vector<ScoreBoardEntry> scoreboard;
 
@@ -32,9 +39,17 @@ std::vector<ScoreManager::ScoreBoardEntry> ScoreManager::GetScoreBoard(
     return scoreboard;
 }
 
+#include "iostream"
+
 void ScoreManager::SaveScore(const std::string& levelName, const std::string& playerName, int score) {
-    std::ifstream file{SCOREBOARD_PATH};
-    json scoreboardJson = json::parse(file);
+    json scoreboardJson;
+
+    if (exists(std::filesystem::path(SCOREBOARD_PATH))) {
+        std::ifstream file{SCOREBOARD_PATH};
+        scoreboardJson = json::parse(file);
+    } else {
+        scoreboardJson = json::object();
+    }
 
     if (!scoreboardJson.contains(levelName)) {
         scoreboardJson[levelName] = json::array();

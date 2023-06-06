@@ -1,6 +1,6 @@
 #pragma once
 
-#define SCOREBOARD_PATH "res/runtime_files/scoreboard.json"
+#define SCOREBOARD_PATH RUNTIME_FILES_PATH "scoreboard.json"
 
 class ScoreManager { 
 private:
