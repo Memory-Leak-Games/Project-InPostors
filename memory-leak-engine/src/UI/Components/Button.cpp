@@ -49,9 +49,9 @@ namespace mlg {
 
     void Button::Draw(const UIRenderer* renderer) {
         ZoneScopedN("Draw Button");
-        if (!visible)
-            return;
         UIComponent::Draw(renderer);
+        if(!visible)
+            return;
 
         MaterialAsset* material;
         if (hasFocus)

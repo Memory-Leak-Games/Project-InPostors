@@ -52,14 +52,14 @@ namespace mlg {
     }
 
     void UIComponent::Draw(const UIRenderer* renderer) {
-        if (!visible)
-            return;
-
         if (!isBillboard) {
             if (renderer->windowSizeDirty || actualPositionDirty) {
                 CalculateActualPosition(renderer, position);
             }
         } else {
+            if (!visible)
+                return;
+
             if (billboardTarget.lock()->GetTransform().GetIsDirty() || true) {
                 FollowTarget(renderer);
             }

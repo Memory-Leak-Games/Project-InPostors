@@ -17,9 +17,9 @@ namespace mlg {
 
     void ProgressBar::Draw(const UIRenderer* renderer) {
         ZoneScopedN("Draw ProgressBar");
+        UIComponent::Draw(renderer);
         if(!visible)
             return;
-        UIComponent::Draw(renderer);
 
         material->Activate();
 
