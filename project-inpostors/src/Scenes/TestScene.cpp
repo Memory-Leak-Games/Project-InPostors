@@ -1,8 +1,10 @@
 #include "Scenes/TestScene.h"
 
 #include "Core/HID/Input.h"
+#include "Core/SceneManager/SceneManager.h"
 #include "Gameplay/EntityManager.h"
 #include "SceneGraph/SceneGraph.h"
+#include "Scenes/LevelScene.h"
 #include "TaskManager.h"
 
 #include "ai/AIComponent.h"
@@ -43,5 +45,10 @@ void TestScene::Update() {
 
     if (mlg::Input::IsActionJustPressed("accept_task")) {
         GetTaskManager()->AcceptNewTask();
+    }
+
+    if (mlg::Input::IsActionJustPressed("debug_skip")) {
+        auto newScene = std::make_unique<LevelScene>("res/levels/maps/detroit.json");
+        mlg::SceneManager::SetNextScene(std::move(newScene));
     }
 }

@@ -229,6 +229,15 @@
     ]
   },
   {
+    "name": "debug_skip",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 266
+      }
+    ]
+  },
+  {
     "name": "pause",
     "mappings": [
       {

@@ -28,25 +28,30 @@ void mlg::SceneManager::Stop() {
     instance = nullptr;
 }
 
-void mlg::SceneManager::LoadScene(std::unique_ptr<Scene> scene) {
-    auto loadScene = [&scene]() {
-        if (instance->currentScene != nullptr)
-            instance->currentScene->UnLoad();
-        
-        Initializer::StopSceneComponents();
-        Initializer::InitializeSceneComponents();
-        
-        instance->currentScene = std::move(scene);
-        instance->currentScene->Load();
-    };
+void mlg::SceneManager::SetNextScene(std::unique_ptr<Scene> scene) {
+    instance->nextScene = std::move(scene);
 
     if (mlg::Core::GetInstance()->IsClosed()) {
-        loadScene();
         return;
     }
 
-    mlg::Core::GetInstance()->OnMainLoopEnd.append(loadScene);
     mlg::Core::GetInstance()->Close();
+}
+
+void mlg::SceneManager::LoadNextScene() {
+    if (instance->currentScene != nullptr)
+        instance->currentScene->UnLoad();
+    
+    Initializer::StopSceneComponents();
+    Initializer::InitializeSceneComponents();
+    
+    instance->currentScene = std::move(instance->nextScene);
+    instance->currentScene->Load();
+    mlg::Core::GetInstance()->MainLoop();
+}
+
+bool mlg::SceneManager::HasNextScene() {
+    return instance->nextScene != nullptr;
 }
 
 void mlg::SceneManager::Update() {
