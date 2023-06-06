@@ -47,9 +47,11 @@ Core* Core::instance;
 void Core::MainLoop() {
     DirectionalLight::GetInstance();
 
-    bool shouldClose = false;
+    closed = false;
+    shouldClose = false;
+
     Window::GetInstance()->GetEventDispatcher()->appendListener(
-            EventType::WindowClose, [&shouldClose](const Event& event) {
+            EventType::WindowClose, [this](const Event& event) {
                 shouldClose = true;
             });
 
@@ -97,6 +99,9 @@ void Core::MainLoop() {
         FrameMark;
         TracyGpuCollect;
     }
+
+    OnMainLoopEnd();
+    closed = true;
 }
 
 void Core::TickWindow() const {
@@ -210,4 +215,12 @@ void Core::Initialize() {
 
 Core* Core::GetInstance() {
     return Core::instance;
+}
+
+void mlg::Core::Close() {
+    this->shouldClose = true;
+}
+
+bool mlg::Core::IsClosed() const {
+    return this->closed;
 }

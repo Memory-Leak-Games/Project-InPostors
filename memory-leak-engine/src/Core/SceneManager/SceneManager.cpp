@@ -1,5 +1,6 @@
 #include "Core/SceneManager/SceneManager.h"
 
+#include "Core/Core.h"
 #include "Core/SceneManager/Scene.h"
 #include "Initializer.h"
 
@@ -28,18 +29,35 @@ void mlg::SceneManager::Stop() {
 }
 
 void mlg::SceneManager::LoadScene(std::unique_ptr<Scene> scene) {
-    if (instance->currentScene != nullptr)
-        instance->currentScene->UnLoad();
-    
-    Initializer::StopSceneComponents();
-    Initializer::InitializeSceneComponents();
-    
-    instance->currentScene = std::move(scene);
-    instance->currentScene->Load();
+    auto loadScene = [&scene]() {
+        if (instance->currentScene != nullptr)
+            instance->currentScene->UnLoad();
+        
+        Initializer::StopSceneComponents();
+        Initializer::InitializeSceneComponents();
+        
+        instance->currentScene = std::move(scene);
+        instance->currentScene->Load();
+    };
+
+    if (mlg::Core::GetInstance()->IsClosed()) {
+        loadScene();
+        return;
+    }
+
+    mlg::Core::GetInstance()->OnMainLoopEnd.append(loadScene);
+    mlg::Core::GetInstance()->Close();
 }
 
 void mlg::SceneManager::Update() {
+    if (instance->currentScene == nullptr)
+        return;
+
     instance->currentScene->Update();
+}
+
+void mlg::SceneManager::ExitGame() {
+    mlg::Core::GetInstance()->Close();
 }
 
 mlg::Scene* mlg::SceneManager::GetCurrentScene() {

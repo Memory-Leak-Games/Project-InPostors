@@ -19,6 +19,8 @@ namespace mlg {
 
         static void LoadScene(std::unique_ptr<class Scene> scene);
         static void Update();
+
+        static void ExitGame();
     };
 
 }// namespace mlg

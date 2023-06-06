@@ -1,4 +1,5 @@
 #include "UI/PauseMenu.h"
+#include "Core/SceneManager/Scene.h"
 #include "UI/Components/Button.h"
 
 #include "UI/Components/Button.h"
@@ -7,6 +8,7 @@
 
 #include "Rendering/Assets/MaterialAsset.h"
 #include "UI/Assets/FontAsset.h"
+#include "Core/SceneManager/SceneManager.h"
 
 #define BUTTON_MATERIAL "res/materials/ui/buttons/button_material.json"
 #define BUTTON_FOCUSED_MATERIAL "res/materials/ui/buttons/button_focused_material.json"
@@ -81,6 +83,7 @@ void PauseMenu::AddExitButton() {
     sharedExitButton->GetLabel().lock()->SetText("Exit");
 
     sharedExitButton->OnClick.append([this]() {
+        mlg::SceneManager::ExitGame();
     });
 }
 
