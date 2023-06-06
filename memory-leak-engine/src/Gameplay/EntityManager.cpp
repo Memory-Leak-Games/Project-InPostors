@@ -1,3 +1,4 @@
+#include <tracy/Tracy.hpp>
 #include "Gameplay/EntityManager.h"
 #include "Macros.h"
 
@@ -33,6 +34,8 @@ namespace mlg {
     }
 
     void EntityManager::AIUpdate() {
+        ZoneScopedNC("Entity AI Update", tracy::Color::ColorType::Green);
+
         for (const auto& entity : instance->entities) {
             if (entity->IsStatic())
                 continue;
@@ -42,6 +45,8 @@ namespace mlg {
     }
 
     void EntityManager::PhysicsUpdate() {
+        ZoneScopedNC("Entity Physics Update", tracy::Color::ColorType::Green);
+
         for (const auto& entity : instance->entities) {
             if (entity->IsStatic())
                 continue;
@@ -51,6 +56,7 @@ namespace mlg {
     }
 
     void EntityManager::Update() {
+        ZoneScopedN("Entity Update");
 
         for (const auto& entity : instance->entities) {
             if (entity->IsStatic())
@@ -61,6 +67,7 @@ namespace mlg {
     }
 
     void EntityManager::LateUpdate() {
+        ZoneScopedN("Entity LateUpdate");
 
         for (const auto& entity : instance->entities) {
             if (entity->IsStatic())
@@ -77,6 +84,7 @@ namespace mlg {
     }
 
     void EntityManager::ProcessEntities() {
+        ZoneScopedN("Entity Process");
         instance->entities.erase(std::remove_if(instance->entities.begin(), instance->entities.end(),
                                          [](const std::shared_ptr<Entity>& entry) {
                                              if (entry->IsQueuedForDeletion()) {

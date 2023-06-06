@@ -84,6 +84,8 @@ namespace mlg {
     }
 
     void Time::CapFPS() {
+        ZoneScoped;
+
         double minFramerate = 1 / (double) instance->fpsCap;
         while (GetTrueSeconds() - instance->frameStart <= minFramerate) {
             // This is sleep method so I am empty

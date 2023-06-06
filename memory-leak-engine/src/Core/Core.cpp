@@ -59,11 +59,14 @@ void Core::MainLoop() {
     Time::Update();
 
     while (!shouldClose) {
+        ZoneScoped;
+
         Time::Update();
         RenderingAPI::GetInstance()->Clear();
 
 #ifdef DEBUG
         {
+            ZoneScopedN("ImGui NewFrame");
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
@@ -75,6 +78,7 @@ void Core::MainLoop() {
 
 #ifdef DEBUG
         {
+            ZoneScopedN("ImGui Render");
             RenderImGUI();
         }
 
@@ -90,15 +94,19 @@ void Core::MainLoop() {
         TickWindow();
 
         Time::CapFPS();
+        FrameMark;
+        TracyGpuCollect;
     }
 }
 
 void Core::TickWindow() const {
+    ZoneScopedN("Window Update");
     Window::GetInstance()->SwapBuffers();
     Window::GetInstance()->PollEvents();
 }
 
 void Core::TickGameplay() const {
+    ZoneScopedN("Tick Gameplay");
     ComponentManager::ProcessComponents();
     EntityManager::ProcessEntities();
 
@@ -120,6 +128,7 @@ void Core::TickGameplay() const {
 }
 
 void Core::TickRendering() const {
+    ZoneScopedN("Tick Rendering");
     CommonUniformBuffer::UpdateAndSendToGPU();
 
     Renderer::GetInstance()->DrawFrame();

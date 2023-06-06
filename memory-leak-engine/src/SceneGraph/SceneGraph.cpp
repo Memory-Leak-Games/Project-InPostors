@@ -26,6 +26,8 @@ namespace mlg {
     }
 
     void SceneGraph::CalculateGlobalTransforms() {
+        ZoneScoped;
+
         root->Calculate();
     }
 

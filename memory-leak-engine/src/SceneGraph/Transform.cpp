@@ -79,6 +79,8 @@ namespace mlg {
 
     const glm::mat4& Transform::GetLocalMatrix() const {
         if (isDirtyLocal) {
+            ZoneScopedN("Calculate Local Matrix");
+
             glm::mat4 translation{1.f};
             translation[3][0] = position.x;
             translation[3][1] = position.y;

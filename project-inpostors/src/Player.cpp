@@ -98,12 +98,10 @@ void Player::Start() {
 }
 
 void Player::Update() {
-    auto sharedCarInput = carInput.lock();
-
-    if (sharedCarInput->GetPickUpInput())
+    if (carInput->GetPickUpInput())
         PickUp();
 
-    if (sharedCarInput->GetDropInput())
+    if (carInput->GetDropInput())
         Drop();
 
     std::vector<std::weak_ptr<mlg::Collider>> overlappingColliders;
@@ -123,6 +121,12 @@ void Player::Update() {
             }
         }
     }
+
+#ifdef DEBUG
+    ImGui::Begin(("Player " + std::to_string(playerData.id)).c_str());
+    ImGui::Text("%s", equipment->ToString().c_str());
+    ImGui::End();
+#endif
 }
 
 void Player::SetPlayerPosition(const glm::vec2& position) {
@@ -134,9 +138,7 @@ void Player::SetPlayerRotation(float angle) {
 }
 
 void Player::PickUp() {
-    auto sharedEquipment = equipment.lock();
-
-    if (sharedEquipment->IsFull())
+    if (equipment->IsFull())
         return;
 
     std::vector<std::weak_ptr<mlg::Collider>> overlappingColliders;
@@ -159,7 +161,7 @@ void Player::PickUp() {
         if (!factory->GetEquipmentComponent()->RequestProduct(factoryOutput))
             return;
 
-        sharedEquipment->AddProduct(factoryOutput);
+        equipment->AddProduct(factoryOutput);
         pickUpSound->Play(4.f);
     }
 }
@@ -167,7 +169,6 @@ void Player::PickUp() {
 void Player::Drop() {
     std::vector<std::weak_ptr<mlg::Collider>> overlappingColliders;
     rigidbodyComponent.lock()->GetOverlappingColliders(overlappingColliders);
-    auto sharedEquipment = equipment.lock();
 
     for (const auto& collider : overlappingColliders) {
         if (collider.lock()->GetTag() != "input" && collider.lock()->GetTag() != "inputOutput") {
@@ -183,13 +184,13 @@ void Player::Drop() {
         const std::vector<std::string> factoryInputs = factory->GetInputs();
 
         for (const auto& item : factoryInputs) {
-            if (!sharedEquipment->Has(item))
+            if (!equipment->Has(item))
                 continue;
 
             if (!factory->GetEquipmentComponent()->AddProduct(item))
                 continue;
 
-            sharedEquipment->RequestProduct(item);
+            equipment->RequestProduct(item);
             dropSound->Play(4.f);
 
             return;
@@ -211,10 +212,10 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/wood_material.json");
     for(int i = 0; i < 3; ++i) {
-        newPlayer->eqBillboards[i] = newPlayer->AddComponent<mlg::Image>("eqBillboard", material);
-        newPlayer->eqBillboards[i].lock()->SetBillboardTarget(newPlayer);
-        newPlayer->eqBillboards[i].lock()->SetSize({14.f, 14.f});
-        newPlayer->eqBillboards[i].lock()->SetVisible(false);
+        newPlayer->eqBillboards[i] = newPlayer->AddComponent<mlg::Image>("eqBillboard", material).lock();
+        newPlayer->eqBillboards[i]->SetBillboardTarget(newPlayer);
+        newPlayer->eqBillboards[i]->SetSize({14.f, 14.f});
+        newPlayer->eqBillboards[i]->SetVisible(false);
     }
 
     auto label = newPlayer->AddComponent<mlg::Label>("PlayerTag", font).lock();
@@ -260,45 +261,45 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
 
     for(int i = 0; i < 3; ++i) {
         newPlayer->eqIcons[i] = newPlayer->AddComponent<mlg::Image>("eqIcon", material).lock();
-        newPlayer->eqIcons[i].lock()->SetSize({32.f, 32.f});
-        newPlayer->eqIcons[i].lock()->SetVisible(false);
+        newPlayer->eqIcons[i]->SetSize({32.f, 32.f});
+        newPlayer->eqIcons[i]->SetVisible(false);
     }
 
     if(newPlayer->playerData.id == 0) {
-        newPlayer->eqIcons[0].lock()->SetPosition({72.f + 16, 17.f + 16});
-        newPlayer->eqIcons[1].lock()->SetPosition({72.f+36.f + 16, 17.f + 16});
-        newPlayer->eqIcons[2].lock()->SetPosition({72.f+72.f + 16, 17.f + 16});
+        newPlayer->eqIcons[0]->SetPosition({72.f + 16, 17.f + 16});
+        newPlayer->eqIcons[1]->SetPosition({72.f+36.f + 16, 17.f + 16});
+        newPlayer->eqIcons[2]->SetPosition({72.f+72.f + 16, 17.f + 16});
     } else {
-        newPlayer->eqIcons[0].lock()->SetPosition({1280 - 72.f - 16, 17.f + 16});
-        newPlayer->eqIcons[1].lock()->SetPosition({1280 - 72.f - 36.f - 16, 17.f + 16});
-        newPlayer->eqIcons[2].lock()->SetPosition({1280 - 72.f - 72.f - 16, 17.f + 16});
+        newPlayer->eqIcons[0]->SetPosition({1280 - 72.f - 16, 17.f + 16});
+        newPlayer->eqIcons[1]->SetPosition({1280 - 72.f - 36.f - 16, 17.f + 16});
+        newPlayer->eqIcons[2]->SetPosition({1280 - 72.f - 72.f - 16, 17.f + 16});
         for(int i = 0; i < 3; ++i)
-            newPlayer->eqIcons[i].lock()->SetAnchor({1, 0});
+            newPlayer->eqIcons[i]->SetAnchor({1, 0});
     }
 
     // Update equipment ui callback
-    newPlayer->equipment.lock()->equipmentChanged.append([newPlayer]() {
+    newPlayer->equipment->equipmentChanged.append([newPlayer]() {
         auto productManager = ProductManager::GetInstance();
-        auto items = newPlayer->equipment.lock()->GetEquipment();
+        auto items = newPlayer->equipment->GetEquipment();
 
         for(int i = 0; i < 3; ++i) {
-            if (newPlayer->eqIcons[i].expired() || newPlayer->eqBillboards[i].expired())
+            if (!newPlayer->eqIcons[i] || !newPlayer->eqBillboards[i])
                 return;
 
             if(items.size() > i) {
-                newPlayer->eqIcons[i].lock()->material = productManager->GetProduct(items[i]).icon;
-                newPlayer->eqBillboards[i].lock()->material = productManager->GetProduct(items[i]).icon;
-                newPlayer->eqIcons[i].lock()->SetVisible(true);
-                newPlayer->eqBillboards[i].lock()->SetVisible(true);
+                newPlayer->eqIcons[i]->material = productManager->GetProduct(items[i]).icon;
+                newPlayer->eqBillboards[i]->material = productManager->GetProduct(items[i]).icon;
+                newPlayer->eqIcons[i]->SetVisible(true);
+                newPlayer->eqBillboards[i]->SetVisible(true);
             } else {
-                newPlayer->eqIcons[i].lock()->SetVisible(false);
-                newPlayer->eqBillboards[i].lock()->SetVisible(false);
+                newPlayer->eqIcons[i]->SetVisible(false);
+                newPlayer->eqBillboards[i]->SetVisible(false);
             }
         }
 
         glm::vec2 billboardPos = {-7.f * (items.size() - 1.f), 53.f};
         for(int i = 0; i < items.size(); ++i) {
-            newPlayer->eqBillboards[i].lock()->SetPosition(billboardPos);
+            newPlayer->eqBillboards[i]->SetPosition(billboardPos);
             billboardPos.x += 14.f;
         }
     });

@@ -17,6 +17,7 @@ namespace mlg {
 
     // TODO: Do przemyślenia czy ta klasa powinna dziedziczyć z obrazka a jeżeli tak to wypadało by korzystać z jej kodu
     void ProgressBar::Draw(const UIRenderer* renderer) {
+        ZoneScopedN("Draw ProgressBar");
         if(!visible)
             return;
         UIComponent::Draw(renderer);

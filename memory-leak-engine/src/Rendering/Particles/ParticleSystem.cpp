@@ -61,6 +61,9 @@ namespace mlg {
     }
 
     void ParticleSystem::LateDraw(struct Renderer* renderer) {
+        ZoneScopedN("Draw Particles");
+        TracyGpuZone("Draw Particles");
+
         if (particlesToRender.empty())
             return;
 
@@ -72,6 +75,7 @@ namespace mlg {
         };
 
         {
+            ZoneScopedN("Sort Particles");
             std::sort(particlesToRender.begin(), particlesToRender.end(), sortByDistance);
         }
 
@@ -85,6 +89,8 @@ namespace mlg {
     }
 
     void ParticleSystem::Update(const Transform& transform) {
+        ZoneScopedN("Update Particle System");
+
         UpdateSystem(transform);
         particlesToRender.clear();
 

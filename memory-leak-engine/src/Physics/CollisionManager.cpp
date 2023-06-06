@@ -37,12 +37,16 @@ namespace mlg {
     }
 
     void CollisionManager::UpdateSpacialGrid() {
+        ZoneScopedC(tracy::Color::ColorType::Green);
+
         for (auto& collider : instance->colliders) {
             instance->spacialHashGrid->Update(collider.lock());
         }
     }
 
     void CollisionManager::DetectCollisions() {
+        ZoneScopedC(tracy::Color::ColorType::Green);
+
         for (auto& collider : instance->colliders) {
             if (collider.expired())
                 continue;
@@ -70,6 +74,8 @@ namespace mlg {
     }
 
     void CollisionManager::SolveCollisions() {
+        ZoneScopedC(tracy::Color::ColorType::Green);
+
         for (auto& collision : instance->collisionsThisTick) {
             auto collider = collision.collider.lock();
 

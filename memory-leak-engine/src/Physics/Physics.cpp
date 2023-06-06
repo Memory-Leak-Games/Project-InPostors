@@ -58,6 +58,7 @@ namespace mlg {
         instance->timeAccumulator += deltaTime;
 
         while (instance->timeAccumulator >= Time::GetFixedTimeStep()) {
+            ZoneScopedNC("Tick Physics", tracy::Color::ColorType::Green);
             instance->OnFixedUpdate();
             instance->SolveDynamics();
 
@@ -70,6 +71,8 @@ namespace mlg {
     }
 
     void Physics::SolveDynamics() {
+        ZoneScopedC(tracy::Color::ColorType::Green);
+
         for (auto& rigidbody : states) {
             if (rigidbody.expired())
                 continue;

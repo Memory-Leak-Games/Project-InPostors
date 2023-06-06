@@ -35,6 +35,17 @@ CPMAddPackage(
   OPTIONS "CXXOPTS_BUILD_EXAMPLES NO" "CXXOPTS_BUILD_TESTS NO" "CXXOPTS_ENABLE_INSTALL YES"
 )
 
+CPMAddPackage(
+    GITHUB_REPOSITORY wolfpld/tracy
+    VERSION 0.9.1
+    OPTIONS "TRACY_ENABLE ON"
+            "TRACY_ON_DEMAND ON"
+            "TRACY_NO_EXIT ON"
+            "TRACY_NO_BROADCAST ON"
+            "TRACY_NO_SYSTEM_TRACING ON"
+            "TRACY_TIMER_QPC ON"
+)
+
 CPMAddPackage("gh:g-truc/glm#0.9.9.8")
 CPMAddPackage("gh:gabime/spdlog@1.10.0")
 CPMAddPackage("gh:effolkronium/random@1.4.1")
@@ -42,7 +53,6 @@ CPMAddPackage("gh:wqking/eventpp@0.1.2")
 CPMAddPackage("gh:nlohmann/json@3.11.2")
 CPMAddPackage("gh:Neargye/magic_enum@0.8.2")
 CPMAddPackage("gh:freetype/freetype#VER-2-13-0")
-CPMAddPackage("gh:Neargye/magic_enum@0.8.2")
 CPMAddPackage("gh:tinyobjloader/tinyobjloader@2.0.0rc10")
 
 set_target_properties(glad

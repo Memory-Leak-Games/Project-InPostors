@@ -68,6 +68,9 @@ namespace mlg {
     }
 
     void UIRenderer::Draw() {
+        ZoneScopedN("Draw UI");
+        TracyGpuZone("Draw UI")
+
         frameBuffer->Activate();
         static GLfloat transparent[4] = {0.f, 0.f, 0.f, 0.f};
         glClearNamedFramebufferfv(frameBuffer->GetFbo(), GL_COLOR, 0, transparent);

@@ -30,6 +30,7 @@ target_link_libraries(${PROJECT_NAME} soloud)
 target_link_libraries(${PROJECT_NAME} stdc++)
 target_link_libraries(${PROJECT_NAME} magic_enum)
 target_link_libraries(${PROJECT_NAME} tinyobjloader)
+target_link_libraries(${PROJECT_NAME} Tracy::TracyClient)
 
 if (${CMAKE_BUILD_TYPE} MATCHES Debug)
     target_link_libraries(${PROJECT_NAME} imgui)
@@ -41,6 +42,5 @@ if (${CMAKE_BUILD_TYPE} MATCHES Debug)
         add_definitions(-D_WIN32_WINNT=0x0602 -DWINVER=0x0602)
         target_link_libraries(${PROJECT_NAME} ws2_32 wsock32 -ldbghelp)
     endif ()
-
 endif ()
 
