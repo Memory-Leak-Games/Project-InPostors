@@ -16,7 +16,7 @@ namespace mlg {
 
     protected:
         // Used for ui scaling
-        glm::vec2 anchor {0.0f, 0.0f};
+        glm::vec2 anchor{0.0f, 0.0f};
         glm::vec2 actualPosition = position;
         bool actualPositionDirty = true;
 
@@ -36,7 +36,7 @@ namespace mlg {
         UIComponent(std::weak_ptr<Entity> owner, std::string name);
 
         void Start() override;
-        void Draw(const class UIRenderer *renderer) override;
+        void Draw(const class UIRenderer* renderer) override;
 
         [[nodiscard]] const glm::vec2& GetPosition() const;
         [[nodiscard]] const glm::vec2& GetAnchor() const;
@@ -50,4 +50,4 @@ namespace mlg {
         void SetBillboardTarget(const std::weak_ptr<struct Entity>& billboardTarget);
         void SetVisible(bool visible);
     };
-}
+}// namespace mlg

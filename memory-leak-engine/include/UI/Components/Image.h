@@ -22,4 +22,4 @@ namespace mlg {
         void SetSize(const glm::vec2& size);
     };
 
-} // mlg
+}// namespace mlg

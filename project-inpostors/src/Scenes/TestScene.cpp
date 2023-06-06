@@ -1,16 +1,21 @@
 #include "Scenes/TestScene.h"
 
 #include "Core/HID/Input.h"
+#include "Gameplay/EntityManager.h"
+#include "SceneGraph/SceneGraph.h"
 #include "TaskManager.h"
 
-#include "ai/TrafficCar.h"
 #include "ai/AIComponent.h"
-#include "ai/SteeringBehaviors.h"
 #include "ai/Path.h"
+#include "ai/SteeringBehaviors.h"
+#include "ai/TrafficCar.h"
 
+#include "Levels/LevelGenerator.h"//todo: remove when done testing
 #include "ScoreManager.h"
-#include "Levels/LevelGenerator.h" //todo: remove when done testing
-#include <spdlog/spdlog.h>
+
+#include "UI/PauseMenu.h"
+
+#include "Gameplay/EntityManager.h"
 
 TestScene::TestScene() : LevelScene("res/levels/maps/test_level.json") {}
 
@@ -18,28 +23,9 @@ void TestScene::Load() {
     LevelScene::Load();
 
     TaskManager* taskManager = GetTaskManager();
-   /* TaskData ironTask {
-        "iron",
-        20.0f,
-        100,
-        10,
-    };
 
-    TaskData furnitureTask {
-        "furniture",
-        5.0f,
-        100,
-        10,
-    };
-
-    for (int i = 0; i < 5; ++i) {
-        taskManager->AddTaskToPool(ironTask);
-        // taskManager->AddTaskToPool(furnitureTask);
-    }*/
-    //todo: testing only
     std::vector<TaskData> tasks = mlg::LevelGenerator::GetTasks("res/levels/maps/test_level.json");
-    for (const auto& task : tasks)
-    {
+    for (const auto& task : tasks) {
         taskManager->AddTaskToPool(task);
     }
 
@@ -51,6 +37,8 @@ void TestScene::Load() {
     ScoreManager::SaveScore("TestLevel", "Beans", 100);
     ScoreManager::SaveScore("MLGLevel", "_MLG_", 2137);
 
+    pauseMenu = mlg::EntityManager::SpawnEntity<PauseMenu>(
+            "PauseMenu", false, mlg::SceneGraph::GetRoot());
 }
 
 void TestScene::Update() {
