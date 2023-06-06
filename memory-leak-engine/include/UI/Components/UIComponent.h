@@ -25,6 +25,9 @@ namespace mlg {
 
         bool visible = true;
 
+        // If true, component will register itself in UIRenderer on Start()
+        bool autoRegister = true;
+
 
     protected:
         void CalculateActualPosition(const struct UIRenderer* renderer);
@@ -40,14 +43,16 @@ namespace mlg {
 
         [[nodiscard]] const glm::vec2& GetPosition() const;
         [[nodiscard]] const glm::vec2& GetAnchor() const;
-        [[nodiscard]] bool IsBillboard1() const;
+        [[nodiscard]] bool IsBillboard() const;
         [[nodiscard]] const std::weak_ptr<struct Entity>& GetBillboardTarget() const;
         [[nodiscard]] bool IsVisible() const;
 
-        void SetPosition(const glm::vec2& position);
-        void SetAnchor(const glm::vec2& anchor);
+        virtual void SetPosition(const glm::vec2& position);
+        virtual void SetAnchor(const glm::vec2& anchor);
         void SetIsBillboard(bool isBillboard);
         void SetBillboardTarget(const std::weak_ptr<struct Entity>& billboardTarget);
-        void SetVisible(bool visible);
+        virtual void SetVisible(bool visible);
+
+        void SetAutoRegister(bool autoRegister);
     };
 }// namespace mlg

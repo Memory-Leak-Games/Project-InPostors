@@ -3,8 +3,10 @@
 
 #include "UI/Components/Button.h"
 #include "UI/Components/Image.h"
+#include "UI/Components/Label.h"
 
 #include "Rendering/Assets/MaterialAsset.h"
+#include "UI/Assets/FontAsset.h"
 
 #define BUTTON_MATERIAL "res/materials/ui/buttons/button_material.json"
 #define BUTTON_FOCUSED_MATERIAL "res/materials/ui/buttons/button_focused_material.json"
@@ -12,6 +14,7 @@
 
 #define BUTTON_SIZE glm::vec2{ 250, 50 }
 #define BUTTON_BASE_POSITION glm::vec2{ 200, 150 }
+#define FONT "res/fonts/ocraext.ttf"
 
 PauseMenu::PauseMenu(
         uint64_t id, const std::string& name,
@@ -48,12 +51,14 @@ void PauseMenu::AddResumeButton() {
     resumeButton = this->AddComponent<mlg::Button>(
             "ResumeButton",
             mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BUTTON_MATERIAL),
-            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BUTTON_FOCUSED_MATERIAL));
+            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BUTTON_FOCUSED_MATERIAL),
+            mlg::AssetManager::GetAsset<mlg::FontAsset>(FONT));
 
     auto sharedResumeButton = resumeButton.lock();
     sharedResumeButton->SetSize(BUTTON_SIZE);
     sharedResumeButton->SetPosition(BUTTON_BASE_POSITION + glm::vec2(0.f, 30.f));
     sharedResumeButton->GrabFocus();
+    sharedResumeButton->GetLabel().lock()->SetTextColor(glm::vec3(0.f));
 
     sharedResumeButton->OnClick.append([this]() {
         this->SetVisible(false);
@@ -65,11 +70,13 @@ void PauseMenu::AddExitButton() {
     exitButton = this->AddComponent<mlg::Button>(
             "ExitButton",
             mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BUTTON_MATERIAL),
-            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BUTTON_FOCUSED_MATERIAL));
+            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BUTTON_FOCUSED_MATERIAL),
+            mlg::AssetManager::GetAsset<mlg::FontAsset>(FONT));
 
     auto sharedExitButton = exitButton.lock();
     sharedExitButton->SetSize(BUTTON_SIZE);
     sharedExitButton->SetPosition(BUTTON_BASE_POSITION + glm::vec2(0.f, -30.f));
+    sharedExitButton->GetLabel().lock()->SetTextColor(glm::vec3(0.f));
 }
 
 void PauseMenu::SetVisible(bool visible) {

@@ -110,7 +110,7 @@ void LevelScene::HandlePauseGame() {
     if (mlg::Input::IsActionJustPressed("pause")) {
         bool isGamePaused = mlg::Time::IsGamePaused();
         mlg::Time::PauseGame(!isGamePaused);
-        pauseMenu.lock()->SetVisible(true);
+        pauseMenu.lock()->SetVisible(!isGamePaused);
     }
 }
 
