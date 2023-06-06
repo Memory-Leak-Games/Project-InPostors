@@ -40,7 +40,6 @@ CPMAddPackage(
     VERSION 0.9.1
     OPTIONS "TRACY_ENABLE ON"
             "TRACY_ON_DEMAND ON"
-            "TRACY_NO_EXIT ON"
             "TRACY_NO_BROADCAST ON"
             "TRACY_NO_SYSTEM_TRACING ON"
             "TRACY_TIMER_QPC ON"

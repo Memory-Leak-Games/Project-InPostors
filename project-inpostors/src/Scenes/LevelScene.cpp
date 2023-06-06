@@ -27,12 +27,17 @@
 #include "ScoreManager.h"
 #include "TaskManager.h"
 
+#include "UI/PauseMenu.h"
+
 LevelScene::LevelScene(std::string path) : levelPath(std::move(path)) {}
 
 LevelScene::~LevelScene() = default;
 
 void LevelScene::Load() {
     LoadLevel();
+
+    pauseMenu = mlg::EntityManager::SpawnEntity<PauseMenu>(
+            "PauseMenu", false, mlg::SceneGraph::GetRoot());
 
     taskManager = std::make_unique<TaskManager>();
     scoreManager = std::make_unique<ScoreManager>();
@@ -105,6 +110,7 @@ void LevelScene::HandlePauseGame() {
     if (mlg::Input::IsActionJustPressed("pause")) {
         bool isGamePaused = mlg::Time::IsGamePaused();
         mlg::Time::PauseGame(!isGamePaused);
+        pauseMenu.lock()->SetVisible(!isGamePaused);
     }
 }
 

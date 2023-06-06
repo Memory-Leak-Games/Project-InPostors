@@ -19,6 +19,8 @@ private:
     std::unique_ptr<class TaskManager> taskManager;
     std::unique_ptr<class ScoreManager> scoreManager;
 
+    std::weak_ptr<class PauseMenu> pauseMenu;
+
     size_t timeLimitTimer;
 
 public:

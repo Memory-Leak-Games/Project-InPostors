@@ -4,6 +4,9 @@
 
 namespace mlg {
     class UIFocusableComponent : public UIComponent {
+    private:
+        bool active = true;
+
     public:
         struct Next {
             std::weak_ptr<UIFocusableComponent> top;
@@ -16,5 +19,9 @@ namespace mlg {
         UIFocusableComponent(std::weak_ptr<Entity> owner, std::string name);
 
         virtual void GrabFocus();
+
+        void SetActive(bool active);
+        bool GetActive() const;
     };
+
 }
