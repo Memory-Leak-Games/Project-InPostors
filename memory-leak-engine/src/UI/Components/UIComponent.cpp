@@ -7,7 +7,7 @@
 namespace mlg {
 
     UIComponent::UIComponent(std::weak_ptr<Entity> owner, std::string name)
-        : Component(std::move(owner), std::move(name)) { }
+        : Component(std::move(owner), std::move(name)) {}
 
     void UIComponent::Start() {
         if (!autoRegister)
@@ -19,7 +19,8 @@ namespace mlg {
         UIRenderer::GetInstance()->AddRenderable(thisAsRenderable);
     }
 
-    void UIComponent::CalculateActualPosition(const UIRenderer* renderer) {
+    void UIComponent::CalculateActualPosition(
+            const UIRenderer* renderer, const glm::vec2& position) {
         actualPositionDirty = false;
 
         // Component's offset from anchor for 1280x720 window
@@ -56,7 +57,7 @@ namespace mlg {
 
         if (!isBillboard) {
             if (renderer->windowSizeDirty || actualPositionDirty) {
-                CalculateActualPosition(renderer);
+                CalculateActualPosition(renderer, position);
             }
         } else {
             if (billboardTarget.lock()->GetTransform().GetIsDirty() || true) {

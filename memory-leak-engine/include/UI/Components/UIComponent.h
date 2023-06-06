@@ -11,7 +11,6 @@ namespace mlg {
      */
     class UIComponent : public Component, public UIRenderable {
     private:
-        // During rendering we are using actualPosition instead
         glm::vec2 position = {0.0f, 0.0f};
 
     protected:
@@ -30,7 +29,7 @@ namespace mlg {
 
 
     protected:
-        void CalculateActualPosition(const struct UIRenderer* renderer);
+        virtual void CalculateActualPosition(const UIRenderer* renderer, const glm::vec2& position);
         void FollowTarget(const struct UIRenderer* renderer);
 
     public:

@@ -24,6 +24,8 @@ namespace mlg {
             label = GetOwner().lock()->AddComponent<Label>( name + "_label", font);
             label.lock()->SetText("Button");
             label.lock()->SetAutoRegister(false);
+            label.lock()->SetVerticalAlignment(Label::VerticalAlignment::Center);
+            label.lock()->SetHorizontalAlignment(Label::HorizontalAlignment::Center);
           }
 
     void Button::GrabFocus() {

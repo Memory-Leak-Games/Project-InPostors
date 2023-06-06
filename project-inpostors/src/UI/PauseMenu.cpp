@@ -59,6 +59,7 @@ void PauseMenu::AddResumeButton() {
     sharedResumeButton->SetPosition(BUTTON_BASE_POSITION + glm::vec2(0.f, 30.f));
     sharedResumeButton->GrabFocus();
     sharedResumeButton->GetLabel().lock()->SetTextColor(glm::vec3(0.f));
+    sharedResumeButton->GetLabel().lock()->SetText("Resume");
 
     sharedResumeButton->OnClick.append([this]() {
         this->SetVisible(false);
@@ -77,6 +78,10 @@ void PauseMenu::AddExitButton() {
     sharedExitButton->SetSize(BUTTON_SIZE);
     sharedExitButton->SetPosition(BUTTON_BASE_POSITION + glm::vec2(0.f, -30.f));
     sharedExitButton->GetLabel().lock()->SetTextColor(glm::vec3(0.f));
+    sharedExitButton->GetLabel().lock()->SetText("Exit");
+
+    sharedExitButton->OnClick.append([this]() {
+    });
 }
 
 void PauseMenu::SetVisible(bool visible) {
