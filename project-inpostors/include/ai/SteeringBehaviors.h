@@ -5,8 +5,6 @@ class TrafficCar;
 class Path;
 class NavigationGraph;
 
-const float waypointSeekDistance = 400;
-
 class SteeringBehaviors {
 public:
     enum SummingMethod {
@@ -53,6 +51,9 @@ private:
 
     glm::vec2 steeringForce;
     glm::vec2 target;
+
+    // Waypoint seeking distance
+    float waypointSeekingDistance;
 
     // Weights for adjusting behavior strength
     float separationWeight;

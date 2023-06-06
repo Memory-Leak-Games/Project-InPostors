@@ -1,6 +1,7 @@
 {
   "name": "AI Settings",
   "parameters": {
+    "waypointSeekingDistance": 20,
     "separationWeight": 1.0,
     "alignmentWeight": 1.0,
     "seekWeight": 0.0,
