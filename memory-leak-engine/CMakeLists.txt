@@ -42,8 +42,5 @@ if (${CMAKE_BUILD_TYPE} MATCHES Debug)
         add_definitions(-D_WIN32_WINNT=0x0602 -DWINVER=0x0602)
         target_link_libraries(${PROJECT_NAME} ws2_32 wsock32 -ldbghelp)
     endif ()
-
-else ()
-    option(TRACY_ENABLE "" OFF)
 endif ()
 
