@@ -189,6 +189,10 @@ void Core::Initialize() {
         Core::instance = new Core();
     }
 
+    // Ensure than runtime files path exists
+    if (!exists(std::filesystem::path(RUNTIME_FILES_PATH)))
+        std::filesystem::create_directories(RUNTIME_FILES_PATH);
+
 #ifdef DEBUG
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
