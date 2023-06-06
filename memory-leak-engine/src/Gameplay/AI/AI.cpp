@@ -47,7 +47,6 @@ namespace mlg {
         instance->timeAccumulator += deltaTime;
 
         while (instance->timeAccumulator >= Time::GetAITimeStep()) {
-            ZoneScopedNC("AI Tick", tracy::Color::ColorType::Green);
             instance->OnAIUpdate();
 
             //TODO: Do AI stuff here

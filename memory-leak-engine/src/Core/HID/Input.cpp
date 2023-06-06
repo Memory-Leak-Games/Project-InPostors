@@ -25,7 +25,6 @@ namespace mlg {
     }
 
     void Input::Update() {
-        ZoneScopedN("Input: Update");
 #ifdef DEBUG
         // to have instance in debbuger:
         auto localInstance  = instance;

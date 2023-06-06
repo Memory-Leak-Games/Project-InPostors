@@ -35,9 +35,6 @@ namespace mlg {
     }
 
     void CommonUniformBuffer::UpdateAndSendToGPU() {
-        ZoneScopedN("Common UBO update");
-        TracyGpuZone("Common UBO update")
-
         using Random = effolkronium::random_static;
 
         instance->uniforms.seconds = Time::GetSeconds();
