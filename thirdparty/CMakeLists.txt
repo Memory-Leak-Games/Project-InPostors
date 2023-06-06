@@ -35,7 +35,6 @@ CPMAddPackage(
   OPTIONS "CXXOPTS_BUILD_EXAMPLES NO" "CXXOPTS_BUILD_TESTS NO" "CXXOPTS_ENABLE_INSTALL YES"
 )
 
-# add wolfpld/tracy
 CPMAddPackage(
     GITHUB_REPOSITORY wolfpld/tracy
     VERSION 0.9.1
@@ -46,8 +45,6 @@ CPMAddPackage(
             "TRACY_NO_SYSTEM_TRACING ON"
             "TRACY_TIMER_QPC ON"
 )
-
-CPMAddPackage("gh:wolfpld/tracy@0.9.1")
 
 CPMAddPackage("gh:g-truc/glm#0.9.9.8")
 CPMAddPackage("gh:gabime/spdlog@1.10.0")
@@ -66,7 +63,6 @@ set_target_properties(glad
         nlohmann_json
         magic_enum
         freetype
-        TracyClient
         magic_enum
         tinyobjloader
         spdlog PROPERTIES FOLDER "thirdparty")

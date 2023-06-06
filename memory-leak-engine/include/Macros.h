@@ -53,10 +53,10 @@ namespace LoggingMacros {
 #undef TRACY_ENABLE
 #endif
 
-#include "common/TracyColor.hpp"
 #include "glad/glad.h"
 #include "tracy/Tracy.hpp"
 #include "tracy/TracyOpenGL.hpp"
+#include "common/TracyColor.hpp"
 
 // Get x bit
 #define MLG_BIT(x) (1 << x)
