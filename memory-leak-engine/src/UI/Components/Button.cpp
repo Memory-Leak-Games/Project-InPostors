@@ -1,30 +1,40 @@
 #include <utility>
 
+#include "Core/HID/Input.h"
+#include "UI/Components/UIFocusableComponent.h"
 #include "include/UI/Components/Button.h"
 
 #include "Rendering/Assets/MaterialAsset.h"
-#include "UI/UIRenderer.h"
 #include "Rendering/ShaderProgram.h"
+#include "UI/UIRenderer.h"
 
 namespace mlg {
-    Button::Button(std::weak_ptr<Entity> owner, std::string name,
-                   const std::shared_ptr<MaterialAsset>& defaultMaterial,
-                   const std::shared_ptr<MaterialAsset>& focusMaterial)
-        : UIFocusableComponent(std::move(owner), name), defaultMaterial(defaultMaterial), focusMaterial(focusMaterial)
-    {}
+    Button::Button(
+            std::weak_ptr<Entity> owner, std::string name,
+            const std::shared_ptr<MaterialAsset>& defaultMaterial,
+            const std::shared_ptr<MaterialAsset>& focusMaterial)
+        : UIFocusableComponent(std::move(owner), name),
+          defaultMaterial(defaultMaterial), focusMaterial(focusMaterial) {}
 
     void Button::GrabFocus() {
         UIFocusableComponent::GrabFocus();
     }
 
+    void Button::Update() {
+        UIFocusableComponent::Update();
+
+        if (hasFocus && GetActive() && mlg::Input::IsActionJustPressed("ui_accept"))
+            OnClick();
+    }
+
     void Button::Draw(const UIRenderer* renderer) {
         ZoneScopedN("Draw Button");
-        if(!visible)
+        if (!visible)
             return;
         UIComponent::Draw(renderer);
 
         MaterialAsset* material;
-        if(hasFocus)
+        if (hasFocus)
             material = focusMaterial.get();
         else
             material = defaultMaterial.get();
@@ -50,4 +60,4 @@ namespace mlg {
         Button::size = size;
     }
 
-}
+}// namespace mlg

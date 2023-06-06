@@ -39,7 +39,7 @@ std::shared_ptr<PauseMenu> PauseMenu::Create(
     pauseMenu->resumeButton.lock()->next.bottom = pauseMenu->exitButton;
     pauseMenu->exitButton.lock()->next.top = pauseMenu->resumeButton;
 
-    // pauseMenu->SetVisible(true);
+    pauseMenu->SetVisible(false);
 
     return pauseMenu;
 }
@@ -54,6 +54,11 @@ void PauseMenu::AddResumeButton() {
     sharedResumeButton->SetSize(BUTTON_SIZE);
     sharedResumeButton->SetPosition(BUTTON_BASE_POSITION + glm::vec2(0.f, 30.f));
     sharedResumeButton->GrabFocus();
+
+    sharedResumeButton->OnClick.append([this]() {
+        this->SetVisible(false);
+        mlg::Time::PauseGame(false);
+    });
 }
 
 void PauseMenu::AddExitButton() {

@@ -216,6 +216,19 @@
     ]
   },
   {
+    "name": "ui_accept",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 32
+      },
+      {
+        "deviceType": "Keyboard",
+        "code": 257
+      }
+    ]
+  },
+  {
     "name": "pause",
     "mappings": [
       {

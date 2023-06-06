@@ -36,9 +36,6 @@ void TestScene::Load() {
 
     ScoreManager::SaveScore("TestLevel", "Beans", 100);
     ScoreManager::SaveScore("MLGLevel", "_MLG_", 2137);
-
-    pauseMenu = mlg::EntityManager::SpawnEntity<PauseMenu>(
-            "PauseMenu", false, mlg::SceneGraph::GetRoot());
 }
 
 void TestScene::Update() {

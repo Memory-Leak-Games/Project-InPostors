@@ -4,7 +4,6 @@
 
 class TestScene : public LevelScene {
 private:
-    std::weak_ptr<class PauseMenu> pauseMenu;
 public:
     explicit TestScene();
 
