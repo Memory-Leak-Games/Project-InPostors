@@ -3,5 +3,8 @@
   "showForces": false,
   "showSpacialGrid": false,
   "showNavigation": false,
-  "showAiForces": false
+  "showAiForces": false,
+
+  "showFactoryInfo": false,
+  "showPlayerEq": false
 }
