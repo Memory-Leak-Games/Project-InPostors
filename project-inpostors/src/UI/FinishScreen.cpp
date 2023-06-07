@@ -3,13 +3,19 @@
 #include "Core/AssetManager/AssetManager.h"
 #include "Rendering/Assets/MaterialAsset.h"
 
+#include "ScoreManager.h"
 #include "UI/Assets/FontAsset.h"
 #include "UI/Components/Button.h"
+#include "UI/Components/CharacterSelector.h"
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
 #include "UI/Components/UIComponent.h"
 
 #include "UI/UIStyle.h"
+#include <spdlog/fmt/bundled/core.h>
+#include <spdlog/fmt/bundled/format.h>
+#include <spdlog/spdlog.h>
+#include <vector>
 
 FinishScreen::FinishScreen(
         uint64_t id, const std::string& name,
@@ -29,7 +35,16 @@ std::shared_ptr<FinishScreen> FinishScreen::Create(
     return finishScreen;
 }
 
-void FinishScreen::CreateBackground() {
+FinishScreen::~FinishScreen() = default;
+
+void FinishScreen::SetScore(int score, const std::string& levelName) {
+    auto sharedScoreLabel = scoreLabel.lock();
+    sharedScoreLabel->SetText(fmt::format("Score: ${}", score));
+
+    UpdateScoreBoard(score, levelName);
+}
+
+void FinishScreen::FinishScreen::CreateBackground() {
     background = AddComponent<mlg::Image>(
             "background",
             mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BACKGROUND_MATERIAL));
@@ -97,6 +112,8 @@ void FinishScreen::CreateLeftPanel() {
     sharedScoreLabel->SetAnchor(MLG_ANCHOR_CENTER);
     sharedScoreLabel->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
     sharedScoreLabel->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
+
+    CreateCharacterSelectors();
 }
 
 void FinishScreen::CreateRightPanel() {
@@ -128,11 +145,11 @@ void FinishScreen::CreateRightPanel() {
     sharedRightHeaderText->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
     sharedRightHeaderText->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
 
-    auto scoreboard = AddComponent<mlg::Label>(
+    scoreBoard = AddComponent<mlg::Label>(
             "scoreboard",
             mlg::AssetManager::GetAsset<mlg::FontAsset>(FONT));
 
-    auto sharedScoreboard = scoreboard.lock();
+    auto sharedScoreboard = scoreBoard.lock();
     sharedScoreboard->SetSize(28);
     sharedScoreboard->SetText("MLG0 $2137\nMLG1 $2137\nMLG2 $2137\nMLG3 $2137\nMLG4 $2137\nMLG5 $2137\nMLG6 $2137\nMLG7 $2137\nMLG8 $2137\nMLG9 $2137\nML10 $2137");
 
@@ -143,4 +160,75 @@ void FinishScreen::CreateRightPanel() {
     sharedScoreboard->SetAnchor(MLG_ANCHOR_CENTER);
     sharedScoreboard->SetVerticalAlignment(mlg::Label::VerticalAlignment::Up);
     sharedScoreboard->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
+}
+
+void FinishScreen::CreateCharacterSelectors() {
+    float offset = -1.5;
+    for (auto& selector : characterSelectors) {
+        selector = AddComponent<mlg::CharacterSelector>(
+                "character_selector",
+                mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BUTTON_MATERIAL),
+                mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BUTTON_FOCUSED_MATERIAL),
+                mlg::AssetManager::GetAsset<mlg::FontAsset>(FONT));
+        auto sharedSelector = selector.lock();
+        sharedSelector->SetSize(SELECTOR_SIZE);
+        sharedSelector->SetAnchor(MLG_ANCHOR_CENTER);
+        sharedSelector->SetPosition(
+                MLG_POS_CENTER + glm::vec2{
+                                         -PANEL_SIZE.x * 0.24 + SELECTOR_SIZE.x * 1.5f * offset,
+                                         -PANEL_SIZE.y * 0.05});
+
+        offset++;
+    }
+
+    int i = 0;
+    for (auto& selector : characterSelectors) {
+        auto sharedSelector = selector.lock();
+        sharedSelector->SetCharacter('A');
+
+        selector.lock()->next.right = characterSelectors[(i + 1) % characterSelectors.size()];
+        selector.lock()->next.left = characterSelectors[(i - 1) % characterSelectors.size()];
+        i++;
+    }
+
+    characterSelectors[0].lock()->GrabFocus();
+    characterSelectors[0].lock()->next.left = exitButton;
+    characterSelectors[characterSelectors.size() - 1].lock()->next.right = exitButton;
+
+    exitButton.lock()->next.right = characterSelectors[0];
+    exitButton.lock()->next.left = characterSelectors[characterSelectors.size() - 1];
+
+    exitButton.lock()->next.bottom = characterSelectors[0];
+    exitButton.lock()->next.top = characterSelectors[0];
+}
+
+void FinishScreen::UpdateScoreBoard(int currentScore, const std::string& levelName) {
+    auto scores = ScoreManager::GetScoreBoard(levelName);
+
+    scores.insert(ScoreManager::ScoreBoardEntry{"> NOW", currentScore});
+
+    auto scoreCMP = [](const auto& a, const auto& b) {
+        return a.score < b.score;
+    };
+
+    for (auto& score : scores) {
+        SPDLOG_INFO(score.playerName + " " + std::to_string(score.score));
+    }
+
+    std::string scoreBoardText;
+    for (auto& score : scores) {
+        std::string scoreEntry = fmt::format("{:5} {:05d}", score.playerName, score.score);
+        scoreBoardText += fmt::format("{}\n", scoreEntry);
+    }
+
+    scoreBoard.lock()->SetText(scoreBoardText);
+}
+
+std::string FinishScreen::GetUserName() {
+    std::string name;
+    for (auto& selector : characterSelectors) {
+        name += selector.lock()->GetCharacter();
+    }
+
+    return name;
 }

@@ -5,6 +5,8 @@
 #define PANEL_SIZE glm::vec2 { 1280 * 0.75, 720 * 0.75 }
 
 #define BUTTON_SIZE glm::vec2 { 250, 50 }
+#define SELECTOR_SIZE glm::vec2 { 50, 50 }
+
 #define FONT "res/fonts/ocraext.ttf"
 
 #define BUTTON_MATERIAL "res/materials/ui/buttons/button_material.json"

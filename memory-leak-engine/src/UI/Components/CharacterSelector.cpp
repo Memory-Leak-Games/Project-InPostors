@@ -24,6 +24,8 @@ void mlg::CharacterSelector::Update() {
         SetCharacterByIndex(currentCharacter - 1);
     } else if (mlg::Input::IsActionJustPressed("ui_down")) {
         SetCharacterByIndex(currentCharacter + 1);
+    } else if (mlg::Input::IsActionJustPressed("ui_accept")) {
+        SetCharacterByIndex(0);
     }
 
 }

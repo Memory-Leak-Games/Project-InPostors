@@ -10,6 +10,10 @@ public:
     struct ScoreBoardEntry {
         std::string playerName;
         int score;
+
+        bool operator<(const ScoreBoardEntry& other) const {
+            return score > other.score;
+        }
     };
 
     eventpp::CallbackList<void(int newScore)> OnScoreChanged;
@@ -19,6 +23,6 @@ public:
     void AddScore(int scoreToAdd);
     [[nodiscard]] int GetScore() const;
 
-    static std::vector<ScoreBoardEntry> GetScoreBoard(const std::string& levelName);
+    static std::set<ScoreBoardEntry> GetScoreBoard(const std::string& levelName);
     static void SaveScore(const std::string& levelName, const std::string& playerName, int score);
 };
