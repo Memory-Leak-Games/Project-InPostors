@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Levels/NavigationGraph.h"
 #include "Scenes/LevelScene.h"
 
 class TestScene : public LevelScene {
+private:
 public:
     explicit TestScene();
 

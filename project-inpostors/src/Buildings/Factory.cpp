@@ -90,8 +90,8 @@ void Factory::AddMesh(const json& staticMeshJson) {
 
     staticMeshComponent.lock()->GetTransform().SetPosition({
             staticMeshJson["position"][0],
-            0.0,
             staticMeshJson["position"][1],
+            staticMeshJson["position"][2],
     });
 
     meshOffset = {staticMeshJson["position"][0], staticMeshJson["position"][1]};

@@ -64,8 +64,11 @@ public:
 
         mlg::Core* engine = mlg::Core::GetInstance();
 
-        mlg::SceneManager::LoadScene(std::move(startupScene));
-        engine->MainLoop();
+        mlg::SceneManager::SetNextScene(std::move(startupScene));
+
+        while (mlg::SceneManager::HasNextScene()) {
+            mlg::SceneManager::LoadNextScene();
+        }
 
         mlg::Initializer::StopSceneComponents();
         mlg::Initializer::StopCoreComponents();

@@ -35,7 +35,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     ui->SetAnchor({0.5, 0});
     ui->SetSize({400, 200});
 
-    font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/OCRAEXT.TTF");
+    font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/ocraext.ttf");
     result->chat = result->AddComponent<mlg::Label>("Chat", font).lock();
     result->chat->SetPosition({460.f, 65.f});
     result->chat->SetAnchor({0.5, 1.0});

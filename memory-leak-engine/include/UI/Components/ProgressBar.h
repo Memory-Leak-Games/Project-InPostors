@@ -4,7 +4,7 @@
 
 namespace mlg {
 
-    class ProgressBar: public Image {
+    class ProgressBar : public Image {
     public:
         float percentage = 0.f;
         explicit ProgressBar(std::weak_ptr<Entity> owner, std::string name,
@@ -13,4 +13,4 @@ namespace mlg {
         void Draw(const UIRenderer* renderer) override;
     };
 
-} // mlg
+}// namespace mlg

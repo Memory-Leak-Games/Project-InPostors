@@ -1,29 +1,77 @@
 {
   "default-material": "res/materials/buildings_material.json",
+  "factory-pool": "res/levels/factories/pools/furniture.json",
   "tiles": [
     {
       "symbol": "b",
       "objects": [
         {
-          "model": "res/models/buildings/building_big_1.obj",
+          "model": "res/models/buildings/big/building_big_1.obj",
           "collision-type": "rectangle",
           "collision-size": 4.0,
           "scale": 0.85
         },
         {
-          "model": "res/models/buildings/building_big_2.obj",
+          "model": "res/models/buildings/big/building_big_2.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        }
+      ]
+    },
+    {
+      "symbol": "m",
+      "objects": [
+        {
+          "model": "res/models/buildings/medium/building_medium_1.obj",
           "collision-type": "rectangle",
           "collision-size": 4.0,
           "scale": 0.85
         },
         {
-          "model": "res/models/buildings/building_big_3.obj",
+          "model": "res/models/buildings/medium/building_medium_2.obj",
           "collision-type": "rectangle",
           "collision-size": 4.0,
           "scale": 0.85
         },
         {
-          "model": "res/models/buildings/building_big_4.obj",
+          "model": "res/models/buildings/medium/building_medium_3.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_4.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_5.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_6.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_7.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_8.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_9.obj",
           "collision-type": "rectangle",
           "collision-size": 4.0,
           "scale": 0.85
@@ -34,19 +82,37 @@
       "symbol": "s",
       "objects": [
         {
-          "model": "res/models/buildings/building_small_1.obj",
+          "model": "res/models/buildings/small/building_small_1.obj",
           "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
         },
         {
-          "model": "res/models/buildings/building_small_2.obj",
+          "model": "res/models/buildings/small/building_small_2.obj",
           "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
         },
         {
-          "model": "res/models/buildings/building_small_3.obj",
+          "model": "res/models/buildings/small/building_small_3.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/small/building_small_4.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/small/building_small_5.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/small/building_small_6.obj",
           "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
@@ -57,7 +123,21 @@
       "symbol": "L",
       "objects": [
         {
-          "model": "res/models/buildings/building_corrner_big.obj",
+          "model": "res/models/buildings/corner/corner_big_1.obj",
+          "rotation": -90.0,
+          "scale": 0.85,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        },
+        {
+          "model": "res/models/buildings/corner/corner_big_2.obj",
+          "rotation": -90.0,
+          "scale": 0.85,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        },
+        {
+          "model": "res/models/buildings/corner/corner_big_3.obj",
           "rotation": -90.0,
           "scale": 0.85,
           "collision-size": 4.0,
@@ -69,7 +149,21 @@
       "symbol": "l",
       "objects": [
         {
-          "model": "res/models/buildings/building_corrner_small.obj",
+          "model": "res/models/buildings/corner/corner_small_1.obj",
+          "rotation": 90.0,
+          "scale": 0.85,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        },
+        {
+          "model": "res/models/buildings/corner/corner_small_2.obj",
+          "rotation": 90.0,
+          "scale": 0.85,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        },
+        {
+          "model": "res/models/buildings/corner/corner_small_3.obj",
           "rotation": 90.0,
           "scale": 0.85,
           "collision-size": 4.0,
@@ -90,7 +184,7 @@
       "symbol": "c",
       "objects": [
         {
-          "model": "res/models/buildings/special/cafe.obj",
+          "model": "res/models/buildings/special/caffee.obj",
           "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
@@ -124,7 +218,7 @@
       "symbol": "B",
       "objects": [
         {
-          "model": "res/models/buildings/special/bakery.obj",
+          "model": "res/models/buildings/special/donut.obj",
           "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
@@ -135,7 +229,7 @@
       "symbol": "f",
       "objects": [
         {
-          "model": "res/models/buildings/special/fast_food.obj",
+          "model": "res/models/buildings/special/fries.obj",
           "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
@@ -143,9 +237,6 @@
       ]
     }
   ],
-
-  "factory-pool": "res/levels/factories/pools/furniture.json",
-
   "road": {
     "symbol": "#",
     "road": {
