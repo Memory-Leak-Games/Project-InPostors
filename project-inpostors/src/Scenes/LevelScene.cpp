@@ -41,6 +41,7 @@ void LevelScene::Load() {
 
     taskManager = std::make_unique<TaskManager>();
     scoreManager = std::make_unique<ScoreManager>();
+
     taskManager->OnTaskFinished.append([this](const TaskData& taskData) {
         int reward = taskData.reward;
 
@@ -53,9 +54,7 @@ void LevelScene::Load() {
     });
 
     gameplayOverlay = mlg::EntityManager::SpawnEntity<GameplayOverlay>(
-                              "Overlay",
-                              false,
-                              mlg::SceneGraph::GetRoot())
+                              "Overlay", false, mlg::SceneGraph::GetRoot())
                               .lock();
 
     navigationGraph = std::make_shared<NavigationGraph>(levelPath);

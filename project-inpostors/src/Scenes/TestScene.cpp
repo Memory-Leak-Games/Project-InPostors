@@ -16,6 +16,7 @@
 #include "ScoreManager.h"
 
 #include "UI/PauseMenu.h"
+#include "UI/FinishScreen.h"
 
 #include "Gameplay/EntityManager.h"
 
@@ -32,12 +33,8 @@ void TestScene::Load() {
     }
 
     auto scoreboard = ScoreManager::GetScoreBoard("TestLevel");
-    for (const auto& [name, score] : scoreboard) {
-        SPDLOG_INFO("{}: {}", name, score);
-    }
-
-    ScoreManager::SaveScore("TestLevel", "Beans", 100);
-    ScoreManager::SaveScore("MLGLevel", "_MLG_", 2137);
+    auto finishScreen = mlg::EntityManager::SpawnEntity<FinishScreen>(
+        "FinishScreen", false, mlg::SceneGraph::GetRoot());
 }
 
 void TestScene::Update() {

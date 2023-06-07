@@ -10,13 +10,7 @@
 #include "UI/Assets/FontAsset.h"
 #include "Core/SceneManager/SceneManager.h"
 
-#define BUTTON_MATERIAL "res/materials/ui/buttons/button_material.json"
-#define BUTTON_FOCUSED_MATERIAL "res/materials/ui/buttons/button_focused_material.json"
-#define BACKGROUND_MATERIAL "res/materials/ui/semi_transparent_background_material.json"
-
-#define BUTTON_SIZE glm::vec2{ 250, 50 }
-#define BUTTON_BASE_POSITION glm::vec2{ 200, 150 }
-#define FONT "res/fonts/ocraext.ttf"
+#include "UI/UIStyle.h"
 
 PauseMenu::PauseMenu(
         uint64_t id, const std::string& name,
