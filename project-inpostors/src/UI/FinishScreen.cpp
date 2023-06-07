@@ -1,6 +1,7 @@
 #include "UI/FinishScreen.h"
 
 #include "Core/AssetManager/AssetManager.h"
+#include "Core/SceneManager/SceneManager.h"
 #include "Rendering/Assets/MaterialAsset.h"
 
 #include "ScoreManager.h"
@@ -12,10 +13,9 @@
 #include "UI/Components/UIComponent.h"
 
 #include "UI/UIStyle.h"
-#include <spdlog/fmt/bundled/core.h>
-#include <spdlog/fmt/bundled/format.h>
-#include <spdlog/spdlog.h>
-#include <vector>
+
+#include "Scenes/LevelScene.h"
+#include "ScoreManager.h"
 
 FinishScreen::FinishScreen(
         uint64_t id, const std::string& name,
@@ -37,11 +37,46 @@ std::shared_ptr<FinishScreen> FinishScreen::Create(
 
 FinishScreen::~FinishScreen() = default;
 
+void FinishScreen::Start() {
+    exitButton.lock()->OnClick.append([this]() {
+        auto currentScene = mlg::SceneManager::GetCurrentScene();
+        auto levelScene = dynamic_cast<LevelScene*>(currentScene);
+
+        int score = levelScene->GetScoreManager()->GetScore();
+        std::string levelName = levelScene->GetLevelName();
+        std::string playerName = GetUserName();
+
+        levelScene->GetScoreManager()->SaveScore(levelName, playerName, score);
+
+        SetVisible(false);
+        mlg::SceneManager::ExitGame();
+    });
+
+    SetVisible(false);
+}
+
 void FinishScreen::SetScore(int score, const std::string& levelName) {
     auto sharedScoreLabel = scoreLabel.lock();
     sharedScoreLabel->SetText(fmt::format("Score: ${}", score));
 
     UpdateScoreBoard(score, levelName);
+}
+
+void FinishScreen::SetVisible(bool visible) {
+    background.lock()->SetVisible(visible);
+    headerText.lock()->SetVisible(visible);
+    leftBackground.lock()->SetVisible(visible);
+    exitButton.lock()->SetVisible(visible);
+    exitButton.lock()->SetActive(visible);
+    scoreLabel.lock()->SetVisible(visible);
+    rightBackground.lock()->SetVisible(visible);
+    rightHeaderText.lock()->SetVisible(visible);
+    scoreBoard.lock()->SetVisible(visible);
+
+    for (auto& characterSelector : characterSelectors) {
+        characterSelector.lock()->SetVisible(visible);
+        characterSelector.lock()->SetActive(visible);
+    }
 }
 
 void FinishScreen::FinishScreen::CreateBackground() {
@@ -151,7 +186,6 @@ void FinishScreen::CreateRightPanel() {
 
     auto sharedScoreboard = scoreBoard.lock();
     sharedScoreboard->SetSize(28);
-    sharedScoreboard->SetText("MLG0 $2137\nMLG1 $2137\nMLG2 $2137\nMLG3 $2137\nMLG4 $2137\nMLG5 $2137\nMLG6 $2137\nMLG7 $2137\nMLG8 $2137\nMLG9 $2137\nML10 $2137");
 
     sharedScoreboard->SetPosition(
             MLG_POS_CENTER + glm::vec2{

@@ -28,6 +28,7 @@
 #include "TaskManager.h"
 
 #include "UI/PauseMenu.h"
+#include "UI/FinishScreen.h"
 
 LevelScene::LevelScene(std::string path) : levelPath(std::move(path)) {}
 
@@ -36,11 +37,15 @@ LevelScene::~LevelScene() = default;
 void LevelScene::Load() {
     LoadLevel();
 
+    taskManager = std::make_unique<TaskManager>();
+    scoreManager = std::make_unique<ScoreManager>();
+
     pauseMenu = mlg::EntityManager::SpawnEntity<PauseMenu>(
             "PauseMenu", false, mlg::SceneGraph::GetRoot());
 
-    taskManager = std::make_unique<TaskManager>();
-    scoreManager = std::make_unique<ScoreManager>();
+    finishScreen = mlg::EntityManager::SpawnEntity<FinishScreen>(
+            "FinishScreen", false, mlg::SceneGraph::GetRoot()).lock();
+
 
     taskManager->OnTaskFinished.append([this](const TaskData& taskData) {
         int reward = taskData.reward;
@@ -106,7 +111,9 @@ void LevelScene::Update() {
 }
 
 void LevelScene::HandlePauseGame() {
-    if (mlg::Input::IsActionJustPressed("pause")) {
+
+    if (mlg::Input::IsActionJustPressed("pause") &&
+        mlg::TimerManager::Get()->GetTimerRemainingTime(timeLimitTimer) > 0.0f) {
         bool isGamePaused = mlg::Time::IsGamePaused();
         mlg::Time::PauseGame(!isGamePaused);
         pauseMenu.lock()->SetVisible(!isGamePaused);
@@ -123,6 +130,10 @@ TaskManager* LevelScene::GetTaskManager() {
 
 ScoreManager* LevelScene::GetScoreManager() {
     return scoreManager.get();
+}
+
+const std::string& LevelScene::GetLevelName() const {
+    return levelName;
 }
 
 void LevelScene::SpawnTraffic() {
@@ -174,7 +185,9 @@ void LevelScene::SetTimeLimit() {
                 false,
                 [this]() {
                     mlg::Time::PauseGame(true);
-                    SPDLOG_INFO("GameOver, Score: {}", scoreManager->GetScore());
+                    finishScreen->SetScore(scoreManager->GetScore(), levelName);
+                    finishScreen->SetVisible(true);
+                    mlg::Time::PauseGame(true);
                 });
     }
 }

@@ -39,7 +39,9 @@ public:
 
     ~FinishScreen() override;
 
+    void Start() override;
     void SetScore(int score, const std::string& levelName);
+    void SetVisible(bool visible);
 
 private:
     void CreateBackground();

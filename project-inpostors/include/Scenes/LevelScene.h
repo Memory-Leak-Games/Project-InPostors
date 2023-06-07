@@ -2,14 +2,14 @@
 
 #include "Audio/Assets/AudioAsset.h"
 #include "Core/SceneManager/Scene.h"
-#include "ScoreManager.h"
-#include <cstddef>
 
 class LevelScene : public mlg::Scene {
 private:
     const std::string levelPath;
 
     std::string levelName;
+
+    std::shared_ptr<class FinishScreen> finishScreen;
 
     std::shared_ptr<mlg::AudioAsset> cityAmbientSound;
     std::shared_ptr<class NavigationGraph> navigationGraph;
@@ -35,6 +35,7 @@ public:
     [[nodiscard]] const std::shared_ptr<NavigationGraph>& GetNavigationGraph() const;
     [[nodiscard]] TaskManager* GetTaskManager();
     [[nodiscard]] ScoreManager* GetScoreManager();
+    [[nodiscard]] const std::string& GetLevelName() const;
 
 private:
     void SpawnTraffic();

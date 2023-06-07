@@ -33,9 +33,6 @@ void TestScene::Load() {
     }
 
     auto scoreboard = ScoreManager::GetScoreBoard("TestLevel");
-    auto finishScreen = mlg::EntityManager::SpawnEntity<FinishScreen>(
-        "FinishScreen", false, mlg::SceneGraph::GetRoot());
-    finishScreen.lock()->SetScore(3023, "TestLevel");
 }
 
 void TestScene::Update() {
