@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include "Core/SceneManager/SceneManager.h"
+#include "Core/Settings/SettingsManager.h"
 #include "Core/TimerManager.h"
 #include "Gameplay/Components/RigidbodyComponent.h"
 #include "Gameplay/Components/StaticMeshComponent.h"
@@ -212,12 +213,25 @@ void Factory::Start() {
 }
 
 void Factory::Update() {
-        if (blueprintId == "None")
-            return;
+    if (blueprintId == "None")
+        return;
 
-        auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
+    auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
 
-    #ifdef DEBUG
+    float produceElapsed = mlg::TimerManager::Get()->GetTimerElapsedTime(produceTimerHandle);
+    float timeToProcess = BlueprintManager::Get()->GetBlueprint(blueprintId).GetTimeToProcess();
+
+    if (!blueprint.GetInput().empty() && barReq1)
+        barReq1->percentage = equipmentComponent->Has(blueprint.GetInput()[0]) /*|| produceElapsed >= 0.0*/;
+    if (blueprint.GetInput().size() > 1 && barReq2)
+        barReq2->percentage = equipmentComponent->Has(blueprint.GetInput()[1]) /*|| produceElapsed >= 0.0*/;
+    if (barArrow)
+        barArrow->percentage = produceElapsed / timeToProcess;
+    if (barRes)
+        barRes->percentage = equipmentComponent->Has(blueprint.GetOutput());
+
+#ifdef DEBUG
+    if (mlg::SettingsManager::Get<bool>(mlg::SettingsType::Debug, "showFactoryInfo")) {
         if (factoryType == FactoryType::Storage) {
             ImGui::Begin("Factories");
             ImGui::Text("Storage: %s", GetName().c_str());
@@ -233,19 +247,8 @@ void Factory::Update() {
                     mlg::TimerManager::Get()->GetTimerRemainingTime(produceTimerHandle),
                     equipmentComponent->GetNumberOfProduct(blueprint.GetOutput()));
         ImGui::End();
-    #endif
-
-        float produceElapsed = mlg::TimerManager::Get()->GetTimerElapsedTime(produceTimerHandle);
-        float timeToProcess = BlueprintManager::Get()->GetBlueprint(blueprintId).GetTimeToProcess();
-
-        if (!blueprint.GetInput().empty() && barReq1)
-            barReq1->percentage = equipmentComponent->Has(blueprint.GetInput()[0]) /*|| produceElapsed >= 0.0*/;
-        if (blueprint.GetInput().size() > 1 && barReq2)
-            barReq2->percentage = equipmentComponent->Has(blueprint.GetInput()[1]) /*|| produceElapsed >= 0.0*/;
-        if (barArrow)
-            barArrow->percentage = produceElapsed / timeToProcess;
-        if (barRes)
-            barRes->percentage = equipmentComponent->Has(blueprint.GetOutput());
+    }
+#endif
 }
 
 bool Factory::IsWorking() const {
@@ -286,7 +289,7 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
 
     if (result->GetBlueprintId() == "None")
         return;
-    
+
     auto blueprint = BlueprintManager::Get()->GetBlueprint(result->GetBlueprintId());
 
     // Lack of containers gave birth to this monstrosity

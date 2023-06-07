@@ -4,6 +4,7 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 
+#include "Core/Settings/SettingsManager.h"
 #include "Gameplay/Components/RigidbodyComponent.h"
 #include "Gameplay/Components/StaticMeshComponent.h"
 
@@ -123,9 +124,11 @@ void Player::Update() {
     }
 
 #ifdef DEBUG
-    ImGui::Begin(("Player " + std::to_string(playerData.id)).c_str());
-    ImGui::Text("%s", equipment->ToString().c_str());
-    ImGui::End();
+    if (mlg::SettingsManager::Get<bool>(mlg::SettingsType::Debug, "showPlayerEq")) {
+        ImGui::Begin(("Player " + std::to_string(playerData.id)).c_str());
+        ImGui::Text("%s", equipment->ToString().c_str());
+        ImGui::End();
+    }
 #endif
 }
 

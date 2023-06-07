@@ -27,7 +27,7 @@ namespace mlg {
         float scale = 1;
 
         HorizontalAlignment horizontalAlignment = HorizontalAlignment::Left;
-        VerticalAlignment verticalAlignment = VerticalAlignment::Down;
+        VerticalAlignment verticalAlignment = VerticalAlignment::Up;
 
     protected:
 

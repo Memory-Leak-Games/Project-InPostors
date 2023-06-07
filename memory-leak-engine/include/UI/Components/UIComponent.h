@@ -5,6 +5,9 @@
 #include "Gameplay/Component.h"
 #include "UI/UIRenderable.h"
 
+#define MLG_ANCHOR_CENTER glm::vec2{0.5, 0.5}
+#define MLG_POS_CENTER glm::vec2{1280.f * 0.5f, 720.f * 0.5f}
+
 namespace mlg {
     /*
      * Base class of every ui component in engine, ex. Label
