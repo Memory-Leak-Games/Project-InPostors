@@ -30,6 +30,7 @@
 
 #include "UI/FinishScreen.h"
 #include "UI/PauseMenu.h"
+#include "UI/StartLevelCountdown.h"
 
 LevelScene::LevelScene(std::string path) : levelPath(std::move(path)) {}
 
@@ -54,6 +55,9 @@ void LevelScene::Load() {
     SpawnTraffic();
     LoadSounds();
     SetTimeLimit();
+
+    mlg::EntityManager::SpawnEntity<StartLevelCountdown>(
+        "StartLevelCountdown", false, mlg::SceneGraph::GetRoot());
 
     // TODO: Remove me
     gameplayOverlay->SetChat(fmt::format(

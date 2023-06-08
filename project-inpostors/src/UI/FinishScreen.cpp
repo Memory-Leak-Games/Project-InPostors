@@ -77,6 +77,8 @@ void FinishScreen::SetVisible(bool visible) {
         characterSelector.lock()->SetVisible(visible);
         characterSelector.lock()->SetActive(visible);
     }
+
+    characterSelectors[0].lock()->GrabFocus();
 }
 
 void FinishScreen::FinishScreen::CreateBackground() {
@@ -225,7 +227,6 @@ void FinishScreen::CreateCharacterSelectors() {
         i++;
     }
 
-    characterSelectors[0].lock()->GrabFocus();
     characterSelectors[0].lock()->next.left = exitButton;
     characterSelectors[characterSelectors.size() - 1].lock()->next.right = exitButton;
 

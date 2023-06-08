@@ -1,6 +1,5 @@
 #pragma once
 
-
 #define BACKGROUND_MATERIAL "res/materials/ui/semi_transparent_background_material.json"
 #define PANEL_SIZE glm::vec2 { 1280 * 0.75, 720 * 0.75 }
 
