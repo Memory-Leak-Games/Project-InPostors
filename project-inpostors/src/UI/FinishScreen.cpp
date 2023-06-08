@@ -245,10 +245,6 @@ void FinishScreen::UpdateScoreBoard(int currentScore, const std::string& levelNa
         return a.score < b.score;
     };
 
-    for (auto& score : scores) {
-        SPDLOG_INFO(score.playerName + " " + std::to_string(score.score));
-    }
-
     std::string scoreBoardText;
     for (auto& score : scores) {
         std::string scoreEntry = fmt::format("{:5} {:05d}", score.playerName, score.score);
