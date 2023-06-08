@@ -55,6 +55,8 @@ void AIComponent::Update() {
 
 void AIComponent::PhysicsUpdate() {
     if (steering->GetNavigationGraph() != nullptr) {
+        rigidbodyComponent->SetAngularVelocity(0);
+
         glm::vec2 steeringForce = steering->Calculate();
         rigidbodyComponent->AddForce(steeringForce);
 

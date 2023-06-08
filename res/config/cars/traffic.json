@@ -6,9 +6,9 @@
   "material": "res/materials/car/chroma_key_material.json",
 
   "parameters": {
-    "acceleration": 100,
+    "acceleration": 1000,
     "maxSpeed": 25,
-    "viewDistance": 25
+    "viewDistance": 15
   },
 
   "colliders1": [
@@ -36,6 +36,10 @@
   "colliders3": [
     {
       "offset": [0.0, -1.2],
+      "size": 0.6
+    },
+    {
+      "offset" : [0.0, 0.0],
       "size": 0.6
     },
     {
