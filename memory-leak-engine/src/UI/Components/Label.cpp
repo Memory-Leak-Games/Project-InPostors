@@ -141,7 +141,7 @@ namespace mlg {
 
         if (verticalAlignment == VerticalAlignment::Center)
             alignedPosition += glm::vec2(0.f, labelSize.y / 2.f);
-        else if (verticalAlignment == VerticalAlignment::Up)
+        else if (verticalAlignment == VerticalAlignment::Down)
             alignedPosition += glm::vec2(0.f, labelSize.y);
 
         UIComponent::CalculateActualPosition(renderer, alignedPosition);
@@ -157,6 +157,7 @@ namespace mlg {
             if (c == '\n') {
                 result.y += (float) font->fontSize * scale;
                 maxHorizontal = std::max(maxHorizontal, result.x);
+                result.x = 0.f;
                 continue;
             }
 

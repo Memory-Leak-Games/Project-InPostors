@@ -14,7 +14,7 @@ int ScoreManager::GetScore() const {
     return score;
 }
 
-std::vector<ScoreManager::ScoreBoardEntry> ScoreManager::GetScoreBoard(
+std::set<ScoreManager::ScoreBoardEntry> ScoreManager::GetScoreBoard(
         const std::string& levelName) {
     
     json scoreboardJson;
@@ -26,14 +26,14 @@ std::vector<ScoreManager::ScoreBoardEntry> ScoreManager::GetScoreBoard(
         scoreboardJson = json::object();
     }
 
-    std::vector<ScoreBoardEntry> scoreboard;
+    std::set<ScoreBoardEntry> scoreboard;
 
     if (!scoreboardJson.contains(levelName)) {
         return scoreboard;
     }
 
     for (auto& entry : scoreboardJson[levelName]) {
-        scoreboard.push_back({entry["name"], entry["score"]});
+        scoreboard.insert({entry["name"], entry["score"]});
     }
 
     return scoreboard;

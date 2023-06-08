@@ -1,6 +1,7 @@
 #include <utility>
 
 #include "Core/HID/Input.h"
+#include "Core/RGBA.h"
 #include "UI/Assets/FontAsset.h"
 #include "UI/Components/UIComponent.h"
 #include "UI/Components/UIFocusableComponent.h"
@@ -23,6 +24,7 @@ namespace mlg {
           defaultMaterial(defaultMaterial), focusMaterial(focusMaterial) {
             label = GetOwner().lock()->AddComponent<Label>( name + "_label", font);
             label.lock()->SetText("Button");
+            label.lock()->SetTextColor(mlg::RGBA::black);
             label.lock()->SetAutoRegister(false);
             label.lock()->SetVerticalAlignment(Label::VerticalAlignment::Center);
             label.lock()->SetHorizontalAlignment(Label::HorizontalAlignment::Center);

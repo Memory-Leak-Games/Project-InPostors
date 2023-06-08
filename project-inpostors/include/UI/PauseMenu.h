@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Gameplay/Entity.h"
-#include <sys/types.h>
 
 namespace mlg {
     class Button;
