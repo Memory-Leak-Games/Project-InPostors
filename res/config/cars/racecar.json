@@ -1,0 +1,35 @@
+{
+  "model": "res/models/cars/players/racecar.obj",
+  "material": "res/materials/car/chroma_key_material.json",
+  "parameters": {
+    "acceleration": 3000,
+    "maxSpeed": 40,
+    "backwardMaxSpeed": 5,
+    "engineHandling": 50,
+    "handling": 2000,
+    "rotationSpeed": 120,
+    "rotationRadius": 3,
+    "sideDrag": 40,
+    "counterTorque": 4,
+    "bounciness": 0.3
+  },
+
+  "colliders": [
+    {
+      "offset": [0.0, -2.4],
+      "size": 0.6
+    },
+    {
+      "offset": [0.0, -1.0],
+      "size": 0.6
+    },
+    {
+      "offset": [0.0, 0.5],
+      "size": 0.6
+    },
+    {
+      "offset": [0.0, 1.8],
+      "size": 0.6
+    }
+  ]
+}

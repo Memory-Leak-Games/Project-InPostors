@@ -1,0 +1,43 @@
+{
+  "model": "res/models/cars/players/monster_truck.obj",
+  "material": "res/materials/car/chroma_key_material.json",
+  "parameters": {
+    "acceleration": 1800,
+    "maxSpeed": 20,
+    "backwardMaxSpeed": 15,
+    "engineHandling": 120,
+    "handling": 5000,
+    "rotationSpeed": 160,
+    "rotationRadius": 2,
+    "sideDrag": 10,
+    "counterTorque": 3,
+    "bounciness": 0.2
+  },
+
+  "colliders": [
+    {
+      "offset": [1.5, 1.2],
+      "size": 0.6
+    },
+    {
+      "offset": [1.5, -1.2],
+      "size": 0.6
+    },
+    {
+      "offset": [-1.5, 1.2],
+      "size": 0.6
+    },
+    {
+      "offset": [-1.5, -1.2],
+      "size": 0.6
+    },
+    {
+      "offset": [1.5, 0],
+      "size": 0.6
+    },
+    {
+      "offset": [-1.5, 0],
+      "size": 0.6
+    }
+  ]
+}
