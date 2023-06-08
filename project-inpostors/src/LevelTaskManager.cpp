@@ -5,6 +5,7 @@
 
 #include "effolkronium/random.hpp"
 #include <cstddef>
+#include <spdlog/spdlog.h>
 
 using Random = effolkronium::random_static;
 
@@ -42,6 +43,8 @@ void LevelTaskManager::StartNewTaskLogic() {
     float taskTime = newTask.time;
     uint32_t taskSlots = maxActiveTasks - taskManager->GetActiveTasksCount();
     float timeToNewTask = Random::get(newTaskProbability, 1.0f) * taskTime;
+
+    SPDLOG_INFO("New task in {}s", timeToNewTask);
 
     auto startNewTaskLambda = [this]() {
         StartNewTaskLogic();
