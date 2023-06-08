@@ -16,7 +16,7 @@ private:
 
     std::shared_ptr<class GameplayOverlay> gameplayOverlay;
 
-    std::unique_ptr<class TaskManager> taskManager;
+    std::unique_ptr<class LevelTaskManager> levelTaskManager;
     std::unique_ptr<class ScoreManager> scoreManager;
 
     std::weak_ptr<class PauseMenu> pauseMenu;
@@ -33,11 +33,13 @@ public:
     void HandlePauseGame();
 
     [[nodiscard]] const std::shared_ptr<NavigationGraph>& GetNavigationGraph() const;
-    [[nodiscard]] TaskManager* GetTaskManager();
+    [[nodiscard]] LevelTaskManager* GetLevelTaskManager();
+    [[nodiscard]] class TaskManager* GetTaskManager();
     [[nodiscard]] ScoreManager* GetScoreManager();
     [[nodiscard]] const std::string& GetLevelName() const;
 
 private:
+    void InitializeLevelTaskManager();
     void SpawnTraffic();
     void LoadLevel();
     void LoadSounds();

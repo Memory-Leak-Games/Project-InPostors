@@ -1,4 +1,5 @@
 #include "TaskManager.h"
+#include "Core/TimerManager.h"
 
 using Random = effolkronium::random_static;
 
@@ -89,6 +90,14 @@ std::vector<TaskData> TaskManager::GetActiveTasks(const std::string& productId) 
             activeTasks.end());
     
     return activeTasks;
+}
+
+uint32_t TaskManager::GetActiveTasksCount() const {
+    return std::count_if(
+            tasks.begin(), tasks.end(),
+            [](const auto& task) {
+                return task.second.active;
+            });
 }
 
 size_t TaskManager::AcceptNewTask() {

@@ -33,8 +33,9 @@ namespace mlg {
 
         void CalculateActualPosition(const UIRenderer* renderer,const glm::vec2& position) override;
     public:
-
+        Label(std::weak_ptr<Entity> owner, std::string name);
         Label(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<class FontAsset>& font);
+        
         void Draw(const UIRenderer* renderer) override;
 
         [[nodiscard]] const std::string& GetText() const;

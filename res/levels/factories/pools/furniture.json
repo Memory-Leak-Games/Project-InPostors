@@ -21,20 +21,21 @@
       "fallback": " "
     }
   ],
+
   "tasks": [
-  {
-    "product-id":"iron",
-    "time": 5.0,
-    "quantity": 3,
-    "reward": 100,
-    "bonus": 50
-  },
-  {
-    "product-id":"furniture",
-    "time": 15.0,
-    "quantity": 2,
-    "reward": 200,
-    "bonus": 60
-  }
-]
+    {
+      "product-id": "iron",
+      "time": 20.0,
+      "quantity": 10,
+      "reward": 100,
+      "bonus": 50
+    },
+    {
+      "product-id": "furniture",
+      "time": 30.0,
+      "quantity": 2,
+      "reward": 200,
+      "bonus": 60
+    }
+  ]
 }
