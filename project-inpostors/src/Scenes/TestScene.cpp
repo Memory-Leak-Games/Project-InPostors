@@ -27,10 +27,6 @@ void TestScene::Load() {
 
     TaskManager* taskManager = GetTaskManager();
 
-    std::vector<TaskData> tasks = mlg::LevelGenerator::GetTasks("res/levels/maps/test_level.json");
-    for (const auto& task : tasks) {
-        taskManager->AddTaskToPool(task);
-    }
 
     auto scoreboard = ScoreManager::GetScoreBoard("TestLevel");
 }
