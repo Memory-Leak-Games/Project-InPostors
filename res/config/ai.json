@@ -1,12 +1,12 @@
 {
   "name": "AI Settings",
   "parameters": {
-    "waypointSeekingDistance": 20,
-    "separationWeight": 1.0,
-    "alignmentWeight": 1.0,
+    "waypointSeekingDistance": 25,
+    "separationWeight": 3.5,
+    "alignmentWeight": 1.5,
     "seekWeight": 0.0,
     "arriveWeight": 0.0,
-    "evadeWeight": 1.0,
+    "evadeWeight": 2.0,
     "followPathWeight": 0.75
   }
 }
