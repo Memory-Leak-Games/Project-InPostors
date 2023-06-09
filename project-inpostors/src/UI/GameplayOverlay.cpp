@@ -42,6 +42,52 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     result->chat->SetSize(18);
     result->chat->SetText("As a language model, I am unable\nto drive vehicles myself. That is\nwhy you were hired to deliver\npackages.");
 
+//    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/semi_transparent_background_material.json");
+//    result->taskPanel = result->AddComponent<mlg::Image>("TaskPanel", material).lock();
+//    result->taskPanel->SetSize({10 * 48, 48});
+//    result->taskPanel->SetPosition({
+//            result->taskPanel->GetSize().x * 0.5 + 8,
+//                720 - result->taskPanel->GetSize().y * 0.5 - 8});
+//    result->taskPanel->SetAnchor({0.0, 1.0});
+
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/task_panel_material.json");
+    for(int i = 0; i < 10; i++) {
+        result->taskPanels[i] = result->AddComponent<mlg::Image>("TaskPanel", material).lock();
+        result->taskPanels[i]->SetPosition({8 + 8 + 16 + 48 * i, 720 - 17 - 16});
+        result->taskPanels[i]->SetAnchor({0.0, 1.0});
+        result->taskPanels[i]->SetSize({48, 48});
+    }
+
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/iron_material.json");
+    for(int i = 0; i < 10; i++) {
+        result->taskIcon[i] = result->AddComponent<mlg::Image>("TaskIcon", material).lock();
+        //result->taskIcon[i]->SetPosition({17 + 16 + 16, 720 - 17 - 16 - 16 - 32 * i});
+        result->taskIcon[i]->SetPosition({8 + 8 + 16 + 48 * i, 720 - 17 - 16});
+        result->taskIcon[i]->SetAnchor({0.0, 1.0});
+        result->taskIcon[i]->SetSize({24, 24});
+    }
+
+//    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/task_progress_material.json");
+//    for(int i = 0; i < 10; i++)
+//    {
+//        result->taskProgress[i] = result->AddComponent<mlg::ProgressBar>("TaskProgress", material).lock();
+//        result->taskProgress[i]->SetPosition({75.f + 16 + 32 + 16, 720 - 17 - 16 - 16 - 32 * i});
+//        result->taskProgress[i]->SetAnchor({0.0, 1.0});
+//        result->taskProgress[i]->SetSize({100, 12});
+//        result->taskProgress[i]->percentage = 1.0f;
+//    }
+
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/task_progress_material.json");
+    for(int i = 0; i < 10; i++)
+    {
+        result->taskProgress[i] = result->AddComponent<mlg::ProgressBar>("TaskProgress", material).lock();
+        result->taskProgress[i]->SetPosition({8 + 8 + 16 + 48 * i, 720 - 17 - 16});
+        result->taskProgress[i]->SetAnchor({0.0, 1.0});
+        //result->taskProgress[i]->SetSize({48, 48});
+        result->taskProgress[i]->SetSize({64, 64});
+        result->taskProgress[i]->percentage = 0.66f;
+    }
+
     // THIS IS VERY MUCH MOCK
     //    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/player/panel_material.json");
     //    ui = result->AddComponent<mlg::Image>("QuestPanel", material).lock();

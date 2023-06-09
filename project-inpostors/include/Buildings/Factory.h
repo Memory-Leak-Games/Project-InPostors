@@ -28,6 +28,10 @@ private:
     std::shared_ptr<class mlg::Label> amount2;
     std::shared_ptr<class mlg::Label> amount3;
 
+    std::shared_ptr<class mlg::Image> taskPanel;
+    std::shared_ptr<class mlg::ProgressBar> taskTimerBar;
+    std::shared_ptr<class mlg::Image> taskIcon;
+
     unsigned int produceTimerHandle = 0;
     bool working = false;
 

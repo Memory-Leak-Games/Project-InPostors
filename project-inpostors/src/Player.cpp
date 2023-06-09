@@ -239,9 +239,9 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     ui->tint.a = 0.7f;
     if(newPlayer->playerData.id == 0)
     {
-        ui->SetPosition(ui->GetSize() * 0.5f + glm::vec2(16, 16));
+        ui->SetPosition(ui->GetSize() * 0.5f + glm::vec2(8, 8));
     } else {
-        ui->SetPosition({1280 - ui->GetSize().x * 0.5f - 16, ui->GetSize().y * 0.5 + 16});
+        ui->SetPosition({1280 - ui->GetSize().x * 0.5f - 8, ui->GetSize().y * 0.5 + 8});
         ui->SetAnchor({1, 0});
     }
     ui->tint += glm::vec4(0.5, 0.5, 0.5, 0.0);
@@ -251,11 +251,11 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     label->SetTextColor(newPlayer->playerData.color);
     if(newPlayer->playerData.id == 0)
     {
-        label->SetPosition({10 + 16, 8 + 16});
+        label->SetPosition({10 + 8, 8 + 8});
         label->SetText("P1");
     } else {
         label->SetAnchor({1, 0});
-        label->SetPosition({1280 - 50 - 16, 8 + 16});
+        label->SetPosition({1280 - 50 - 8, 8 + 8});
         label->SetText("P2");
     }
 
@@ -268,13 +268,13 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     }
 
     if(newPlayer->playerData.id == 0) {
-        newPlayer->eqIcons[0]->SetPosition({72.f + 16, 17.f + 16});
-        newPlayer->eqIcons[1]->SetPosition({72.f+36.f + 16, 17.f + 16});
-        newPlayer->eqIcons[2]->SetPosition({72.f+72.f + 16, 17.f + 16});
+        newPlayer->eqIcons[0]->SetPosition({72.f + 8, 17.f + 8});
+        newPlayer->eqIcons[1]->SetPosition({72.f+36.f + 8, 17.f + 8});
+        newPlayer->eqIcons[2]->SetPosition({72.f+72.f + 8, 17.f + 8});
     } else {
-        newPlayer->eqIcons[0]->SetPosition({1280 - 72.f - 16, 17.f + 16});
-        newPlayer->eqIcons[1]->SetPosition({1280 - 72.f - 36.f - 16, 17.f + 16});
-        newPlayer->eqIcons[2]->SetPosition({1280 - 72.f - 72.f - 16, 17.f + 16});
+        newPlayer->eqIcons[0]->SetPosition({1280 - 72.f - 8, 17.f + 8});
+        newPlayer->eqIcons[1]->SetPosition({1280 - 72.f - 36.f - 8, 17.f + 8});
+        newPlayer->eqIcons[2]->SetPosition({1280 - 72.f - 72.f - 8, 17.f + 8});
         for(int i = 0; i < 3; ++i)
             newPlayer->eqIcons[i]->SetAnchor({1, 0});
     }

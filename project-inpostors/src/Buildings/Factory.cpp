@@ -355,4 +355,26 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
             iconRes->SetPosition({0.f, 75.f - 16.f});
         }
     }
+
+    //TODO: I'm still mock
+    if (result->factoryType == FactoryType::Storage || true) {
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/task_panel_material.json");
+        result->taskPanel = result->AddComponent<mlg::Image>("TaskPanel", material).lock();
+        result->taskPanel->SetSize({64.f, 64.f});
+        result->taskPanel->SetBillboardTarget(result);
+        result->taskPanel->SetPosition({0.f, 112.f});
+
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/task_timer_material.json");
+        result->taskTimerBar = result->AddComponent<mlg::ProgressBar>("TaskTimer", material).lock();
+        result->taskTimerBar->SetSize({64.f, 64.f});
+        result->taskTimerBar->SetBillboardTarget(result);
+        result->taskTimerBar->SetPosition({0.f, 112.f});
+        result->taskTimerBar->percentage = 0.55f;
+
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/wood_material.json");
+        result->taskPanel = result->AddComponent<mlg::Image>("TaskIcon", material).lock();
+        result->taskPanel->SetSize({24.f, 24.f});
+        result->taskPanel->SetBillboardTarget(result);
+        result->taskPanel->SetPosition({0.f, 112.f});
+    }
 }
