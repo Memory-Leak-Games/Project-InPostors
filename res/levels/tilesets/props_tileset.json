@@ -7,7 +7,10 @@
         {
           "model": "res/models/props/plant.obj",
           "collision-type": "rectangle",
-          "dynamic": true
+          "dynamic": true,
+          "lifetime": 0.5,
+          "linear-drag": 20.0,
+          "angualr-drag": 10.0
         }
       ]
     },

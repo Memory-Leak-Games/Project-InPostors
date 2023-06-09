@@ -218,7 +218,7 @@ glm::vec2 SteeringBehaviors::Alignment(const std::vector<std::weak_ptr<TrafficCa
 }
 
 glm::vec2 SteeringBehaviors::FollowPath() {
-    if (glm::distance2(path->GetCurrentWaypoint(), aiComponent->GetPosition()) < sqrt(waypointSeekDistance)) {
+    if (glm::distance2(path->GetCurrentWaypoint(), aiComponent->GetPosition()) < waypointSeekingDistance) {
         path->SetNextWaypoint();
     }
 
@@ -234,6 +234,8 @@ void SteeringBehaviors::LoadParameters(const std::string& path) {
     json configJson = json::parse(configFile);
 
     auto parameters = configJson["parameters"];
+
+    waypointSeekingDistance = parameters["waypointSeekingDistance"];
 
     separationWeight = parameters["separationWeight"];
     alignmentWeight = parameters["alignmentWeight"];

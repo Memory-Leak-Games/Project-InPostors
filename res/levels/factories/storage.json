@@ -3,9 +3,9 @@
     "model": "res/models/factories/factory_2.obj",
     "material": "res/materials/buildings_material.json",
 
-    "position": [0.0, 0.0],
+    "position": [0.0, 0.3, 0.0],
     "rotation": 0.0,
-    "scale": 1.0
+    "scale": 0.6
   },
 
   "colliders":[

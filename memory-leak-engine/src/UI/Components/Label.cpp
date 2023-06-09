@@ -1,7 +1,9 @@
 #include "include/UI/Components/Label.h"
 
+#include "UI/Components/UIComponent.h"
 #include "glad/glad.h"
 
+#include <glm/fwd.hpp>
 #include <utility>
 
 #include "Core/AssetManager/AssetManager.h"
@@ -23,9 +25,9 @@ namespace mlg {
 
     void Label::Draw(const UIRenderer* renderer) {
         ZoneScopedN("Draw Label");
+        UIComponent::Draw(renderer);
         if(!visible)
             return;
-        UIComponent::Draw(renderer);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -104,14 +106,71 @@ namespace mlg {
 
     void Label::SetText(const std::string& text) {
         Label::text = text;
+        actualPositionDirty = true;
     }
 
     void Label::SetTextColor(const glm::vec3& textColor) {
         Label::textColor = textColor;
+        actualPositionDirty = true;
     }
 
     void Label::SetSize(float size) {
         Label::scale = size / font->fontSize;
+        actualPositionDirty = true;
+    }
+
+    void Label::SetHorizontalAlignment(Label::HorizontalAlignment alignment) {
+        Label::horizontalAlignment = alignment;
+        actualPositionDirty = true;
+    }
+
+    void Label::SetVerticalAlignment(VerticalAlignment alignment) {
+        Label::verticalAlignment = alignment;
+        actualPositionDirty = true;
+    }
+
+    void Label::CalculateActualPosition(const UIRenderer* renderer, const glm::vec2& position) {
+        glm::vec2 alignedPosition = position;
+
+        glm::vec2 labelSize = GetLabelSize();
+
+        if (horizontalAlignment == HorizontalAlignment::Center)
+            alignedPosition -= glm::vec2(labelSize.x / 2.f, 0.f);
+        else if (horizontalAlignment == HorizontalAlignment::Right)
+            alignedPosition -= glm::vec2(labelSize.x, 0.f);
+
+        if (verticalAlignment == VerticalAlignment::Center)
+            alignedPosition += glm::vec2(0.f, labelSize.y / 2.f);
+        else if (verticalAlignment == VerticalAlignment::Down)
+            alignedPosition += glm::vec2(0.f, labelSize.y);
+
+        UIComponent::CalculateActualPosition(renderer, alignedPosition);
+    }
+
+    Label::Label(std::weak_ptr<Entity> owner, std::string name)
+        : Label(owner, name, AssetManager::GetAsset<FontAsset>("res/fonts/ocraext.ttf")) {}
+
+    glm::vec2 Label::GetLabelSize() const {
+        glm::vec2 result {0.f};
+
+        // Calculate size of label
+        float maxHorizontal = 0.f;
+
+        for (char c : text) {
+            if (c == '\n') {
+                result.y += (float) font->fontSize * scale;
+                maxHorizontal = std::max(maxHorizontal, result.x);
+                result.x = 0.f;
+                continue;
+            }
+
+            result.x += (float) (font->characters[c - 33].Advance >> 6) * scale;    
+        }
+
+        result.x = std::max(maxHorizontal, result.x);
+        result.y -= (float) font->fontSize * scale * 0.5f;
+
+        return result;
     }
 }
 

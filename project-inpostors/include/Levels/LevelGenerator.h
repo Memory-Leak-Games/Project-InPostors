@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Neighbours.h"
+#include "TaskManager.h" //todo: this should not belong here.
 #include <string>
 
 namespace mlg {
@@ -21,6 +22,8 @@ namespace mlg {
         static TrafficData LoadTrafficData(const std::string& path);
         static std::string LoadLevelName(const std::string& path);
         static float LoadLevelTimeLimit(const std::string& path);
+        //todo: i really need to separate level generator from level data...
+        static std::vector<TaskData> GetTasks(const std::string& path);
 
         std::vector<std::string> GetLevelLayout();
 
@@ -33,6 +36,9 @@ namespace mlg {
             float scale;
             float colliderSize = 1.0f;
             float colliderOffset = 0.0f;
+            float lifetime = -1.f; // Only valid when isDynamic is set to true
+            float linearDrag = 20.f;
+            float angularDrag = 10.f;
             bool hasCollision = false;
             bool isDynamic = false;
         };
@@ -46,7 +52,7 @@ namespace mlg {
             char symbol = ' ';
         } roadsObjects;
 
-        //TODO: more info about pools
+        //TODO: more info about pools?
         struct MapFactory {
             std::string configPath;
             unsigned int remaining;
@@ -65,9 +71,10 @@ namespace mlg {
 
         nlohmann::json levelJson;
         nlohmann::json tileJson;
+        nlohmann::json poolJson;
 
         std::vector<std::string> levelLayout;
-        std::vector<MapFactory> levelFactories; //TODO: use map over vector
+        std::vector<MapFactory> levelFactories;
 
         std::string ignoredCharacters;
         std::unordered_map<char, unsigned int> factoryCharacters;

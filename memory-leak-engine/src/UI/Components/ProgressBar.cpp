@@ -15,20 +15,13 @@ namespace mlg {
     ProgressBar::ProgressBar(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<struct MaterialAsset>& material)
         : Image(std::move(owner), std::move(name), material) {}
 
-    // TODO: Do przemyślenia czy ta klasa powinna dziedziczyć z obrazka a jeżeli tak to wypadało by korzystać z jej kodu
     void ProgressBar::Draw(const UIRenderer* renderer) {
         ZoneScopedN("Draw ProgressBar");
+        UIComponent::Draw(renderer);
         if(!visible)
             return;
-        UIComponent::Draw(renderer);
 
         material->Activate();
-
-        // TODO: To oczywiście wyrzucić
-//        percentage += Time::GetDeltaSeconds() * 0.5;
-//        if (percentage > 1.f){
-//            percentage = Random::get(-5.0f, 0.f);
-//        }
 
         material->GetShaderProgram()->SetVec2F("size", GetSize() * renderer->uiScale);
         material->GetShaderProgram()->SetVec2F("screenPosition", actualPosition);

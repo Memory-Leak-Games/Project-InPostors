@@ -26,7 +26,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     result->score = result->AddComponent<mlg::Label>("Score", font).lock();
     result->score->SetPosition({1100.f, 720.f - 32.f});
     result->score->SetAnchor({1.0, 1.0});
-    result->score->SetText("Score: $0");
+    result->score->SetText("$0");
     //result->score->SetSize(32);
 
     auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/window_material.json");
@@ -35,7 +35,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     ui->SetAnchor({0.5, 0});
     ui->SetSize({400, 200});
 
-    font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/OCRAEXT.TTF");
+    font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/ocraext.ttf");
     result->chat = result->AddComponent<mlg::Label>("Chat", font).lock();
     result->chat->SetPosition({460.f, 65.f});
     result->chat->SetAnchor({0.5, 1.0});

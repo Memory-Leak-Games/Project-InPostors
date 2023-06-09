@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstddef>
-#include <eventpp/callbacklist.h>
 struct TaskData {
     std::string productId;
     float time;
@@ -40,6 +38,7 @@ public:
 
     std::vector<TaskData> GetActiveTasks();
     std::vector<TaskData> GetActiveTasks(const std::string& productId);
+    uint32_t GetActiveTasksCount() const;
 
     size_t AcceptNewTask();
 

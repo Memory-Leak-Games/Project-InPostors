@@ -12,8 +12,12 @@ namespace mlg {
 
         Core() = default;
 
+        bool shouldClose = false;
+        bool closed = true;
+
     public:
         eventpp::CallbackList<void()> OnUpdate;
+        eventpp::CallbackList<void()> OnMainLoopEnd;
 
         static void Initialize();
         static void Stop();
@@ -27,5 +31,8 @@ namespace mlg {
         void TickRendering() const;
         void TickGameplay() const;
         void TickWindow() const;
+
+        void Close();
+        bool IsClosed() const;
     };
 }// namespace mlg

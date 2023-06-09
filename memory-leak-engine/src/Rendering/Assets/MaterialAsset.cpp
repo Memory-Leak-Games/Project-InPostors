@@ -2,6 +2,7 @@
 
 #include <nlohmann/json.hpp>
 #include <fstream>
+#include <spdlog/spdlog.h>
 
 #include "Rendering/ShaderProgram.h"
 #include "Rendering/Assets/ShaderAsset.h"
@@ -153,7 +154,7 @@ namespace mlg {
 
     void MaterialAsset::SetFloat(const std::string& name, float value) {
         if (!shaderProgram->IsUniformExist(name)) {
-            SPDLOG_WARN("Uniform: " + name + " not found");
+            SPDLOG_ERROR("Uniform: " + name + " not found");
             return;
         }
 
@@ -167,7 +168,7 @@ namespace mlg {
 
     void MaterialAsset::SetInt(const std::string& name, int value) {
         if (!shaderProgram->IsUniformExist(name)) {
-            SPDLOG_WARN("Uniform: " + name + " not found");
+            SPDLOG_ERROR("Uniform: " + name + " not found");
             return;
         }
 
@@ -181,7 +182,7 @@ namespace mlg {
 
     void MaterialAsset::SetVec4(const std::string& name, glm::vec4 value) {
         if (!shaderProgram->IsUniformExist(name)) {
-            SPDLOG_WARN("Uniform: " + name + " not found");
+            SPDLOG_ERROR("Uniform: " + name + " not found");
             return;
         }
 

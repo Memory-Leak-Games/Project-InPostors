@@ -5,6 +5,7 @@
 #include "SceneGraph/Transform.h"
 
 #include "Macros.h"
+#include <memory>
 
 namespace mlg {
     class Component;
@@ -33,8 +34,9 @@ namespace mlg {
 
         template<typename T, typename... Args>
         std::weak_ptr<T> AddComponent(Args&&... args) {
+            std::shared_ptr<Entity> sharedThis = shared_from_this();
             auto newComponent = ComponentManager::SpawnComponent<T>(
-                    shared_from_this(), std::forward<Args>(args)...);
+                    sharedThis, std::forward<Args>(args)...);
 
             components.push_back(newComponent);
             return std::dynamic_pointer_cast<T>(newComponent.lock());

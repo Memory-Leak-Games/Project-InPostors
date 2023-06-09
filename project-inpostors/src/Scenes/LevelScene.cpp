@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "Scenes/LevelScene.h"
 
 #include "Core/HID/Input.h"
@@ -22,41 +24,40 @@
 
 #include "UI/GameplayOverlay.h"
 
+#include "LevelTaskManager.h"
 #include "ScoreManager.h"
 #include "TaskManager.h"
 
-LevelScene::LevelScene(const std::string& path) : levelPath(path) {}
+#include "UI/FinishScreen.h"
+#include "UI/PauseMenu.h"
+#include "UI/StartLevelCountdown.h"
+
+LevelScene::LevelScene(std::string path) : levelPath(std::move(path)) {}
 
 LevelScene::~LevelScene() = default;
 
 void LevelScene::Load() {
     LoadLevel();
-
-    taskManager = std::make_unique<TaskManager>();
-    scoreManager = std::make_unique<ScoreManager>();
-    taskManager->OnTaskFinished.append([this](const TaskData& taskData) {
-        int reward = taskData.reward;
-
-        if (taskData.time > 0.0f) {
-            reward += taskData.bonus;
-        }
-
-        scoreManager->AddScore(reward);
-        gameplayOverlay->SetScore(scoreManager->GetScore());
-    });
+    InitializeLevelTaskManager();
 
     gameplayOverlay = mlg::EntityManager::SpawnEntity<GameplayOverlay>(
-                              "Overlay",
-                              false,
-                              mlg::SceneGraph::GetRoot())
+                              "Overlay", false, mlg::SceneGraph::GetRoot())
                               .lock();
 
     navigationGraph = std::make_shared<NavigationGraph>(levelPath);
+    scoreManager = std::make_unique<ScoreManager>();
+    pauseMenu = mlg::EntityManager::SpawnEntity<PauseMenu>(
+            "PauseMenu", false, mlg::SceneGraph::GetRoot());
+    finishScreen = mlg::EntityManager::SpawnEntity<FinishScreen>(
+                           "FinishScreen", false, mlg::SceneGraph::GetRoot())
+                           .lock();
 
     SpawnTraffic();
     LoadSounds();
-
     SetTimeLimit();
+
+    mlg::EntityManager::SpawnEntity<StartLevelCountdown>(
+        "StartLevelCountdown", false, mlg::SceneGraph::GetRoot());
 
     // TODO: Remove me
     gameplayOverlay->SetChat(fmt::format(
@@ -65,7 +66,7 @@ void LevelScene::Load() {
 
 void LevelScene::Update() {
     HandlePauseGame();
-    taskManager->Update();
+    levelTaskManager->GetTaskManager().Update();
 
     float timeLeft = mlg::TimerManager::Get()->GetTimerRemainingTime(timeLimitTimer);
     gameplayOverlay->SetClock(timeLeft);
@@ -85,7 +86,7 @@ void LevelScene::Update() {
         ImGui::Text("Score: %i", scoreManager->GetScore());
         ImGui::Separator();
 
-        auto activeTasks = taskManager->GetActiveTasks();
+        auto activeTasks = levelTaskManager->GetTaskManager().GetActiveTasks();
         for (const auto& task : activeTasks) {
             ImGui::Text("Task: %s", task.productId.c_str());
             ImGui::Text("Time left: %f", task.time);
@@ -100,9 +101,12 @@ void LevelScene::Update() {
 }
 
 void LevelScene::HandlePauseGame() {
-    if (mlg::Input::IsActionJustPressed("pause")) {
+
+    if (mlg::Input::IsActionJustPressed("pause") &&
+        mlg::TimerManager::Get()->GetTimerRemainingTime(timeLimitTimer) > 0.0f) {
         bool isGamePaused = mlg::Time::IsGamePaused();
         mlg::Time::PauseGame(!isGamePaused);
+        pauseMenu.lock()->SetVisible(!isGamePaused);
     }
 }
 
@@ -110,12 +114,42 @@ const std::shared_ptr<NavigationGraph>& LevelScene::GetNavigationGraph() const {
     return navigationGraph;
 }
 
+LevelTaskManager* LevelScene::GetLevelTaskManager() {
+    return levelTaskManager.get();
+}
+
 TaskManager* LevelScene::GetTaskManager() {
-    return taskManager.get();
+    return &levelTaskManager->GetTaskManager();
 }
 
 ScoreManager* LevelScene::GetScoreManager() {
     return scoreManager.get();
+}
+
+const std::string& LevelScene::GetLevelName() const {
+    return levelName;
+}
+
+void LevelScene::InitializeLevelTaskManager() {
+    levelTaskManager = std::make_unique<LevelTaskManager>();
+    levelTaskManager->GetTaskManager().OnTaskFinished.append(
+            [this](const TaskData& taskData) {
+                int reward = taskData.reward;
+
+                if (taskData.time > 0.0f) {
+                    reward += taskData.bonus;
+                }
+
+                scoreManager->AddScore(reward);
+                gameplayOverlay->SetScore(scoreManager->GetScore());
+            });
+
+    std::vector<TaskData> tasks = mlg::LevelGenerator::GetTasks(levelPath);
+    for (const auto& task : tasks) {
+        GetTaskManager()->AddTaskToPool(task);
+    }
+
+    levelTaskManager->StartNewTaskLogic();
 }
 
 void LevelScene::SpawnTraffic() {
@@ -167,7 +201,9 @@ void LevelScene::SetTimeLimit() {
                 false,
                 [this]() {
                     mlg::Time::PauseGame(true);
-                    SPDLOG_INFO("GameOver, Score: {}", scoreManager->GetScore());
+                    finishScreen->SetScore(scoreManager->GetScore(), levelName);
+                    finishScreen->SetVisible(true);
+                    mlg::Time::PauseGame(true);
                 });
     }
 }

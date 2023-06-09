@@ -5,18 +5,20 @@
 #include "Gameplay/Component.h"
 #include "UI/UIRenderable.h"
 
+#define MLG_ANCHOR_CENTER glm::vec2{0.5, 0.5}
+#define MLG_POS_CENTER glm::vec2{1280.f * 0.5f, 720.f * 0.5f}
+
 namespace mlg {
     /*
      * Base class of every ui component in engine, ex. Label
      */
     class UIComponent : public Component, public UIRenderable {
     private:
-        // During rendering we are using actualPosition instead
         glm::vec2 position = {0.0f, 0.0f};
 
     protected:
         // Used for ui scaling
-        glm::vec2 anchor {0.0f, 0.0f};
+        glm::vec2 anchor{0.0f, 0.0f};
         glm::vec2 actualPosition = position;
         bool actualPositionDirty = true;
 
@@ -25,9 +27,12 @@ namespace mlg {
 
         bool visible = true;
 
+        // If true, component will register itself in UIRenderer on Start()
+        bool autoRegister = true;
+
 
     protected:
-        void CalculateActualPosition(const struct UIRenderer* renderer);
+        virtual void CalculateActualPosition(const UIRenderer* renderer, const glm::vec2& position);
         void FollowTarget(const struct UIRenderer* renderer);
 
     public:
@@ -36,18 +41,20 @@ namespace mlg {
         UIComponent(std::weak_ptr<Entity> owner, std::string name);
 
         void Start() override;
-        void Draw(const class UIRenderer *renderer) override;
+        void Draw(const class UIRenderer* renderer) override;
 
         [[nodiscard]] const glm::vec2& GetPosition() const;
         [[nodiscard]] const glm::vec2& GetAnchor() const;
-        [[nodiscard]] bool IsBillboard1() const;
+        [[nodiscard]] bool IsBillboard() const;
         [[nodiscard]] const std::weak_ptr<struct Entity>& GetBillboardTarget() const;
         [[nodiscard]] bool IsVisible() const;
 
-        void SetPosition(const glm::vec2& position);
-        void SetAnchor(const glm::vec2& anchor);
+        virtual void SetPosition(const glm::vec2& position);
+        virtual void SetAnchor(const glm::vec2& anchor);
         void SetIsBillboard(bool isBillboard);
         void SetBillboardTarget(const std::weak_ptr<struct Entity>& billboardTarget);
-        void SetVisible(bool visible);
+        virtual void SetVisible(bool visible);
+
+        void SetAutoRegister(bool autoRegister);
     };
-}
+}// namespace mlg
