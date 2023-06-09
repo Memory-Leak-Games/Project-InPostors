@@ -128,7 +128,12 @@ void GameplayOverlay::Update() {
     auto tasks = taskManager->GetTaskManager().GetActiveTasks();
     int taskCount = taskManager->GetTaskManager().GetActiveTasksCount();
     for(int i = 0; i < taskCount; i++) {
+        float timeRate = tasks[i].time / tasks[i].timeLimit;
         taskProgress[i]->percentage = tasks[i].time / tasks[i].timeLimit;
+
+        // You useless piece of meat, you are late!
+        if(timeRate <= 0.0f)
+            taskPanels[i]->tint = {0.5, 0.0, 0.0, 0.8};
     }
 }
 
