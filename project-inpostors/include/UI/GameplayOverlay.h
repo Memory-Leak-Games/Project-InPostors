@@ -21,6 +21,8 @@ private:
     std::shared_ptr<class mlg::Image> taskIcon[10];
     std::shared_ptr<class mlg::ProgressBar> taskProgress[10];
 
+    std::shared_ptr<class LevelTaskManager> taskManager;
+
     GameplayOverlay(uint64_t id,
                     const std::string& name,
                     bool isStatic,
@@ -31,7 +33,8 @@ public:
             uint64_t id,
             const std::string& name,
             bool isStatic,
-            mlg::Transform* parent);
+            mlg::Transform* parent,
+            std::shared_ptr<class LevelTaskManager> taskManager);
 
     void Start() override;
     void Update() override;

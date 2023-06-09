@@ -19,6 +19,7 @@ void TaskManager::AddTaskToPool(const TaskData& newTaskData) {
     newTask.id = nextId++;
     newTask.productId = newTaskData.productId;
     newTask.timeLeft = newTaskData.time;
+    newTask.timeLimit = newTaskData.time;
     newTask.reward = newTaskData.reward;
     newTask.bonus = newTaskData.bonus;
 
@@ -56,6 +57,7 @@ TaskData TaskManager::GetTask(size_t id) {
     return TaskData{
             task.productId,
             task.timeLeft,
+            task.timeLimit,
             task.reward,
             task.bonus};
 }
@@ -68,6 +70,7 @@ std::vector<TaskData> TaskManager::GetActiveTasks() {
             activeTasks.push_back(TaskData{
                     task.productId,
                     task.timeLeft > 0 ? task.timeLeft : 0,
+                    task.timeLimit,
                     task.reward,
                     task.bonus});
         }
@@ -115,6 +118,7 @@ size_t TaskManager::AcceptNewTask() {
 
     size_t newTask = *Random::get(inactiveTasks);
     tasks[newTask].active = true;
+    OnTaskAccepted(GetTask(newTask));
     return newTask;
 }
 
@@ -127,6 +131,7 @@ void TaskManager::RemoveTask(size_t id) {
     TaskData taskData{
             task.productId,
             task.timeLeft,
+            task.timeLimit,
             task.reward,
             task.bonus};
 
