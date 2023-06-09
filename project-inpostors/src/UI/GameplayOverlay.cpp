@@ -23,26 +23,41 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
 
     result->taskManager = taskManager;
 
+    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/semi_transparent_background_material.json");
+    auto temp = result->AddComponent<mlg::Image>("ClockPanel", material).lock();
+    temp->SetSize({110, 48});
+    temp->SetPosition({640, 720 - 8 - 24});
+    temp->SetAnchor({0.5, 1.0});
+
     auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/arialbd.ttf");
-    result->clock = result->AddComponent<mlg::Label>("Clock", font).lock();
-    result->clock->SetPosition({640.f - 50.f, 720.f - 32.f}); //TODO: Use label's property when I teach it to center text
+    result->clock = result->AddComponent<mlg::Label>("Clock").lock();
+    result->clock->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
+    result->clock->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
+    //result->clock->SetPosition({640.f - 42.f, 720.f - 32.f - 2 - 8.f}); //TODO: Use label's property when I teach it to center text
+    result->clock->SetPosition({640.f, 720.f - 24 - 2 - 8.f});
     result->clock->SetAnchor({0.5, 1.0});
-    //result->clock->SetSize(32);
 
-    result->score = result->AddComponent<mlg::Label>("Score", font).lock();
-    result->score->SetPosition({1100.f, 720.f - 32.f});
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/semi_transparent_background_material.json");
+    temp = result->AddComponent<mlg::Image>("ScorePanel", material).lock();
+    temp->SetSize({110.f, 48.f});
+    temp->SetPosition({1280.f - 50.f - 8.f, 720.f - 8.f - 24.f});
+    temp->SetAnchor({1.0, 1.0});
+
+    result->score = result->AddComponent<mlg::Label>("Score").lock();
+    result->score->SetPosition({1280.f - 50.f - 8.f, 720.f - 8.f - 24.f - 2});
     result->score->SetAnchor({1.0, 1.0});
-    result->score->SetText("$0");
-    //result->score->SetSize(32);
+    result->score->SetText("$0000");
+    result->score->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
+    result->score->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
 
-    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/window_material.json");
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/semi_transparent_background_material.json");
     auto ui = result->AddComponent<mlg::Image>("ChatWindow", material).lock();
     ui->SetPosition({640.f, 0.f});
     ui->SetAnchor({0.5, 0});
     ui->SetSize({400, 200});
 
     font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/ocraext.ttf");
-    result->chat = result->AddComponent<mlg::Label>("Chat", font).lock();
+    result->chat = result->AddComponent<mlg::Label>("Chat").lock();
     result->chat->SetPosition({460.f, 65.f});
     result->chat->SetAnchor({0.5, 1.0});
     result->chat->SetSize(18);
@@ -53,7 +68,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
         result->taskPanels[i] = result->AddComponent<mlg::Image>("TaskPanel", material).lock();
         result->taskPanels[i]->SetPosition({8 + 8 + 16 + 48 * i, 720 - 17 - 16});
         result->taskPanels[i]->SetAnchor({0.0, 1.0});
-        result->taskPanels[i]->SetSize({48, 48});
+        result->taskPanels[i]->SetSize({42, 42});
         result->taskPanels[i]->SetVisible(false);
     }
 
@@ -78,14 +93,22 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     }
 
     result->taskManager->GetTaskManager().OnTaskAccepted.append([result](const TaskData& taskData) {
+//        auto productManager = ProductManager::GetInstance();
+//        int idx = result->taskManager->GetTaskManager().GetActiveTasksCount() - 1;
+//
+//        result->taskIcon[idx]->material = productManager->GetProduct(taskData.productId).icon;
+
         auto productManager = ProductManager::GetInstance();
-        int idx = result->taskManager->GetTaskManager().GetActiveTasksCount() - 1;
+        int count = result->taskManager->GetTaskManager().GetActiveTasksCount();
+        auto tasks = result->taskManager->GetTaskManager().GetActiveTasks();
 
-        result->taskIcon[idx]->material = productManager->GetProduct(taskData.productId).icon;
+        for(int i = 0; i < count; i++) {
+            result->taskIcon[i]->material = productManager->GetProduct(tasks[i].productId).icon;
+        }
 
-        result->taskPanels[idx]->SetVisible(true);
-        result->taskIcon[idx]->SetVisible(true);
-        result->taskProgress[idx]->SetVisible(true);
+        result->taskPanels[count - 1]->SetVisible(true);
+        result->taskIcon[count - 1]->SetVisible(true);
+        result->taskProgress[count - 1]->SetVisible(true);
     });
 
     result->taskManager->GetTaskManager().OnTaskFinished.append([result](const TaskData& taskData) {
@@ -132,13 +155,19 @@ void GameplayOverlay::Update() {
         taskProgress[i]->percentage = tasks[i].time / tasks[i].timeLimit;
 
         // You useless piece of meat, you are late!
-        if(timeRate <= 0.0f)
-            taskPanels[i]->tint = {0.5, 0.0, 0.0, 0.8};
+        if(timeRate <= 0.0f) {
+            taskPanels[i]->tint = {0.5, 0.0, 0.0, 0.85};
+            taskProgress[i]->SetVisible(false);
+        }
+        else {
+            taskPanels[i]->tint = {0.0, 0.0, 0.0, 0.85};
+            taskProgress[i]->SetVisible(true);
+        }
     }
 }
 
 void GameplayOverlay::SetScore(int score) {
-    this->score->SetText(fmt::format("${}", score));
+    this->score->SetText(fmt::format("${:04}", score));
 }
 
 void GameplayOverlay::SetChat(const std::string& message) {
