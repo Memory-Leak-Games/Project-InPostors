@@ -5,6 +5,8 @@ class TrafficCar;
 class Path;
 class NavigationGraph;
 
+const float waypointSeekDistance = 600;
+
 class SteeringBehaviors {
 public:
     enum SummingMethod {

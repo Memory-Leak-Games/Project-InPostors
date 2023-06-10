@@ -3,6 +3,7 @@
 struct TaskData {
     std::string productId;
     float time;
+    float timeLimit;
     int reward;
     int bonus;
 };
@@ -13,6 +14,7 @@ private:
         size_t id;
         std::string productId;
         float timeLeft;
+        float timeLimit;
         int reward;
         int bonus;
 

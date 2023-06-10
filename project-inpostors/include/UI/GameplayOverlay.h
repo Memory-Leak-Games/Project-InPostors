@@ -4,6 +4,7 @@
 
 namespace mlg {
     class Transform;
+    class Image;
     class Label;
     class ProgressBar;
 }// namespace mlg
@@ -15,7 +16,12 @@ private:
     std::shared_ptr<class mlg::Label> chat;
     std::shared_ptr<class mlg::Label> score;
 
-    std::shared_ptr<class mlg::ProgressBar> questBar;
+    std::shared_ptr<class mlg::Image> taskPanel;
+    std::shared_ptr<class mlg::Image> taskPanels[10];
+    std::shared_ptr<class mlg::Image> taskIcon[10];
+    std::shared_ptr<class mlg::ProgressBar> taskProgress[10];
+
+    std::shared_ptr<class LevelTaskManager> taskManager;
 
     GameplayOverlay(uint64_t id,
                     const std::string& name,
@@ -27,7 +33,8 @@ public:
             uint64_t id,
             const std::string& name,
             bool isStatic,
-            mlg::Transform* parent);
+            mlg::Transform* parent,
+            std::shared_ptr<class LevelTaskManager> taskManager);
 
     void Start() override;
     void Update() override;

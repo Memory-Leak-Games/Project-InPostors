@@ -16,7 +16,7 @@ private:
 
     std::shared_ptr<class GameplayOverlay> gameplayOverlay;
 
-    std::unique_ptr<class LevelTaskManager> levelTaskManager;
+    std::shared_ptr<class LevelTaskManager> levelTaskManager;
     std::unique_ptr<class ScoreManager> scoreManager;
 
     std::weak_ptr<class PauseMenu> pauseMenu;

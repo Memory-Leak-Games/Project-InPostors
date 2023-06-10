@@ -41,7 +41,8 @@ void LevelScene::Load() {
     InitializeLevelTaskManager();
 
     gameplayOverlay = mlg::EntityManager::SpawnEntity<GameplayOverlay>(
-                              "Overlay", false, mlg::SceneGraph::GetRoot())
+                              "Overlay", false, mlg::SceneGraph::GetRoot(),
+                              levelTaskManager)
                               .lock();
 
     navigationGraph = std::make_shared<NavigationGraph>(levelPath);

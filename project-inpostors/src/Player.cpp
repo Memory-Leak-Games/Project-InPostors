@@ -91,7 +91,6 @@ void Player::LoadModel(const json& configJson) {
 
 void Player::Start() {
     carInput = GetComponentByClass<CarInput>().lock();
-    uiArrow.lock()->tint = playerData.color;
 
     pickUpSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/pick_up.wav");
     dropSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/drop.wav");
@@ -209,7 +208,7 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     newPlayer->uiArrow = newPlayer->AddComponent<mlg::Image>("Arrow", material);
     auto ui = newPlayer->uiArrow.lock();
     ui->SetBillboardTarget(newPlayer);
-    ui->SetSize({14.f, 14.f});
+    ui->SetSize({16.f, 16.f});
     ui->SetPosition({0.f, 24.f});
     ui->tint = newPlayer->playerData.color;
 
@@ -221,73 +220,76 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
         newPlayer->eqBillboards[i]->SetVisible(false);
     }
 
-    auto label = newPlayer->AddComponent<mlg::Label>("PlayerTag", font).lock();
-    label->SetSize(12);
-    label->SetTextColor(newPlayer->playerData.color);
-    label->SetBillboardTarget(newPlayer);
-    label->SetPosition({-6.f, 35.f});
-    if(newPlayer->playerData.id == 0)
-    {
-        label->SetText("P1");
-    } else {
-        label->SetText("P2");
-    }
+//    auto label = newPlayer->AddComponent<mlg::Label>("PlayerTag", font).lock();
+//    label->SetSize(12);
+//    label->SetTextColor(newPlayer->playerData.color);
+//    label->SetBillboardTarget(newPlayer);
+//    label->SetPosition({-8.f, 35.f}); //TODO: Change when label's horizontal alignment as billboard is fixed
+//    label->SetTextColor(newPlayer->playerData.color);
+//    if(newPlayer->playerData.id == 0) {
+//        label->SetText("P1");
+//    } else {
+//        label->SetText("P2");
+//    }
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/player/panel_material.json");
     ui = newPlayer->AddComponent<mlg::Image>("Panel", material).lock();
-    ui->SetSize({200.f, 38.f});
+    ui->SetSize({70.f + 36.f * 3, 38.f}); //TODO: Scale panel according to amout of slots in equipment
+    ui->tint = newPlayer->playerData.color;
+    ui->tint.a = 0.85f;
     if(newPlayer->playerData.id == 0)
     {
-        ui->SetPosition(ui->GetSize() * 0.5f + glm::vec2(16, 16));
-        ui->tint = {1.0, 0.0, 0.0, 0.7};
+        ui->SetPosition(ui->GetSize() * 0.5f + glm::vec2(8, 8));
     } else {
-        ui->SetPosition({1280 - ui->GetSize().x * 0.5f - 16, ui->GetSize().y * 0.5 + 16});
+        ui->SetPosition({1280 - ui->GetSize().x * 0.5f - 8, ui->GetSize().y * 0.5 + 8});
         ui->SetAnchor({1, 0});
-        ui->tint = {0.0, 1.0, 1.0, 0.7};
     }
-    ui->tint += glm::vec4(0.5, 0.5, 0.5, 0.0);
+    ui->tint -= glm::vec4(0.8, 0.8, 0.8, 0.0);
 
-    label = newPlayer->AddComponent<mlg::Label>("PlayerName", font).lock();
+    auto label = newPlayer->AddComponent<mlg::Label>("PlayerName").lock();
     label->SetSize(32);
     label->SetTextColor(newPlayer->playerData.color);
+    label->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
+    label->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
     if(newPlayer->playerData.id == 0)
     {
-        label->SetPosition({10 + 16, 8 + 16});
+        label->SetPosition({8 + 25, 8 + 16});
         label->SetText("P1");
     } else {
         label->SetAnchor({1, 0});
-        label->SetPosition({1280 - 50 - 16, 8 + 16});
+        label->SetPosition({1280 - 8 - 25, 8 + 16});
         label->SetText("P2");
     }
 
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/wood_material.json");
-
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/none_material.json");
     for(int i = 0; i < 3; ++i) {
         newPlayer->eqIcons[i] = newPlayer->AddComponent<mlg::Image>("eqIcon", material).lock();
         newPlayer->eqIcons[i]->SetSize({32.f, 32.f});
-        newPlayer->eqIcons[i]->SetVisible(false);
     }
 
     if(newPlayer->playerData.id == 0) {
-        newPlayer->eqIcons[0]->SetPosition({72.f + 16, 17.f + 16});
-        newPlayer->eqIcons[1]->SetPosition({72.f+36.f + 16, 17.f + 16});
-        newPlayer->eqIcons[2]->SetPosition({72.f+72.f + 16, 17.f + 16});
+        newPlayer->eqIcons[0]->SetPosition({72.f + 8, 17.f + 8 + 2});
+        newPlayer->eqIcons[1]->SetPosition({72.f+36.f + 8, 17.f + 8 + 2});
+        newPlayer->eqIcons[2]->SetPosition({72.f+72.f + 8, 17.f + 8 + 2});
     } else {
-        newPlayer->eqIcons[0]->SetPosition({1280 - 72.f - 16, 17.f + 16});
-        newPlayer->eqIcons[1]->SetPosition({1280 - 72.f - 36.f - 16, 17.f + 16});
-        newPlayer->eqIcons[2]->SetPosition({1280 - 72.f - 72.f - 16, 17.f + 16});
+        newPlayer->eqIcons[0]->SetPosition({1280 - 72.f - 8, 17.f + 8 + 2});
+        newPlayer->eqIcons[1]->SetPosition({1280 - 72.f - 36.f - 8, 17.f + 8 + 2});
+        newPlayer->eqIcons[2]->SetPosition({1280 - 72.f - 72.f - 8, 17.f + 8 + 2});
         for(int i = 0; i < 3; ++i)
             newPlayer->eqIcons[i]->SetAnchor({1, 0});
     }
 
     // Update equipment ui callback
     newPlayer->equipment->equipmentChanged.append([newPlayer]() {
+        auto noneMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/none_material.json");
         auto productManager = ProductManager::GetInstance();
         auto items = newPlayer->equipment->GetEquipment();
 
         for(int i = 0; i < 3; ++i) {
+
+            // Wouldn't game crash be more appropriate?
             if (!newPlayer->eqIcons[i] || !newPlayer->eqBillboards[i])
-                return;
+                break;
 
             if(items.size() > i) {
                 newPlayer->eqIcons[i]->material = productManager->GetProduct(items[i]).icon;
@@ -295,12 +297,14 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
                 newPlayer->eqIcons[i]->SetVisible(true);
                 newPlayer->eqBillboards[i]->SetVisible(true);
             } else {
-                newPlayer->eqIcons[i]->SetVisible(false);
+                newPlayer->eqIcons[i]->material = noneMaterial;
                 newPlayer->eqBillboards[i]->SetVisible(false);
+                break; // It ain't much, but it's honest optimization
             }
         }
 
-        glm::vec2 billboardPos = {-7.f * (items.size() - 1.f), 53.f};
+        // Discount HBoxContainer
+        glm::vec2 billboardPos = {-7.f * (items.size() - 1.f), 40.f};
         for(int i = 0; i < items.size(); ++i) {
             newPlayer->eqBillboards[i]->SetPosition(billboardPos);
             billboardPos.x += 14.f;
