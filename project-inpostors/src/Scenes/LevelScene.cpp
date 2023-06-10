@@ -24,9 +24,9 @@
 
 #include "UI/GameplayOverlay.h"
 
-#include "LevelTaskManager.h"
-#include "ScoreManager.h"
-#include "TaskManager.h"
+#include "Managers/LevelTaskManager.h"
+#include "Managers/ScoreManager.h"
+#include "Managers/TaskManager.h"
 
 #include "UI/FinishScreen.h"
 #include "UI/PauseMenu.h"

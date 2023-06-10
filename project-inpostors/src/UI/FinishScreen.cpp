@@ -4,7 +4,7 @@
 #include "Core/SceneManager/SceneManager.h"
 #include "Rendering/Assets/MaterialAsset.h"
 
-#include "ScoreManager.h"
+#include "Managers/ScoreManager.h"
 #include "UI/Assets/FontAsset.h"
 #include "UI/Components/Button.h"
 #include "UI/Components/CharacterSelector.h"
@@ -15,7 +15,7 @@
 #include "UI/UIStyle.h"
 
 #include "Scenes/LevelScene.h"
-#include "ScoreManager.h"
+#include "Managers/ScoreManager.h"
 
 FinishScreen::FinishScreen(
         uint64_t id, const std::string& name,
