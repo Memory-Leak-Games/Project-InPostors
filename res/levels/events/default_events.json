@@ -1,0 +1,14 @@
+[
+    {
+        "id": "3x2",
+        "meshes": [
+            "res/models/events/road_works.obj",
+            "res/models/events/traffic_accident.obj"
+        ],
+
+        "collider": {
+            "size": [0.0, 0.0],
+            "offset": [0.0, 0.0]
+        }
+    }
+]

@@ -69,5 +69,21 @@
     "color": [0.0, 1.0, 1.0],
 
     "position": [-24.0, 10.0]
-  }
+  },
+
+  "events-config": "res/levels/events/default_events.json",
+  "events": [
+    {
+      "id": "3x2",
+      "position": [0.0, 0.0],
+      "vertical": false,
+      "probability": 5
+    },
+    {
+      "id": "3x2",
+      "position": [0.0, 0.0],
+      "vertical": true,
+      "probability": 2
+    }
+  ]
 }

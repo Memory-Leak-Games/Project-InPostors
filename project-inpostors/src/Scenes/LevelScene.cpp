@@ -27,6 +27,7 @@
 #include "Managers/LevelTaskManager.h"
 #include "Managers/ScoreManager.h"
 #include "Managers/TaskManager.h"
+#include "Managers/GameplayEventsManager.h"
 
 #include "UI/FinishScreen.h"
 #include "UI/PauseMenu.h"
@@ -52,6 +53,8 @@ void LevelScene::Load() {
     finishScreen = mlg::EntityManager::SpawnEntity<FinishScreen>(
                            "FinishScreen", false, mlg::SceneGraph::GetRoot())
                            .lock();
+    
+    gameplayEventsManager = std::make_unique<GameplayEventsManager>(levelPath);
 
     SpawnTraffic();
     LoadSounds();
