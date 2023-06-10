@@ -10,26 +10,30 @@
 
   "colliders":[
     {
-      "offset": [2.0, 1.0],
-      "size": [10.0, 14.0]
-    },
-    {
-      "offset": [-4.0, -1.0],
-      "size": [2.0, 7.0]
+      "offset": [0.0, 1.0],
+      "size": [15.0, 14.0]
     }
   ],
 
   "type": "Storage",
 
   "input": {
-    "offset": [-5.0, 1.0],
-    "size": [5.0, 12.0]
+    "offset": [0.0, -9.0],
+    "size": [15.0, 7.0]
   },
 
   "emitters": [
     {
       "id": "factorySmoke",
-      "position": [5.0, 10.0, -5.0]
+      "position": [-5.0, 12.0, 5.0]
+    },
+    {
+      "id": "factorySmoke",
+      "position": [-5.0, 12.0, 7.0]
+    },
+    {
+      "id": "factorySmoke",
+      "position": [-5.0, 12.0, 9.0]
     }
   ]
 }

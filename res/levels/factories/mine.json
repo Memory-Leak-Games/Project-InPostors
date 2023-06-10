@@ -10,8 +10,8 @@
 
   "colliders":[
     {
-      "offset": [-1.0, 0.0],
-      "size": [9.0, 14.0]
+      "offset": [0.0, 0.0],
+      "size": [19.0, 19.0]
     }
   ],
 
@@ -19,14 +19,9 @@
   "equipmentSize": 3,
   "type": "OneOutput",
 
-  "input": {
-    "offset": [5.0, -3.0],
-    "size": [5.0, 5.0]
-  },
-
   "output": {
-    "offset": [6.0, 0.0],
-    "size": [6.0, 12.0]
+    "offset": [1.0, -13.0],
+    "size": [23.0, 6.0]
   },
 
   "emitters": [
