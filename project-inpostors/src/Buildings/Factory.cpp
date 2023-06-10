@@ -218,13 +218,13 @@ void Factory::Update() {
         float timeToProcess = BlueprintManager::Get()->GetBlueprint(blueprintId).GetTimeToProcess();
 
         if (!blueprint.GetInput().empty() && barReq1)
-            barReq1->percentage = equipmentComponent->Has(blueprint.GetInput()[0]) /*|| produceElapsed >= 0.0*/;
+            barReq1->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetInput()[0]) / 3.0f;
         if (blueprint.GetInput().size() > 1 && barReq2)
-            barReq2->percentage = equipmentComponent->Has(blueprint.GetInput()[1]) /*|| produceElapsed >= 0.0*/;
+            barReq2->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetInput()[1]) / 3.0;
         if (barArrow)
             barArrow->percentage = produceElapsed / timeToProcess;
         if (barRes)
-            barRes->percentage = equipmentComponent->Has(blueprint.GetOutput());
+            barRes->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetOutput()) / 3.0;
     }
 
 #ifdef DEBUG
