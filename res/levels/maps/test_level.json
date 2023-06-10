@@ -75,20 +75,24 @@
   "events": [
     {
       "id": "3x2",
-      "position": [0.0, 30.0],
+      "position": [11.0, 10.0],
       "vertical": false,
       "probability": 2
     },
     {
       "id": "3x2",
-      "position": [-5.0, 30.0],
+      "position": [-11.0, 20.0],
       "vertical": true,
-      "probability": 5
+      "probability": 4
     },
     {
       "id": "3x2",
-      "position": [5.0, 30.0],
+      "position": [53.0, 0.0],
       "vertical": false,
+      "probability": 5
+    },
+    {
+      "id": "None",
       "probability": 3
     }
   ]

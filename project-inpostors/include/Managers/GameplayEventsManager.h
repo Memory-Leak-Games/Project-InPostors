@@ -21,6 +21,8 @@ struct GameplayEvent {
     glm::vec2 position;
     bool vertical;
 
+    bool skip = false;
+
     const EventPrefab* eventPrefab;
 };
 
@@ -41,4 +43,6 @@ public:
 private:
     void LoadPrefabs(const nlohmann::json& prefabsJson);
     void LoadEvents(const nlohmann::json& eventsJson);
+
+    bool IsPlayerOrNPCNearEvent(const GameplayEvent& event) const;
 };

@@ -3,8 +3,11 @@
 #include "Core/AssetManager/AssetManager.h"
 #include "Core/Math.h"
 
+#include "Gameplay/Components/RigidbodyComponent.h"
 #include "Gameplay/Components/StaticMeshComponent.h"
 #include "Managers/GameplayEventsManager.h"
+#include "Physics/Colliders/ColliderShapes.h"
+#include <glm/fwd.hpp>
 
 using Random = effolkronium::random_static;
 
@@ -26,9 +29,6 @@ std::shared_ptr<GameplayEventEntity> GameplayEventEntity::Create(
     gameplayEvent->AddMesh(event);
     gameplayEvent->AddCollider(event);
 
-    gameplayEvent->GetTransform().SetPosition(
-            mlg::Math::ProjectTo3D(event.position));
-
     return gameplayEvent;
 }
 
@@ -46,5 +46,17 @@ void GameplayEventEntity::AddMesh(const GameplayEvent& event) {
 }
 
 void GameplayEventEntity::AddCollider(const GameplayEvent& event) {
-    SPDLOG_ERROR("UNIMPLEMENTED");
+    glm::vec2 size = event.eventPrefab->colliderSize;
+    glm::vec2 offset = event.eventPrefab->colliderOffset;
+
+    if (event.vertical) {
+        std::swap(size.x, size.y);
+        std::swap(offset.x, offset.y);
+    }
+
+    auto rigidbody = AddComponent<mlg::RigidbodyComponent>("Rigidbody").lock();
+    rigidbody->AddCollider<mlg::ColliderShape::Rectangle>(offset, size);
+    rigidbody->SetKinematic(true);
+
+    rigidbody->SetPosition(event.position);
 }
