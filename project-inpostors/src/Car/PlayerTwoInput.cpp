@@ -20,11 +20,9 @@ PlayerTwoInput::PlayerTwoInput(const std::weak_ptr<mlg::Entity>& owner, const st
 PlayerTwoInput::~PlayerTwoInput() {}
 
 bool PlayerTwoInput::GetPickUpInput() {
-    //TODO:
-    return false;
+    return mlg::Input::IsActionJustPressed("pick_up_two");
 }
 
 bool PlayerTwoInput::GetDropInput() {
-    //TODO:
-    return false;
+    return mlg::Input::IsActionJustPressed("drop_two");
 }

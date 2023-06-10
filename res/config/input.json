@@ -9,12 +9,6 @@
       {
         "deviceType": "Gamepad",
         "deviceIndex": 0,
-        "isAxis": false,
-        "code": 2
-      },
-      {
-        "deviceType": "Gamepad",
-        "deviceIndex": 0,
         "isAxis": true,
         "isPositive": false,
         "triggerZone": 0.5,
@@ -29,12 +23,6 @@
       {
         "deviceType": "Keyboard",
         "code": 83
-      },
-      {
-        "deviceType": "Gamepad",
-        "deviceIndex": 0,
-        "isAxis": false,
-        "code": 1
       },
       {
         "deviceType": "Gamepad",
@@ -94,7 +82,7 @@
         "deviceType": "Gamepad",
         "deviceIndex": 0,
         "isAxis": false,
-        "code": 2
+        "code": 0
       }
     ]
   },
@@ -109,7 +97,7 @@
         "deviceType": "Gamepad",
         "deviceIndex": 0,
         "isAxis": false,
-        "code": 3
+        "code": 1
       }
     ]
   },
@@ -123,7 +111,10 @@
       {
         "deviceType": "Gamepad",
         "deviceIndex": 1,
-        "isAxis": false,
+        "isAxis": true,
+        "isPositive": false,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
         "code": 2
       }
     ]
@@ -138,8 +129,11 @@
       {
         "deviceType": "Gamepad",
         "deviceIndex": 1,
-        "isAxis": false,
-        "code": 1
+        "isAxis": true,
+        "isPositive": false,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 5
       }
     ]
   },
@@ -180,11 +174,56 @@
     ]
   },
   {
+    "name": "pick_up_two",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 321
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": false,
+        "code": 0
+      }
+    ]
+  },
+  {
+    "name": "drop_two",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 322
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": false,
+        "code": 1
+      }
+    ]
+  },
+  {
     "name": "ui_up",
     "mappings": [
       {
         "deviceType": "Keyboard",
         "code": 87
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": true,
+        "isPositive": false,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 1
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": false,
+        "code": 11
       }
     ]
   },
@@ -194,6 +233,21 @@
       {
         "deviceType": "Keyboard",
         "code": 83
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": true,
+        "isPositive": true,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 1
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": false,
+        "code": 13
       }
     ]
   },
@@ -203,6 +257,21 @@
       {
         "deviceType": "Keyboard",
         "code": 65
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": true,
+        "isPositive": false,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 0
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": false,
+        "code": 14
       }
     ]
   },
@@ -212,6 +281,21 @@
       {
         "deviceType": "Keyboard",
         "code": 68
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": true,
+        "isPositive": true,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 0
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": false,
+        "code": 12
       }
     ]
   },
@@ -225,15 +309,12 @@
       {
         "deviceType": "Keyboard",
         "code": 257
-      }
-    ]
-  },
-  {
-    "name": "debug_skip",
-    "mappings": [
+      },
       {
-        "deviceType": "Keyboard",
-        "code": 266
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": false,
+        "code": 0
       }
     ]
   },
@@ -264,6 +345,15 @@
       {
         "deviceType": "Keyboard",
         "code": 334
+      }
+    ]
+  },
+  {
+    "name": "debug_skip",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 266
       }
     ]
   }
