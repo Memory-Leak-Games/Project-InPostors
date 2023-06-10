@@ -1,5 +1,5 @@
-#include <tracy/Tracy.hpp>
 #include "Gameplay/ComponentManager.h"
+#include <tracy/Tracy.hpp>
 
 #include "Macros.h"
 
@@ -29,7 +29,7 @@ namespace mlg {
         instance = nullptr;
     }
 
-    ComponentManager* ComponentManager::GetInstance() {
+    ComponentManager* ComponentManager::Get() {
         return instance;
     }
 
@@ -79,27 +79,32 @@ namespace mlg {
 
     void ComponentManager::ProcessComponents() {
         ZoneScopedN("Component Process");
-        instance->components.erase(std::remove_if(instance->components.begin(), instance->components.end(),
-                                                  [](const std::shared_ptr<Component>& entry) {
-                                                      if (entry->IsQueuedForDeletion()) {
-                                                          entry->Stop();
-                                                          return true;
-                                                      }
+        instance->components.erase(
+                std::remove_if(
+                        instance->components.begin(),
+                        instance->components.end(),
+                        [](const std::shared_ptr<Component>& entry) {
+                            if (entry->IsQueuedForDeletion()) {
+                                entry->Stop();
+                                return true;
+                            }
 
-                                                      return false;
-                                                  }), instance->components.end());
-
+                            return false;
+                        }),
+                instance->components.end());
     }
 
     std::weak_ptr<Component> ComponentManager::GetByRawPointer(Component* component) {
-        auto foundIterator = std::find_if(instance->components.begin(), instance->components.end(),
-                                          [component](const std::weak_ptr<Component>& entry) {
-                                              return entry.lock().get() == component;
-                                          });
+        auto foundIterator = std::find_if(
+                instance->components.begin(),
+                instance->components.end(),
+                [component](const std::weak_ptr<Component>& entry) {
+                    return entry.lock().get() == component;
+                });
 
         if (foundIterator == instance->components.end())
             return {};
 
         return *foundIterator;
     }
-} // mlg
+}// namespace mlg

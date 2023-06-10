@@ -76,6 +76,9 @@ void LevelScene::Update() {
     gameplayOverlay->SetClock(timeLeft);
 
 #ifdef DEBUG
+    if (mlg::Input::IsActionJustPressed("debug_event"))
+        gameplayEventsManager->TriggerEvent();
+
     // Debug: Navigation graph
     if (mlg::SettingsManager::Get<bool>(
                 mlg::SettingsType::Debug, "showNavigation") &&
@@ -146,6 +149,7 @@ void LevelScene::InitializeLevelTaskManager() {
 
                 scoreManager->AddScore(reward);
                 gameplayOverlay->SetScore(scoreManager->GetScore());
+                gameplayEventsManager->TriggerEvent();
             });
 
     std::vector<TaskData> tasks = mlg::LevelGenerator::GetTasks(levelPath);

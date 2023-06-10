@@ -23,7 +23,7 @@ namespace mlg {
         instance = nullptr;
     }
 
-    EntityManager* EntityManager::GetInstance() {
+    EntityManager* EntityManager::Get() {
         return instance;
     }
 
