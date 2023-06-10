@@ -41,7 +41,7 @@ void GameplayEventEntity::AddMesh(const GameplayEvent& event) {
 
     if (event.vertical) {
         mesh.lock()->GetTransform().SetEulerRotation(
-                glm::vec3{0.f, 0.f, 90.f});
+                glm::vec3{0.f, glm::radians(90.f), 0.f});
     }
 }
 

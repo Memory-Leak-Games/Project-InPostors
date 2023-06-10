@@ -81,9 +81,15 @@
     },
     {
       "id": "3x2",
-      "position": [0.0, 0.0],
+      "position": [-5.0, 30.0],
       "vertical": true,
       "probability": 5
+    },
+    {
+      "id": "3x2",
+      "position": [5.0, 30.0],
+      "vertical": false,
+      "probability": 3
     }
   ]
 }
