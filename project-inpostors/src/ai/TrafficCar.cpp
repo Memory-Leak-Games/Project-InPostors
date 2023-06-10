@@ -48,6 +48,7 @@ std::shared_ptr<TrafficCar> TrafficCar::Create(uint64_t id, const std::string& n
     newTrafficCar->AddRigidbody(configJson, modelNumber);
 
     newTrafficCar->AddComponent<AIComponent>("AIComponent", configPath);
+    newTrafficCar->SetTag("NPC");
 
     return newTrafficCar;
 }

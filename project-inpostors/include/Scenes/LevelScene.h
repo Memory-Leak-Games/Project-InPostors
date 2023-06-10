@@ -18,6 +18,7 @@ private:
 
     std::shared_ptr<class LevelTaskManager> levelTaskManager;
     std::unique_ptr<class ScoreManager> scoreManager;
+    std::unique_ptr<class GameplayEventsManager> gameplayEventsManager;
 
     std::weak_ptr<class PauseMenu> pauseMenu;
 

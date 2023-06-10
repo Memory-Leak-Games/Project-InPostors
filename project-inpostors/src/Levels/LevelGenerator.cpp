@@ -28,7 +28,7 @@
 
 #include "Buildings/AutoDestroyComponent.h"
 #include "Buildings/Factory.h"
-#include "TaskManager.h"
+#include "Managers/TaskManager.h"
 
 
 using json = nlohmann::json;
@@ -171,8 +171,11 @@ namespace mlg {
                     1.f};
 
             PlayerData playerData = {id, color, data};
+            
+            std::string playerName =  fmt::format("Player{}", i + 1);
+
             auto playerEntity = mlg::EntityManager::SpawnEntity<Player>(
-                    "Player", false, mlg::SceneGraph::GetRoot(), playerData);
+                    playerName, false, mlg::SceneGraph::GetRoot(), playerData);
 
             auto player = std::dynamic_pointer_cast<Player>(playerEntity.lock());
             player->SetPlayerPosition(position);
@@ -594,7 +597,7 @@ namespace mlg {
         std::string colType = mapObject.colliderType;
         if (colType == "rectangle") {
             rigidbody->AddCollider<mlg::ColliderShape::Rectangle>(
-                    glm::vec2(glm::vec2(mapObject.colliderOffset)),
+                    glm::vec2(mapObject.colliderOffset),
                     glm::vec2(mapObject.colliderSize));
         } else if (colType == "circle") {
             rigidbody->AddCollider<mlg::ColliderShape::Circle>(

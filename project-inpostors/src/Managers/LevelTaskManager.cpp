@@ -1,7 +1,7 @@
-#include "LevelTaskManager.h"
+#include "Managers/LevelTaskManager.h"
 
 #include "Core/TimerManager.h"
-#include "TaskManager.h"
+#include "Managers/TaskManager.h"
 
 #include "effolkronium/random.hpp"
 #include <cstddef>

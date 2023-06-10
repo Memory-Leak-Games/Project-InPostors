@@ -3,9 +3,9 @@
 
 #include "Core/Time.h"
 #include "Core/TimerManager.h"
-#include "LevelTaskManager.h"
+#include "Managers/LevelTaskManager.h"
 #include "Rendering/Assets/MaterialAsset.h"
-#include "TaskManager.h"
+#include "Managers/TaskManager.h"
 #include "UI/Assets/FontAsset.h"
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"

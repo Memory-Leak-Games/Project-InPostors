@@ -24,9 +24,10 @@
 
 #include "UI/GameplayOverlay.h"
 
-#include "LevelTaskManager.h"
-#include "ScoreManager.h"
-#include "TaskManager.h"
+#include "Managers/LevelTaskManager.h"
+#include "Managers/ScoreManager.h"
+#include "Managers/TaskManager.h"
+#include "Managers/GameplayEventsManager.h"
 
 #include "UI/FinishScreen.h"
 #include "UI/PauseMenu.h"
@@ -52,6 +53,8 @@ void LevelScene::Load() {
     finishScreen = mlg::EntityManager::SpawnEntity<FinishScreen>(
                            "FinishScreen", false, mlg::SceneGraph::GetRoot())
                            .lock();
+    
+    gameplayEventsManager = std::make_unique<GameplayEventsManager>(levelPath);
 
     SpawnTraffic();
     LoadSounds();
@@ -73,6 +76,9 @@ void LevelScene::Update() {
     gameplayOverlay->SetClock(timeLeft);
 
 #ifdef DEBUG
+    if (mlg::Input::IsActionJustPressed("debug_event"))
+        gameplayEventsManager->TriggerEvent();
+
     // Debug: Navigation graph
     if (mlg::SettingsManager::Get<bool>(
                 mlg::SettingsType::Debug, "showNavigation") &&
@@ -143,6 +149,7 @@ void LevelScene::InitializeLevelTaskManager() {
 
                 scoreManager->AddScore(reward);
                 gameplayOverlay->SetScore(scoreManager->GetScore());
+                gameplayEventsManager->TriggerEvent();
             });
 
     std::vector<TaskData> tasks = mlg::LevelGenerator::GetTasks(levelPath);

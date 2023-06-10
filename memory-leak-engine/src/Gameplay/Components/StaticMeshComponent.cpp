@@ -30,6 +30,7 @@ namespace mlg {
         if (!visible)
             return;
 
+
         ZoneScopedN("Draw StaticMesh");
         {
             ZoneScopedN("Send Matrices");

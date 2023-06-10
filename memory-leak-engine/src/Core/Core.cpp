@@ -1,5 +1,6 @@
 #include "Core/Core.h"
 #include "Core/SceneManager/SceneManager.h"
+#include <deque>
 
 
 #ifdef DEBUG
@@ -47,9 +48,6 @@ Core* Core::instance;
 void Core::MainLoop() {
     DirectionalLight::GetInstance();
 
-    closed = false;
-    shouldClose = false;
-
     Window::GetInstance()->GetEventDispatcher()->appendListener(
             EventType::WindowClose, [this](const Event& event) {
                 shouldClose = true;
@@ -59,6 +57,9 @@ void Core::MainLoop() {
     EntityManager::Start();
 
     Time::Update();
+
+    closed = false;
+    shouldClose = false;
 
     while (!shouldClose) {
         ZoneScoped;

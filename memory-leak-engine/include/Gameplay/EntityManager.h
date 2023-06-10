@@ -1,6 +1,6 @@
 #pragma once
 
-#include <queue>
+#include "Core/Core.h"
 #include <Gameplay/Entity.h>
 
 namespace mlg {
@@ -17,13 +17,17 @@ namespace mlg {
     public:
         static void Initialize();
         static void Stop();
-        static EntityManager* GetInstance();
+        static EntityManager* Get();
 
         template<typename T, typename ... Args>
         static std::weak_ptr<T> SpawnEntity(Args&& ... args) {
             std::shared_ptr<Entity> newEntity = T::Create(instance->entitiesIndex, std::forward<Args>(args) ...);
             instance->entities.push_back(newEntity);
             instance->entitiesIndex++;
+
+            if (mlg::Core::GetInstance()->IsClosed() == false)
+                newEntity->Start();
+
             return std::static_pointer_cast<T>(newEntity);
         }
 

@@ -5,7 +5,7 @@
 #include "Gameplay/EntityManager.h"
 #include "SceneGraph/SceneGraph.h"
 #include "Scenes/LevelScene.h"
-#include "TaskManager.h"
+#include "Managers/TaskManager.h"
 
 #include "ai/AIComponent.h"
 #include "ai/Path.h"
@@ -13,7 +13,7 @@
 #include "ai/TrafficCar.h"
 
 #include "Levels/LevelGenerator.h"//todo: remove when done testing
-#include "ScoreManager.h"
+#include "Managers/ScoreManager.h"
 
 #include "UI/PauseMenu.h"
 #include "UI/FinishScreen.h"

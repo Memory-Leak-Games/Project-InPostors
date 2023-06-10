@@ -41,6 +41,7 @@
 #include "Macros.h"
 #include "Core/Time.h"
 #include "Core/Formatters.h"
+#include "Core/Math.h"
 
 // Debug
 #ifdef DEBUG

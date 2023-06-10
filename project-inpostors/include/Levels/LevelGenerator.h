@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Neighbours.h"
-#include "TaskManager.h" //todo: this should not belong here.
-#include <string>
+#include "Managers/TaskManager.h"
 
 namespace mlg {
 
