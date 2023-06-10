@@ -55,6 +55,13 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     ui->SetPosition({640.f, 0.f});
     ui->SetAnchor({0.5, 0});
     ui->SetSize({400, 200});
+    ui->tint = glm::vec4(0.7f, 0.7f, 0.7f, 0.9f);
+
+    ui = result->AddComponent<mlg::Image>("ChatWindow", material).lock();
+    ui->SetPosition({640.f, 0.f});
+    ui->SetAnchor({0.5, 0});
+    ui->SetSize({400 - 10, 200 - 10});
+    ui->tint = glm::vec4(0.f, 0.f, 0.f, 0.95f);
 
     font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/ocraext.ttf");
     result->chat = result->AddComponent<mlg::Label>("Chat").lock();
@@ -152,7 +159,7 @@ void GameplayOverlay::Update() {
     int taskCount = taskManager->GetTaskManager().GetActiveTasksCount();
     for(int i = 0; i < taskCount; i++) {
         float timeRate = tasks[i].time / tasks[i].timeLimit;
-        taskProgress[i]->percentage = tasks[i].time / tasks[i].timeLimit;
+        taskProgress[i]->percentage = timeRate;
 
         // You useless piece of meat, you are late!
         if(timeRate <= 0.0f) {
