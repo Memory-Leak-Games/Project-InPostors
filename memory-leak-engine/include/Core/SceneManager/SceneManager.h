@@ -1,15 +1,18 @@
 #pragma once
 
+#include "Core/SceneManager/LoadingScreen.h"
 namespace mlg {
 
     class SceneManager {
     private:
         static SceneManager* instance;
 
+        std::unique_ptr<class LoadingScreen> loadingScreen;
+
         std::unique_ptr<class Scene> nextScene;
         std::unique_ptr<class Scene> currentScene;
 
-        SceneManager() = default;
+        SceneManager();
     public:
         ~SceneManager();
 

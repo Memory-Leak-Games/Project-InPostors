@@ -48,7 +48,7 @@ Core* Core::instance;
 void Core::MainLoop() {
     DirectionalLight::GetInstance();
 
-    Window::GetInstance()->GetEventDispatcher()->appendListener(
+    Window::Get()->GetEventDispatcher()->appendListener(
             EventType::WindowClose, [this](const Event& event) {
                 shouldClose = true;
             });
@@ -107,8 +107,8 @@ void Core::MainLoop() {
 
 void Core::TickWindow() const {
     ZoneScopedN("Window Update");
-    Window::GetInstance()->SwapBuffers();
-    Window::GetInstance()->PollEvents();
+    Window::Get()->SwapBuffers();
+    Window::Get()->PollEvents();
 }
 
 void Core::TickGameplay() const {
@@ -206,7 +206,7 @@ void Core::Initialize() {
     (void) io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;// Enable Keyboard Controls
 
-    Window::GetInstance()->ImGuiInit();
+    Window::Get()->ImGuiInit();
 
     ImGui_ImplOpenGL3_Init("#version 450");
 

@@ -1,4 +1,4 @@
-#include "include/UI/Components/Image.h"
+#include "UI/Components/Image.h"
 
 #include "Macros.h"
 #include "UI/UIRenderer.h"
@@ -7,8 +7,6 @@
 
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/ShaderProgram.h"
-
-#include <utility>
 
 namespace mlg {
     Image::Image(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<MaterialAsset>& material)

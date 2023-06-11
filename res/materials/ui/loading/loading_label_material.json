@@ -1,0 +1,12 @@
+{
+  "vertexShader": "res/shaders/ui/loading_image.vert",
+  "fragmentShader": "res/shaders/ui/image.frag",
+  "uniforms": [],
+  "textures": [
+    {
+      "name": "image",
+      "index": 0,
+      "path": "res/textures/ui/loading.png"
+    }
+  ]
+}
