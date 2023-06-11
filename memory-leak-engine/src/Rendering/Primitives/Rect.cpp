@@ -5,17 +5,15 @@
 
 namespace mlg {
     Rect::Rect()
-    : vao(0), vbo(0) {
-        static const std::vector<float> quadVertices({
-                // positions   // texCoords
-                -1.f, 1.f, 0.f, 0.0f, 1.f,
-                -1.f, -1.f, 0.f, 0.0f, 0.f,
-                1.f, -1.f, 0.f, 1.0f, 0.f,
+        : vao(0), vbo(0) {
+        static const std::vector<float> quadVertices({// positions   // texCoords
+                                                      -1.f, 1.f, 0.f, 0.0f, 1.f,
+                                                      -1.f, -1.f, 0.f, 0.0f, 0.f,
+                                                      1.f, -1.f, 0.f, 1.0f, 0.f,
 
-                -1.f, 1.f, 0.f, 0.f, 1.f,
-                1.f, -1.f, 0.f, 1.f, 0.f,
-                1.f, 1.f, 0.f, 1.f, 1.f
-        });
+                                                      -1.f, 1.f, 0.f, 0.f, 1.f,
+                                                      1.f, -1.f, 0.f, 1.f, 0.f,
+                                                      1.f, 1.f, 0.f, 1.f, 1.f});
 
         glCreateVertexArrays(1, &vao);
         glCreateBuffers(1, &vbo);
@@ -38,6 +36,13 @@ namespace mlg {
         glDeleteVertexArrays(1, &vao);
     }
 
+    void Rect::Draw() {
+        MLG_ASSERT(vao != 0);
+
+        glBindVertexArray(vao);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
+
     uint32_t Rect::GetVao() {
         return vao;
     }
@@ -46,4 +51,4 @@ namespace mlg {
         return 6;
     }
 
-} // mlg
+}// namespace mlg

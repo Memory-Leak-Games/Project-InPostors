@@ -24,6 +24,14 @@ GameplayEventsManager::GameplayEventsManager(const std::string& levelPath) {
     std::ifstream levelFile{levelPath};
     json levelJson = json::parse(levelFile);
 
+    // isPies to tradycyjna
+    bool isPies = levelJson["level-type"] == "pies";
+
+
+    if (!levelJson.contains("events-config") ||
+        !levelJson.contains("events"))
+        return;
+
     std::ifstream prefabsFile{levelJson["events-config"]};
     json prefabsJson = json::parse(prefabsFile);
 
@@ -32,6 +40,9 @@ GameplayEventsManager::GameplayEventsManager(const std::string& levelPath) {
 }
 
 void GameplayEventsManager::TriggerEvent() {
+    if (events.empty())
+        return;
+    
     auto& event = events[currentEventIndex];
 
     if (IsPlayerOrNPCNearEvent(event))

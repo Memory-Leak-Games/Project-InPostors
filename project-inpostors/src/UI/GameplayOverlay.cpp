@@ -29,7 +29,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     temp->SetPosition({640, 720 - 8 - 24});
     temp->SetAnchor({0.5, 1.0});
 
-    auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/arialbd.ttf");
+    auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/terminus-bold.ttf");
     result->clock = result->AddComponent<mlg::Label>("Clock").lock();
     result->clock->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
     result->clock->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
@@ -63,7 +63,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     ui->SetSize({400 - 10, 200 - 10});
     ui->tint = glm::vec4(0.f, 0.f, 0.f, 0.95f);
 
-    font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/ocraext.ttf");
+    font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/terminus-bold.ttf");
     result->chat = result->AddComponent<mlg::Label>("Chat").lock();
     result->chat->SetPosition({460.f, 65.f});
     result->chat->SetAnchor({0.5, 1.0});

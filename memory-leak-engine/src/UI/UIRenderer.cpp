@@ -17,7 +17,7 @@ namespace mlg {
 
     UIRenderer::UIRenderer() {
         // Setup projection mat manually at game start
-        Window* window = Window::GetInstance();
+        Window* window = Window::Get();
         SetProjection(window->GetWidth(), window->GetHeight());
 
         auto material = AssetManager::GetAsset<MaterialAsset>("res/materials/simple_fbo_material.json");
@@ -53,7 +53,7 @@ namespace mlg {
 
         instance = new UIRenderer();
 
-        Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, OnWindowResize);
+        Window::Get()->GetEventDispatcher()->appendListener(EventType::WindowResize, OnWindowResize);
     }
 
     void UIRenderer::Stop() {

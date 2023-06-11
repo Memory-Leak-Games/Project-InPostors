@@ -39,7 +39,7 @@ namespace mlg {
 
     Camera::Camera()
         : isProjectionDirty(true), isViewDirty(true), wasViewDirty(true), wasProjectionDirty(true), transform(std::make_shared<Transform>()) {
-        Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, [this](const Event& event) {
+        Window::Get()->GetEventDispatcher()->appendListener(EventType::WindowResize, [this](const Event& event) {
             this->OnWindowResize(event);
         });
 
@@ -95,7 +95,7 @@ namespace mlg {
         if (!isProjectionDirty)
             return;
 
-        float aspectRatio = Window::GetInstance()->GetAspectRatio();
+        float aspectRatio = Window::Get()->GetAspectRatio();
         CommonUniformBuffer::SetProjection(projection->CalculateProjection(aspectRatio));
 
         isProjectionDirty = false;

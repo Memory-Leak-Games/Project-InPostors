@@ -281,7 +281,7 @@ std::string Factory::GetBlueprintId() const { return blueprintId; }
 void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
 
     auto font =
-            mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/arialbd.ttf");
+            mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/terminus-bold.ttf");
     auto material =
             mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/panel_material.json");
 

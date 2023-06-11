@@ -187,7 +187,7 @@ void Window::Stop() {
     glfwTerminate();
 }
 
-Window* Window::GetInstance() {
+Window* Window::Get() {
     return instance;
 }
 

@@ -148,7 +148,7 @@ namespace mlg {
     }
 
     Label::Label(std::weak_ptr<Entity> owner, std::string name)
-        : Label(owner, name, AssetManager::GetAsset<FontAsset>("res/fonts/ocraext.ttf")) {}
+        : Label(owner, name, AssetManager::GetAsset<FontAsset>("res/fonts/terminus-bold.ttf")) {}
 
     glm::vec2 Label::GetLabelSize() const {
         glm::vec2 result {0.f};

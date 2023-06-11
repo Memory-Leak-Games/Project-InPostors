@@ -40,7 +40,7 @@ namespace mlg {
         auto keyboardActionMapping = (KeyboardActionMapping*) actionMapping;
         MappingValue result{};
 
-        result.digital = glfwGetKey((GLFWwindow*) Window::GetInstance()->GetNativeWindowHandle(),
+        result.digital = glfwGetKey((GLFWwindow*) Window::Get()->GetNativeWindowHandle(),
                                      keyboardActionMapping->GetKeyCode());
         result.analog = result.digital ? 1.f : 0.f;
 
