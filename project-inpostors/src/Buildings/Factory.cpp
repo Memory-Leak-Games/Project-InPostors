@@ -192,7 +192,8 @@ void Factory::FinishTask() {
         mlg::Scene* currentScene = mlg::SceneManager::GetCurrentScene();
         auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
 
-        levelScene->GetTaskManager()->FinishTask(product);
+        if (levelScene->GetTaskManager()->FinishTask(product));
+            break;
     }
 }
 
