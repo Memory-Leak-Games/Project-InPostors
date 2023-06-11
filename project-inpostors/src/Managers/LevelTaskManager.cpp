@@ -44,8 +44,6 @@ void LevelTaskManager::StartNewTaskLogic() {
     uint32_t taskSlots = maxActiveTasks - taskManager->GetActiveTasksCount();
     float timeToNewTask = Random::get(newTaskProbability, 1.0f) * taskTime;
 
-    SPDLOG_INFO("New task in {}s", timeToNewTask);
-
     auto startNewTaskLambda = [this]() {
         StartNewTaskLogic();
     };

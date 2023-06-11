@@ -1,5 +1,6 @@
 #include "Managers/TaskManager.h"
 #include "Core/TimerManager.h"
+#include <spdlog/spdlog.h>
 
 using Random = effolkronium::random_static;
 
@@ -26,7 +27,7 @@ void TaskManager::AddTaskToPool(const TaskData& newTaskData) {
     tasks.emplace(newTask.id, newTask);
 }
 
-void TaskManager::FinishTask(const std::string& productId) {
+bool TaskManager::FinishTask(const std::string& productId) {
     std::vector<size_t> activeProductTasks;
 
     for (const auto& [id, task] : tasks) {
@@ -37,7 +38,7 @@ void TaskManager::FinishTask(const std::string& productId) {
 
     // If there are no active tasks for this product, do nothing
     if (activeProductTasks.empty())
-        return;
+        return false;
 
     auto timeComparator = [this](const size_t a, const size_t b) {
         return tasks[a].timeLeft < tasks[b].timeLeft;
@@ -48,7 +49,9 @@ void TaskManager::FinishTask(const std::string& productId) {
             activeProductTasks.end(),
             timeComparator)[0];
 
+    SPDLOG_DEBUG("Finished task: {}", taskToFinish);
     RemoveTask(taskToFinish);
+    return true;
 }
 
 TaskData TaskManager::GetTask(size_t id) {
@@ -119,6 +122,9 @@ size_t TaskManager::AcceptNewTask() {
     size_t newTask = *Random::get(inactiveTasks);
     tasks[newTask].active = true;
     OnTaskAccepted(GetTask(newTask));
+
+    SPDLOG_DEBUG("Accepted task: {}", newTask);
+
     return newTask;
 }
 
