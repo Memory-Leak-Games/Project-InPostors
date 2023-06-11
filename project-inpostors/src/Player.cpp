@@ -202,7 +202,7 @@ void Player::Drop() {
 
 void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
 
-    auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/arialbd.ttf");
+    auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/terminus-bold.ttf");
 
     auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/player/arrow_material.json");
     newPlayer->uiArrow = newPlayer->AddComponent<mlg::Image>("Arrow", material);

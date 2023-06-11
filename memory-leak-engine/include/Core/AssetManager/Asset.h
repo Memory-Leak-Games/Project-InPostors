@@ -38,7 +38,7 @@ namespace mlg {
     private:
         static bool IsSnakeCase(const std::string& str) {
             for (auto c : str) {
-                if (c == '_' || c == '.' || c == '/')
+                if (c == '_' || c == '.' || c == '/' || c == '-')
                     continue;
                 if (std::isupper(c))
                     return false;

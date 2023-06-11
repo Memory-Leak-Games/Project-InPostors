@@ -6,7 +6,7 @@
 #define BUTTON_SIZE glm::vec2 { 250, 50 }
 #define SELECTOR_SIZE glm::vec2 { 50, 50 }
 
-#define FONT "res/fonts/ocraext.ttf"
+#define FONT "res/fonts/terminus-bold.ttf"
 
 #define BUTTON_MATERIAL "res/materials/ui/buttons/button_material.json"
 #define BUTTON_FOCUSED_MATERIAL "res/materials/ui/buttons/button_focused_material.json"
