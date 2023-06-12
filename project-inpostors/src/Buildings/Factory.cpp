@@ -1,6 +1,7 @@
 #include "Buildings/Factory.h"
 
 #include <fstream>
+#include <spdlog/spdlog.h>
 
 #include "Core/SceneManager/SceneManager.h"
 #include "Core/Settings/SettingsManager.h"
@@ -10,9 +11,9 @@
 
 #include "Core/AssetManager/AssetManager.h"
 
+#include "Managers/TaskManager.h"
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
-#include "Managers/TaskManager.h"
 
 #include "Rendering/Particles/ParticleSystem.h"
 
@@ -184,7 +185,10 @@ void Factory::CheckBlueprintAndStartWorking() {
         CheckBlueprintAndStartWorking();
     };
 
-    produceTimerHandle = mlg::TimerManager::Get()->SetTimer(blueprint.GetTimeToProcess(), false, productionLambda);
+    produceTimerHandle = mlg::TimerManager::Get()->SetTimer(
+            blueprint.GetTimeToProcess(),
+            false,
+            productionLambda);
 }
 
 void Factory::FinishTask() {
@@ -192,7 +196,7 @@ void Factory::FinishTask() {
         mlg::Scene* currentScene = mlg::SceneManager::GetCurrentScene();
         auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
 
-        if (levelScene->GetTaskManager()->FinishTask(product));
+        if (levelScene->GetTaskManager()->FinishTask(product))
             break;
     }
 }
@@ -240,11 +244,13 @@ void Factory::Update() {
 
         auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
         ImGui::Begin("Factories");
-        ImGui::Text("%s, %s, timeToProduce: %f, output: %i",
-                    GetName().c_str(),
-                    equipmentComponent->ToString().c_str(),
-                    mlg::TimerManager::Get()->GetTimerRemainingTime(produceTimerHandle),
-                    equipmentComponent->GetNumberOfProduct(blueprint.GetOutput()));
+        ImGui::Text(
+                "%s, %s, timeToProduce: %f, wholeTime: %f, output: %i",
+                GetName().c_str(),
+                equipmentComponent->ToString().c_str(),
+                mlg::TimerManager::Get()->GetTimerRemainingTime(produceTimerHandle),
+                mlg::TimerManager::Get()->GetTimerRate(produceTimerHandle),
+                equipmentComponent->GetNumberOfProduct(blueprint.GetOutput()));
         ImGui::End();
     }
 #endif
@@ -355,16 +361,16 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
         }
 
     } else if (result->factoryType == FactoryType::Storage) {
-            material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/task_panel_material.json");
-            auto temp = result->AddComponent<mlg::Image>("Storage", material).lock();
-            temp->SetSize({64.f, 64.f});
-            temp->SetBillboardTarget(result);
-            temp->SetPosition({0.f, 112.f});
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/task_panel_material.json");
+        auto temp = result->AddComponent<mlg::Image>("Storage", material).lock();
+        temp->SetSize({64.f, 64.f});
+        temp->SetBillboardTarget(result);
+        temp->SetPosition({0.f, 112.f});
 
-            material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/storage_material.json");
-            temp = result->AddComponent<mlg::Image>("StorageIcon", material).lock();
-            temp->SetSize({20.f, 20.f});
-            temp->SetBillboardTarget(result);
-            temp->SetPosition({0.f, 112.f});
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/storage_material.json");
+        temp = result->AddComponent<mlg::Image>("StorageIcon", material).lock();
+        temp->SetSize({20.f, 20.f});
+        temp->SetBillboardTarget(result);
+        temp->SetPosition({0.f, 112.f});
     }
 }

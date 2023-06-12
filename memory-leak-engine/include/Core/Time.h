@@ -21,7 +21,7 @@ namespace mlg {
         int aiTickRate;
 
         bool gamePaused = false;
-        double timePaused = 0.f;
+        double logicSeconds = 0.f;
 
     public:
         static void Initialize();
