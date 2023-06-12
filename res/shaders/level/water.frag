@@ -18,7 +18,7 @@ layout(std140, binding = 0) uniform CommonUnifomrs {
 uniform sampler2D waterBase;
 uniform sampler2D waterSurf;
 
-uniform float tilingSize = 35.f;
+uniform float tilingSize = 25.f;
 uniform vec2 baseSpeed = vec2(-0.1, 0.01);
 uniform vec2 surfSpeed = vec2(-0.01, -0.05);
 

@@ -143,7 +143,7 @@ namespace mlg {
         water.lock()->AddComponent<mlg::StaticMeshComponent>(
                 "StaticMesh", planeModel, waterMaterial);
 
-        water.lock()->GetTransform().SetPosition({0.f, -0.1f, 0.f});
+        water.lock()->GetTransform().SetPosition({0.f, -5.0f, 0.f});
         water.lock()->GetTransform().SetScale(glm::vec3{1000.f});
     }
 
