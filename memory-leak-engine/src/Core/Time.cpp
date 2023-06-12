@@ -15,7 +15,7 @@ namespace mlg {
     }
 
     double Time::GetSeconds() {
-        return GetTrueSeconds() - instance->timePaused;
+        return instance->logicSeconds;
     }
 
     float Time::GetTrueDeltaSeconds() {
@@ -72,8 +72,7 @@ namespace mlg {
         instance->frameStart = glfwGetTime();
         instance->frameCount++;
 
-        if (instance->gamePaused)
-            instance->timePaused += GetTrueDeltaSeconds();
+        instance->logicSeconds += GetTrueDeltaSeconds();
     }
 
     void Time::Sleep(double seconds) {
