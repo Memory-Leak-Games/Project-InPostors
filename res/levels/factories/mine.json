@@ -1,6 +1,6 @@
 {
   "static-mesh": {
-    "model": "res/models/factories/mine.obj",
+    "model": "res/models/factories/factory_kopalnia.obj",
     "material": "res/materials/buildings_material.json",
 
     "position": [0.0, 0.3, 0.0],
