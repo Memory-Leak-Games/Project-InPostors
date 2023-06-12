@@ -72,7 +72,7 @@ namespace mlg {
         instance->frameStart = glfwGetTime();
         instance->frameCount++;
 
-        instance->logicSeconds += GetTrueDeltaSeconds();
+        instance->logicSeconds += GetDeltaSeconds();
     }
 
     void Time::Sleep(double seconds) {
