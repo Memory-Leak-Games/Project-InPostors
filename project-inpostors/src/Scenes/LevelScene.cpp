@@ -28,6 +28,7 @@
 #include "Managers/ScoreManager.h"
 #include "Managers/TaskManager.h"
 #include "Managers/GameplayEventsManager.h"
+#include "Managers/AudioManager.h"
 
 #include "UI/FinishScreen.h"
 #include "UI/PauseMenu.h"
@@ -56,12 +57,16 @@ void LevelScene::Load() {
     
     gameplayEventsManager = std::make_unique<GameplayEventsManager>(levelPath);
 
+    audioManager = mlg::EntityManager::SpawnEntity<AudioManager>(
+                            "AudioManager", false, mlg::SceneGraph::GetRoot())
+                            .lock();
+
     SpawnTraffic();
-    LoadSounds();
     SetTimeLimit();
 
-    mlg::EntityManager::SpawnEntity<StartLevelCountdown>(
-        "StartLevelCountdown", false, mlg::SceneGraph::GetRoot());
+    levelCountdown = mlg::EntityManager::SpawnEntity<StartLevelCountdown>(
+        "StartLevelCountdown", false, mlg::SceneGraph::GetRoot())
+        .lock();
 
     // TODO: Remove me
     gameplayOverlay->SetChat(fmt::format(
@@ -74,6 +79,8 @@ void LevelScene::Update() {
 
     float timeLeft = mlg::TimerManager::Get()->GetTimerRemainingTime(timeLimitTimer);
     gameplayOverlay->SetClock(timeLeft);
+    audioManager->SetTimeLeft(timeLeft);
+
 
 #ifdef DEBUG
     if (mlg::Input::IsActionJustPressed("debug_event"))
@@ -137,6 +144,14 @@ const std::string& LevelScene::GetLevelName() const {
     return levelName;
 }
 
+GameplayEventsManager& LevelScene::GetGameplayEventsManager() {
+    return *gameplayEventsManager;
+}
+
+StartLevelCountdown& LevelScene::GetLevelCountdown() {
+    return *levelCountdown;
+}
+
 void LevelScene::InitializeLevelTaskManager() {
     levelTaskManager = std::make_unique<LevelTaskManager>();
     levelTaskManager->GetTaskManager().OnTaskFinished.append(
@@ -195,11 +210,6 @@ void LevelScene::LoadLevel() {
     levelName = mlg::LevelGenerator::LoadLevelName(levelPath);
 }
 
-void LevelScene::LoadSounds() {
-    cityAmbientSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/city_ambient.mp3");
-    cityAmbientSound->PlayBackgroundMusic(2.f);
-}
-
 void LevelScene::SetTimeLimit() {
     float timeLimit = mlg::LevelGenerator::LoadLevelTimeLimit(levelPath);
 
@@ -211,6 +221,7 @@ void LevelScene::SetTimeLimit() {
                     mlg::Time::PauseGame(true);
                     finishScreen->SetScore(scoreManager->GetScore(), levelName);
                     finishScreen->SetVisible(true);
+                    OnLevelFinished();
                     mlg::Time::PauseGame(true);
                 });
     }

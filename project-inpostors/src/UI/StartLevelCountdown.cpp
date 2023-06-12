@@ -28,16 +28,27 @@ void StartLevelCountdown::Start() {
 
     mlg::Time::PauseGame(true);
     startTime = mlg::Time::GetTrueSeconds();
+    OnCountdownStarted();
+
+    lastNumber = std::ceil(timeToStart);
 }
 
 void StartLevelCountdown::Update() {
     float timeFromStart = mlg::Time::GetTrueSeconds() - startTime;
-    countdownLabel.lock()->SetText(
-            fmt::format("{}", std::ceil(timeToStart - timeFromStart)));
+    int number = std::ceil(timeToStart - timeFromStart);
 
-    if (timeFromStart > timeToStart) {
+    if (number == lastNumber)
+        return;
+
+    if (number > 0) {
+        countdownLabel.lock()->SetText(fmt::format("{}", number));
+        OnCountdownTick();
+    }
+
+    if (number == 0) {
         mlg::Time::PauseGame(false);
         countdownLabel.lock()->SetText("GO!");
+        OnCountdownFinished();
     }
 
     if (timeFromStart > timeToStart + 1.f) {
@@ -49,6 +60,8 @@ void StartLevelCountdown::Update() {
         mlg::Time::PauseGame(false);
         QueueForDeletion();
     }
+
+    lastNumber = number;
 }
 
 void StartLevelCountdown::SetTimeToStart(int timeToStart) {

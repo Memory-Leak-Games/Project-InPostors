@@ -29,7 +29,6 @@ void TaskManager::AddTaskToPool(const TaskData& newTaskData) {
 
 bool TaskManager::FinishTask(const std::string& productId) {
     std::vector<size_t> activeProductTasks;
-
     for (const auto& [id, task] : tasks) {
         if (task.productId == productId && task.active) {
             activeProductTasks.push_back(id);

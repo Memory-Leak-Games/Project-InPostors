@@ -117,7 +117,7 @@ void Player::Update() {
             if (collider.lock()->GetTag().empty()) {
                 hitSound->Play();
                 canPlaySound = false;
-                canPlaySoundTimerHandle = mlg::TimerManager::Get()->SetTimer(0.3f, false, enableSoundLambda);
+                mlg::TimerManager::Get()->SetTimer(0.3f, false, enableSoundLambda);
             }
         }
     }

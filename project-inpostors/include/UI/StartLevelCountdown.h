@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Gameplay/Entity.h"
+#include "Audio/Assets/AudioAsset.h"
 #include <cstddef>
+#include <eventpp/callbacklist.h>
 
 namespace mlg {
     class Label;
@@ -14,10 +16,16 @@ private:
     float timeToStart = 4.f;
     float startTime = 0.f;
 
+    int lastNumber = 0;
+
     StartLevelCountdown(
             uint64_t id, const std::string& name,
             bool isStatic, mlg::Transform* parent);
 public:
+    eventpp::CallbackList<void()> OnCountdownStarted;
+    eventpp::CallbackList<void()> OnCountdownTick;
+    eventpp::CallbackList<void()> OnCountdownFinished;
+    
     static std::shared_ptr<StartLevelCountdown> Create(
             uint64_t id, const std::string& name,
             bool isStatic, mlg::Transform* parent);
