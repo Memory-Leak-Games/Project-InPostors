@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Audio/Assets/AudioAsset.h"
+
 struct TaskData {
     std::string productId;
     float time;
@@ -25,6 +27,7 @@ private:
     size_t nextId = 1;
 
 public:
+    std::shared_ptr<mlg::AudioAsset> finishTaskSound;
     eventpp::CallbackList<void(const TaskData&)> OnTaskFinished;
     eventpp::CallbackList<void(const TaskData&)> OnTaskAccepted;
 

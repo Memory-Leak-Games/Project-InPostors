@@ -183,6 +183,7 @@ void Factory::CheckBlueprintAndStartWorking() {
     auto productionLambda = [this, blueprint]() {
         equipmentComponent->AddProduct(blueprint.GetOutput());
         working = false;
+        createProductSound->Play(2.f);
         CheckBlueprintAndStartWorking();
     };
 
@@ -211,6 +212,8 @@ void Factory::Start() {
     }
 
     CheckBlueprintAndStartWorking();
+
+    createProductSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/create_product.wav");
 
     equipmentComponent->equipmentChanged.append([this]() {
         CheckBlueprintAndStartWorking();

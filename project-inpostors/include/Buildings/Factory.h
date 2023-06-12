@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Gameplay/Entity.h"
+#include "Audio/Assets/AudioAsset.h"
 
 namespace mlg {
     class RigidbodyComponent;
@@ -16,7 +17,7 @@ private:
     std::shared_ptr<mlg::RigidbodyComponent> mainRigidbody;
     std::shared_ptr<class EquipmentComponent> equipmentComponent;
 
-
+    std::shared_ptr<class mlg::AudioAsset> createProductSound;
     std::string blueprintId;
 
     std::shared_ptr<class mlg::ProgressBar> barReq1;

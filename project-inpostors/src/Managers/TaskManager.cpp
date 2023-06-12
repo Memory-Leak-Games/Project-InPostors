@@ -29,7 +29,7 @@ void TaskManager::AddTaskToPool(const TaskData& newTaskData) {
 
 bool TaskManager::FinishTask(const std::string& productId) {
     std::vector<size_t> activeProductTasks;
-
+    finishTaskSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/finish_task.mp3");
     for (const auto& [id, task] : tasks) {
         if (task.productId == productId && task.active) {
             activeProductTasks.push_back(id);
@@ -50,6 +50,7 @@ bool TaskManager::FinishTask(const std::string& productId) {
             timeComparator)[0];
 
     SPDLOG_DEBUG("Finished task: {}", taskToFinish);
+    finishTaskSound->Play(2.f);
     RemoveTask(taskToFinish);
     return true;
 }

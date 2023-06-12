@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Gameplay/Entity.h"
+#include "Audio/Assets/AudioAsset.h"
 #include <cstddef>
 
 namespace mlg {
@@ -13,6 +14,12 @@ private:
 
     float timeToStart = 4.f;
     float startTime = 0.f;
+
+    std::shared_ptr<class mlg::AudioAsset> startLevelCountdownSound;
+    std::shared_ptr<class mlg::AudioAsset> goLevelCountdownSound;
+
+    bool goSoundPlayed = false;
+    bool canPlayStartSound = true;
 
     StartLevelCountdown(
             uint64_t id, const std::string& name,

@@ -12,6 +12,8 @@ private:
     std::shared_ptr<class FinishScreen> finishScreen;
 
     std::shared_ptr<mlg::AudioAsset> cityAmbientSound;
+    std::shared_ptr<mlg::AudioAsset> clockCountdownSound;
+    std::shared_ptr<mlg::AudioAsset> boxingBellSound;
     std::shared_ptr<class NavigationGraph> navigationGraph;
 
     std::shared_ptr<class GameplayOverlay> gameplayOverlay;
@@ -21,6 +23,8 @@ private:
     std::unique_ptr<class GameplayEventsManager> gameplayEventsManager;
 
     std::weak_ptr<class PauseMenu> pauseMenu;
+
+    bool canPlaySound = true;
 
     size_t timeLimitTimer;
 
