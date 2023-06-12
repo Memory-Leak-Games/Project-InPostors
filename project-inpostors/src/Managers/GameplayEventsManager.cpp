@@ -32,7 +32,7 @@ GameplayEventsManager::GameplayEventsManager(const std::string& levelPath) {
         !levelJson.contains("events"))
         return;
 
-    std::ifstream prefabsFile{levelJson["events-config"]};
+    std::ifstream prefabsFile{levelJson["events-config"].get<std::string>()};
     json prefabsJson = json::parse(prefabsFile);
 
     LoadPrefabs(prefabsJson);
