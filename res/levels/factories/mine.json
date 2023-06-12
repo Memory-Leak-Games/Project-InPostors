@@ -16,7 +16,7 @@
   ],
 
   "blueprintID": "ore",
-  "equipmentSize": 3,
+  "equipmentSize": 1,
   "type": "OneOutput",
 
   "output": {

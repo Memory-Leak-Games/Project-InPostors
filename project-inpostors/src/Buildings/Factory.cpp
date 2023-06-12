@@ -164,10 +164,11 @@ void Factory::AddTrigger(const json& triggerJson, const std::string& triggerName
 }
 
 void Factory::CheckBlueprintAndStartWorking() {
-    if (working || equipmentComponent->IsFull())
-        return;
-
     const Blueprint& blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
+
+    if (working || equipmentComponent->IsFull() ||
+        equipmentComponent->Has(blueprint.GetOutput()))
+        return;
 
     if (!blueprint.CheckBlueprint(*equipmentComponent))
         return;
