@@ -62,7 +62,6 @@ void LevelScene::Load() {
                             .lock();
 
     SpawnTraffic();
-    LoadSounds();
     SetTimeLimit();
 
     levelCountdown = mlg::EntityManager::SpawnEntity<StartLevelCountdown>(
@@ -80,18 +79,8 @@ void LevelScene::Update() {
 
     float timeLeft = mlg::TimerManager::Get()->GetTimerRemainingTime(timeLimitTimer);
     gameplayOverlay->SetClock(timeLeft);
+    audioManager->SetTimeLeft(timeLeft);
 
-    if (timeLeft < 11 && timeLeft > 0) {
-        if (canPlaySound) {
-            auto enableSoundLambda = [this]() {
-                canPlaySound = true;
-            };
-
-            clockCountdownSound->Play();
-            canPlaySound = false;
-            mlg::TimerManager::Get()->SetTimer(1.f, false, enableSoundLambda);
-        }
-    }
 
 #ifdef DEBUG
     if (mlg::Input::IsActionJustPressed("debug_event"))
@@ -221,13 +210,6 @@ void LevelScene::LoadLevel() {
     levelName = mlg::LevelGenerator::LoadLevelName(levelPath);
 }
 
-void LevelScene::LoadSounds() {
-    cityAmbientSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/music/city_ambient.mp3");
-    cityAmbientSound->PlayBackgroundMusic(2.f);
-    clockCountdownSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/clock_countdown.wav");
-    boxingBellSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/boxing_bell.mp3");
-}
-
 void LevelScene::SetTimeLimit() {
     float timeLimit = mlg::LevelGenerator::LoadLevelTimeLimit(levelPath);
 
@@ -236,10 +218,10 @@ void LevelScene::SetTimeLimit() {
                 timeLimit,
                 false,
                 [this]() {
-                    boxingBellSound->Play(2.f);
                     mlg::Time::PauseGame(true);
                     finishScreen->SetScore(scoreManager->GetScore(), levelName);
                     finishScreen->SetVisible(true);
+                    OnLevelFinished();
                     mlg::Time::PauseGame(true);
                 });
     }

@@ -13,9 +13,6 @@ private:
 
     std::shared_ptr<class FinishScreen> finishScreen;
 
-    std::shared_ptr<mlg::AudioAsset> cityAmbientSound;
-    std::shared_ptr<mlg::AudioAsset> clockCountdownSound;
-    std::shared_ptr<mlg::AudioAsset> boxingBellSound;
     std::shared_ptr<class NavigationGraph> navigationGraph;
 
     std::shared_ptr<class GameplayOverlay> gameplayOverlay;
@@ -33,6 +30,8 @@ private:
     size_t timeLimitTimer;
 
 public:
+    eventpp::CallbackList<void()> OnLevelFinished;
+
     explicit LevelScene(std::string  path);
     ~LevelScene() override;
 
@@ -59,6 +58,5 @@ private:
     void InitializeLevelTaskManager();
     void SpawnTraffic();
     void LoadLevel();
-    void LoadSounds();
     void SetTimeLimit();
 };

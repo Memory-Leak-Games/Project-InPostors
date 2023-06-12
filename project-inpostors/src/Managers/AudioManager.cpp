@@ -7,6 +7,7 @@
 
 #include "Core/SceneManager/SceneManager.h"
 #include "Scenes/LevelScene.h"
+#include <cmath>
 #include <spdlog/spdlog.h>
 
 AudioManager::AudioManager(uint64_t id,
@@ -34,6 +35,15 @@ std::shared_ptr<AudioManager> AudioManager::Create(
             mlg::AssetManager::GetAsset<mlg::AudioAsset>(
                     "res/audio/sfx/go_level_countdown.wav");
 
+    audioManager->cityAmbientSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>(
+            "res/audio/music/city_ambient.mp3");
+
+    audioManager->clockCountdownSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>(
+            "res/audio/sfx/clock_countdown.wav");
+
+    audioManager->boxingBellSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>(
+            "res/audio/sfx/boxing_bell.mp3");
+
     return audioManager;
 }
 
@@ -45,7 +55,6 @@ void AudioManager::Start() {
             [this](const auto& TaskData) {
                 finishTaskSound->Play();
             });
-
     levelScene->GetLevelCountdown().OnCountdownTick.append(
             [this]() {
                 startLevelCountdownSound->Play();
@@ -55,8 +64,28 @@ void AudioManager::Start() {
                 finishCountdownSound->Play();
             });
 
-    finishCountdownSound->Play();
+    levelScene->OnLevelFinished.append(
+            [this]() {
+                boxingBellSound->Play();
+            });
+
+    cityAmbientSound->Play();
 }
 
 void AudioManager::Update() {
+}
+
+void AudioManager::SetTimeLeft(float timeLeft) {
+    int wholeSecondLeft = std::ceil(timeLeft);
+
+    if (lastWholeSecondLeft == -1)
+        lastWholeSecondLeft = wholeSecondLeft;
+
+    if (wholeSecondLeft <= 11 &&
+        wholeSecondLeft > 0 &&
+        lastWholeSecondLeft != wholeSecondLeft) {
+        clockCountdownSound->Play();
+    }
+
+    lastWholeSecondLeft = wholeSecondLeft;
 }
