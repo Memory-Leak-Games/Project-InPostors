@@ -28,6 +28,7 @@
 #include "Managers/ScoreManager.h"
 #include "Managers/TaskManager.h"
 #include "Managers/GameplayEventsManager.h"
+#include "Managers/AudioManager.h"
 
 #include "UI/FinishScreen.h"
 #include "UI/PauseMenu.h"
@@ -55,6 +56,10 @@ void LevelScene::Load() {
                            .lock();
     
     gameplayEventsManager = std::make_unique<GameplayEventsManager>(levelPath);
+
+    audioManager = mlg::EntityManager::SpawnEntity<AudioManager>(
+                            "AudioManager", false, mlg::SceneGraph::GetRoot())
+                            .lock();
 
     SpawnTraffic();
     LoadSounds();
