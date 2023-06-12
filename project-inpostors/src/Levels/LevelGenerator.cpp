@@ -1,5 +1,6 @@
 #include <effolkronium/random.hpp>
 #include <fstream>
+#include <glm/fwd.hpp>
 #include <memory>
 #include <utility>
 
@@ -88,7 +89,45 @@ namespace mlg {
     }
 
     void LevelGenerator::SpawnGroundAndWater(const std::string& path) {
-        // Spawn Water
+        std::ifstream levelFile{path};
+        json groundJson = json::parse(levelFile)["ground"];
+        SpawnGround(groundJson);
+        SpawnWater();
+    }
+
+    void LevelGenerator::SpawnGround(nlohmann::json& groundJson) {
+        // Spawn Ground
+        auto groundModel =
+                mlg::AssetManager::GetAsset<mlg::ModelAsset>(
+                        groundJson["mesh"]);
+
+        auto groundMaterial =
+                mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
+                        groundJson["material"]);
+
+        auto ground =
+                mlg::EntityManager::SpawnEntity<mlg::Entity>(
+                        "Ground", true, mlg::SceneGraph::GetRoot());
+
+        ground.lock()->AddComponent<mlg::StaticMeshComponent>(
+                "StaticMesh", groundModel, groundMaterial);
+
+        glm::vec3 position = {
+                groundJson["offset"][0],
+                -0.01f,
+                groundJson["offset"][1]};
+
+        float scale = groundJson.value("scale", 1.f);
+        float rotation = groundJson.value("rotation", 0.f);
+
+
+        ground.lock()->GetTransform().SetPosition(position);
+        ground.lock()->GetTransform().SetScale(glm::vec3{scale});
+        ground.lock()->GetTransform().SetEulerRotation(
+                glm::vec3{0.f, rotation, 0.f});
+    }
+
+    void LevelGenerator::SpawnWater() {
         auto planeModel =
                 mlg::AssetManager::GetAsset<mlg::ModelAsset>(
                         "res/models/primitives/plane.obj");
@@ -97,11 +136,15 @@ namespace mlg {
                 mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
                         "res/materials/water_material.json");
 
-        auto ground = mlg::EntityManager::SpawnEntity<mlg::Entity>("Ground", true, mlg::SceneGraph::GetRoot());
-        ground.lock()->AddComponent<mlg::StaticMeshComponent>("StaticMesh", planeModel, waterMaterial);
-        ground.lock()->GetTransform().SetPosition({0.f, -0.01f, 0.f});
+        auto water =
+                mlg::EntityManager::SpawnEntity<mlg::Entity>(
+                        "Ground", true, mlg::SceneGraph::GetRoot());
 
-        ground.lock()->GetTransform().SetScale(glm::vec3{1000.f});
+        water.lock()->AddComponent<mlg::StaticMeshComponent>(
+                "StaticMesh", planeModel, waterMaterial);
+
+        water.lock()->GetTransform().SetPosition({0.f, -5.0f, 0.f});
+        water.lock()->GetTransform().SetScale(glm::vec3{1000.f});
     }
 
     void LevelGenerator::SetCityBounds(const std::string& path) {

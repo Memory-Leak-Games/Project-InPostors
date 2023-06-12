@@ -119,6 +119,9 @@ namespace mlg {
 
         [[nodiscard]] glm::vec3 GetLevelPosition(const glm::ivec2 &localPos,
                                                  bool isRigid = false) const;
+                                                
+        static void SpawnGround(nlohmann::json& groundJson);
+        static void SpawnWater();
     };
 
 }// namespace mlg
