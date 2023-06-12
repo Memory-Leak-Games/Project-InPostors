@@ -188,7 +188,7 @@ void LevelScene::LoadLevel() {
     auto cameraComponent = cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
 
     mlg::LevelGenerator::LoadMap(levelPath);
-    mlg::LevelGenerator::SpawnGround(levelPath);
+    mlg::LevelGenerator::SpawnGroundAndWater(levelPath);
     mlg::LevelGenerator::SetCityBounds(levelPath);
     mlg::LevelGenerator::LoadCameraSettings(levelPath, *cameraComponent.lock());
     mlg::LevelGenerator::SpawnPlayers(levelPath);
