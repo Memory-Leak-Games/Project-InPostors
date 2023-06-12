@@ -7,7 +7,14 @@
 
   "sublevels": [ "res/levels/maps/test_level_props.json" ],
 
-  "ground-color": [0.898, 0.854, 0.890, 1.0],
+  "ground": {
+    "mesh": "res/models/primitives/plane.obj",
+    "material": "res/materials/color/blue_material.json",
+
+    "scale": 100.0,
+    "offset": [0.0, 0.0],
+    "rotation": 0.0
+  },
 
   "camera-settings": {
     "position": [16.0, 50.0, -14.0],
