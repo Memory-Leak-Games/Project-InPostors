@@ -26,35 +26,29 @@ void StartLevelCountdown::Start() {
     if (timeToStart < 0.f)
         return;
 
-    startLevelCountdownSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/start_level_countdown.wav");
-    startLevelCountdownSound->Play();
-    goLevelCountdownSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/go_level_countdown.wav");
-
     mlg::Time::PauseGame(true);
     startTime = mlg::Time::GetTrueSeconds();
+    OnCountdownStarted();
+
+    lastNumber = std::ceil(timeToStart);
 }
 
 void StartLevelCountdown::Update() {
     float timeFromStart = mlg::Time::GetTrueSeconds() - startTime;
-    countdownLabel.lock()->SetText(
-            fmt::format("{}", std::ceil(timeToStart - timeFromStart)));
+    int number = std::ceil(timeToStart - timeFromStart);
 
-    if (timeFromStart > timeToStart) {
-        mlg::Time::PauseGame(false);
+    if (number == lastNumber)
+        return;
 
-        if (!goSoundPlayed) {
-            goLevelCountdownSound->Play(2.f);
-            goSoundPlayed = true;
-        }
-
-        countdownLabel.lock()->SetText("GO!");
+    if (number > 0) {
+        countdownLabel.lock()->SetText(fmt::format("{}", number));
+        OnCountdownTick();
     }
 
-    static float lastPlayTime = timeFromStart;
-    if (timeFromStart - lastPlayTime >= 1.0f && timeFromStart < timeToStart)
-    {
-        startLevelCountdownSound->Play();
-        lastPlayTime = timeFromStart;
+    if (number == 0) {
+        mlg::Time::PauseGame(false);
+        countdownLabel.lock()->SetText("GO!");
+        OnCountdownFinished();
     }
 
     if (timeFromStart > timeToStart + 1.f) {
@@ -66,6 +60,8 @@ void StartLevelCountdown::Update() {
         mlg::Time::PauseGame(false);
         QueueForDeletion();
     }
+
+    lastNumber = number;
 }
 
 void StartLevelCountdown::SetTimeToStart(int timeToStart) {

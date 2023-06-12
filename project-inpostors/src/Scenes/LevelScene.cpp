@@ -65,8 +65,9 @@ void LevelScene::Load() {
     LoadSounds();
     SetTimeLimit();
 
-    mlg::EntityManager::SpawnEntity<StartLevelCountdown>(
-        "StartLevelCountdown", false, mlg::SceneGraph::GetRoot());
+    levelCountdown = mlg::EntityManager::SpawnEntity<StartLevelCountdown>(
+        "StartLevelCountdown", false, mlg::SceneGraph::GetRoot())
+        .lock();
 
     // TODO: Remove me
     gameplayOverlay->SetChat(fmt::format(
@@ -152,6 +153,14 @@ ScoreManager* LevelScene::GetScoreManager() {
 
 const std::string& LevelScene::GetLevelName() const {
     return levelName;
+}
+
+GameplayEventsManager& LevelScene::GetGameplayEventsManager() {
+    return *gameplayEventsManager;
+}
+
+StartLevelCountdown& LevelScene::GetLevelCountdown() {
+    return *levelCountdown;
 }
 
 void LevelScene::InitializeLevelTaskManager() {

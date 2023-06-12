@@ -27,6 +27,12 @@ std::shared_ptr<AudioManager> AudioManager::Create(
 
     audioManager->finishTaskSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>(
             "res/audio/sfx/finish_task.mp3");
+    audioManager->startLevelCountdownSound =
+            mlg::AssetManager::GetAsset<mlg::AudioAsset>(
+                    "res/audio/sfx/start_level_countdown.wav");
+    audioManager->finishCountdownSound =
+            mlg::AssetManager::GetAsset<mlg::AudioAsset>(
+                    "res/audio/sfx/go_level_countdown.wav");
 
     return audioManager;
 }
@@ -39,6 +45,17 @@ void AudioManager::Start() {
             [this](const auto& TaskData) {
                 finishTaskSound->Play();
             });
+
+    levelScene->GetLevelCountdown().OnCountdownTick.append(
+            [this]() {
+                startLevelCountdownSound->Play();
+            });
+    levelScene->GetLevelCountdown().OnCountdownFinished.append(
+            [this]() {
+                finishCountdownSound->Play();
+            });
+
+    finishCountdownSound->Play();
 }
 
 void AudioManager::Update() {

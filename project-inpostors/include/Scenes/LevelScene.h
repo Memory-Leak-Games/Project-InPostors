@@ -2,6 +2,8 @@
 
 #include "Audio/Assets/AudioAsset.h"
 #include "Core/SceneManager/Scene.h"
+#include "UI/StartLevelCountdown.h"
+#include <memory>
 
 class LevelScene : public mlg::Scene {
 private:
@@ -22,6 +24,7 @@ private:
     std::unique_ptr<class ScoreManager> scoreManager;
     std::unique_ptr<class GameplayEventsManager> gameplayEventsManager;
     std::shared_ptr<class AudioManager> audioManager;
+    std::shared_ptr<class StartLevelCountdown> levelCountdown;
 
     std::weak_ptr<class PauseMenu> pauseMenu;
 
@@ -42,7 +45,15 @@ public:
     [[nodiscard]] LevelTaskManager* GetLevelTaskManager();
     [[nodiscard]] class TaskManager* GetTaskManager();
     [[nodiscard]] ScoreManager* GetScoreManager();
+    [[nodiscard]] AudioManager& GetAudioManager();
+    [[nodiscard]] GameplayEventsManager& GetGameplayEventsManager();
+    [[nodiscard]] StartLevelCountdown& GetLevelCountdown();
+
     [[nodiscard]] const std::string& GetLevelName() const;
+    [[nodiscard]] const std::shared_ptr<class GameplayOverlay>& GetGameplayOverlay() const;
+    [[nodiscard]] const std::shared_ptr<class FinishScreen>& GetFinishScreen() const;
+    [[nodiscard]] const std::shared_ptr<class PauseMenu>& GetPauseMenu() const;
+
 
 private:
     void InitializeLevelTaskManager();
