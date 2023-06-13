@@ -3,7 +3,7 @@
   "tile-size": 4.0,
   "tileset": "res/levels/tilesets/city_tileset.json",
 
-  "time-limit": 120.0,
+  "time-limit": 1.0,
 
   "sublevels": [ "res/levels/maps/test_level_props.json" ],
 
