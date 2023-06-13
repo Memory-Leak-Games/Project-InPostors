@@ -7,7 +7,7 @@
     {
         "name": "ore",
         "icon": "res/materials/ui/icon/ore_material.json",
-        "color": [ 0.0, 0.698, 0.663 ]
+        "color": [ 0.643, 0.455, 0.2 ]
     },
     {
         "name": "wood",

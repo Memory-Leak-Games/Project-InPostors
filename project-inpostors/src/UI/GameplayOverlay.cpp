@@ -195,6 +195,9 @@ void GameplayOverlay::SetClock(float time) {
     if (time < 0.f)
         time = 0.f;
 
+    if (time <= 60.f)
+        clock->SetTextColor({1.f, 0.f, 0.f});
+
     int minutes = std::floor(time / 60.f);
     int seconds = std::floor(time - minutes * 60);
 
