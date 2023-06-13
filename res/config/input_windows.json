@@ -1,0 +1,369 @@
+[
+  {
+    "name": "forward_one",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 87
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": true,
+        "isPositive": false,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 4
+      }
+    ]
+  },
+  {
+    "name": "backward_one",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 83
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": true,
+        "isPositive": false,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 5
+      }
+    ]
+  },
+  {
+    "name": "left_one",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 65
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": true,
+        "isPositive": false,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 0
+      }
+    ]
+  },
+  {
+    "name": "right_one",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 68
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": true,
+        "isPositive": true,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 0
+      }
+    ]
+  },
+  {
+    "name": "pick_up_one",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 32
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": false,
+        "code": 0
+      }
+    ]
+  },
+  {
+    "name": "drop_one",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 340
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": false,
+        "code": 1
+      }
+    ]
+  },
+  {
+    "name": "forward_two",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 265
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": true,
+        "isPositive": false,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 4
+      }
+    ]
+  },
+  {
+    "name": "backward_two",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 264
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": true,
+        "isPositive": false,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 5
+      }
+    ]
+  },
+  {
+    "name": "left_two",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 263
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": true,
+        "isPositive": false,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 0
+      }
+    ]
+  },
+  {
+    "name": "right_two",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 262
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": true,
+        "isPositive": true,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 0
+      }
+    ]
+  },
+  {
+    "name": "pick_up_two",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 321
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": false,
+        "code": 0
+      }
+    ]
+  },
+  {
+    "name": "drop_two",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 322
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": false,
+        "code": 1
+      }
+    ]
+  },
+  {
+    "name": "ui_up",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 87
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": true,
+        "isPositive": false,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 1
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": false,
+        "code": 10
+      }
+    ]
+  },
+  {
+    "name": "ui_down",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 83
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": true,
+        "isPositive": true,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 1
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": false,
+        "code": 12
+      }
+    ]
+  },
+  {
+    "name": "ui_left",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 65
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": true,
+        "isPositive": false,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 0
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": false,
+        "code": 13
+      }
+    ]
+  },
+  {
+    "name": "ui_right",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 68
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": true,
+        "isPositive": true,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 0
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": false,
+        "code": 11
+      }
+    ]
+  },
+  {
+    "name": "ui_accept",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 32
+      },
+      {
+        "deviceType": "Keyboard",
+        "code": 257
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": false,
+        "code": 0
+      }
+    ]
+  },
+  {
+    "name": "pause",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 256
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 0,
+        "isAxis": false,
+        "code": 7
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": false,
+        "code": 7
+      }
+    ]
+  },
+  {
+    "name": "accept_task",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 334
+      }
+    ]
+  },
+  {
+    "name": "debug_skip",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 266
+      }
+    ]
+  },
+  {
+    "name": "debug_event",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 269
+      }
+    ]
+  }
+]
