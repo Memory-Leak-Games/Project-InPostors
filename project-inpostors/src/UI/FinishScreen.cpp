@@ -14,8 +14,8 @@
 
 #include "UI/UIStyle.h"
 
-#include "Scenes/LevelScene.h"
 #include "Managers/ScoreManager.h"
+#include "Scenes/LevelScene.h"
 
 FinishScreen::FinishScreen(
         uint64_t id, const std::string& name,
@@ -168,8 +168,7 @@ void FinishScreen::CreateRightPanel() {
     sharedRightBackground->SetAnchor(MLG_ANCHOR_CENTER);
 
     rightHeaderText = AddComponent<mlg::Label>(
-            "header",
-            mlg::AssetManager::GetAsset<mlg::FontAsset>(FONT));
+            "header", mlg::AssetManager::GetAsset<mlg::FontAsset>(FONT));
 
     auto sharedRightHeaderText = rightHeaderText.lock();
     sharedRightHeaderText->SetSize(30);
