@@ -67,7 +67,7 @@
 
   "player-one": {
     "id": 0,
-    "car-type": "res/config/cars/monster_truck.json",
+    "car-type": "res/config/cars/van.json",
     "color": [1.0, 0.0, 0.0],
 
     "position": [32.0, -12.0],

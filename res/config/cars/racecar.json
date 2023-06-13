@@ -7,24 +7,20 @@
     "backwardMaxSpeed": 5,
     "engineHandling": 50,
     "handling": 2000,
-    "rotationSpeed": 120,
-    "rotationRadius": 3,
+    "rotationSpeed": 160,
+    "rotationRadius": 2,
     "sideDrag": 40,
     "counterTorque": 4,
-    "bounciness": 0.3
+    "bounciness": 0.1
   },
 
   "colliders": [
     {
-      "offset": [0.0, -2.4],
+      "offset": [0.0, -1.2],
       "size": 0.6
     },
     {
-      "offset": [0.0, -1.0],
-      "size": 0.6
-    },
-    {
-      "offset": [0.0, 0.5],
+      "offset": [0.0, 0.3],
       "size": 0.6
     },
     {

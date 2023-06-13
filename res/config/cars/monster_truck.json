@@ -7,11 +7,11 @@
     "backwardMaxSpeed": 15,
     "engineHandling": 120,
     "handling": 5000,
-    "rotationSpeed": 160,
-    "rotationRadius": 2,
+    "rotationSpeed": 120,
+    "rotationRadius": 3,
     "sideDrag": 10,
     "counterTorque": 3,
-    "bounciness": 0.2
+    "bounciness": 0.3
   },
 
   "colliders": [
