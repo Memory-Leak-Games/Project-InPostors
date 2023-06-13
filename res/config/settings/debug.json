@@ -5,6 +5,6 @@
   "showNavigation": false,
   "showAiForces": false,
 
-  "showFactoryInfo": false,
+  "showFactoryInfo": true,
   "showPlayerEq": false
 }

@@ -1,10 +1,16 @@
 #include "Core/SceneManager/SceneManager.h"
 
 #include "Core/Core.h"
+#include "Core/SceneManager/LoadingScreen.h"
 #include "Core/SceneManager/Scene.h"
 #include "Initializer.h"
 
 mlg::SceneManager* mlg::SceneManager::instance = nullptr;
+
+mlg::SceneManager::SceneManager()
+    : loadingScreen(std::make_unique<LoadingScreen>()),
+      nextScene(nullptr),
+      currentScene(nullptr) {}
 
 mlg::SceneManager::~SceneManager() = default;
 
@@ -39,12 +45,15 @@ void mlg::SceneManager::SetNextScene(std::unique_ptr<Scene> scene) {
 }
 
 void mlg::SceneManager::LoadNextScene() {
+
     if (instance->currentScene != nullptr)
         instance->currentScene->UnLoad();
-    
+
     Initializer::StopSceneComponents();
     Initializer::InitializeSceneComponents();
-    
+
+    instance->loadingScreen->Draw();
+
     instance->currentScene = std::move(instance->nextScene);
     instance->currentScene->Load();
     mlg::Core::GetInstance()->MainLoop();

@@ -1,4 +1,4 @@
-#include "include/UI/Components/Image.h"
+#include "UI/Components/Image.h"
 
 #include "Macros.h"
 #include "UI/UIRenderer.h"
@@ -7,8 +7,6 @@
 
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/ShaderProgram.h"
-
-#include <utility>
 
 namespace mlg {
     Image::Image(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<MaterialAsset>& material)
@@ -27,7 +25,8 @@ namespace mlg {
         material->GetShaderProgram()->SetVec2F("size", size * renderer->uiScale);
         material->GetShaderProgram()->SetVec2F("screenPosition", actualPosition);
         material->GetShaderProgram()->SetMat4F("projection", renderer->GetProjection());
-        material->GetShaderProgram()->SetVec4F("tint", tint);
+        if(tint != glm::vec4(1.0))
+            material->GetShaderProgram()->SetVec4F("tint", tint);
 
         MLG_ASSERT(UIRenderer::GetInstance()->vao != 0);
         glBindVertexArray(UIRenderer::GetInstance()->vao);

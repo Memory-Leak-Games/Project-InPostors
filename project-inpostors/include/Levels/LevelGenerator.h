@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Neighbours.h"
-#include "TaskManager.h" //todo: this should not belong here.
-#include <string>
+#include "Managers/TaskManager.h"
 
 namespace mlg {
 
@@ -16,7 +15,7 @@ namespace mlg {
         //todo: rewrite these functions so that you need to provide json path only once
         static std::vector<std::string> LoadMap(const std::string& path);
         static void LoadCameraSettings(const std::string& path, class CameraComponent& cameraComponent);
-        static void SpawnGround(const std::string& path);
+        static void SpawnGroundAndWater(const std::string& path);
         static void SetCityBounds(const std::string& path);
         static void SpawnPlayers(const std::string& path);
         static TrafficData LoadTrafficData(const std::string& path);
@@ -120,6 +119,9 @@ namespace mlg {
 
         [[nodiscard]] glm::vec3 GetLevelPosition(const glm::ivec2 &localPos,
                                                  bool isRigid = false) const;
+                                                
+        static void SpawnGround(nlohmann::json& groundJson);
+        static void SpawnWater();
     };
 
 }// namespace mlg

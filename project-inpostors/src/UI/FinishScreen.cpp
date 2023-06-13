@@ -4,7 +4,7 @@
 #include "Core/SceneManager/SceneManager.h"
 #include "Rendering/Assets/MaterialAsset.h"
 
-#include "ScoreManager.h"
+#include "Managers/ScoreManager.h"
 #include "UI/Assets/FontAsset.h"
 #include "UI/Components/Button.h"
 #include "UI/Components/CharacterSelector.h"
@@ -15,7 +15,7 @@
 #include "UI/UIStyle.h"
 
 #include "Scenes/LevelScene.h"
-#include "ScoreManager.h"
+#include "Managers/ScoreManager.h"
 
 FinishScreen::FinishScreen(
         uint64_t id, const std::string& name,
@@ -77,6 +77,8 @@ void FinishScreen::SetVisible(bool visible) {
         characterSelector.lock()->SetVisible(visible);
         characterSelector.lock()->SetActive(visible);
     }
+
+    characterSelectors[0].lock()->GrabFocus();
 }
 
 void FinishScreen::FinishScreen::CreateBackground() {
@@ -225,7 +227,6 @@ void FinishScreen::CreateCharacterSelectors() {
         i++;
     }
 
-    characterSelectors[0].lock()->GrabFocus();
     characterSelectors[0].lock()->next.left = exitButton;
     characterSelectors[characterSelectors.size() - 1].lock()->next.right = exitButton;
 

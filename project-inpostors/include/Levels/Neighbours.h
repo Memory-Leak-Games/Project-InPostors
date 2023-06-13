@@ -1,7 +1,5 @@
 #pragma once
 
-#include "array"
-
 namespace mlg {
 
     struct Neighbours {

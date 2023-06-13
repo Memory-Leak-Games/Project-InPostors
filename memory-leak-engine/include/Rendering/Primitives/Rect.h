@@ -10,6 +10,8 @@ namespace mlg {
         Rect();
         ~Rect();
 
+        void Draw();
+
         uint32_t GetVao();
         size_t GetSize();
     };

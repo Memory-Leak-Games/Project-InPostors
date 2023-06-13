@@ -37,8 +37,8 @@ namespace mlg {
 
         SPDLOG_INFO("Initializing Renderer");
 
-        int32_t windowWidth = Window::GetInstance()->GetWidth();
-        int32_t windowHeight = Window::GetInstance()->GetHeight();
+        int32_t windowWidth = Window::Get()->GetWidth();
+        int32_t windowHeight = Window::Get()->GetHeight();
 
         instance->gBuffer = std::make_unique<GBuffer>(windowWidth, windowHeight);
         instance->ssaoFrameBuffer = std::make_unique<SSAOFrameBuffer>(windowWidth, windowHeight);
@@ -46,7 +46,7 @@ namespace mlg {
         instance->postProcess = std::make_unique<PostProcess>(windowWidth, windowHeight);
         instance->fxaa = std::make_unique<FXAAFrameBuffer>(windowWidth, windowHeight);
 
-        Window::GetInstance()->GetEventDispatcher()->appendListener(EventType::WindowResize, OnWindowResize);
+        Window::Get()->GetEventDispatcher()->appendListener(EventType::WindowResize, OnWindowResize);
 
         TracyGpuContext;
     }
@@ -79,7 +79,7 @@ namespace mlg {
         ZoneScopedN("Draw Renderables");
         TracyGpuZone("Draw Renderables");
 
-        glViewport(0, 0, Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight());
+        glViewport(0, 0, Window::Get()->GetWidth(), Window::Get()->GetHeight());
         currentFramebuffer->Activate();
         for (auto &renderable: renderables) {
             renderable.lock()->Draw(this);

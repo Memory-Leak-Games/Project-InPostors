@@ -27,7 +27,7 @@ namespace mlg {
         static void Initialize(std::string title);
         static void Stop();
 
-        static Window* GetInstance();
+        static Window* Get();
 
         virtual void* GetNativeWindowHandle();
 

@@ -1,0 +1,17 @@
+{
+  "vertexShader": "res/shaders/model.vert",
+  "fragmentShader": "res/shaders/level/water.frag",
+  "uniforms": [],
+  "textures": [
+    {
+      "name": "waterBase",
+      "index": 0,
+      "path": "res/textures/water/water_base.png"
+    },
+    {
+      "name": "waterSurf",
+      "index": 1,
+      "path": "res/textures/water/water_surf.png"
+    }
+  ]
+}
