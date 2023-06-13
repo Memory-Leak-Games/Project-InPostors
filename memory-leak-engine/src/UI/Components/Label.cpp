@@ -26,12 +26,12 @@ namespace mlg {
     void Label::Draw(const UIRenderer* renderer) {
         ZoneScopedN("Draw Label");
         UIComponent::Draw(renderer);
-        if(!visible)
+        if (!visible)
             return;
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glDepthMask(GL_FALSE); // Don't write into the depth buffer
+        glDepthMask(GL_FALSE);// Don't write into the depth buffer
 
         // Activate corresponding render state
         shader->Activate();
@@ -85,7 +85,7 @@ namespace mlg {
         glBindVertexArray(0);
         glBindTextureUnit(0, 0);
 
-        glDepthMask(GL_TRUE); // Re-enable writing to the depth buffer
+        glDepthMask(GL_TRUE);// Re-enable writing to the depth buffer
     }
 
     std::shared_ptr<FontAsset> Label::GetFont() const {
@@ -151,7 +151,7 @@ namespace mlg {
         : Label(owner, name, AssetManager::GetAsset<FontAsset>("res/fonts/terminus-bold.ttf")) {}
 
     glm::vec2 Label::GetLabelSize() const {
-        glm::vec2 result {0.f};
+        glm::vec2 result{0.f};
 
         // Calculate size of label
         float maxHorizontal = 0.f;
@@ -164,7 +164,12 @@ namespace mlg {
                 continue;
             }
 
-            result.x += (float) (font->characters[c - 33].Advance >> 6) * scale;    
+            if (c == ' ') {
+                result.x += (float) (font->fontSize >> 1) * scale;
+                continue;
+            }
+
+            result.x += (float) (font->characters[c - 33].Advance >> 6) * scale;
         }
 
         result.x = std::max(maxHorizontal, result.x);
@@ -172,5 +177,4 @@ namespace mlg {
 
         return result;
     }
-}
-
+}// namespace mlg
