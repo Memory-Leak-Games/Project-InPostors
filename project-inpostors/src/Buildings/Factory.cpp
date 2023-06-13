@@ -216,13 +216,16 @@ void Factory::Update() {
         auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
         float produceElapsed = mlg::TimerManager::Get()->GetTimerElapsedTime(produceTimerHandle);
         float timeToProcess = BlueprintManager::Get()->GetBlueprint(blueprintId).GetTimeToProcess();
+        float timeRate = produceElapsed / timeToProcess;
 
         if (!blueprint.GetInput().empty() && barReq1)
-            barReq1->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetInput()[0]) / 3.0f;
+            barReq1->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetInput()[0]) / 3.0f
+                                          + (timeRate > 0.0f) * 0.33f;
         if (blueprint.GetInput().size() > 1 && barReq2)
-            barReq2->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetInput()[1]) / 3.0;
+            barReq2->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetInput()[1]) / 3.0f
+                                          + (timeRate > 0.0f) * 0.33f;
         if (barArrow)
-            barArrow->percentage = produceElapsed / timeToProcess;
+            barArrow->percentage = timeRate;
         if (barRes)
             barRes->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetOutput()) / 3.0;
     }
