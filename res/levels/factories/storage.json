@@ -10,7 +10,7 @@
 
   "colliders":[
     {
-      "offset": [0.0, 1.0],
+      "offset": [0.0, 2.5],
       "size": [15.0, 14.0]
     }
   ],
@@ -18,8 +18,8 @@
   "type": "Storage",
 
   "input": {
-    "offset": [0.0, -9.0],
-    "size": [15.0, 7.0]
+    "offset": [0.5, -8.5],
+    "size": [14.0, 5.5]
   },
 
   "emitters": [

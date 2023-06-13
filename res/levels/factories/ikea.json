@@ -10,32 +10,23 @@
 
   "colliders":[
     {
-      "offset": [2.0, 1.0],
-      "size": [10.0, 14.0]
-    },
-    {
-      "offset": [-4.0, -1.0],
-      "size": [2.0, 7.0]
+      "offset": [-0.5, 0.6],
+      "size": [12.0, 10.0]
     }
   ],
 
   "blueprintID": "furniture",
-  "type": "OneInputOutput",
+  "type": "SeparateInputOutput",
 
   "input": {
-    "offset": [-5.0, 1.0],
-    "size": [5.0, 12.0]
+    "offset": [-0.5, -7.5],
+    "size": [12.0, 4.0]
   },
 
   "output": {
-    "offset": [-0.0, 0.0],
-    "size": [1.0, 1.0]
+    "offset": [7.5, 1.0],
+    "size": [4.0, 12.0]
   },
 
-  "emitters": [
-    {
-      "id": "factorySmoke",
-      "position": [5.0, 10.0, -5.0]
-    }
-  ]
+  "emitters": []
 }
