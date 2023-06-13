@@ -18,10 +18,10 @@
 
   "camera-settings": {
     "position": [16.0, 50.0, -14.0],
-    "rotation": [90.0, 0.0, 0.0],
+    "rotation": [65.0, -45.0, 0.0],
     "test_rotation": [90.0, 0.0, 0.0],
 
-    "size": 100.0,
+    "size": 120.0,
     "near": 0.1,
     "far": 200.0
   },
@@ -34,8 +34,8 @@
     "s###pppppppp###ssssss###ssss###s",
     "s###p      p###ssssss###ssss###b",
     "s###p      p###      ###    ###m",
-    "s###p   0  p###      ###    ###s",
-    "s###p      p###      ###    ###b",
+    "s###p   1  p###      ###    ###s",
+    "s###p      p###   0  ###  2 ###b",
     "s###p      p###      ###    ###m",
     "s###pppppppp###      ###    ###s",
     "s##############################b",
@@ -76,7 +76,7 @@
 
   "player-two": {
     "id": 1,
-    "car-type": "res/config/cars/racecar.json",
+    "car-type": "res/config/cars/van.json",
     "color": [0.0, 1.0, 1.0],
 
     "position": [-24.0, 10.0]
