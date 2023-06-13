@@ -61,5 +61,7 @@ namespace mlg {
         void SetWindowContext() const;
         void SetWindowSettings() const;
         GLFWmonitor* GetMonitor();
+
+        void SetGamepadMappings() const;
     };
 }

@@ -2,7 +2,11 @@
 
 #include "InputAction.h"
 
+#ifndef WIN32
 #define MLG_INPUT_CONFIG_PATH "res/config/input.json"
+#else
+#define MLG_INPUT_CONFIG_PATH "res/config/input_windows.json"
+#endif
 
 namespace mlg {
 

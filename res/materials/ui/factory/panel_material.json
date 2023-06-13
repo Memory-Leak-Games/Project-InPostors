@@ -1,6 +1,6 @@
 {
   "vertexShader": "res/shaders/ui/image.vert",
-  "fragmentShader": "res/shaders/ui/progress_bar.frag",
+  "fragmentShader": "res/shaders/ui/vertical_progress_bar.frag",
   "uniforms": [
     {
       "type": "vec4",
@@ -10,7 +10,7 @@
     {
       "type": "vec4",
       "name": "inRect",
-      "value": [0.0, 1.0, 1.0, 0.85]
+      "value": [1.0, 1.0, 1.0, 0.95]
     }
   ],
   "textures": []

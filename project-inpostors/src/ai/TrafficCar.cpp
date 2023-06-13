@@ -44,6 +44,7 @@ std::shared_ptr<TrafficCar> TrafficCar::Create(uint64_t id, const std::string& n
 
     auto staticMeshComponent = newTrafficCar->AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
     staticMeshComponent.lock()->GetTransform().SetPosition({0.f, 0.3f, 0.f});
+    staticMeshComponent.lock()->GetTransform().SetScale({0.7f, 0.7f, 0.7f});
 
     newTrafficCar->AddRigidbody(configJson, modelNumber);
 

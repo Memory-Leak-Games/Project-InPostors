@@ -1,9 +1,12 @@
 #include "Core/Window.h"
 
+#include <sstream>
 #include <utility>
+#include <fstream>
 
 #include "Core/Settings/SettingsManager.h"
 
+#include "GLFW/glfw3.h"
 #include "Macros.h"
 
 #ifdef DEBUG
@@ -50,7 +53,11 @@ void Window::Initialize(std::string title) {
     instance->SetupWindow();
 
     instance->SetVerticalSync(SettingsManager::Get<bool>(SettingsType::Video, "VSync"));
+
+    instance->SetGamepadMappings();
 }
+
+
 
 int32_t Window::SetupWindow() {
     SPDLOG_INFO("Window Setup");
@@ -247,4 +254,12 @@ void* Window::GetNativeWindowHandle() {
 
 float Window::GetAspectRatio() {
     return windowData.aspectRatio;
+}
+
+void mlg::Window::SetGamepadMappings() const {
+    std::fstream gamepadDb("res/config/gamecontrollerdb.txt");
+    std::stringstream gamepadDbStream;
+    gamepadDbStream << gamepadDb.rdbuf();
+
+    glfwUpdateGamepadMappings(gamepadDbStream.str().c_str());
 }
