@@ -76,7 +76,7 @@
 
   "player-two": {
     "id": 1,
-    "car-type": "res/config/cars/van.json",
+    "car-type": "res/config/cars/racecar.json",
     "color": [0.0, 1.0, 1.0],
 
     "position": [-24.0, 10.0]

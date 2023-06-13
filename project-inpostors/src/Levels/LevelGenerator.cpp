@@ -183,7 +183,7 @@ namespace mlg {
             glm::vec2 position = {playerJson["position"][0], playerJson["position"][1]};
 
             float rotation = playerJson.value("rotation", 0.f);
-            std::string data = playerJson.value("car-data", "res/config/cars/van.json");
+            std::string data = playerJson.value("car-type", "res/config/cars/van.json");
 
             int id = playerJson.value("id", i);
             glm::vec4 color = {
