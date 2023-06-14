@@ -30,12 +30,19 @@ void TaskManager::AddTaskToPool(const TaskData& newTaskData) {
     tasks.emplace(newTask.id, newTask);
 }
 
-// TODO: Change input to vector of products
-bool TaskManager::FinishTask(const std::string& productId) {
-    std::vector<size_t> activeProductTasks;
+bool TaskManager::FinishTask(const std::vector<std::string>& products) {
+    auto timeComparator = [](const Task* a, const Task* b) {
+        return a->timeLeft < b->timeLeft;
+    };
+
+    std::set<const Task*, decltype(timeComparator)> activeProductTasks;
+
+    // Find all active tasks for these products
     for (const auto& [id, task] : tasks) {
-        if (task.productId == productId && task.active) {
-            activeProductTasks.push_back(id);
+        for (const auto& product : products) {
+            if (task.productId == product && task.active) {
+                activeProductTasks.insert(&task);
+            }
         }
     }
 
@@ -43,17 +50,20 @@ bool TaskManager::FinishTask(const std::string& productId) {
     if (activeProductTasks.empty())
         return false;
 
-    auto timeComparator = [this](const size_t a, const size_t b) {
-        return tasks[a].timeLeft < tasks[b].timeLeft;
-    };
+    // Select the task with the least time left but if there are tasks that
+    // have not already ended, select the oldest one
+    const Task* taskToFinish = *activeProductTasks.begin();
+    auto oldestTaskButNotEnded = std::ranges::find_if(
+            activeProductTasks,
+            [this](const Task* task) {
+                return task->timeLeft > 0;
+            });
 
-    size_t taskToFinish = std::min_element(
-            activeProductTasks.begin(),
-            activeProductTasks.end(),
-            timeComparator)[0];
+    if (oldestTaskButNotEnded != activeProductTasks.end()) {
+        taskToFinish = *oldestTaskButNotEnded;
+    }
 
-    SPDLOG_DEBUG("Finished task: {}", taskToFinish);
-    RemoveTask(taskToFinish);
+    RemoveTask(taskToFinish->id);
     return true;
 }
 

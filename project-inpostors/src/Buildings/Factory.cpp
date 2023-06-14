@@ -199,13 +199,8 @@ void Factory::FinishTask() {
     auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
 
     std::vector<std::string> allProducts = equipmentComponent->GetProducts();
-    std::set<std::string> uniqueProducts{allProducts.begin(), allProducts.end()};
 
-    for (auto& product : uniqueProducts) {
-        if (levelScene->GetTaskManager()->FinishTask(product))
-            return;
-    }
-
+    levelScene->GetTaskManager()->FinishTask(allProducts);
 }
 
 void Factory::Start() {

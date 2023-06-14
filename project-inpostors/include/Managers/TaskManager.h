@@ -34,7 +34,7 @@ public:
     void Update();
 
     void AddTaskToPool(const TaskData& taskData);
-    bool FinishTask(const std::string& productId);
+    bool FinishTask(const std::vector<std::string>& products);
     bool HasTask(const std::string& productId);
 
     TaskData GetTask(size_t id);
