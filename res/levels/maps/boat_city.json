@@ -7,7 +7,14 @@
 
   "sublevels": [],
 
-  "ground-color": [0.463, 0.761, 0.404, 1.0],
+  "ground": {
+    "mesh": "res/models/ground/ground.obj",
+    "material": "res/materials/buildings_material.json",
+
+    "scale": 1.0,
+    "offset": [0.0, 0.0],
+    "rotation": 0.0
+  },
 
   "layout": [
     "                                              ",

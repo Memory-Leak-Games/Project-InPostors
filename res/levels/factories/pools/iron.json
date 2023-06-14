@@ -3,17 +3,19 @@
     {
       "symbol": "1",
       "config": "res/levels/factories/mine.json",
-      "fallback": " "
+      "count": 1,
+      "fallback": "w"
     },
     {
       "symbol": "2",
       "config": "res/levels/factories/smelter.json",
-      "fallback": " "
+      "count": 1,
+      "fallback": "p"
     },
     {
       "symbol": "0",
       "config": "res/levels/factories/storage.json",
-      "fallback": " "
+      "fallback": "p"
     }
   ],
 

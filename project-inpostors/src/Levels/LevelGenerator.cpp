@@ -95,7 +95,7 @@ namespace mlg {
         SpawnWater();
     }
 
-    void LevelGenerator::SpawnGround(nlohmann::json& groundJson) {
+    void LevelGenerator::SpawnGround(json &groundJson) {
         // Spawn Ground
         auto groundModel =
                 mlg::AssetManager::GetAsset<mlg::ModelAsset>(
@@ -337,9 +337,7 @@ namespace mlg {
         // TODO: increase size if we happen to have move factories in pool
         factoryCharacters.reserve(4);
         for (const auto& jsonFactory : poolJson["factories"]) {
-            MapFactory factory = ParseFactory(jsonFactory);
-            factory.remaining += 1;
-            levelFactories.push_back(factory);
+            levelFactories.push_back(ParseFactory(jsonFactory));
         }
 
         factoryPool.close();
@@ -392,24 +390,27 @@ namespace mlg {
 
         // Count factory occurrences.
         // This is needed for random generation chance.
-        int x = 0, y = 0;
-        unsigned int occurrences = 0;
+        if (!factoryCharacters.contains(tileSymbol)) {
+            int x = 0, y = 0;
+            unsigned int occurrences = 0;
 
-        for (const std::string& row : levelLayout) {
-            ++y;
-            for (const char& character : row) {
-                ++x;
-                if (character == tileSymbol)
-                    ++occurrences;
+            for (const std::string& row : levelLayout) {
+                ++y;
+                for (const char& character : row) {
+                    ++x;
+                    if (character == tileSymbol)
+                        ++occurrences;
+                }
+                x = 0;
             }
-            x = 0;
+            factoryCharacters.insert({tileSymbol, occurrences});
         }
-        factoryCharacters.insert({tileSymbol, occurrences});
 
         MapFactory mf;
         mf.configPath = jsonObject["config"].get<std::string>();
         mf.factorySymbol = tileSymbol;
         mf.fallbackSymbol = jsonObject["fallback"].get<std::string>()[0];
+        mf.remaining = jsonObject.value("count", 1);
 
         return mf;
     }
@@ -449,7 +450,7 @@ namespace mlg {
 
     void LevelGenerator::TryPutFactory(const char& character, const glm::vec2& pos) {
         for (auto& fac : levelFactories) {
-            if (fac.factorySymbol == character && fac.remaining != 0) {
+            if (fac.factorySymbol == character) {
                 unsigned int spots = factoryCharacters[character];
                 float chance = static_cast<float>(fac.remaining) / static_cast<float>(spots);
                 if (chance > 1.f) {
@@ -457,13 +458,15 @@ namespace mlg {
                     chance = 1.f;
                 }
 
-                if (Random::get<bool>(chance)) {
+                if (fac.remaining > 0 && Random::get<bool>(chance)) {
                     PutFactory(fac.configPath, {pos.x - 1, pos.y - 1}, 0.0f);
                     fac.remaining -= 1;
-                } else if (fac.fallbackSymbol != ' ')
+                } else if (fac.fallbackSymbol != ' ') {
+                    SPDLOG_DEBUG("Fallback: {}", fac.fallbackSymbol);
                     PutTile(static_cast<int>(pos.x) - 1,
                             static_cast<int>(pos.y) - 1,
                             fac.fallbackSymbol);
+                }
 
                 factoryCharacters[character] -= 1;
             }

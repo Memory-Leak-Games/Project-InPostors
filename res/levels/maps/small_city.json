@@ -7,17 +7,22 @@
 
   "sublevels": [],
 
-  "ground-color": [0.463, 0.761, 0.404, 1.0],
+  "ground": {
+    "mesh": "res/models/ground/ground.obj",
+    "material": "res/materials/buildings_material.json",
+
+    "scale": 1.0,
+    "offset": [0.0, 0.0],
+    "rotation": 0.0
+  },
 
   "layout": [
-    " ppp1ppp                      ",
-    " ppppppp                      ",
-    " ppppppp          0           ",
-    " #######                      ",
-    "s#######bbbbbbbb#####         ",
-    "s#######pppppppp###########   ",
-    "s###sppppppppppp###########   ",
-    "s#########pppppp###########   ",
+    "   p1p           ppp          ",
+    "   ppp           p0p          ",
+    "s######pbbbbbbbb#####         ",
+    "s######ppppppppp#####         ",
+    "s###sppppppppppp###     ppp   ",
+    "s#########pppppp###     p1p   ",
     "s#########smmmmm###smmmm###   ",
     "s#########Lbmmmm###Lbsfs###   ",
     "s###msss###################   ",
@@ -26,8 +31,9 @@
     "s##################bbbbb###   ",
     "s##########################   ",
     "sssssssssss###sss##########   ",
-    "           ###sms###mmmm###2  ",
-    "           ###sms###ssss###   ",
+    "           ###sms###pppp###  ",
+    "           ###sms###pp2p###   ",
+    "           ###sms###pppp###   ",
     "           ###bbb##########   ",
     "           ################   ",
     "           ################   "
