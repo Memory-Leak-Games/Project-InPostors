@@ -20,14 +20,9 @@ private:
     std::shared_ptr<class mlg::AudioAsset> createProductSound;
     std::string blueprintId;
 
-    std::shared_ptr<class mlg::ProgressBar> barReq1;
-    std::shared_ptr<class mlg::ProgressBar> barReq2;
-    std::shared_ptr<class mlg::ProgressBar> barArrow;
-    std::shared_ptr<class mlg::ProgressBar> barRes;
-
-    std::shared_ptr<class mlg::Label> amount1;
-    std::shared_ptr<class mlg::Label> amount2;
-    std::shared_ptr<class mlg::Label> amount3;
+    std::shared_ptr<class mlg::Image> uiPin;
+    std::shared_ptr<class mlg::ProgressBar> uiProgress;
+    std::shared_ptr<class mlg::Image> uiIcon;
 
     unsigned int produceTimerHandle = 0;
     bool working = false;
