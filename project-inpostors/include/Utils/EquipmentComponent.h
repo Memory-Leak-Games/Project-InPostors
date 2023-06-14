@@ -14,6 +14,8 @@ public:
     ~EquipmentComponent() override;
 
     eventpp::CallbackList<void()> equipmentChanged;
+    eventpp::CallbackList<void()> productAdded;
+    eventpp::CallbackList<void()> productRemoved;
 
     bool AddProduct(const std::string& productId);
     bool RequestProduct(const std::string& productId);

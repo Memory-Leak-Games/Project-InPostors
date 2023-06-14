@@ -10,6 +10,7 @@ bool EquipmentComponent::AddProduct(const std::string& product) {
 
     equipment.push_back(product);
     equipmentChanged();
+    productAdded();
     return true;
 }
 
@@ -20,6 +21,7 @@ bool EquipmentComponent::RequestProduct(const std::string& product) {
 
     equipment.erase(foundIterator);
     equipmentChanged();
+    productRemoved();
     return true;
 }
 
@@ -30,6 +32,7 @@ std::string EquipmentComponent::RequestOldestProduct() {
     std::string product = equipment.front();
     equipment.erase(equipment.begin());
     equipmentChanged();
+    productRemoved();
 
     return product;
 }
@@ -41,6 +44,7 @@ std::string EquipmentComponent::RequestProduct() {
     std::string product = equipment.back();
     equipment.pop_back();
     equipmentChanged();
+    productRemoved();
     
     return product;
 }

@@ -195,8 +195,6 @@ void Factory::CheckBlueprintAndStartWorking() {
 }
 
 void Factory::FinishTask() {
-    equipmentComponent->equipmentChanged.remove(equipmentChangedHandle);
-
     mlg::Scene* currentScene = mlg::SceneManager::GetCurrentScene();
     auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
 
@@ -210,22 +208,19 @@ void Factory::FinishTask() {
         levelScene->GetTaskManager()->SellProduct(product);
         equipmentComponent->RequestProduct(product);
     }
-
-    SetStorageEquipmentCallback();
 }
 
 void Factory::Start() {
     if (factoryType == FactoryType::Storage)
-        SetStorageEquipmentCallback();
+        StartAsStorage();
     else
         StartAsFactory();
 }
 
-void Factory::SetStorageEquipmentCallback() {
-    equipmentChangedHandle =
-        equipmentComponent->equipmentChanged.append([this]() {
-            FinishTask();
-        });
+void Factory::StartAsStorage() {
+    equipmentComponent->productAdded.append([this]() {
+        FinishTask();
+    });
 }
 
 void Factory::StartAsFactory() {
@@ -233,10 +228,9 @@ void Factory::StartAsFactory() {
 
     createProductSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/create_product.wav");
 
-    equipmentChangedHandle =
-        equipmentComponent->equipmentChanged.append([this]() {
-            CheckBlueprintAndStartWorking();
-        });
+    equipmentComponent->equipmentChanged.append([this]() {
+        CheckBlueprintAndStartWorking();
+    });
 }
 
 void Factory::Update() {

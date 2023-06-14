@@ -180,15 +180,9 @@ void GameplayOverlay::SetScore(int score) {
 void GameplayOverlay::SetChat(const std::string& message) {
     std::string text = fmt::format("AIPost: {}", message);
 
-    constexpr int chatLimit = 34;
-    // wrap text
-    for (int i = 0; i < text.size(); i++) {
-        if (i % chatLimit == 0 && i != 0) {
-            text.insert(i, "\n");
-        }
-    }
-
-    this->chat->SetText(text);
+    constexpr int chatLimit = 40;
+    std::string wrappedText = mlg::Label::WrapText(text, 40);
+    this->chat->SetText(wrappedText);
 }
 
 void GameplayOverlay::SetClock(float time) {
