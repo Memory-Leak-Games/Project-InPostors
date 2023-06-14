@@ -34,7 +34,11 @@ void ProductManager::LoadConfig(const std::string& path) {
 
         newProduct.name = productJson["name"];
         newProduct.icon = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(productJson["icon"]);
-        newProduct.color = {productJson["color"][0], productJson["color"][1], productJson["color"][2]};
+        newProduct.color = {
+                productJson["color"][0],
+                productJson["color"][1],
+                productJson["color"][2]};
+        newProduct.price = productJson["price"];
 
         productMap[newProduct.name] = newProduct;
     }
