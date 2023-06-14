@@ -67,10 +67,14 @@ private:
     void AddTrigger(const nlohmann::json& triggerJson, const std::string& triggerName,
                     mlg::RigidbodyComponent* rigidbodyComponent);
 
-
     void CheckBlueprintAndStartWorking();
     void ProduceItem();
 
-    static void GenerateUI(const std::shared_ptr<Factory>& result);
     void FinishTask();
+
+    static void GenerateUI(const std::shared_ptr<Factory>& result);
+    void UpdateUi();
+
+    void StartAsFactory();
+    void StartAsStorage();
 };

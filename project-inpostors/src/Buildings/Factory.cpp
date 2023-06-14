@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <spdlog/spdlog.h>
+#include <vector>
 
 #include "Core/SceneManager/SceneManager.h"
 #include "Core/Settings/SettingsManager.h"
@@ -194,23 +195,33 @@ void Factory::CheckBlueprintAndStartWorking() {
 }
 
 void Factory::FinishTask() {
-    for (auto& product : equipmentComponent->GetProducts()) {
-        mlg::Scene* currentScene = mlg::SceneManager::GetCurrentScene();
-        auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
+    mlg::Scene* currentScene = mlg::SceneManager::GetCurrentScene();
+    auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
 
+    std::vector<std::string> allProducts = equipmentComponent->GetProducts();
+    std::set<std::string> uniqueProducts{allProducts.begin(), allProducts.end()};
+
+    for (auto& product : uniqueProducts) {
         if (levelScene->GetTaskManager()->FinishTask(product))
-            break;
+            return;
     }
+
 }
 
 void Factory::Start() {
-    if (factoryType == FactoryType::Storage) {
-        equipmentComponent->equipmentChanged.append([this]() {
-            FinishTask();
-        });
-        return;
-    }
+    if (factoryType == FactoryType::Storage)
+        StartAsStorage();
+    else
+        StartAsFactory();
+}
 
+void Factory::StartAsStorage() {
+    equipmentComponent->equipmentChanged.append([this]() {
+        FinishTask();
+    });
+}
+
+void Factory::StartAsFactory() {
     CheckBlueprintAndStartWorking();
 
     createProductSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/create_product.wav");
@@ -221,23 +232,7 @@ void Factory::Start() {
 }
 
 void Factory::Update() {
-    if (blueprintId != "None") {
-        auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
-        float produceElapsed = mlg::TimerManager::Get()->GetTimerElapsedTime(produceTimerHandle);
-        float timeToProcess = BlueprintManager::Get()->GetBlueprint(blueprintId).GetTimeToProcess();
-        float timeRate = produceElapsed / timeToProcess;
-
-        if (!blueprint.GetInput().empty() && barReq1)
-            barReq1->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetInput()[0]) / 3.0f
-                                          + (timeRate > 0.0f) * 0.33f;
-        if (blueprint.GetInput().size() > 1 && barReq2)
-            barReq2->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetInput()[1]) / 3.0f
-                                          + (timeRate > 0.0f) * 0.33f;
-        if (barArrow)
-            barArrow->percentage = timeRate;
-        if (barRes)
-            barRes->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetOutput()) / 3.0;
-    }
+    UpdateUi();
 
 #ifdef DEBUG
     if (mlg::SettingsManager::Get<bool>(mlg::SettingsType::Debug, "showFactoryInfo")) {
@@ -263,10 +258,38 @@ void Factory::Update() {
 #endif
 }
 
+
+void Factory::UpdateUi() {
+    if (blueprintId != "None") {
+        auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
+        float produceElapsed = mlg::TimerManager::Get()->GetTimerElapsedTime(produceTimerHandle);
+        float timeToProcess = BlueprintManager::Get()->GetBlueprint(blueprintId).GetTimeToProcess();
+        float timeRate = produceElapsed / timeToProcess;
+
+        // please refactor this wide lines 🙏
+        if (!blueprint.GetInput().empty() && barReq1) {
+            barReq1->percentage = equipmentComponent->GetNumberOfProduct( blueprint.GetInput()[0]) / 3.0f + (timeRate > 0.0f) * 0.33f;
+        }
+
+        if (blueprint.GetInput().size() > 1 && barReq2) {
+            barReq2->percentage = equipmentComponent->GetNumberOfProduct( blueprint.GetInput()[1]) / 3.0f + (timeRate > 0.0f) * 0.33f;
+        }
+
+        if (barArrow) {
+            barArrow->percentage = timeRate;
+        }
+
+        if (barRes) {
+            barRes->percentage = equipmentComponent->GetNumberOfProduct( blueprint.GetOutput()) / 3.0;
+        }
+    }
+}
+
 bool Factory::IsWorking() const {
     return mlg::TimerManager::Get()->IsTimerValid(produceTimerHandle);
 }
 
+// if factory is storage, return all tasks products, else return blueprint input
 const std::vector<std::string> Factory::GetInputs() const {
     std::vector<std::string> result;
 

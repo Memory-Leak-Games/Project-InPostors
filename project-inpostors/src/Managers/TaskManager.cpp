@@ -1,6 +1,9 @@
 #include "Managers/TaskManager.h"
 #include "Core/TimerManager.h"
+#include <bits/ranges_algo.h>
+#include <cstddef>
 #include <spdlog/spdlog.h>
+#include <vector>
 
 using Random = effolkronium::random_static;
 
@@ -27,6 +30,7 @@ void TaskManager::AddTaskToPool(const TaskData& newTaskData) {
     tasks.emplace(newTask.id, newTask);
 }
 
+// TODO: Change input to vector of products
 bool TaskManager::FinishTask(const std::string& productId) {
     std::vector<size_t> activeProductTasks;
     for (const auto& [id, task] : tasks) {
@@ -51,6 +55,16 @@ bool TaskManager::FinishTask(const std::string& productId) {
     SPDLOG_DEBUG("Finished task: {}", taskToFinish);
     RemoveTask(taskToFinish);
     return true;
+}
+
+bool TaskManager::HasTask(const std::string& productId) {
+    std::vector<size_t> activeProductTasks = GetActiveTasksIds();
+
+    return std::ranges::any_of(
+            activeProductTasks,
+            [this, &productId](const size_t id) {
+                return tasks[id].productId == productId;
+            });
 }
 
 TaskData TaskManager::GetTask(size_t id) {
@@ -93,7 +107,7 @@ std::vector<TaskData> TaskManager::GetActiveTasks(const std::string& productId) 
                         return task.productId != productId;
                     }),
             activeTasks.end());
-    
+
     return activeTasks;
 }
 
@@ -143,4 +157,16 @@ void TaskManager::RemoveTask(size_t id) {
     OnTaskFinished(taskData);
 
     tasks.erase(id);
+}
+
+std::vector<size_t> TaskManager::GetActiveTasksIds() {
+    std::vector<size_t> ids;
+
+    for (const auto& [id, task] : tasks) {
+        if (task.active) {
+            ids.push_back(id);
+        }
+    }
+
+    return ids;
 }

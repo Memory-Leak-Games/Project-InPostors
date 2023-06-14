@@ -35,6 +35,7 @@ public:
 
     void AddTaskToPool(const TaskData& taskData);
     bool FinishTask(const std::string& productId);
+    bool HasTask(const std::string& productId);
 
     TaskData GetTask(size_t id);
 
@@ -46,4 +47,5 @@ public:
 
 private:
     void RemoveTask(size_t id);
+    std::vector<size_t> GetActiveTasksIds();
 };
