@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <spdlog/spdlog.h>
+#include <vector>
 
 #include "Core/SceneManager/SceneManager.h"
 #include "Core/Settings/SettingsManager.h"
@@ -194,23 +195,35 @@ void Factory::CheckBlueprintAndStartWorking() {
 }
 
 void Factory::FinishTask() {
-    for (auto& product : equipmentComponent->GetProducts()) {
-        mlg::Scene* currentScene = mlg::SceneManager::GetCurrentScene();
-        auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
+    mlg::Scene* currentScene = mlg::SceneManager::GetCurrentScene();
+    auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
 
-        if (levelScene->GetTaskManager()->FinishTask(product))
-            break;
+    std::vector<std::string> allProducts = equipmentComponent->GetProducts();
+    std::string productId = levelScene->GetTaskManager()->FinishTask(allProducts);
+    equipmentComponent->RequestProduct(productId);
+
+    // sell rest of products
+    allProducts = equipmentComponent->GetProducts();
+    for (const auto& product : allProducts) {
+        levelScene->GetTaskManager()->SellProduct(product);
+        equipmentComponent->RequestProduct(product);
     }
 }
 
 void Factory::Start() {
-    if (factoryType == FactoryType::Storage) {
-        equipmentComponent->equipmentChanged.append([this]() {
-            FinishTask();
-        });
-        return;
-    }
+    if (factoryType == FactoryType::Storage)
+        StartAsStorage();
+    else
+        StartAsFactory();
+}
 
+void Factory::StartAsStorage() {
+    equipmentComponent->productAdded.append([this]() {
+        FinishTask();
+    });
+}
+
+void Factory::StartAsFactory() {
     CheckBlueprintAndStartWorking();
 
     createProductSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/create_product.wav");
@@ -221,23 +234,7 @@ void Factory::Start() {
 }
 
 void Factory::Update() {
-    if (blueprintId != "None") {
-        auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
-        float produceElapsed = mlg::TimerManager::Get()->GetTimerElapsedTime(produceTimerHandle);
-        float timeToProcess = BlueprintManager::Get()->GetBlueprint(blueprintId).GetTimeToProcess();
-        float timeRate = produceElapsed / timeToProcess;
-
-        if (!blueprint.GetInput().empty() && barReq1)
-            barReq1->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetInput()[0]) / 3.0f
-                                          + (timeRate > 0.0f) * 0.33f;
-        if (blueprint.GetInput().size() > 1 && barReq2)
-            barReq2->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetInput()[1]) / 3.0f
-                                          + (timeRate > 0.0f) * 0.33f;
-        if (barArrow)
-            barArrow->percentage = timeRate;
-        if (barRes)
-            barRes->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetOutput()) / 3.0;
-    }
+    UpdateUi();
 
 #ifdef DEBUG
     if (mlg::SettingsManager::Get<bool>(mlg::SettingsType::Debug, "showFactoryInfo")) {
@@ -263,10 +260,37 @@ void Factory::Update() {
 #endif
 }
 
+void Factory::UpdateUi() {
+    if (blueprintId != "None") {
+        auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
+        float produceElapsed = mlg::TimerManager::Get()->GetTimerElapsedTime(produceTimerHandle);
+        float timeToProcess = BlueprintManager::Get()->GetBlueprint(blueprintId).GetTimeToProcess();
+        float timeRate = produceElapsed / timeToProcess;
+
+        // please refactor this wide lines 🙏
+        if (!blueprint.GetInput().empty() && barReq1) {
+            barReq1->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetInput()[0]) / 3.0f + (timeRate > 0.0f) * 0.33f;
+        }
+
+        if (blueprint.GetInput().size() > 1 && barReq2) {
+            barReq2->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetInput()[1]) / 3.0f + (timeRate > 0.0f) * 0.33f;
+        }
+
+        if (barArrow) {
+            barArrow->percentage = timeRate;
+        }
+
+        if (barRes) {
+            barRes->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetOutput()) / 3.0;
+        }
+    }
+}
+
 bool Factory::IsWorking() const {
     return mlg::TimerManager::Get()->IsTimerValid(produceTimerHandle);
 }
 
+// if factory is storage, return all tasks products, else return blueprint input
 const std::vector<std::string> Factory::GetInputs() const {
     std::vector<std::string> result;
 
@@ -284,6 +308,48 @@ const std::vector<std::string> Factory::GetInputs() const {
     }
 
     return result;
+}
+
+// take one product from equipment and add it to factory equipment
+bool Factory::TakeInputsFromInventory(EquipmentComponent& equipment) {
+    if (equipment.IsEmpty())
+        return false;
+
+    if (factoryType == FactoryType::Storage) {
+        return TakeInputsAsStorage(equipment);
+    } else {
+        return TakeInputsAsFactory(equipment);
+    }
+}
+
+bool Factory::TakeInputsAsStorage(EquipmentComponent& equipment) {
+    const std::vector<std::string> factoryInputs = GetInputs();
+
+    if (TakeInputsAsFactory(equipment))
+        return true;
+
+    std::string productId = equipment.RequestProduct();
+    this->equipmentComponent->AddProduct(productId);
+
+    return true;
+}
+
+bool Factory::TakeInputsAsFactory(EquipmentComponent& equipment) {
+    const std::vector<std::string> factoryInputs = GetInputs();
+
+    for (const auto& item : factoryInputs) {
+        if (!equipment.Has(item))
+            continue;
+
+        if (!GetEquipmentComponent()->AddProduct(item))
+            continue;
+
+        equipment.RequestProduct(item);
+
+        return true;
+    }
+
+    return false;
 }
 
 const std::shared_ptr<EquipmentComponent>& Factory::GetEquipmentComponent() const {
@@ -309,7 +375,7 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
             result->barRes->SetSize({32.f, 32.f});
             result->barRes->SetBillboardTarget(result);
 
-            material = ProductManager::GetInstance()->GetProduct(blueprint.GetOutput()).icon;
+            material = ProductManager::Get()->GetProduct(blueprint.GetOutput()).icon;
             auto iconRes = result->AddComponent<mlg::Image>("IconRes", material).lock();
             iconRes->SetSize({24.f, 24.f});
             iconRes->SetBillboardTarget(result);
@@ -327,7 +393,7 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
                 result->barReq1->SetPosition({-48.f, 75.f - 16.f});
                 result->barReq1->SetBillboardTarget(result);
 
-                material = ProductManager::GetInstance()->GetProduct(blueprint.GetInput()[0]).icon;
+                material = ProductManager::Get()->GetProduct(blueprint.GetInput()[0]).icon;
                 auto iconReq1 = result->AddComponent<mlg::Image>("IconReq1", material).lock();
                 iconReq1->SetSize({24.f, 24.f});
                 iconReq1->SetPosition({-48.f, 75.f - 16.f});
@@ -339,7 +405,7 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
                     result->barReq2->SetSize({32.f, 32.f});
                     result->barReq2->SetBillboardTarget(result);
 
-                    material = ProductManager::GetInstance()->GetProduct(blueprint.GetInput()[1]).icon;
+                    material = ProductManager::Get()->GetProduct(blueprint.GetInput()[1]).icon;
                     auto iconReq2 = result->AddComponent<mlg::Image>("IconReq2", material).lock();
                     iconReq2->SetSize({24.f, 24.f});
                     iconReq2->SetBillboardTarget(result);

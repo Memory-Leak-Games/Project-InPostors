@@ -1,22 +1,26 @@
 [
     {
         "name": "iron",
+        "price" : 10,
         "icon": "res/materials/ui/icon/iron_material.json",
         "color": [ 0.647, 0.612, 0.58 ]
     },
     {
         "name": "ore",
         "icon": "res/materials/ui/icon/ore_material.json",
+        "price" : 5,
         "color": [ 0.643, 0.455, 0.2 ]
     },
     {
         "name": "wood",
         "icon": "res/materials/ui/icon/wood_material.json",
+        "price" : 5,
         "color": [ 0.643, 0.455, 0.286 ]
     },
     {
         "name": "furniture",
         "icon": "res/materials/ui/icon/furniture_material.json",
+        "price" : 20,
         "color": [ 0.643, 0.455, 0.286 ]
     }
 ]

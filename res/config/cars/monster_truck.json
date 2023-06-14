@@ -14,6 +14,8 @@
     "bounciness": 0.3
   },
 
+  "equipmentSize": 1,
+
   "colliders": [
     {
       "offset": [1.5, 1.2],

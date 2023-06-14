@@ -39,8 +39,6 @@ std::set<ScoreManager::ScoreBoardEntry> ScoreManager::GetScoreBoard(
     return scoreboard;
 }
 
-#include "iostream"
-
 void ScoreManager::SaveScore(const std::string& levelName, const std::string& playerName, int score) {
     json scoreboardJson;
 

@@ -24,11 +24,11 @@
 
 #include "UI/GameplayOverlay.h"
 
+#include "Managers/AudioManager.h"
+#include "Managers/GameplayEventsManager.h"
 #include "Managers/LevelTaskManager.h"
 #include "Managers/ScoreManager.h"
 #include "Managers/TaskManager.h"
-#include "Managers/GameplayEventsManager.h"
-#include "Managers/AudioManager.h"
 
 #include "UI/FinishScreen.h"
 #include "UI/PauseMenu.h"
@@ -54,19 +54,19 @@ void LevelScene::Load() {
     finishScreen = mlg::EntityManager::SpawnEntity<FinishScreen>(
                            "FinishScreen", false, mlg::SceneGraph::GetRoot())
                            .lock();
-    
+
     gameplayEventsManager = std::make_unique<GameplayEventsManager>(levelPath);
 
     audioManager = mlg::EntityManager::SpawnEntity<AudioManager>(
-                            "AudioManager", false, mlg::SceneGraph::GetRoot())
-                            .lock();
+                           "AudioManager", false, mlg::SceneGraph::GetRoot())
+                           .lock();
 
     SpawnTraffic();
     SetTimeLimit();
 
     levelCountdown = mlg::EntityManager::SpawnEntity<StartLevelCountdown>(
-        "StartLevelCountdown", false, mlg::SceneGraph::GetRoot())
-        .lock();
+                             "StartLevelCountdown", false, mlg::SceneGraph::GetRoot())
+                             .lock();
 
     // TODO: Remove me
     gameplayOverlay->SetChat(fmt::format(
@@ -165,6 +165,17 @@ void LevelScene::InitializeLevelTaskManager() {
                 scoreManager->AddScore(reward);
                 gameplayOverlay->SetScore(scoreManager->GetScore());
                 gameplayEventsManager->TriggerEvent();
+            });
+    levelTaskManager->GetTaskManager().OnProductSold.append(
+            [this](int price) {
+
+                scoreManager->AddScore(price);
+                gameplayOverlay->SetScore(scoreManager->GetScore());
+
+                // TODO: transfer to chat manager
+                gameplayOverlay->SetChat(fmt::format(
+                        "You sold product for {}$, useless piece of meat! You are courier, not a merchant!",
+                        price));
             });
 
     std::vector<TaskData> tasks = mlg::LevelGenerator::GetTasks(levelPath);
