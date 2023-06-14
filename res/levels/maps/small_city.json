@@ -1,0 +1,86 @@
+{
+  "name": "Ohio",
+  "tile-size": 4.0,
+  "tileset": "res/levels/tilesets/city_tileset_2.json",
+
+  "time-limit": 150.0,
+
+  "sublevels": [],
+
+  "ground-color": [0.463, 0.761, 0.404, 1.0],
+
+  "layout": [
+    " ppp1ppp                      ",
+    " ppppppp                      ",
+    " ppppppp          0           ",
+    " #######                      ",
+    "s#######bbbbbbbb#####         ",
+    "s#######pppppppp###########   ",
+    "s###sppppppppppp###########   ",
+    "s#########pppppp###########   ",
+    "s#########smmmmm###smmmm###   ",
+    "s#########Lbmmmm###Lbsfs###   ",
+    "s###msss###################   ",
+    "s###Lbbb###################   ",
+    "s##########################   ",
+    "s##################bbbbb###   ",
+    "s##########################   ",
+    "sssssssssss###sss##########   ",
+    "           ###sms###mmmm###2  ",
+    "           ###sms###ssss###   ",
+    "           ###bbb##########   ",
+    "           ################   ",
+    "           ################   "
+  ],
+
+  "navigation": [
+    "                             ",
+    "                             ",
+    "                             ",
+    "                             ",
+    "                             ",
+    "      #################      ",
+    "      #x#############x#      ",
+    "      #################      ",
+    "      ###           ###      ",
+    "      #################      ",
+    "      #x#############x#      ",
+    "      #################      ",
+    "                             ",
+    "                             ",
+    "                             ",
+    "                             ",
+    "                             ",
+    "                             ",
+    "                             "
+  ],
+
+  "cross-character": "x",
+  "number-of-agents": 0,
+
+  "camera-settings": {
+    "position": [16.0, 50.0, -14.0],
+    "rotation": [65.0, -45.0, 0.0],
+
+    "size": 80.0,
+    "near": 0.1,
+    "far": 200.0
+  },
+
+  "player-one": {
+    "id": 0,
+    "car-type": "res/config/cars/van.json",
+    "color": [1.0, 0.0, 0.0],
+
+    "position": [-20.0, -4.0],
+    "rotation": 180.0
+  },
+
+  "player-two": {
+    "id": 1,
+    "car-type": "res/config/cars/van.json",
+    "color": [0.0, 1.0, 1.0],
+
+    "position": [4.0, 5.0]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "factories": [
+    {
+      "symbol": "1",
+      "config": "res/levels/factories/mine.json",
+      "fallback": " "
+    },
+    {
+      "symbol": "2",
+      "config": "res/levels/factories/smelter.json",
+      "fallback": " "
+    },
+    {
+      "symbol": "0",
+      "config": "res/levels/factories/storage.json",
+      "fallback": " "
+    }
+  ],
+
+  "tasks": [
+    {
+      "product-id": "iron",
+      "time": 20.0,
+      "quantity": 10,
+      "reward": 100,
+      "bonus": 50
+    }
+  ]
+}
