@@ -2,6 +2,8 @@
 
 #include "Gameplay/Entity.h"
 
+#define TASK_PANELS 5
+
 namespace mlg {
     class Transform;
     class Image;
@@ -16,10 +18,11 @@ private:
     std::shared_ptr<class mlg::Label> chat;
     std::shared_ptr<class mlg::Label> score;
 
-    std::shared_ptr<class mlg::Image> taskPanel;
-    std::shared_ptr<class mlg::Image> taskPanels[10];
-    std::shared_ptr<class mlg::Image> taskIcon[10];
-    std::shared_ptr<class mlg::ProgressBar> taskProgress[10];
+    std::shared_ptr<class mlg::Image> taskPanel[TASK_PANELS];
+    std::shared_ptr<class mlg::Image> taskIcon[TASK_PANELS];
+    std::shared_ptr<class mlg::ProgressBar> taskProgress[TASK_PANELS];
+    std::shared_ptr<class mlg::Image> taskRequired[TASK_PANELS][2];
+    std::shared_ptr<class mlg::Image> taskRequiredPanel[TASK_PANELS][2];
 
     std::shared_ptr<class LevelTaskManager> taskManager;
 
@@ -42,4 +45,5 @@ public:
     void SetScore(int score);
     void SetChat(const std::string& chat);
     void SetClock(float time);
+    void UpdateTask(int idx);
 };
