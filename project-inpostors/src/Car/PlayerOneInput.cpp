@@ -13,8 +13,6 @@ glm::vec2 PlayerOneInput::GetMovementInput() {
     movement.x = mlg::Input::GetActionStrength("right_one");
     movement.x -= mlg::Input::GetActionStrength("left_one");
 
-    SPDLOG_DEBUG(movement);
-
     return movement;
 }
 

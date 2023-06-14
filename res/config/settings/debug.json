@@ -1,10 +1,10 @@
 {
-  "showColliders": true,
+  "showColliders": false,
   "showForces": false,
   "showSpacialGrid": false,
   "showNavigation": false,
   "showAiForces": false,
 
-  "showFactoryInfo": true,
+  "showFactoryInfo": false,
   "showPlayerEq": false
 }
