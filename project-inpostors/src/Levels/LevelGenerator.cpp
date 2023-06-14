@@ -326,8 +326,10 @@ namespace mlg {
     }
 
     void LevelGenerator::LoadFactories() {
-        if (!tileJson.contains("factory-pool"))
+        if (!tileJson.contains("factory-pool")) {
+            SPDLOG_WARN("No factory pool found!");
             return;
+        }
 
         std::ifstream factoryPool{tileJson["factory-pool"].get<std::string>()};
         poolJson = json::parse(factoryPool);
@@ -462,7 +464,6 @@ namespace mlg {
                     PutFactory(fac.configPath, {pos.x - 1, pos.y - 1}, 0.0f);
                     fac.remaining -= 1;
                 } else if (fac.fallbackSymbol != ' ') {
-                    SPDLOG_DEBUG("Fallback: {}", fac.fallbackSymbol);
                     PutTile(static_cast<int>(pos.x) - 1,
                             static_cast<int>(pos.y) - 1,
                             fac.fallbackSymbol);
@@ -631,13 +632,14 @@ namespace mlg {
         rigidbody->SetRotation(mapObject.worldRot + rotation);
         rigidbody->SetKinematic(!mapObject.isDynamic);
 
-        if (mapObject.isDynamic) {
-            newEntity->AddComponent<AutoDestroyComponent>(
-                    "AutoDestroy", mapObject.lifetime);
+        if (!mapObject.isDynamic)
+            return;
 
-            rigidbody->SetLinearDrag(mapObject.linearDrag);
-            rigidbody->SetAngularDrag(mapObject.angularDrag);
-        }
+        newEntity->AddComponent<AutoDestroyComponent>(
+                "AutoDestroy", mapObject.lifetime);
+
+        rigidbody->SetLinearDrag(mapObject.linearDrag);
+        rigidbody->SetAngularDrag(mapObject.angularDrag);
     }
 
     void LevelGenerator::PutFactory(const std::string& configPath, const glm::ivec2& position,
