@@ -23,11 +23,22 @@ bool EquipmentComponent::RequestProduct(const std::string& product) {
     return true;
 }
 
-std::string EquipmentComponent::RequestProduct() {
+std::string EquipmentComponent::RequestOldestProduct() {
     if (equipment.empty())
         return "none";
 
     std::string product = equipment.front();
+    equipment.erase(equipment.begin());
+    equipmentChanged();
+
+    return product;
+}
+
+std::string EquipmentComponent::RequestProduct() {
+    if (equipment.empty())
+        return "none";
+
+    std::string product = equipment.back();
     equipment.pop_back();
     equipmentChanged();
     
@@ -64,6 +75,10 @@ std::string EquipmentComponent::ToString() const {
 
 bool EquipmentComponent::IsFull() const {
     return equipment.size() >= size;
+}
+
+bool EquipmentComponent::IsEmpty() const {
+    return equipment.empty();
 }
 
 const std::vector<std::string> EquipmentComponent::GetEquipment() const {

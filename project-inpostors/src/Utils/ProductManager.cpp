@@ -10,7 +10,7 @@ using json = nlohmann::json;
 
 ProductManager* ProductManager::instance;
 
-ProductManager* ProductManager::GetInstance() {
+ProductManager* ProductManager::Get() {
     if (instance) {
         return instance;
     }

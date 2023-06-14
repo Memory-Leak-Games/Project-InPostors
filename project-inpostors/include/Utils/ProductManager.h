@@ -19,7 +19,7 @@ class ProductManager {
     ProductManager() = default;
 
 public:
-    static ProductManager* GetInstance();
+    static ProductManager* Get();
 
     const Product& GetProduct(const std::string& name);
 

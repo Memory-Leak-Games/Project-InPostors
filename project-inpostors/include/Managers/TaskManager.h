@@ -27,6 +27,7 @@ private:
 public:
     eventpp::CallbackList<void(const TaskData&)> OnTaskFinished;
     eventpp::CallbackList<void(const TaskData&)> OnTaskAccepted;
+    eventpp::CallbackList<void(int)> OnProductSold;
 
     TaskManager() = default;
     ~TaskManager() = default;
@@ -34,7 +35,8 @@ public:
     void Update();
 
     void AddTaskToPool(const TaskData& taskData);
-    bool FinishTask(const std::vector<std::string>& products);
+    std::string FinishTask(const std::vector<std::string>& products);
+    void SellProduct(const std::string& productId);
     bool HasTask(const std::string& productId);
 
     TaskData GetTask(size_t id);

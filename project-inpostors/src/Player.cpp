@@ -217,20 +217,9 @@ void Player::Drop() {
     if (!factory)
         return;;
 
-    const std::vector<std::string> factoryInputs = factory->GetInputs();
-
-    for (const auto& item : factoryInputs) {
-        if (!equipment->Has(item))
-            continue;
-
-        if (!factory->GetEquipmentComponent()->AddProduct(item))
-            continue;
-
-        equipment->RequestProduct(item);
+    if (factory->TakeInputsFromInventory(*equipment))
         dropSound->Play(4.f);
 
-        return;
-    }
 }
 
 void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
@@ -303,7 +292,7 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     // Update equipment ui callback
     newPlayer->equipment->equipmentChanged.append([newPlayer]() {
         auto noneMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/none_material.json");
-        auto productManager = ProductManager::GetInstance();
+        auto productManager = ProductManager::Get();
         auto items = newPlayer->equipment->GetEquipment();
 
         for (int i = 0; i < 3; ++i) {

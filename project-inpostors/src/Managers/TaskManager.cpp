@@ -1,5 +1,7 @@
 #include "Managers/TaskManager.h"
 #include "Core/TimerManager.h"
+#include "Managers/ScoreManager.h"
+#include "Utils/ProductManager.h"
 #include <bits/ranges_algo.h>
 #include <cstddef>
 #include <spdlog/spdlog.h>
@@ -30,7 +32,7 @@ void TaskManager::AddTaskToPool(const TaskData& newTaskData) {
     tasks.emplace(newTask.id, newTask);
 }
 
-bool TaskManager::FinishTask(const std::vector<std::string>& products) {
+std::string TaskManager::FinishTask(const std::vector<std::string>& products) {
     auto timeComparator = [](const Task* a, const Task* b) {
         return a->timeLeft < b->timeLeft;
     };
@@ -48,7 +50,7 @@ bool TaskManager::FinishTask(const std::vector<std::string>& products) {
 
     // If there are no active tasks for this product, do nothing
     if (activeProductTasks.empty())
-        return false;
+        return "None";
 
     // Select the task with the least time left but if there are tasks that
     // have not already ended, select the oldest one
@@ -64,7 +66,12 @@ bool TaskManager::FinishTask(const std::vector<std::string>& products) {
     }
 
     RemoveTask(taskToFinish->id);
-    return true;
+    return taskToFinish->productId;
+}
+
+void TaskManager::SellProduct(const std::string& productId) {
+    const Product& product = ProductManager::Get()->GetProduct(productId);
+    OnProductSold(product.price);
 }
 
 bool TaskManager::HasTask(const std::string& productId) {

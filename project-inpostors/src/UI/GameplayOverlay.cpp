@@ -105,7 +105,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
 //
 //        result->taskIcon[idx]->material = productManager->GetProduct(taskData.productId).icon;
 
-        auto productManager = ProductManager::GetInstance();
+        auto productManager = ProductManager::Get();
         int count = result->taskManager->GetTaskManager().GetActiveTasksCount();
         auto tasks = result->taskManager->GetTaskManager().GetActiveTasks();
 
@@ -119,7 +119,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     });
 
     result->taskManager->GetTaskManager().OnTaskFinished.append([result](const TaskData& taskData) {
-        auto productManager = ProductManager::GetInstance();
+        auto productManager = ProductManager::Get();
         int count = result->taskManager->GetTaskManager().GetActiveTasksCount();
         auto tasks = result->taskManager->GetTaskManager().GetActiveTasks();
 
@@ -144,7 +144,7 @@ void GameplayOverlay::Start() {
      */
     auto tasks = taskManager->GetTaskManager().GetActiveTasks();
     int taskCount = taskManager->GetTaskManager().GetActiveTasksCount();
-    auto productManager = ProductManager::GetInstance();
+    auto productManager = ProductManager::Get();
 
     for(int i = 0; i < taskCount; i++) {
         taskIcon[i]->material = productManager->GetProduct(tasks[i].productId).icon;

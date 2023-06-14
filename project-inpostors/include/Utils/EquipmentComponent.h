@@ -17,12 +17,15 @@ public:
 
     bool AddProduct(const std::string& productId);
     bool RequestProduct(const std::string& productId);
+    std::string RequestOldestProduct();
+
     std::string RequestProduct();
     const std::vector<std::string>& GetProducts() const;
 
     bool Has(const std::string& productId) const;
     int GetNumberOfProduct(const std::string& productId) const;
     bool IsFull() const;
+    bool IsEmpty() const;
     const std::vector<std::string> GetEquipment() const;
 
     std::string ToString() const;

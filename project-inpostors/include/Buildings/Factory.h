@@ -16,6 +16,7 @@ private:
 
     std::shared_ptr<mlg::RigidbodyComponent> mainRigidbody;
     std::shared_ptr<class EquipmentComponent> equipmentComponent;
+    eventpp::CallbackList<void()>::Handle equipmentChangedHandle;
 
     std::shared_ptr<class mlg::AudioAsset> createProductSound;
     std::string blueprintId;
@@ -49,6 +50,8 @@ public:
 
     const std::vector<std::string> GetInputs() const;
 
+    bool TakeInputsFromInventory(EquipmentComponent& equipment);
+
 private:
     enum class FactoryType {
         OneInput,
@@ -76,5 +79,8 @@ private:
     void UpdateUi();
 
     void StartAsFactory();
-    void StartAsStorage();
+    void SetStorageEquipmentCallback();
+
+    bool TakeInputsAsStorage(EquipmentComponent& equipment);
+    bool TakeInputsAsFactory(EquipmentComponent& equipment);
 };

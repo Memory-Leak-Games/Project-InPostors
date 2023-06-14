@@ -195,25 +195,37 @@ void Factory::CheckBlueprintAndStartWorking() {
 }
 
 void Factory::FinishTask() {
+    equipmentComponent->equipmentChanged.remove(equipmentChangedHandle);
+
     mlg::Scene* currentScene = mlg::SceneManager::GetCurrentScene();
     auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
 
     std::vector<std::string> allProducts = equipmentComponent->GetProducts();
+    std::string productId = levelScene->GetTaskManager()->FinishTask(allProducts);
+    equipmentComponent->RequestProduct(productId);
 
-    levelScene->GetTaskManager()->FinishTask(allProducts);
+    // sell rest of products
+    allProducts = equipmentComponent->GetProducts();
+    for (const auto& product : allProducts) {
+        levelScene->GetTaskManager()->SellProduct(product);
+        equipmentComponent->RequestProduct(product);
+    }
+
+    SetStorageEquipmentCallback();
 }
 
 void Factory::Start() {
     if (factoryType == FactoryType::Storage)
-        StartAsStorage();
+        SetStorageEquipmentCallback();
     else
         StartAsFactory();
 }
 
-void Factory::StartAsStorage() {
-    equipmentComponent->equipmentChanged.append([this]() {
-        FinishTask();
-    });
+void Factory::SetStorageEquipmentCallback() {
+    equipmentChangedHandle =
+        equipmentComponent->equipmentChanged.append([this]() {
+            FinishTask();
+        });
 }
 
 void Factory::StartAsFactory() {
@@ -221,9 +233,10 @@ void Factory::StartAsFactory() {
 
     createProductSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/create_product.wav");
 
-    equipmentComponent->equipmentChanged.append([this]() {
-        CheckBlueprintAndStartWorking();
-    });
+    equipmentChangedHandle =
+        equipmentComponent->equipmentChanged.append([this]() {
+            CheckBlueprintAndStartWorking();
+        });
 }
 
 void Factory::Update() {
@@ -253,7 +266,6 @@ void Factory::Update() {
 #endif
 }
 
-
 void Factory::UpdateUi() {
     if (blueprintId != "None") {
         auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
@@ -263,11 +275,11 @@ void Factory::UpdateUi() {
 
         // please refactor this wide lines 🙏
         if (!blueprint.GetInput().empty() && barReq1) {
-            barReq1->percentage = equipmentComponent->GetNumberOfProduct( blueprint.GetInput()[0]) / 3.0f + (timeRate > 0.0f) * 0.33f;
+            barReq1->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetInput()[0]) / 3.0f + (timeRate > 0.0f) * 0.33f;
         }
 
         if (blueprint.GetInput().size() > 1 && barReq2) {
-            barReq2->percentage = equipmentComponent->GetNumberOfProduct( blueprint.GetInput()[1]) / 3.0f + (timeRate > 0.0f) * 0.33f;
+            barReq2->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetInput()[1]) / 3.0f + (timeRate > 0.0f) * 0.33f;
         }
 
         if (barArrow) {
@@ -275,7 +287,7 @@ void Factory::UpdateUi() {
         }
 
         if (barRes) {
-            barRes->percentage = equipmentComponent->GetNumberOfProduct( blueprint.GetOutput()) / 3.0;
+            barRes->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetOutput()) / 3.0;
         }
     }
 }
@@ -304,6 +316,48 @@ const std::vector<std::string> Factory::GetInputs() const {
     return result;
 }
 
+// take one product from equipment and add it to factory equipment
+bool Factory::TakeInputsFromInventory(EquipmentComponent& equipment) {
+    if (equipment.IsEmpty())
+        return false;
+
+    if (factoryType == FactoryType::Storage) {
+        return TakeInputsAsStorage(equipment);
+    } else {
+        return TakeInputsAsFactory(equipment);
+    }
+}
+
+bool Factory::TakeInputsAsStorage(EquipmentComponent& equipment) {
+    const std::vector<std::string> factoryInputs = GetInputs();
+
+    if (TakeInputsAsFactory(equipment))
+        return true;
+
+    std::string productId = equipment.RequestProduct();
+    this->equipmentComponent->AddProduct(productId);
+
+    return true;
+}
+
+bool Factory::TakeInputsAsFactory(EquipmentComponent& equipment) {
+    const std::vector<std::string> factoryInputs = GetInputs();
+
+    for (const auto& item : factoryInputs) {
+        if (!equipment.Has(item))
+            continue;
+
+        if (!GetEquipmentComponent()->AddProduct(item))
+            continue;
+
+        equipment.RequestProduct(item);
+
+        return true;
+    }
+
+    return false;
+}
+
 const std::shared_ptr<EquipmentComponent>& Factory::GetEquipmentComponent() const {
     return equipmentComponent;
 }
@@ -327,7 +381,7 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
             result->barRes->SetSize({32.f, 32.f});
             result->barRes->SetBillboardTarget(result);
 
-            material = ProductManager::GetInstance()->GetProduct(blueprint.GetOutput()).icon;
+            material = ProductManager::Get()->GetProduct(blueprint.GetOutput()).icon;
             auto iconRes = result->AddComponent<mlg::Image>("IconRes", material).lock();
             iconRes->SetSize({24.f, 24.f});
             iconRes->SetBillboardTarget(result);
@@ -345,7 +399,7 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
                 result->barReq1->SetPosition({-48.f, 75.f - 16.f});
                 result->barReq1->SetBillboardTarget(result);
 
-                material = ProductManager::GetInstance()->GetProduct(blueprint.GetInput()[0]).icon;
+                material = ProductManager::Get()->GetProduct(blueprint.GetInput()[0]).icon;
                 auto iconReq1 = result->AddComponent<mlg::Image>("IconReq1", material).lock();
                 iconReq1->SetSize({24.f, 24.f});
                 iconReq1->SetPosition({-48.f, 75.f - 16.f});
@@ -357,7 +411,7 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
                     result->barReq2->SetSize({32.f, 32.f});
                     result->barReq2->SetBillboardTarget(result);
 
-                    material = ProductManager::GetInstance()->GetProduct(blueprint.GetInput()[1]).icon;
+                    material = ProductManager::Get()->GetProduct(blueprint.GetInput()[1]).icon;
                     auto iconReq2 = result->AddComponent<mlg::Image>("IconReq2", material).lock();
                     iconReq2->SetSize({24.f, 24.f});
                     iconReq2->SetBillboardTarget(result);
