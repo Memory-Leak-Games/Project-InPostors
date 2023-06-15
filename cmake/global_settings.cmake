@@ -17,3 +17,9 @@ set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 
 set(GLFW_USE_WAYLAND ON)
+
+if (EXISTS "/usr/bin/mold")
+    add_link_options("-fuse-ld=mold")
+endif()
+
+
