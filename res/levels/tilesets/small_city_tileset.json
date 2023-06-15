@@ -200,6 +200,24 @@
           "rotation": 90.0,
           "collision-type": "rectangle",
           "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/super_big/stadium.obj",
+          "scale": 1,
+          "rotation": 90.0,
+          "collision-type": "rectangle",
+          "collision-size": 10.0
+        }
+      ]
+    },
+    {
+      "symbol": "P",
+      "objects": [
+        {
+          "model": "res/models/buildings/super_big/park.obj",
+          "scale": 0.75,
+          "collision-type": "rectangle",
+          "collision-size": 10.0
         }
       ]
     },
