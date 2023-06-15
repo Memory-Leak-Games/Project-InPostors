@@ -4,7 +4,9 @@
 #include "glad/glad.h"
 
 #include <glm/fwd.hpp>
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "Core/AssetManager/AssetManager.h"
 #include "UI/Assets/FontAsset.h"
@@ -127,6 +129,25 @@ namespace mlg {
     void Label::SetVerticalAlignment(VerticalAlignment alignment) {
         Label::verticalAlignment = alignment;
         actualPositionDirty = true;
+    }
+
+    std::string Label::WrapText(const std::string& text, int lineLength) {
+        std::istringstream iss(text);
+        std::ostringstream wrappedText;
+
+        std::string word;
+        int currentLineLength = 0;
+
+        while (iss >> word) {
+            if (currentLineLength + word.length() > lineLength) {
+                wrappedText << '\n';
+                currentLineLength = 0;
+            }
+            wrappedText << word << ' ';
+            currentLineLength += word.length() + 1;
+        }
+
+        return wrappedText.str();
     }
 
     void Label::CalculateActualPosition(const UIRenderer* renderer, const glm::vec2& position) {

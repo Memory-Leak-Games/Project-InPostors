@@ -4,7 +4,7 @@ class LevelTaskManager {
 private:
     size_t newTaskTimer = 0;
     float newTaskProbability = 0.8f;
-    int maxActiveTasks = 3;
+    int maxActiveTasks = 4;
 
     std::unique_ptr<class TaskManager> taskManager;
 public:

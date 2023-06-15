@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Gameplay/Entity.h"
-#include "Audio/Assets/AudioAsset.h"
 
 namespace mlg {
     class RigidbodyComponent;
     class Image;
     class Label;
     class ProgressBar;
+    class AudioAsset;
 }
 
 class Factory : public mlg::Entity {
@@ -17,7 +17,7 @@ private:
     std::shared_ptr<mlg::RigidbodyComponent> mainRigidbody;
     std::shared_ptr<class EquipmentComponent> equipmentComponent;
 
-    std::shared_ptr<class mlg::AudioAsset> createProductSound;
+    std::shared_ptr<mlg::AudioAsset> createProductSound;
     std::string blueprintId;
 
     std::shared_ptr<class mlg::ProgressBar> barReq1;
@@ -49,6 +49,8 @@ public:
 
     const std::vector<std::string> GetInputs() const;
 
+    bool TakeInputsFromInventory(EquipmentComponent& equipment);
+
 private:
     enum class FactoryType {
         OneInput,
@@ -67,10 +69,17 @@ private:
     void AddTrigger(const nlohmann::json& triggerJson, const std::string& triggerName,
                     mlg::RigidbodyComponent* rigidbodyComponent);
 
-
     void CheckBlueprintAndStartWorking();
     void ProduceItem();
 
-    static void GenerateUI(const std::shared_ptr<Factory>& result);
     void FinishTask();
+
+    static void GenerateUI(const std::shared_ptr<Factory>& result);
+    void UpdateUi();
+
+    void StartAsFactory();
+    void StartAsStorage();
+
+    bool TakeInputsAsStorage(EquipmentComponent& equipment);
+    bool TakeInputsAsFactory(EquipmentComponent& equipment);
 };
