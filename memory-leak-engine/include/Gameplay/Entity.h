@@ -5,6 +5,7 @@
 #include "SceneGraph/Transform.h"
 
 #include "Macros.h"
+#include <cstddef>
 #include <memory>
 
 namespace mlg {
@@ -12,7 +13,7 @@ namespace mlg {
 
     class Entity : public std::enable_shared_from_this<Entity> {
     private:
-        uint64_t id;
+        size_t id;
         std::string name;
         std::string tag;
         std::shared_ptr<Transform> transform;
@@ -23,11 +24,11 @@ namespace mlg {
         std::vector<std::weak_ptr<class Component>> components;
 
     protected:
-        explicit Entity(uint64_t id, std::string name, bool isStatic, Transform* parent);
+        explicit Entity(size_t id, std::string name, bool isStatic, Transform* parent);
 
     public:
         static std::shared_ptr<Entity> Create(
-                uint64_t id, const std::string& name, bool isStatic, Transform* parent);
+                size_t id, const std::string& name, bool isStatic, Transform* parent);
 
         Entity() = delete;
         virtual ~Entity();
@@ -86,7 +87,7 @@ namespace mlg {
         Transform& GetTransform();
         const std::string& GetName() const;
         const std::string& GetTag() const;
-        uint64_t GetId() const;
+        size_t GetId() const;
 
         void SetName(const std::string& name);
         void SetTag(const std::string& tag);
