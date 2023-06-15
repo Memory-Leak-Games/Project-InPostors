@@ -1,5 +1,6 @@
 #include "Buildings/Factory.h"
 
+#include <bits/ranges_algo.h>
 #include <fstream>
 #include <spdlog/spdlog.h>
 #include <vector>
@@ -23,6 +24,7 @@
 #include "SceneGraph/Transform.h"
 
 #include "Physics/Colliders/Collider.h"
+#include "Buildings/FactoryEquipmentComponent.h"
 
 #include "Scenes/LevelScene.h"
 #include "Utils/Blueprint.h"
@@ -58,11 +60,6 @@ std::shared_ptr<Factory> Factory::Create(uint64_t id, const std::string& name, b
     result->mainRigidbody = result->AddComponent<mlg::RigidbodyComponent>("MainRigidbody").lock();
 
     result->blueprintId = configJson.value("blueprintID", "None");
-
-    const int equipmentSize = configJson.value("equipmentSize", 256);
-    result->equipmentComponent =
-            result->AddComponent<EquipmentComponent>("Equipment", equipmentSize).lock();
-
 
     for (const auto& colliderJson : configJson["colliders"]) {
         result->AddCollider(colliderJson, result->mainRigidbody.get());
@@ -167,25 +164,21 @@ void Factory::AddTrigger(const json& triggerJson, const std::string& triggerName
 void Factory::CheckBlueprintAndStartWorking() {
     const Blueprint& blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
 
-    if (working || equipmentComponent->IsFull() ||
-        equipmentComponent->Has(blueprint.GetOutput()))
+    if (working || factoryEquipment->IsOutputPresent())
         return;
 
-    if (!blueprint.CheckBlueprint(*equipmentComponent))
+    if (!CheckBlueprint())
         return;
 
     working = true;
 
     // Remove inputs from eq
-    for (const auto& item : blueprint.GetInput()) {
-        equipmentComponent->RequestProduct(item);
-    }
+    factoryEquipment->ClearInput();
 
     auto productionLambda = [this, blueprint]() {
-        equipmentComponent->AddProduct(blueprint.GetOutput());
         working = false;
         createProductSound->Play(2.f);
-        CheckBlueprintAndStartWorking();
+        factoryEquipment->Produce();
     };
 
     produceTimerHandle = mlg::TimerManager::Get()->SetTimer(
@@ -195,19 +188,19 @@ void Factory::CheckBlueprintAndStartWorking() {
 }
 
 void Factory::FinishTask() {
-    mlg::Scene* currentScene = mlg::SceneManager::GetCurrentScene();
-    auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
+    // mlg::Scene* currentScene = mlg::SceneManager::GetCurrentScene();
+    // auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
 
-    std::vector<std::string> allProducts = equipmentComponent->GetProducts();
-    std::string productId = levelScene->GetTaskManager()->FinishTask(allProducts);
-    equipmentComponent->RequestProduct(productId);
+    // std::vector<std::string> allProducts = equipmentComponent->GetProducts();
+    // std::string productId = levelScene->GetTaskManager()->FinishTask(allProducts);
+    // equipmentComponent->RequestProduct(productId);
 
-    // sell rest of products
-    allProducts = equipmentComponent->GetProducts();
-    for (const auto& product : allProducts) {
-        levelScene->GetTaskManager()->SellProduct(product);
-        equipmentComponent->RequestProduct(product);
-    }
+    // // sell rest of products
+    // allProducts = equipmentComponent->GetProducts();
+    // for (const auto& product : allProducts) {
+    //     levelScene->GetTaskManager()->SellProduct(product);
+    //     equipmentComponent->RequestProduct(product);
+    // }
 }
 
 void Factory::Start() {
@@ -218,46 +211,32 @@ void Factory::Start() {
 }
 
 void Factory::StartAsStorage() {
-    equipmentComponent->productAdded.append([this]() {
-        FinishTask();
-    });
+    // equipmentComponent->productAdded.append([this]() {
+    //     FinishTask();
+    // });
 }
 
 void Factory::StartAsFactory() {
-    CheckBlueprintAndStartWorking();
-
     createProductSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/create_product.wav");
 
-    equipmentComponent->equipmentChanged.append([this]() {
+    factoryEquipment = AddComponent<FactoryEquipmentComponent>(
+                               "FactoryEquipmentComponent",
+                               blueprintId)
+                               .lock();
+
+    CheckBlueprintAndStartWorking();
+
+    factoryEquipment->inputProductAdded.append([this]() {
+        CheckBlueprintAndStartWorking();
+    });
+
+    factoryEquipment->outputProductRemoved.append([this]() {
         CheckBlueprintAndStartWorking();
     });
 }
 
 void Factory::Update() {
     UpdateUi();
-
-#ifdef DEBUG
-    if (mlg::SettingsManager::Get<bool>(mlg::SettingsType::Debug, "showFactoryInfo")) {
-        if (factoryType == FactoryType::Storage) {
-            ImGui::Begin("Factories");
-            ImGui::Text("Storage: %s", GetName().c_str());
-            ImGui::End();
-
-            return;
-        }
-
-        auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
-        ImGui::Begin("Factories");
-        ImGui::Text(
-                "%s, %s, timeToProduce: %f, wholeTime: %f, output: %i",
-                GetName().c_str(),
-                equipmentComponent->ToString().c_str(),
-                mlg::TimerManager::Get()->GetTimerRemainingTime(produceTimerHandle),
-                mlg::TimerManager::Get()->GetTimerRate(produceTimerHandle),
-                equipmentComponent->GetNumberOfProduct(blueprint.GetOutput()));
-        ImGui::End();
-    }
-#endif
 }
 
 void Factory::UpdateUi() {
@@ -267,13 +246,12 @@ void Factory::UpdateUi() {
         float timeToProcess = BlueprintManager::Get()->GetBlueprint(blueprintId).GetTimeToProcess();
         float timeRate = produceElapsed / timeToProcess;
 
-        // please refactor this wide lines 🙏
         if (!blueprint.GetInput().empty() && barReq1) {
-            barReq1->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetInput()[0]) / 3.0f + (timeRate > 0.0f) * 0.33f;
+            barReq1->percentage = factoryEquipment->Has(blueprint.GetInput()[0]);
         }
 
         if (blueprint.GetInput().size() > 1 && barReq2) {
-            barReq2->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetInput()[1]) / 3.0f + (timeRate > 0.0f) * 0.33f;
+            barReq1->percentage = factoryEquipment->Has(blueprint.GetInput()[1]);
         }
 
         if (barArrow) {
@@ -281,7 +259,7 @@ void Factory::UpdateUi() {
         }
 
         if (barRes) {
-            barRes->percentage = equipmentComponent->GetNumberOfProduct(blueprint.GetOutput()) / 3.0;
+            barRes->percentage = factoryEquipment->IsOutputPresent();
         }
     }
 }
@@ -329,22 +307,25 @@ std::string Factory::GiveOutput() {
                     .GetOutput();
 
     std::string result;
-    if (equipmentComponent->RequestProduct(factoryOutput))
+    if (factoryEquipment->IsOutputPresent()) {
         result = factoryOutput;
-    else
+        factoryEquipment->RemoveOutput();
+    }
+    else {
         result = "None";
+    }
 
     return result;
 }
 
 bool Factory::TakeInputsAsStorage(EquipmentComponent& equipment) {
-    const std::vector<std::string> factoryInputs = GetInputs();
+    // const std::vector<std::string> factoryInputs = GetInputs();
 
-    if (TakeInputsAsFactory(equipment))
-        return true;
+    // if (TakeInputsAsFactory(equipment))
+    //     return true;
 
-    std::string productId = equipment.RequestProduct();
-    this->equipmentComponent->AddProduct(productId);
+    // std::string productId = equipment.RequestProduct();
+    // this->equipmentComponent->AddProduct(productId);
 
     return true;
 }
@@ -356,10 +337,11 @@ bool Factory::TakeInputsAsFactory(EquipmentComponent& equipment) {
         if (!equipment.Has(item))
             continue;
 
-        if (!GetEquipmentComponent()->AddProduct(item))
+        if (factoryEquipment->Has(item))
             continue;
 
         equipment.RequestProduct(item);
+        factoryEquipment->AddInput(item);
 
         return true;
     }
@@ -367,8 +349,8 @@ bool Factory::TakeInputsAsFactory(EquipmentComponent& equipment) {
     return false;
 }
 
-const std::shared_ptr<EquipmentComponent>& Factory::GetEquipmentComponent() const {
-    return equipmentComponent;
+bool Factory::CheckBlueprint() {
+    return factoryEquipment->IsAllInputsPresent();
 }
 
 std::string Factory::GetBlueprintId() const { return blueprintId; }

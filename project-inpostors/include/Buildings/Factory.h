@@ -15,10 +15,10 @@ private:
     Factory(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent);
 
     std::shared_ptr<mlg::RigidbodyComponent> mainRigidbody;
-    std::shared_ptr<class EquipmentComponent> equipmentComponent;
 
     std::shared_ptr<mlg::AudioAsset> createProductSound;
     std::string blueprintId;
+    std::shared_ptr<class FactoryEquipmentComponent> factoryEquipment;
 
     std::shared_ptr<class mlg::ProgressBar> barReq1;
     std::shared_ptr<class mlg::ProgressBar> barReq2;
@@ -34,8 +34,6 @@ public:
     static std::shared_ptr<Factory> Create(uint64_t id, const std::string& name, bool isStatic,
                                            mlg::Transform* parent, const std::string& configPath);
 
-    const std::shared_ptr<EquipmentComponent>& GetEquipmentComponent() const;
-
     std::string GetBlueprintId() const;
 
     void Start() override;
@@ -45,7 +43,7 @@ public:
 
     const std::vector<std::string> GetInputs() const;
 
-    bool TakeInputsFromInventory(EquipmentComponent& equipment);
+    bool TakeInputsFromInventory(class EquipmentComponent& equipment);
     std::string GiveOutput();
 
 private:
@@ -79,4 +77,6 @@ private:
 
     bool TakeInputsAsStorage(EquipmentComponent& equipment);
     bool TakeInputsAsFactory(EquipmentComponent& equipment);
+
+    bool CheckBlueprint();
 };
