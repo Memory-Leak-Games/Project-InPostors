@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Buildings/InteractiveBuilding.h"
 #include "Gameplay/Entity.h"
 
 namespace mlg {
@@ -8,9 +9,9 @@ namespace mlg {
     class Label;
     class ProgressBar;
     class AudioAsset;
-}
+}// namespace mlg
 
-class Factory : public mlg::Entity {
+class Factory : public InteractiveBuilding {
 private:
     Factory(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent);
 
@@ -31,8 +32,9 @@ private:
 public:
     ~Factory() override;
 
-    static std::shared_ptr<Factory> Create(uint64_t id, const std::string& name, bool isStatic,
-                                           mlg::Transform* parent, const std::string& configPath);
+    static std::shared_ptr<Factory> Create(
+            uint64_t id, const std::string& name, bool isStatic,
+            mlg::Transform* parent, const std::string& configPath);
 
     std::string GetBlueprintId() const;
 
@@ -43,7 +45,7 @@ public:
 
     const std::vector<std::string> GetInputs() const;
 
-    bool TakeInputsFromInventory(class EquipmentComponent& equipment);
+    bool TakeInputsFromInventory(class EquipmentComponent& equipment) override;
     std::string GiveOutput();
 
 private:
@@ -52,17 +54,11 @@ private:
         OneOutput,
         OneInputOutput,
         SeparateInputOutput,
-        Storage
     } factoryType;
 
     glm::vec2 meshOffset;
 
-    void AddMesh(const nlohmann::json& staticMeshJson);
-    void AddCollider(const nlohmann::json& colliderJson, mlg::RigidbodyComponent* rigidbodyComponent);
-    void AddEmitter(const nlohmann::json& emitterJson);
     void AddTriggers(const nlohmann::json& config);
-    void AddTrigger(const nlohmann::json& triggerJson, const std::string& triggerName,
-                    mlg::RigidbodyComponent* rigidbodyComponent);
 
     void CheckBlueprintAndStartWorking();
     void ProduceItem();
@@ -73,10 +69,6 @@ private:
     void UpdateUi();
 
     void StartAsFactory();
-    void StartAsStorage();
-
-    bool TakeInputsAsStorage(EquipmentComponent& equipment);
-    bool TakeInputsAsFactory(EquipmentComponent& equipment);
 
     bool CheckBlueprint();
 };

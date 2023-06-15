@@ -4,6 +4,7 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 
+#include "Buildings/InteractiveBuilding.h"
 #include "Core/Settings/SettingsManager.h"
 #include "Gameplay/Components/RigidbodyComponent.h"
 #include "Gameplay/Components/StaticMeshComponent.h"
@@ -213,7 +214,7 @@ void Player::Drop() {
 
     std::shared_ptr<mlg::Entity> owner =
             mlg::RigidbodyComponent::GetColliderOwner(*input->lock()).lock();
-    std::shared_ptr<Factory> factory = std::dynamic_pointer_cast<Factory>(owner);
+    auto factory = std::dynamic_pointer_cast<InteractiveBuilding>(owner);
 
     if (!factory)
         return;;

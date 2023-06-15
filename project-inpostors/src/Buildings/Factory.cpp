@@ -5,6 +5,7 @@
 #include <spdlog/spdlog.h>
 #include <vector>
 
+#include "Buildings/InteractiveBuilding.h"
 #include "Core/SceneManager/SceneManager.h"
 #include "Core/Settings/SettingsManager.h"
 #include "Core/TimerManager.h"
@@ -23,8 +24,8 @@
 #include "Gameplay/Components/ParticleSystemComponent.h"
 #include "SceneGraph/Transform.h"
 
-#include "Physics/Colliders/Collider.h"
 #include "Buildings/FactoryEquipmentComponent.h"
+#include "Physics/Colliders/Collider.h"
 
 #include "Scenes/LevelScene.h"
 #include "Utils/Blueprint.h"
@@ -41,12 +42,14 @@ using json = nlohmann::json;
 using Random = effolkronium::random_static;
 
 Factory::Factory(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent)
-    : Entity(id, name, isStatic, parent) {}
+    : InteractiveBuilding(id, name, isStatic, parent) {}
 
 Factory::~Factory() = default;
 
-std::shared_ptr<Factory> Factory::Create(uint64_t id, const std::string& name, bool isStatic,
-                                         mlg::Transform* parent, const std::string& configPath) {
+std::shared_ptr<Factory> Factory::Create(
+        uint64_t id, const std::string& name, bool isStatic,
+        mlg::Transform* parent, const std::string& configPath) {
+
     auto result =
             std::shared_ptr<Factory>(new Factory(id, name, isStatic, parent));
 
@@ -76,59 +79,9 @@ std::shared_ptr<Factory> Factory::Create(uint64_t id, const std::string& name, b
     return result;
 }
 
-void Factory::AddMesh(const json& staticMeshJson) {
-    auto model =
-            mlg::AssetManager::GetAsset<mlg::ModelAsset>(
-                    staticMeshJson["model"]);
-    auto material =
-            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
-                    staticMeshJson["material"].get<std::string>());
-
-    auto staticMeshComponent =
-            AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
-
-    staticMeshComponent.lock()->GetTransform().SetPosition({
-            staticMeshJson["position"][0],
-            staticMeshJson["position"][1],
-            staticMeshJson["position"][2],
-    });
-
-    meshOffset = {staticMeshJson["position"][0], staticMeshJson["position"][1]};
-
-    staticMeshComponent.lock()->GetTransform().SetRotation(glm::radians(glm::vec3{
-            0.f,
-            staticMeshJson["rotation"],
-            0.f,
-    }));
-
-    staticMeshComponent.lock()->GetTransform().SetScale(glm::vec3{
-            staticMeshJson["scale"]});
-}
-
-void Factory::AddCollider(const json& colliderJson, mlg::RigidbodyComponent* rigidbodyComponent) {
-    glm::vec2 offset{colliderJson["offset"][0], colliderJson["offset"][1]};
-    glm::vec2 size{colliderJson["size"][0], colliderJson["size"][1]};
-
-    rigidbodyComponent->AddCollider<mlg::ColliderShape::Rectangle>(offset, size);
-}
-
-void Factory::AddEmitter(const json& emitterJson) {
-    const std::string id = emitterJson["id"].get<std::string>();
-    std::shared_ptr<mlg::ParticleSystem> emitter = FXLibrary::Get(id);
-    auto emitterComponent = AddComponent<mlg::ParticleSystemComponent>(id, emitter);
-    glm::vec3 emitterPosition = {
-            emitterJson["position"][0],
-            emitterJson["position"][1],
-            emitterJson["position"][2]};
-    emitterPosition.x += meshOffset.x;
-    emitterPosition.z += meshOffset.y;
-    emitterComponent.lock()->GetTransform().SetPosition(emitterPosition);
-}
-
 void Factory::AddTriggers(const nlohmann::json& configJson) {
     if (factoryType == FactoryType::OneInput ||
-        factoryType == FactoryType::SeparateInputOutput ||
-        factoryType == FactoryType::Storage) {
+        factoryType == FactoryType::SeparateInputOutput) {
         AddTrigger(
                 configJson["input"],
                 "input",
@@ -149,16 +102,6 @@ void Factory::AddTriggers(const nlohmann::json& configJson) {
                 "inputOutput",
                 mainRigidbody.get());
     }
-}
-
-void Factory::AddTrigger(const json& triggerJson, const std::string& triggerName,
-                         mlg::RigidbodyComponent* rigidbodyComponent) {
-
-    glm::vec2 offset{triggerJson["offset"][0], triggerJson["offset"][1]};
-    glm::vec2 size{triggerJson["size"][0], triggerJson["size"][1]};
-
-    auto collider = rigidbodyComponent->AddTrigger<mlg::ColliderShape::Rectangle>(offset, size);
-    collider.lock()->SetTag(triggerName);
 }
 
 void Factory::CheckBlueprintAndStartWorking() {
@@ -187,33 +130,8 @@ void Factory::CheckBlueprintAndStartWorking() {
             productionLambda);
 }
 
-void Factory::FinishTask() {
-    // mlg::Scene* currentScene = mlg::SceneManager::GetCurrentScene();
-    // auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
-
-    // std::vector<std::string> allProducts = equipmentComponent->GetProducts();
-    // std::string productId = levelScene->GetTaskManager()->FinishTask(allProducts);
-    // equipmentComponent->RequestProduct(productId);
-
-    // // sell rest of products
-    // allProducts = equipmentComponent->GetProducts();
-    // for (const auto& product : allProducts) {
-    //     levelScene->GetTaskManager()->SellProduct(product);
-    //     equipmentComponent->RequestProduct(product);
-    // }
-}
-
 void Factory::Start() {
-    if (factoryType == FactoryType::Storage)
-        StartAsStorage();
-    else
-        StartAsFactory();
-}
-
-void Factory::StartAsStorage() {
-    // equipmentComponent->productAdded.append([this]() {
-    //     FinishTask();
-    // });
+    StartAsFactory();
 }
 
 void Factory::StartAsFactory() {
@@ -268,23 +186,10 @@ bool Factory::IsWorking() const {
     return mlg::TimerManager::Get()->IsTimerValid(produceTimerHandle);
 }
 
-// if factory is storage, return all tasks products, else return blueprint input
 const std::vector<std::string> Factory::GetInputs() const {
     std::vector<std::string> result;
 
-    if (factoryType != FactoryType::Storage) {
-        result = BlueprintManager::Get()->GetBlueprint(blueprintId).GetInput();
-        return result;
-    }
-
-    mlg::Scene* currentScene = mlg::SceneManager::GetCurrentScene();
-    auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
-
-    std::vector<TaskData> tasks = levelScene->GetTaskManager()->GetActiveTasks();
-    for (const auto& task : tasks) {
-        result.push_back(task.productId);
-    }
-
+    result = BlueprintManager::Get()->GetBlueprint(blueprintId).GetInput();
     return result;
 }
 
@@ -293,44 +198,6 @@ bool Factory::TakeInputsFromInventory(EquipmentComponent& equipment) {
     if (equipment.IsEmpty())
         return false;
 
-    if (factoryType == FactoryType::Storage) {
-        return TakeInputsAsStorage(equipment);
-    } else {
-        return TakeInputsAsFactory(equipment);
-    }
-}
-
-std::string Factory::GiveOutput() {
-    const std::string factoryOutput =
-            BlueprintManager::Get()
-                    ->GetBlueprint(GetBlueprintId())
-                    .GetOutput();
-
-    std::string result;
-    if (factoryEquipment->IsOutputPresent()) {
-        result = factoryOutput;
-        factoryEquipment->RemoveOutput();
-    }
-    else {
-        result = "None";
-    }
-
-    return result;
-}
-
-bool Factory::TakeInputsAsStorage(EquipmentComponent& equipment) {
-    // const std::vector<std::string> factoryInputs = GetInputs();
-
-    // if (TakeInputsAsFactory(equipment))
-    //     return true;
-
-    // std::string productId = equipment.RequestProduct();
-    // this->equipmentComponent->AddProduct(productId);
-
-    return true;
-}
-
-bool Factory::TakeInputsAsFactory(EquipmentComponent& equipment) {
     const std::vector<std::string> factoryInputs = GetInputs();
 
     for (const auto& item : factoryInputs) {
@@ -347,6 +214,23 @@ bool Factory::TakeInputsAsFactory(EquipmentComponent& equipment) {
     }
 
     return false;
+}
+
+std::string Factory::GiveOutput() {
+    const std::string factoryOutput =
+            BlueprintManager::Get()
+                    ->GetBlueprint(GetBlueprintId())
+                    .GetOutput();
+
+    std::string result;
+    if (factoryEquipment->IsOutputPresent()) {
+        result = factoryOutput;
+        factoryEquipment->RemoveOutput();
+    } else {
+        result = "None";
+    }
+
+    return result;
 }
 
 bool Factory::CheckBlueprint() {
@@ -367,6 +251,8 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
         auto blueprint = BlueprintManager::Get()->GetBlueprint(result->GetBlueprintId());
 
         // Lack of containers gave birth to this monstrosity
+        // ave maria purissima ora pro nobis peccatoribus nunc et in hora mortis nostrae amen
+        // ~ Github copilot
         if (blueprint.GetOutput() != "") {
             result->barRes = result->AddComponent<mlg::ProgressBar>("BarRes", material).lock();
             result->barRes->SetSize({32.f, 32.f});
@@ -429,18 +315,5 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
                 iconRes->SetPosition({0.f, 75.f - 16.f});
             }
         }
-
-    } else if (result->factoryType == FactoryType::Storage) {
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/task_panel_material.json");
-        auto temp = result->AddComponent<mlg::Image>("Storage", material).lock();
-        temp->SetSize({64.f, 64.f});
-        temp->SetBillboardTarget(result);
-        temp->SetPosition({0.f, 112.f});
-
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/storage_material.json");
-        temp = result->AddComponent<mlg::Image>("StorageIcon", material).lock();
-        temp->SetSize({20.f, 20.f});
-        temp->SetBillboardTarget(result);
-        temp->SetPosition({0.f, 112.f});
     }
 }

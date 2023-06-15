@@ -32,7 +32,7 @@ void TaskManager::AddTaskToPool(const TaskData& newTaskData) {
     tasks.emplace(newTask.id, newTask);
 }
 
-std::string TaskManager::FinishTask(const std::vector<std::string>& products) {
+bool TaskManager::FinishTask(const std::string& productId) {
     auto timeComparator = [](const Task* a, const Task* b) {
         return a->timeLeft < b->timeLeft;
     };
@@ -41,16 +41,14 @@ std::string TaskManager::FinishTask(const std::vector<std::string>& products) {
 
     // Find all active tasks for these products
     for (const auto& [id, task] : tasks) {
-        for (const auto& product : products) {
-            if (task.productId == product && task.active) {
-                activeProductTasks.insert(&task);
-            }
+        if (task.productId == productId && task.active) {
+            activeProductTasks.insert(&task);
         }
     }
 
     // If there are no active tasks for this product, do nothing
     if (activeProductTasks.empty())
-        return "None";
+        return false;
 
     // Select the task with the least time left but if there are tasks that
     // have not already ended, select the oldest one
@@ -66,7 +64,7 @@ std::string TaskManager::FinishTask(const std::vector<std::string>& products) {
     }
 
     RemoveTask(taskToFinish->id);
-    return taskToFinish->productId;
+    return true;
 }
 
 void TaskManager::SellProduct(const std::string& productId) {
