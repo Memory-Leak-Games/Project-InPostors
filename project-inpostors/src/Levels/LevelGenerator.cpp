@@ -4,6 +4,7 @@
 #include <memory>
 #include <utility>
 
+#include "Buildings/Storage.h"
 #include "Core/AssetManager/AssetManager.h"
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
@@ -637,11 +638,30 @@ namespace mlg {
         }
     }
 
-    void LevelGenerator::PutFactory(const std::string& configPath, const glm::ivec2& position,
+    void LevelGenerator::PutFactory(const std::string& configPath,
+                                    const glm::ivec2& position,
                                     float rotation) const {
-        auto factory = mlg::EntityManager::SpawnEntity<Factory>("Factory", false, mlg::SceneGraph::GetRoot(),
-                                                                configPath);
-        auto factoryRigidBody = factory.lock()->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
+
+        std::ifstream configFile{configPath};
+        json configJson = json::parse(configFile);
+
+        std::shared_ptr<Entity> factory;
+
+        if (configJson["type"] == "Storage")
+            factory = mlg::EntityManager::SpawnEntity<Storage>(
+                              "Storage", false,
+                              mlg::SceneGraph::GetRoot(),
+                              configPath)
+                              .lock();
+        else 
+            factory = mlg::EntityManager::SpawnEntity<Factory>(
+                              "Factory", false,
+                              mlg::SceneGraph::GetRoot(),
+                              configPath)
+                              .lock();
+
+        auto factoryRigidBody =
+                factory->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");
 
         glm::vec2 factoryPosition = GetLevelPosition(position, true);
 
