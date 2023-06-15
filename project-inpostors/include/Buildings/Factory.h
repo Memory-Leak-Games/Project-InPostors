@@ -25,10 +25,6 @@ private:
     std::shared_ptr<class mlg::ProgressBar> barArrow;
     std::shared_ptr<class mlg::ProgressBar> barRes;
 
-    std::shared_ptr<class mlg::Label> amount1;
-    std::shared_ptr<class mlg::Label> amount2;
-    std::shared_ptr<class mlg::Label> amount3;
-
     unsigned int produceTimerHandle = 0;
     bool working = false;
 
@@ -50,6 +46,7 @@ public:
     const std::vector<std::string> GetInputs() const;
 
     bool TakeInputsFromInventory(EquipmentComponent& equipment);
+    std::string GiveOutput();
 
 private:
     enum class FactoryType {

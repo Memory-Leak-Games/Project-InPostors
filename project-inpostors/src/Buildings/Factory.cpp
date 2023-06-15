@@ -322,6 +322,21 @@ bool Factory::TakeInputsFromInventory(EquipmentComponent& equipment) {
     }
 }
 
+std::string Factory::GiveOutput() {
+    const std::string factoryOutput =
+            BlueprintManager::Get()
+                    ->GetBlueprint(GetBlueprintId())
+                    .GetOutput();
+
+    std::string result;
+    if (equipmentComponent->RequestProduct(factoryOutput))
+        result = factoryOutput;
+    else
+        result = "None";
+
+    return result;
+}
+
 bool Factory::TakeInputsAsStorage(EquipmentComponent& equipment) {
     const std::vector<std::string> factoryInputs = GetInputs();
 

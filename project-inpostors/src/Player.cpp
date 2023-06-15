@@ -169,30 +169,31 @@ void Player::PickUp() {
     std::vector<std::weak_ptr<mlg::Collider>> overlappingColliders;
     rigidbodyComponent.lock()->GetOverlappingColliders(overlappingColliders);
 
-    for (const auto& collider : overlappingColliders) {
-        if (collider.lock()->GetTag() != "output" &&
-            collider.lock()->GetTag() != "inputOutput") {
-            continue;
-        }
+    const auto& output = std::find_if(
+            overlappingColliders.begin(),
+            overlappingColliders.end(),
+            [](const auto& collider) {
+                return collider.lock()->GetTag() == "output" ||
+                       collider.lock()->GetTag() == "inputOutput";
+            });
+    
+    if (output == overlappingColliders.end())
+        return;
 
-        std::shared_ptr<mlg::Entity> owner =
-                mlg::RigidbodyComponent::GetColliderOwner(*collider.lock()).lock();
-        std::shared_ptr<Factory> factory = std::dynamic_pointer_cast<Factory>(owner);
+    std::shared_ptr<mlg::Entity> owner =
+            mlg::RigidbodyComponent::GetColliderOwner(*output->lock()).lock();
+    std::shared_ptr<Factory> factory = std::dynamic_pointer_cast<Factory>(owner);
 
-        if (!factory)
-            continue;
+    if (!factory)
+        return;
 
-        const std::string factoryOutput =
-                BlueprintManager::Get()
-                        ->GetBlueprint(factory->GetBlueprintId())
-                        .GetOutput();
+    std::string outputProduct = factory->GiveOutput();
 
-        if (!factory->GetEquipmentComponent()->RequestProduct(factoryOutput))
-            return;
+    if (outputProduct == "None")
+        return;
 
-        equipment->AddProduct(factoryOutput);
-        pickUpSound->Play(4.f);
-    }
+    equipment->AddProduct(outputProduct);
+    pickUpSound->Play(4.f);
 }
 
 void Player::Drop() {
