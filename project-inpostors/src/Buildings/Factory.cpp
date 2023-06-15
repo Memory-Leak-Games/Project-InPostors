@@ -224,12 +224,15 @@ void Factory::Update() {
 
     if (blueprintId != "None") {
         auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
-        float produceElapsed = mlg::TimerManager::Get()->GetTimerElapsedTime(produceTimerHandle);
-        float timeToProcess = BlueprintManager::Get()->GetBlueprint(blueprintId).GetTimeToProcess();
-        float timeRate = produceElapsed / timeToProcess;
 
-        if (uiProgress)
-            uiProgress->percentage = 0.096 + timeRate * (0.887 - 0.096);
+        if (IsWorking()) {
+            float produceElapsed = mlg::TimerManager::Get()->GetTimerElapsedTime(produceTimerHandle);
+            float timeToProcess = BlueprintManager::Get()->GetBlueprint(blueprintId).GetTimeToProcess();
+            float timeRate = produceElapsed / timeToProcess;
+            uiProgress->percentage = timeRate * 0.75f;
+        } else {
+            uiProgress->percentage = equipmentComponent->Has(blueprint.GetOutput());
+        }
     }
 
 #ifdef DEBUG
@@ -297,23 +300,20 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
     result->uiPin->SetSize({82.f, 82.f});
     result->uiPin->SetPosition({0.f, 50.f});
 
-    if(result->blueprintId != "None") {
-        auto blueprint = BlueprintManager::Get()->GetBlueprint(result->GetBlueprintId());
-        material = ProductManager::GetInstance()->GetProduct(blueprint.GetOutput()).icon;
-    } else {
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/storage_material.json");
-    }
-    result->uiIcon = result->AddComponent<mlg::Image>("uiIcon", material).lock();
-    result->uiIcon->SetBillboardTarget(result);
-    result->uiIcon->SetSize({24.f, 24.f});
-    result->uiIcon->SetPosition({0.f, 50.f});
-
     if(result->GetBlueprintId() != "None") {
+//        auto blueprint = BlueprintManager::Get()->GetBlueprint(result->GetBlueprintId());
+//        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/progress_bar_material.json");
+//        result->uiProgress = result->AddComponent<mlg::ProgressBar>("uiProgress", material).lock();
+//        result->uiProgress->SetBillboardTarget(result);
+//        result->uiProgress->SetSize({82.f, 82.f});
+//        result->uiProgress->SetPosition({0.f, 50.f});
+//        result->uiProgress->percentage = 0.f;
+
         auto blueprint = BlueprintManager::Get()->GetBlueprint(result->GetBlueprintId());
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/progress_bar_material.json");
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/progress_bar_material2.json");
         result->uiProgress = result->AddComponent<mlg::ProgressBar>("uiProgress", material).lock();
         result->uiProgress->SetBillboardTarget(result);
-        result->uiProgress->SetSize({82.f, 82.f});
+        result->uiProgress->SetSize({68.f, 68.f});
         result->uiProgress->SetPosition({0.f, 50.f});
         result->uiProgress->percentage = 0.f;
 
@@ -339,4 +339,15 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
             }
         }
     }
+
+    if(result->blueprintId != "None") {
+        auto blueprint = BlueprintManager::Get()->GetBlueprint(result->GetBlueprintId());
+        material = ProductManager::GetInstance()->GetProduct(blueprint.GetOutput()).icon;
+    } else {
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/storage_material.json");
+    }
+    result->uiIcon = result->AddComponent<mlg::Image>("uiIcon", material).lock();
+    result->uiIcon->SetBillboardTarget(result);
+    result->uiIcon->SetSize({24.f, 24.f});
+    result->uiIcon->SetPosition({0.f, 50.f});
 }
