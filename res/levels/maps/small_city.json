@@ -1,5 +1,5 @@
 {
-  "name": "Ohio",
+  "name": "Los San Domierz",
   "tile-size": 4.0,
   "tileset": "res/levels/tilesets/small_city_tileset.json",
 
@@ -8,7 +8,7 @@
   "sublevels": [],
 
   "ground": {
-    "mesh": "res/models/ground/ground.obj",
+    "mesh": "res/models/ground/ground_small_city.obj",
     "material": "res/materials/buildings_material.json",
 
     "scale": 1.0,
