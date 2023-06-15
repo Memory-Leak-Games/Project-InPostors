@@ -1,7 +1,7 @@
 {
   "name": "Ohio",
   "tile-size": 4.0,
-  "tileset": "res/levels/tilesets/city_tileset_2.json",
+  "tileset": "res/levels/tilesets/small_city_tileset.json",
 
   "time-limit": 150.0,
 
