@@ -3,7 +3,7 @@
     "model": "res/models/factories/storage.obj",
     "material": "res/materials/buildings_material.json",
 
-    "position": [0.0, 0.3, 0.0],
+    "position": [-0.5, 0.3, -1.35],
     "rotation": 0.0,
     "scale": 0.6
   },
