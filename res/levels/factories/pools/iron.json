@@ -10,7 +10,7 @@
       "symbol": "2",
       "config": "res/levels/factories/smelter.json",
       "count": 1,
-      "fallback": "p"
+      "fallback": "w"
     },
     {
       "symbol": "0",

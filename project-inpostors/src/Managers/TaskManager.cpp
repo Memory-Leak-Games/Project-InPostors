@@ -2,7 +2,6 @@
 #include "Core/TimerManager.h"
 #include "Managers/ScoreManager.h"
 #include "Utils/ProductManager.h"
-#include <bits/ranges_algo.h>
 #include <cstddef>
 #include <spdlog/spdlog.h>
 #include <vector>
