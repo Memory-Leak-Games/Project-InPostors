@@ -58,6 +58,7 @@ namespace mlg {
         virtual void SetWindowHint(int hint, int value);
         virtual void SetVerticalSync(bool isEnabled);
         virtual void SetWindowType(WindowType type);
+        virtual void SetResolution(glm::ivec2 resolution);
         virtual bool GetVerticalSync();
 
         virtual int32_t GetWidth();

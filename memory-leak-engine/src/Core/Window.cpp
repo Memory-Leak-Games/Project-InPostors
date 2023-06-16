@@ -117,6 +117,22 @@ void mlg::Window::SetWindowType(WindowType type) {
     glfwSetWindowAttrib(glfwWindow, GLFW_DECORATED, showDecorations);
 }
 
+void mlg::Window::SetResolution(glm::ivec2 resolution) {
+    if (windowSettings.width == resolution.x &&
+        windowSettings.height == resolution.y)
+        return;
+    
+    windowSettings.width = resolution.x;
+    windowSettings.height = resolution.y;
+
+    if (!isWindowVisible)
+        return;
+    
+    glfwSetWindowSize(glfwWindow, resolution.x, resolution.y);
+    WindowResizeEvent event(resolution.x, resolution.y);
+    windowData.eventDispatcher.dispatch(event.GetEventType(), event);
+}
+
 int32_t Window::SetupWindow() {
     SetWindowContext();
 
