@@ -20,12 +20,14 @@ private:
     float backwardMaxSpeed;
     float engineHandling;
     float handling;
+    float linearDrag;
 
     //Rotation and drifting
     float rotationSpeed;
     float rotationRadius;
     float sideDrag;
     float counterTorque;
+    float angularDrag;
 
 public:
     CarMovementComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,

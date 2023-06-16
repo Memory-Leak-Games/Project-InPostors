@@ -20,8 +20,8 @@ using json = nlohmann::json;
 void CarMovementComponent::Start() {
     rigidbodyComponent = GetOwner().lock()->GetComponentByClass<mlg::RigidbodyComponent>().lock();
 
-    rigidbodyComponent->SetLinearDrag(10.f);
-    rigidbodyComponent->SetAngularDrag(5.f);
+    rigidbodyComponent->SetLinearDrag(linearDrag);
+    rigidbodyComponent->SetAngularDrag(angularDrag);
 
     staticMeshComponent = GetOwner().lock()->GetComponentByClass<mlg::StaticMeshComponent>().lock();
 
@@ -137,6 +137,9 @@ void CarMovementComponent::LoadParameters(const std::string& path = "res/config/
     rotationRadius = parameters["rotationRadius"];
     sideDrag = parameters["sideDrag"];
     counterTorque = parameters["counterTorque"];
+
+    linearDrag = parameters.value("linearDrag", 600.f);
+    angularDrag = parameters.value("angularDrag", 300.f);
 }
 
 CarMovementComponent::~CarMovementComponent() = default;

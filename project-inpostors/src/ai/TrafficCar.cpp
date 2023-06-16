@@ -69,6 +69,7 @@ void TrafficCar::AddRigidbody(const nlohmann::json& configJson, const uint32_t m
     float bounciness = configJson["parameters"].value("bounciness", 0.5f);
     this->rigidbodyComponent.lock()->SetBounciness(bounciness);
 
+
     for (const auto& collider : configJson["colliders" + std::to_string(modelNumber)]) {
         const glm::vec2 offset{
                 collider["offset"][0].get<float>(),
