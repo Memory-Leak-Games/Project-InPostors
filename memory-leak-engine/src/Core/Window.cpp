@@ -96,18 +96,22 @@ void mlg::Window::SetWindowType(WindowType type) {
     int32_t windowHeight = windowSettings.height;
 
     if (type == WindowType::Fullscreen) {
-        GLFWmonitor* monitor = GetMonitor();
-        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-        windowWidth = mode->width;
-        windowHeight = mode->height;
+        glm::ivec2 monitorResolution = GetMonitorResolution();
+        windowWidth = monitorResolution.x;
+        windowHeight = monitorResolution.y;
 
         SPDLOG_DEBUG("Switching to fullscreen mode: {}x{}",
                      windowWidth, windowHeight);
     }
 
+    glm::ivec2 windowPosition = GetMonitorCenter() -
+                                glm::ivec2(windowWidth, windowHeight) / 2;
+
     glfwSetWindowMonitor(
-            glfwWindow, GetMonitor(), 0, 0,
-            windowWidth, windowHeight, GLFW_DONT_CARE);
+            glfwWindow, GetMonitor(),
+            windowPosition.x, windowPosition.y,
+            windowWidth, windowHeight,
+            GLFW_DONT_CARE);
 
     bool showDecorations = windowSettings.type == WindowType::Windowed;
     glfwSetWindowAttrib(glfwWindow, GLFW_DECORATED, showDecorations);
@@ -159,6 +163,17 @@ void mlg::Window::LoadWindowSettings() {
     windowSettings.vSync = settingsJson["VSync"];
 }
 
+glm::ivec2 mlg::Window::GetMonitorResolution() const {
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+    return {mode->width, mode->height};
+}
+
+glm::ivec2 mlg::Window::GetMonitorCenter() const {
+    return GetMonitorResolution() / 2;
+}
+
 void Window::SetWindowContext() const {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -182,7 +197,7 @@ void Window::SetWindowSettings() const {
                 GLFW_DONT_CARE, GLFW_DONT_CARE);
 }
 
-GLFWmonitor* Window::GetMonitor() {
+GLFWmonitor* Window::GetMonitor() const {
     if (windowSettings.type == WindowType::Fullscreen)
         return glfwGetPrimaryMonitor();
     else

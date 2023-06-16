@@ -83,10 +83,13 @@ namespace mlg {
 
         void SetWindowContext() const;
         void SetWindowSettings() const;
-        GLFWmonitor* GetMonitor();
+        GLFWmonitor* GetMonitor() const;
 
         void SetGamepadMappings() const;
 
         void LoadWindowSettings();
+
+        glm::ivec2 GetMonitorResolution() const;
+        glm::ivec2 GetMonitorCenter() const;
     };
 }// namespace mlg
