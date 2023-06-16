@@ -29,7 +29,7 @@ namespace mlg {
             instance->entities.push_back(newEntity);
             instance->entitiesIndex++;
 
-            if (mlg::Core::GetInstance()->IsClosed() == false)
+            if (mlg::Core::Get()->IsClosed() == false)
                 newEntity->Start();
 
             return std::static_pointer_cast<T>(newEntity);

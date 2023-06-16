@@ -8,6 +8,6 @@
 
   "ResolutionWidth": 1280,
   "ResolutionHeight": 720,
-  "WindowType": "windowed",
+  "WindowType": "Windowed",
   "LockSize": false
 }

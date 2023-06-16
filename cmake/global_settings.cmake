@@ -16,7 +16,7 @@ set(CMAKE_DEBUG_POSTFIX "_d")
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 
-set(GLFW_USE_WAYLAND ON)
+set(GLFW_USE_WAYLAND OFF)
 
 if (EXISTS "/usr/bin/mold" AND UNIX)
     add_link_options("-fuse-ld=mold")

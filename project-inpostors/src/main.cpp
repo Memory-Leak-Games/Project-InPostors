@@ -1,24 +1,21 @@
-#include <exception>
-#include <glm/fwd.hpp>
 #include <iostream>
 #include <cxxopts.hpp>
-#include <memory>
-#include <spdlog/spdlog.h>
-#include <string>
-#include <utility>
 
 #include "Core/SceneManager/SceneManager.h"
 #include "Core/Core.h"
 
+#include "Core/Window.h"
 #include "Initializer.h"
 
 #include "Scenes/LevelScene.h"
+#include "Scenes/MenuScene.h"
 #include "Scenes/TestScene.h"
 
 class ProjectInpostors {
 public:
     ProjectInpostors() = default;
     std::unique_ptr<mlg::Scene> startupScene;
+    bool fullscreen_override = false;
 
     bool ParseArguments(int argc, char* argv[]) {
         cxxopts::Options options("Project Inpostors", "A game about couriers");
@@ -26,9 +23,14 @@ public:
         options.add_options()
             ("h,help", "Show this help")
             ("test-scene", "Run test scene")
+            ("f,fullscreen", "Run in fullscreen mode")
             ("l,level", "provide level path", cxxopts::value<std::string>());
 
         auto result = options.parse(argc, argv);
+
+        if (result.count("fullscreen")) {
+            fullscreen_override = true;
+        }
 
         if (result.count("help")) {
             std::cout << options.help() << std::endl;
@@ -50,21 +52,22 @@ public:
             return false;
         }
 
-        std::string path = "res/levels/maps/detroit.json";
-        startupScene = std::move(std::make_unique<LevelScene>(path));
-
+        startupScene = std::move(std::make_unique<MenuScene>());
         return false;
     }
 
 
     int Main() {
-
         mlg::Initializer::InitializeCoreComponents();
         mlg::Initializer::InitializeSceneComponents();
 
-        mlg::Core* engine = mlg::Core::GetInstance();
+        mlg::Core* engine = mlg::Core::Get();
 
         mlg::SceneManager::SetNextScene(std::move(startupScene));
+
+        if (fullscreen_override) {
+            mlg::Window::Get()->SetWindowType(mlg::WindowType::Fullscreen);
+        }
 
         while (mlg::SceneManager::HasNextScene()) {
             mlg::SceneManager::LoadNextScene();

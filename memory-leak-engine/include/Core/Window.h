@@ -5,6 +5,12 @@
 
 namespace mlg {
 
+    enum class WindowType {
+        Windowed,
+        Borderless,
+        Fullscreen,
+    };
+
     class Window {
     private:
         static Window* instance;
@@ -16,13 +22,26 @@ namespace mlg {
             int32_t height;
             float aspectRatio;
             bool vSync;
+            bool fullscreen;
 
-            eventpp::EventDispatcher<EventType, void (const Event &), EventPolicies> eventDispatcher;
+            eventpp::EventDispatcher<EventType, void(const Event&), EventPolicies> eventDispatcher;
         };
 
         WindowData windowData;
+
+        struct WindowSettings {
+            std::string title;
+            WindowType type;
+            int32_t width;
+            int32_t height;
+            bool lockSize;
+            bool vSync;
+        } windowSettings;
+
+        bool isWindowVisible = false;
+
     public:
-        Window() = delete;
+        Window();
 
         static void Initialize(std::string title);
         static void Stop();
@@ -35,13 +54,14 @@ namespace mlg {
 
         virtual void SetWindowHint(int hint, int value);
         virtual void SetVerticalSync(bool isEnabled);
+        virtual void SetWindowType(WindowType type);
         virtual bool GetVerticalSync();
 
         virtual int32_t GetWidth();
         virtual int32_t GetHeight();
         virtual float GetAspectRatio();
 
-        virtual eventpp::EventDispatcher<EventType, void (const Event &), EventPolicies>* GetEventDispatcher();
+        virtual eventpp::EventDispatcher<EventType, void(const Event&), EventPolicies>* GetEventDispatcher();
 
         virtual void SwapBuffers();
         virtual void PollEvents();
@@ -51,8 +71,7 @@ namespace mlg {
 #endif
 
     private:
-        Window(std::string title, int32_t width, int32_t height, float aspectRatio);
-
+        virtual void CreateWindow();
         virtual int32_t SetupWindow();
         void SetupCallbacks();
 
@@ -63,5 +82,7 @@ namespace mlg {
         GLFWmonitor* GetMonitor();
 
         void SetGamepadMappings() const;
+
+        void LoadWindowSettings();
     };
-}
+}// namespace mlg
