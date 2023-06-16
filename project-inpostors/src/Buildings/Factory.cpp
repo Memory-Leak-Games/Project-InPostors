@@ -1,6 +1,5 @@
 #include "Buildings/Factory.h"
 
-#include <bits/ranges_algo.h>
 #include <fstream>
 #include <spdlog/spdlog.h>
 #include <vector>

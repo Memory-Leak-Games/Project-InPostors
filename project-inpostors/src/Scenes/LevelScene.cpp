@@ -205,7 +205,7 @@ void LevelScene::SpawnTraffic() {
                 aiCar.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
 
         aiCarRigidbody.lock()->SetPosition(node->position);
-        i++;
+        ++i;
     }
 }
 
