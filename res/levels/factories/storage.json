@@ -1,39 +1,27 @@
 {
   "static-mesh": {
-    "model": "res/models/factories/factory2.obj",
+    "model": "res/models/factories/storage.obj",
     "material": "res/materials/buildings_material.json",
 
-    "position": [0.0, 0.3, 0.0],
+    "position": [-0.5, 0.3, -1.35],
     "rotation": 0.0,
     "scale": 0.6
   },
 
   "colliders":[
     {
-      "offset": [0.0, 2.5],
-      "size": [15.0, 14.0]
+      "offset": [0.0, -0.5],
+      "size": [16.0, 14.0]
     }
   ],
 
   "type": "Storage",
 
   "input": {
-    "offset": [0.5, -8.5],
-    "size": [14.0, 5.5]
+    "offset": [0.0, -11.0],
+    "size": [17.0, 6.0]
   },
 
   "emitters": [
-    {
-      "id": "factorySmoke",
-      "position": [-5.0, 12.0, 5.0]
-    },
-    {
-      "id": "factorySmoke",
-      "position": [-5.0, 12.0, 7.0]
-    },
-    {
-      "id": "factorySmoke",
-      "position": [-5.0, 12.0, 9.0]
-    }
   ]
 }

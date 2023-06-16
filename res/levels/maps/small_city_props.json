@@ -1,0 +1,34 @@
+{
+  "name": "small_city__props",
+  "tile-size": 4.0,
+  "tileset": "res/levels/tilesets/props_tileset.json",
+
+  "ignore" : "#",
+
+  "layout": [
+    "                                 ",
+    "   z       z              z      ",
+    "    z            z               ",
+    "                        z        ",
+    "   z a#######a       z   z       ",
+    "     ##vvvvv##                   ",
+    "     #hl##l##tb#bt##a            ",
+    "  z  #h#  ###vvvvv###         z  ",
+    "     #hp  p#########l#######a    ",
+    "     #h#  #hl#####l##vvvvv#h#  z ",
+    "     #hp  php     phl#btb#lh#    ",
+    " z   #h#  #h#     #h#     #h# z  ",
+    "     #hp  php     ph#  b  #hb    ",
+    "     #h#  #h# ### #h#     #h#   z",
+    "  z  ##l##l#l#####l#l#btb#l##    ",
+    "     l#vvv###v#c#v###vvvvv##l  z ",
+    " z   ######l##l##############   z",
+    "          ##  #h#   #h#   #hp    ",
+    "  z       #p  ph#   #h#   #h#    ",
+    "       z  ##  #h#   #h#   #hp z  ",
+    "          #l##l#l#####l#####l    ",
+    "    z     ##vv###vvv###vvv###  z ",
+    "      z   ##################t    ",
+    "       z     z                   "
+  ]
+}
