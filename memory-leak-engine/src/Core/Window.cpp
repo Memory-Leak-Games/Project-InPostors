@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <spdlog/spdlog.h>
 #include <sstream>
 #include <utility>
 
@@ -96,8 +97,12 @@ void mlg::Window::SetWindowType(WindowType type) {
 
     if (type == WindowType::Fullscreen) {
         GLFWmonitor* monitor = GetMonitor();
-        glfwGetMonitorPhysicalSize(
-                monitor, &windowWidth, &windowHeight);
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+        windowWidth = mode->width;
+        windowHeight = mode->height;
+
+        SPDLOG_DEBUG("Switching to fullscreen mode: {}x{}",
+                     windowWidth, windowHeight);
     }
 
     glfwSetWindowMonitor(
