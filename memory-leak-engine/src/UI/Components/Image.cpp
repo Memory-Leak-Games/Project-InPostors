@@ -37,7 +37,7 @@ namespace mlg {
     }
 
     glm::vec2 Image::GetSize() const {
-        return size;
+        return size + glm::vec2(2.0f * padding);
     }
 
     void Image::SetSize(const glm::vec2& size) {

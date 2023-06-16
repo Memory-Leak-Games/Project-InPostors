@@ -111,4 +111,12 @@ namespace mlg {
         UIComponent::visible = visible;
     }
 
+    void UIComponent::SetPadding(float padding) {
+        UIComponent::padding = padding;
+    }
+
+    float UIComponent::GetPadding() const {
+        return padding;
+    }
+
 }// namespace mlg

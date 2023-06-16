@@ -25,6 +25,8 @@ namespace mlg {
         bool isBillboard = false;
         std::weak_ptr<class Entity> billboardTarget;
 
+        float padding = 0.f;
+
         bool visible = true;
 
         // If true, component will register itself in UIRenderer on Start()
@@ -55,6 +57,9 @@ namespace mlg {
         void SetIsBillboard(bool isBillboard);
         void SetBillboardTarget(const std::weak_ptr<struct Entity>& billboardTarget);
         virtual void SetVisible(bool visible);
+
+        void SetPadding(float padding);
+        float GetPadding() const;
 
         void SetAutoRegister(bool autoRegister);
     };

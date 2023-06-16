@@ -1,6 +1,7 @@
 #include "UI/Components/Container.h"
 #include "UI/Components/UIComponent.h"
 #include "UI/Components/UIFocusableComponent.h"
+#include <glm/fwd.hpp>
 
 mlg::Container::Container(std::weak_ptr<Entity> owner, std::string name)
 : UIComponent(owner, name) { }
@@ -47,7 +48,7 @@ glm::vec2 mlg::Container::GetSize() const {
         size.y += childSize.y;
     }    
 
-    return size;
+    return size + glm::vec2(padding);
 }
 
 void mlg::Container::GrabFocus() {

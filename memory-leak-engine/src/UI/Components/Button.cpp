@@ -1,3 +1,4 @@
+#include <glm/fwd.hpp>
 #include <utility>
 
 #include "Core/HID/Input.h"
@@ -75,7 +76,7 @@ namespace mlg {
     }
 
     glm::vec2 Button::GetSize() const {
-        return size;
+        return size + glm::vec2{padding};
     }
 
     void Button::SetSize(const glm::vec2& size) {

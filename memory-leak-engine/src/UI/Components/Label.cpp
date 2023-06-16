@@ -196,6 +196,6 @@ namespace mlg {
         result.x = std::max(maxHorizontal, result.x);
         result.y -= (float) font->fontSize * scale * 0.5f;
 
-        return result;
+        return result + glm::vec2(padding);
     }
 }// namespace mlg

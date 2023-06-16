@@ -41,6 +41,7 @@ void MenuScene::Load() {
         sharedExitButton->SetSize(BUTTON_SIZE);
         sharedExitButton->GetLabel().lock()->SetTextColor(glm::vec3(0.f));
         sharedExitButton->GetLabel().lock()->SetText(fmt::format("Button {}", i));
+        sharedExitButton->SetPadding(10.f);
 
         container.lock()->AddChild(exitButton);
     }
