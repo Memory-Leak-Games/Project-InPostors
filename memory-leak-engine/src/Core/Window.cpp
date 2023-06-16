@@ -1,5 +1,6 @@
 #include "Core/Window.h"
 
+#include <filesystem>
 #include <fstream>
 #include <sstream>
 #include <utility>
@@ -122,7 +123,14 @@ int32_t Window::SetupWindow() {
 }
 
 void mlg::Window::LoadWindowSettings() {
-    std::ifstream videoSettingsFile("res/config/settings/video.json");
+    std::string path;
+
+    if (std::filesystem::exists(VIDEO_SETTINGS_PATH))
+        path = VIDEO_SETTINGS_PATH;
+    else
+        path = DEFAULT_VIDEO_SETTINGS_PATH;
+
+    std::ifstream videoSettingsFile(path);
     nlohmann::json settingsJson = nlohmann::json::parse(videoSettingsFile);
 
     std::string windowType = settingsJson["WindowType"];

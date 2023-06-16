@@ -1,5 +1,6 @@
 #include "Core/Settings/SettingsManager.h"
 
+#include <filesystem>
 #include <nlohmann/json.hpp>
 #include <fstream>
 
@@ -34,19 +35,42 @@ namespace mlg {
     }
 
     void SettingsManager::LoadSettings() {
-        std::ifstream settingsFile{"res/config/settings/debug.json"};
+        std::string path;
+
+        if (std::filesystem::exists(SETTINGS_PATH "debug.json"))
+            path = SETTINGS_PATH "debug.json";
+        else
+            path = DEFAULT_SETTINGS_PATH "debug.json";
+
+        std::ifstream settingsFile{path};
         debugSettings = json::parse(settingsFile);
         settingsFile.close();
 
-        settingsFile.open("res/config/settings/engine.json");
+
+        if (std::filesystem::exists(SETTINGS_PATH "engine.json"))
+            path = SETTINGS_PATH "engine.json";
+        else
+            path = DEFAULT_SETTINGS_PATH "engine.json";
+
+        settingsFile.open(path);
         engineSettings = json::parse(settingsFile);
         settingsFile.close();
 
-        settingsFile.open("res/config/settings/video.json");
+        if (std::filesystem::exists(SETTINGS_PATH "video.json"))
+            path = SETTINGS_PATH "video.json";
+        else
+            path = DEFAULT_SETTINGS_PATH "video.json";
+
+        settingsFile.open(path);
         videoSettings = json::parse(settingsFile);
         settingsFile.close();
 
-        settingsFile.open("res/config/settings/audio.json");
+        if (std::filesystem::exists(SETTINGS_PATH "audio.json"))
+            path = SETTINGS_PATH "audio.json";
+        else
+            path = DEFAULT_SETTINGS_PATH "audio.json";
+
+        settingsFile.open(path);
         audioSettings = json::parse(settingsFile);
         settingsFile.close();
     }

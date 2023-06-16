@@ -3,6 +3,9 @@
 #include "Events/Event.h"
 #include "GLFW/glfw3.h"
 
+#define DEFAULT_VIDEO_SETTINGS_PATH "res/config/settings/video.json"
+#define VIDEO_SETTINGS_PATH "res/runtime_files/video.json"
+
 namespace mlg {
 
     enum class WindowType {
