@@ -57,7 +57,7 @@ void mlg::Window::Update() {
             SetWindowType(WindowType::Windowed);
         else
             SetWindowType(WindowType::Fullscreen);
-    }   
+    }
 
     wasPressedLastFrame = isPressed;
 }
@@ -91,10 +91,18 @@ void mlg::Window::SetWindowType(WindowType type) {
     if (!isWindowVisible)
         return;
 
+    int32_t windowWidth = windowSettings.width;
+    int32_t windowHeight = windowSettings.height;
+
+    if (type == WindowType::Fullscreen) {
+        GLFWmonitor* monitor = GetMonitor();
+        glfwGetMonitorPhysicalSize(
+                monitor, &windowWidth, &windowHeight);
+    }
+
     glfwSetWindowMonitor(
             glfwWindow, GetMonitor(), 0, 0,
-            windowSettings.width, windowSettings.height,
-            GLFW_DONT_CARE);
+            windowWidth, windowHeight, GLFW_DONT_CARE);
 
     bool showDecorations = windowSettings.type == WindowType::Windowed;
     glfwSetWindowAttrib(glfwWindow, GLFW_DECORATED, showDecorations);

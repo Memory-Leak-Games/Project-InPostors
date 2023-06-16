@@ -58,6 +58,4 @@ void mlg::LoadingScreen::Draw() {
     glEnable(GL_DEPTH_TEST);
 
     Window::Get()->SwapBuffers();
-
-    SPDLOG_ERROR("UNIMPLEMENTED");
 }
