@@ -46,6 +46,21 @@ void Window::Initialize(std::string title) {
     instance->CreateWindow();
 }
 
+void mlg::Window::Update() {
+    // Switch between fullscreen and windowed mode
+    static bool wasPressedLastFrame = false;
+    bool isPressed = glfwGetKey(glfwWindow, GLFW_KEY_F11);
+
+    if (isPressed && !wasPressedLastFrame) {
+        if (windowSettings.type == WindowType::Fullscreen)
+            SetWindowType(WindowType::Windowed);
+        else
+            SetWindowType(WindowType::Fullscreen);
+    }   
+
+    wasPressedLastFrame = isPressed;
+}
+
 void mlg::Window::CreateWindow() {
     windowData.title = windowSettings.title;
     windowData.width = windowSettings.width;

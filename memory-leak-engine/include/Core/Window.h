@@ -65,6 +65,7 @@ namespace mlg {
 
         virtual void SwapBuffers();
         virtual void PollEvents();
+        virtual void Update();
 
 #ifdef DEBUG
         virtual void ImGuiInit();

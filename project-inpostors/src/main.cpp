@@ -56,7 +56,6 @@ public:
         return false;
     }
 
-
     int Main() {
         mlg::Initializer::InitializeCoreComponents();
         mlg::Initializer::InitializeSceneComponents();
