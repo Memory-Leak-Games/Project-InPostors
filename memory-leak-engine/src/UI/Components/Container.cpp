@@ -1,5 +1,6 @@
 #include "UI/Components/Container.h"
 #include "UI/Components/UIComponent.h"
+#include "UI/Components/UIFocusableComponent.h"
 
 mlg::Container::Container(std::weak_ptr<Entity> owner, std::string name)
 : UIComponent(owner, name) { }
@@ -47,6 +48,25 @@ glm::vec2 mlg::Container::GetSize() const {
     }    
 
     return size;
+}
+
+void mlg::Container::GrabFocus() {
+    for (auto& child : children) {
+        std::weak_ptr<UIFocusableComponent> childAsFocusable =
+                std::dynamic_pointer_cast<UIFocusableComponent>(child.lock());
+        
+        if (childAsFocusable.expired())
+            continue;
+        
+        childAsFocusable.lock()->GrabFocus();
+        break;
+    }
+}
+
+void mlg::Container::SetVisible(bool visible) {
+    for (auto& child : children) {
+        child.lock()->SetVisible(visible);
+    }
 }
 
 

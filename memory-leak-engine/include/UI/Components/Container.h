@@ -19,6 +19,10 @@ namespace mlg {
         void SetAnchor(const glm::vec2& anchor) override;
         glm::vec2 GetSize() const override;
 
+        void GrabFocus();
+
+        void SetVisible(bool visible) override;
+
     protected:
         virtual void UpdateContainer() = 0;
     };

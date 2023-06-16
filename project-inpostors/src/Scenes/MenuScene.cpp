@@ -6,10 +6,14 @@
 #include "Rendering/Assets/MaterialAsset.h"
 #include "SceneGraph/SceneGraph.h"
 
+#include "UI/Assets/FontAsset.h"
 #include "UI/Components/Image.h"
+#include "UI/Components/Button.h"
+#include "UI/Components/Label.h"
 #include "UI/Components/UIComponent.h"
 #include "UI/Components/VerticalBox.h"
-#include <glm/fwd.hpp>
+
+#include "UI/UIStyle.h"
 
 MenuScene::~MenuScene() = default;
 
@@ -27,13 +31,19 @@ void MenuScene::Load() {
     container.lock()->SetAnchor(MLG_ANCHOR_CENTER);
     container.lock()->SetPosition(MLG_POS_CENTER);
 
-    for (int i = 0; i < 10; i++) {
-        auto image = entity.lock()->AddComponent<mlg::Image>(
-                "Image",
-                material);
+    for (int i = 0; i < 5; i++) {
+        auto exitButton = entity.lock()->AddComponent<mlg::Button>(
+                fmt::format("Button {}", i),
+                mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BUTTON_MATERIAL),
+                mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BUTTON_FOCUSED_MATERIAL),
+                mlg::AssetManager::GetAsset<mlg::FontAsset>(FONT));
+        auto sharedExitButton = exitButton.lock();
+        sharedExitButton->SetSize(BUTTON_SIZE);
+        sharedExitButton->GetLabel().lock()->SetTextColor(glm::vec3(0.f));
+        sharedExitButton->GetLabel().lock()->SetText(fmt::format("Button {}", i));
 
-        image.lock()->SetSize(glm::vec2{64.f});
-
-        container.lock()->AddChild(image);
+        container.lock()->AddChild(exitButton);
     }
+
+    container.lock()->GrabFocus();
 }

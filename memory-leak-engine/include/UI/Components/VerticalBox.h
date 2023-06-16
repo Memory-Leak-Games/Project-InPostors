@@ -11,6 +11,9 @@ namespace mlg {
 
     protected:
         void UpdateContainer() override;
+
+    private:
+        void UpdateFocusableComponents();
     };
 
 }// namespace mlg

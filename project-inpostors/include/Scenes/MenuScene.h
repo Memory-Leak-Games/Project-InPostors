@@ -8,4 +8,6 @@ public:
     ~MenuScene() override;
 
     void Load() override;
+
+private:
 };
