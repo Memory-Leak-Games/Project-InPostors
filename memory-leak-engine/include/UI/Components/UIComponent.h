@@ -45,6 +45,7 @@ namespace mlg {
 
         [[nodiscard]] const glm::vec2& GetPosition() const;
         [[nodiscard]] const glm::vec2& GetAnchor() const;
+        [[nodiscard]] virtual glm::vec2 GetSize() const = 0;
         [[nodiscard]] bool IsBillboard() const;
         [[nodiscard]] const std::weak_ptr<struct Entity>& GetBillboardTarget() const;
         [[nodiscard]] bool IsVisible() const;

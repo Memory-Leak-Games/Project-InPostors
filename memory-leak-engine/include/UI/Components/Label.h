@@ -51,6 +51,6 @@ namespace mlg {
 
         static std::string WrapText(const std::string& text, int lineLength);
 
-        glm::vec2 GetLabelSize() const;
+        glm::vec2 GetSize() const override;
     };
 }// namespace mlg

@@ -74,7 +74,7 @@ namespace mlg {
         material->DeActivate();
     }
 
-    const glm::vec2& Button::GetSize() const {
+    glm::vec2 Button::GetSize() const {
         return size;
     }
 

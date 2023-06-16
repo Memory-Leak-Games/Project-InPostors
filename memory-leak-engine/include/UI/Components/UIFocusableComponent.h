@@ -1,6 +1,7 @@
 #pragma once
 
 #include "UIComponent.h"
+#include <glm/fwd.hpp>
 
 namespace mlg {
     class UIFocusableComponent : public UIComponent {
@@ -22,6 +23,7 @@ namespace mlg {
 
         void SetActive(bool active);
         bool GetActive() const;
+
     };
 
 }

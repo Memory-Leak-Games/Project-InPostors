@@ -36,7 +36,7 @@ namespace mlg {
         material->DeActivate();
     }
 
-    const glm::vec2& Image::GetSize() const {
+    glm::vec2 Image::GetSize() const {
         return size;
     }
 
