@@ -28,8 +28,8 @@ namespace mlg {
     void Rigidbody::Integrate() {
         float deltaSecond = Time::GetFixedTimeStep();
 
-        AddForce(-linearDrag * Math::ClampVectorToNormal(linearVelocity));
-        AddTorque(-angularDrag * Math::Clamp(angularVelocity, -1.f, 1.f));
+        AddForce(-linearDrag * Math::ClampVectorToNormal(linearVelocity) * deltaSecond);
+        AddTorque(-angularDrag * Math::Clamp(angularVelocity, -1.f, 1.f) * deltaSecond);
 
         // Linear
         position += linearVelocity * deltaSecond + (currentLinearAcceleration * deltaSecond * deltaSecond) * 0.5f;

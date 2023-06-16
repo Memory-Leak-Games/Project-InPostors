@@ -27,8 +27,7 @@ using json = nlohmann::json;
 
 void AIComponent::Start() {
     rigidbodyComponent = GetOwner().lock()->GetComponentByClass<mlg::RigidbodyComponent>().lock();
-    rigidbodyComponent->SetLinearDrag(10.f);
-    rigidbodyComponent->SetAngularDrag(100.f);
+    rigidbodyComponent->SetLinearDrag(600.f);
 
     staticMeshComponent = GetOwner().lock()->GetComponentByClass<mlg::StaticMeshComponent>().lock();
 
@@ -57,8 +56,10 @@ void AIComponent::PhysicsUpdate() {
     if (steering->GetNavigationGraph() != nullptr) {
         rigidbodyComponent->SetAngularVelocity(0);
 
+        float fixedTimeStep = mlg::Time::GetFixedTimeStep();
+
         glm::vec2 steeringForce = steering->Calculate();
-        rigidbodyComponent->AddForce(steeringForce);
+        rigidbodyComponent->AddForce(steeringForce * fixedTimeStep * 60.f);
 
         const glm::vec2 velocityDirection = mlg::Math::SafeNormal(rigidbodyComponent->GetLinearVelocity());
         if (glm::length(velocityDirection) > 0.f) {
