@@ -1,31 +1,30 @@
-#include "UI/Components/Containers/VerticalBox.h"
+#include "UI/Components/Containers/HorizontalBox.h"
 #include "UI/Components/UIFocusableComponent.h"
 
-mlg::VerticalBox::VerticalBox(std::weak_ptr<Entity> owner, std::string name)
-    : Container(owner, name) {}
+mlg::HorizontalBox::HorizontalBox(
+        std::weak_ptr<Entity> owner, const std::string& name)
+    : Container(std::move(owner), name) {}
 
-mlg::VerticalBox::~VerticalBox(){
+mlg::HorizontalBox::~HorizontalBox() = default;
 
-};
-
-void mlg::VerticalBox::UpdateContainer() {
+void mlg::HorizontalBox::UpdateContainer() {
     if (children.empty()) return;
 
     glm::vec2 position = GetPosition();
     glm::vec2 size = GetSize();
     glm::vec2 firstSize = children.front().lock()->GetSize();
-    float y = -size.y / 2.0f + position.y;
+    float x = -size.x / 2.0f + position.x;
 
     for (auto& child : children) {
-        y += child.lock()->GetSize().y * 0.5f;
-        child.lock()->SetRelativePosition(glm::vec2{position.x, y});
-        y += child.lock()->GetSize().y * 0.5f;
+        x += child.lock()->GetSize().x * 0.5f;
+        child.lock()->SetRelativePosition(glm::vec2{x, position.y});
+        x += child.lock()->GetSize().x * 0.5f;
     }
 
     UpdateFocusableComponents();
 }
 
-void mlg::VerticalBox::UpdateFocusableComponents() {
+void mlg::HorizontalBox::UpdateFocusableComponents() {
     std::vector<std::weak_ptr<UIFocusableComponent>> focusableComponents;
 
     for (auto& child : children) {
@@ -39,9 +38,9 @@ void mlg::VerticalBox::UpdateFocusableComponents() {
     }
 
     for (int i = 0; i < focusableComponents.size(); i++) {
-        focusableComponents[i].lock()->next.bottom =
+        focusableComponents[i].lock()->next.left =
                 focusableComponents[(i - 1) % focusableComponents.size()];
-        focusableComponents[i].lock()->next.top =
+        focusableComponents[i].lock()->next.right =
                 focusableComponents[(i + 1) % focusableComponents.size()];
     }
 }
