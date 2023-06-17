@@ -113,3 +113,11 @@ uint32_t DirectionalLight::GetShadowMap() {
     return shadowMapTexture;
 }
 
+void mlg::DirectionalLight::Stop() {
+    if (instance == nullptr)
+        return;
+
+    delete instance;
+    instance = nullptr;
+}
+

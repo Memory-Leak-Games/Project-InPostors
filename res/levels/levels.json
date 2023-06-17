@@ -1,0 +1,17 @@
+[
+    {
+        "name": "San Domierz",
+        "material": "res/materials/ui/error_material.json",
+        "path": "res/levels/maps/small_city.json"
+    },
+    {
+        "name": "Zeszuf",
+        "material": "res/materials/ui/error_material.json",
+        "path": "res/levels/maps/test_level.json"
+    },
+    {
+        "name": "El Uc",
+        "material": "res/materials/ui/error_material.json",
+        "path": "res/levels/maps/boat_city.json"
+    }
+]

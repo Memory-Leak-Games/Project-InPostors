@@ -1,10 +1,6 @@
 #pragma once
 
 #include "Core/SceneManager/Scene.h"
-#include "UI/Components/Containers/CanvasPanel.h"
-#include "UI/Components/Label.h"
-#include <array>
-#include <memory>
 
 namespace mlg {
     class Container;
@@ -12,12 +8,17 @@ namespace mlg {
     class Image;
     class Button;
     class Label;
+    class OptionSelector;
+    class Entity;
 }// namespace mlg
 
 class MenuScene : public mlg::Scene {
 private:
     std::weak_ptr<mlg::CanvasPanel> mainMenuContainer;
     std::weak_ptr<mlg::CanvasPanel> creditsContainer;
+    std::weak_ptr<mlg::CanvasPanel> settingsContainer;
+
+    std::weak_ptr<mlg::CanvasPanel> levelSelector;
 
 public:
     explicit MenuScene() = default;
@@ -33,5 +34,25 @@ private:
     void BindToOnSettings(mlg::Button& button);
 
     void InitializeCredits();
-    void BindToOnCreditsBack(mlg::Button& button);
+
+    void InitializeSettings();
+    void BindToOnApply(mlg::Button& button,
+                       mlg::OptionSelector& windowMode,
+                       mlg::OptionSelector& graphicsMode,
+                       mlg::OptionSelector& volume);
+    void LoadSettings(mlg::OptionSelector& windowMode,
+                      mlg::OptionSelector& graphicsMode,
+                      mlg::OptionSelector& volume);
+
+    void BindToBackToMainMenu(mlg::Button& button, mlg::Container& container);
+
+    void SetWindowSettings(mlg::OptionSelector& windowMode);
+    void SetGraphicsSettings(mlg::OptionSelector& graphicsMode);
+    void SetVolumeSettings(mlg::OptionSelector& volume);
+
+    void InitializeLevelSelector();
+    std::weak_ptr<mlg::Button> LoadLevelButton(
+        const nlohmann::json& levelsJson, mlg::Entity* entity);
+
+    void LoadBackgroundLevel(const std::string& backgroundPath);
 };

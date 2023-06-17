@@ -10,6 +10,7 @@ namespace mlg {
 
     protected:
         void UpdateContainer() override;
+        glm::vec2 GetSize() const override;
 
     private:
         void UpdateFocusableComponents();

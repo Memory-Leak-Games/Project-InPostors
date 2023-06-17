@@ -150,10 +150,14 @@ namespace mlg {
         return wrappedText.str();
     }
 
+    glm::vec2 Label::GetSize() const {
+        return GetTextSize() + GetPadding();
+    }
+
     void Label::CalculateActualPosition(const UIRenderer* renderer, const glm::vec2& position) {
         glm::vec2 alignedPosition = position;
 
-        glm::vec2 labelSize = GetSize();
+        glm::vec2 labelSize = GetTextSize();
 
         if (horizontalAlignment == HorizontalAlignment::Center)
             alignedPosition -= glm::vec2(labelSize.x / 2.f, 0.f);
@@ -173,7 +177,7 @@ namespace mlg {
     Label::Label(std::weak_ptr<Entity> owner, std::string name)
         : Label(owner, name, AssetManager::GetAsset<FontAsset>("res/fonts/terminus-bold.ttf")) {}
 
-    glm::vec2 Label::GetSize() const {
+    glm::vec2 Label::GetTextSize() const {
         glm::vec2 result{0.f};
 
         // Calculate size of label
@@ -197,6 +201,6 @@ namespace mlg {
 
         result.x = std::max(maxHorizontal, result.x);
 
-        return result + glm::vec2(padding);
+        return result;
     }
 }// namespace mlg

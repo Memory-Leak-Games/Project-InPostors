@@ -1,11 +1,10 @@
 #pragma once
 
-#include <memory>
 namespace mlg {
     class ButtonBuilder {
         std::string name = "Button";
 
-        glm::vec2 size {200.f, 50.f};
+        glm::vec2 size{200.f, 50.f};
         float padding = 10.f;
         std::shared_ptr<class MaterialAsset> defaultMaterial;
         std::shared_ptr<MaterialAsset> focusMaterial;
@@ -33,7 +32,11 @@ namespace mlg {
 
         ButtonBuilder& SetAnchor(const glm::vec2& anchor);
 
-        std::weak_ptr<class Button> Build(class Entity* owner);
+        std::weak_ptr<class Button> BuildButton(class Entity* owner);
+        std::weak_ptr<class OptionSelector> BuildSelector(Entity* owner);
+        std::weak_ptr<class ImageButton> BuildImageButton(
+                Entity* owner,
+                const std::string& imageMaterialPath);
     };
 
-}
+}// namespace mlg

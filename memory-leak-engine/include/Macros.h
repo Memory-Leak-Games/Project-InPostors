@@ -37,6 +37,11 @@ namespace LoggingMacros {
         std::terminate();                        \
     } while (false)
 
+#define MLG_UNIMPLEMENTED_SOFT         \
+    do {                               \
+        SPDLOG_ERROR("Unimplemented"); \
+    } while (false)
+
 #else
 #define MLG_ASSERT_MSG(condition, message) \
     do {                                   \
@@ -47,16 +52,19 @@ namespace LoggingMacros {
 #define MLG_UNIMPLEMENTED \
     do {                  \
     } while (false)
+#define MLG_UNIMPLEMENTED_SOFT \
+    do {                       \
+    } while (false)
 #endif
 
 #ifndef DEBUG
 #undef TRACY_ENABLE
 #endif
 
+#include "common/TracyColor.hpp"
 #include "glad/glad.h"
 #include "tracy/Tracy.hpp"
 #include "tracy/TracyOpenGL.hpp"
-#include "common/TracyColor.hpp"
 
 // Get x bit
 #define MLG_BIT(x) (1 << x)

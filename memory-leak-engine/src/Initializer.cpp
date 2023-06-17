@@ -9,6 +9,7 @@
 #include "Core/Window.h"
 #include "Core/HID/Input.h"
 
+#include "Rendering/DirectionalLight.h"
 #include "Rendering/RenderingAPI.h"
 #include "Rendering/Renderer.h"
 #include "Rendering/Gizmos/Gizmos.h"
@@ -37,7 +38,6 @@ void mlg::Initializer::InitializeCoreComponents() {
 
     Core::Initialize();
     Input::Initialize();
-    UIController::Initialize();
 
     RenderingAPI::Initialize();
     Gizmos::Initialize();
@@ -51,7 +51,6 @@ void mlg::Initializer::StopCoreComponents() {
     Gizmos::Stop();
     RenderingAPI::Stop();
 
-    UIController::Stop();
     Input::Stop();
     Core::Stop();
 
@@ -65,6 +64,7 @@ void mlg::Initializer::StopCoreComponents() {
 }
 
 void mlg::Initializer::InitializeSceneComponents() {
+    UIController::Initialize();
     Renderer::Initialize();
     UIRenderer::Initialize();
     CommonUniformBuffer::Initialize();
@@ -82,6 +82,8 @@ void mlg::Initializer::StopSceneComponents() {
     EntityManager::Stop();
     ComponentManager::Stop();
 
+    DirectionalLight::Stop();
+
     Physics::Stop();
     TimerManager::Stop();
 
@@ -90,4 +92,5 @@ void mlg::Initializer::StopSceneComponents() {
     CommonUniformBuffer::Stop();
     UIRenderer::Stop();
     Renderer::Stop();
+    UIController::Stop();
 }

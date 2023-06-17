@@ -1,5 +1,6 @@
 #include "UI/Components/Containers/VerticalBox.h"
 #include "UI/Components/UIFocusableComponent.h"
+#include <glm/fwd.hpp>
 
 mlg::VerticalBox::VerticalBox(std::weak_ptr<Entity> owner, std::string name)
     : Container(owner, name) {}
@@ -23,6 +24,18 @@ void mlg::VerticalBox::UpdateContainer() {
     }
 
     UpdateFocusableComponents();
+}
+
+glm::vec2 mlg::VerticalBox::GetSize() const {
+    glm::vec2 size;
+
+    for (auto& child : children) {
+        glm::vec2 childSize = child.lock()->GetSize();
+        size.x = std::max(size.x, childSize.x);
+        size.y += childSize.y;
+    }
+
+    return size + glm::vec2(padding);
 }
 
 void mlg::VerticalBox::UpdateFocusableComponents() {
