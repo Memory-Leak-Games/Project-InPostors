@@ -29,8 +29,8 @@ std::shared_ptr<PauseMenu> PauseMenu::Create(
     pauseMenu->background = pauseMenu->AddComponent<mlg::Image>(
             "Background",
             mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BACKGROUND_MATERIAL));
-    pauseMenu->background.lock()->SetSize(glm::vec2(BUTTON_SIZE.x * 1.25, 4 * 720));
-    pauseMenu->background.lock()->SetPosition(BUTTON_BASE_POSITION);
+    pauseMenu->background.lock()->SetSize(BACKGROUND_SIZE);
+    pauseMenu->background.lock()->SetRelativePosition(BUTTON_BASE_POSITION);
 
     pauseMenu->AddResumeButton();
     pauseMenu->AddExitButton();
@@ -52,7 +52,7 @@ void PauseMenu::AddResumeButton() {
 
     auto sharedResumeButton = resumeButton.lock();
     sharedResumeButton->SetSize(BUTTON_SIZE);
-    sharedResumeButton->SetPosition(BUTTON_BASE_POSITION + glm::vec2(0.f, 30.f));
+    sharedResumeButton->SetRelativePosition(BUTTON_BASE_POSITION + glm::vec2(0.f, 30.f));
     sharedResumeButton->GetLabel().lock()->SetTextColor(glm::vec3(0.f));
     sharedResumeButton->GetLabel().lock()->SetText("Resume");
 
@@ -71,7 +71,7 @@ void PauseMenu::AddExitButton() {
 
     auto sharedExitButton = exitButton.lock();
     sharedExitButton->SetSize(BUTTON_SIZE);
-    sharedExitButton->SetPosition(BUTTON_BASE_POSITION + glm::vec2(0.f, -30.f));
+    sharedExitButton->SetRelativePosition(BUTTON_BASE_POSITION + glm::vec2(0.f, -30.f));
     sharedExitButton->GetLabel().lock()->SetTextColor(glm::vec3(0.f));
     sharedExitButton->GetLabel().lock()->SetText("Exit");
 

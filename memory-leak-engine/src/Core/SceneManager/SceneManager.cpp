@@ -37,11 +37,11 @@ void mlg::SceneManager::Stop() {
 void mlg::SceneManager::SetNextScene(std::unique_ptr<Scene> scene) {
     instance->nextScene = std::move(scene);
 
-    if (mlg::Core::GetInstance()->IsClosed()) {
+    if (mlg::Core::Get()->IsClosed()) {
         return;
     }
 
-    mlg::Core::GetInstance()->Close();
+    mlg::Core::Get()->Close();
 }
 
 void mlg::SceneManager::LoadNextScene() {
@@ -56,7 +56,7 @@ void mlg::SceneManager::LoadNextScene() {
 
     instance->currentScene = std::move(instance->nextScene);
     instance->currentScene->Load();
-    mlg::Core::GetInstance()->MainLoop();
+    mlg::Core::Get()->MainLoop();
 }
 
 bool mlg::SceneManager::HasNextScene() {
@@ -71,7 +71,7 @@ void mlg::SceneManager::Update() {
 }
 
 void mlg::SceneManager::ExitGame() {
-    mlg::Core::GetInstance()->Close();
+    mlg::Core::Get()->Close();
 }
 
 mlg::Scene* mlg::SceneManager::GetCurrentScene() {

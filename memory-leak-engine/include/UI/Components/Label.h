@@ -49,6 +49,8 @@ namespace mlg {
         void SetHorizontalAlignment(HorizontalAlignment alignment);
         void SetVerticalAlignment(VerticalAlignment alignment);
 
-        glm::vec2 GetLabelSize() const;
+        static std::string WrapText(const std::string& text, int lineLength);
+
+        glm::vec2 GetSize() const override;
     };
 }// namespace mlg

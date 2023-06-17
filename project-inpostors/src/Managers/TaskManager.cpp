@@ -1,6 +1,10 @@
 #include "Managers/TaskManager.h"
 #include "Core/TimerManager.h"
+#include "Managers/ScoreManager.h"
+#include "Utils/ProductManager.h"
+#include <cstddef>
 #include <spdlog/spdlog.h>
+#include <vector>
 
 using Random = effolkronium::random_static;
 
@@ -28,10 +32,16 @@ void TaskManager::AddTaskToPool(const TaskData& newTaskData) {
 }
 
 bool TaskManager::FinishTask(const std::string& productId) {
-    std::vector<size_t> activeProductTasks;
+    auto timeComparator = [](const Task* a, const Task* b) {
+        return a->timeLeft < b->timeLeft;
+    };
+
+    std::set<const Task*, decltype(timeComparator)> activeProductTasks;
+
+    // Find all active tasks for these products
     for (const auto& [id, task] : tasks) {
         if (task.productId == productId && task.active) {
-            activeProductTasks.push_back(id);
+            activeProductTasks.insert(&task);
         }
     }
 
@@ -39,18 +49,36 @@ bool TaskManager::FinishTask(const std::string& productId) {
     if (activeProductTasks.empty())
         return false;
 
-    auto timeComparator = [this](const size_t a, const size_t b) {
-        return tasks[a].timeLeft < tasks[b].timeLeft;
-    };
+    // Select the task with the least time left but if there are tasks that
+    // have not already ended, select the oldest one
+    const Task* taskToFinish = *activeProductTasks.begin();
+    auto oldestTaskButNotEnded = std::ranges::find_if(
+            activeProductTasks,
+            [this](const Task* task) {
+                return task->timeLeft > 0;
+            });
 
-    size_t taskToFinish = std::min_element(
-            activeProductTasks.begin(),
-            activeProductTasks.end(),
-            timeComparator)[0];
+    if (oldestTaskButNotEnded != activeProductTasks.end()) {
+        taskToFinish = *oldestTaskButNotEnded;
+    }
 
-    SPDLOG_DEBUG("Finished task: {}", taskToFinish);
-    RemoveTask(taskToFinish);
+    RemoveTask(taskToFinish->id);
     return true;
+}
+
+void TaskManager::SellProduct(const std::string& productId) {
+    const Product& product = ProductManager::Get()->GetProduct(productId);
+    OnProductSold(product.price);
+}
+
+bool TaskManager::HasTask(const std::string& productId) {
+    std::vector<size_t> activeProductTasks = GetActiveTasksIds();
+
+    return std::ranges::any_of(
+            activeProductTasks,
+            [this, &productId](const size_t id) {
+                return tasks[id].productId == productId;
+            });
 }
 
 TaskData TaskManager::GetTask(size_t id) {
@@ -93,7 +121,7 @@ std::vector<TaskData> TaskManager::GetActiveTasks(const std::string& productId) 
                         return task.productId != productId;
                     }),
             activeTasks.end());
-    
+
     return activeTasks;
 }
 
@@ -143,4 +171,16 @@ void TaskManager::RemoveTask(size_t id) {
     OnTaskFinished(taskData);
 
     tasks.erase(id);
+}
+
+std::vector<size_t> TaskManager::GetActiveTasksIds() {
+    std::vector<size_t> ids;
+
+    for (const auto& [id, task] : tasks) {
+        if (task.active) {
+            ids.push_back(id);
+        }
+    }
+
+    return ids;
 }

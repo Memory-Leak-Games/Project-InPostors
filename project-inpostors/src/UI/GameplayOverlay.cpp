@@ -125,7 +125,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
 
     result->taskManager->GetTaskManager().OnTaskAccepted.append([result](const TaskData& taskData) {
 
-        auto productManager = ProductManager::GetInstance();
+        auto productManager = ProductManager::Get();
         auto blueprintManager = BlueprintManager::Get();
         int count = result->taskManager->GetTaskManager().GetActiveTasksCount();
         auto tasks = result->taskManager->GetTaskManager().GetActiveTasks();
@@ -144,7 +144,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     });
 
     result->taskManager->GetTaskManager().OnTaskFinished.append([result](const TaskData& taskData) {
-        auto productManager = ProductManager::GetInstance();
+        auto productManager = ProductManager::Get();
         auto blueprintManager = BlueprintManager::Get();
         int count = result->taskManager->GetTaskManager().GetActiveTasksCount();
         auto tasks = result->taskManager->GetTaskManager().GetActiveTasks();
@@ -174,7 +174,7 @@ void GameplayOverlay::Start() {
      */
     auto tasks = taskManager->GetTaskManager().GetActiveTasks();
     int taskCount = taskManager->GetTaskManager().GetActiveTasksCount();
-    auto productManager = ProductManager::GetInstance();
+    auto productManager = ProductManager::Get();
 
     for(int i = taskCount - 1; i >= 0; --i) {
         UpdateTask(i);
@@ -240,7 +240,7 @@ void GameplayOverlay::SetClock(float time) {
 }
 
 void GameplayOverlay::UpdateTask(int idx) {
-    auto productManager = ProductManager::GetInstance();
+    auto productManager = ProductManager::Get();
     auto blueprintManager = BlueprintManager::Get();
     auto tasks = taskManager->GetTaskManager().GetActiveTasks();
 

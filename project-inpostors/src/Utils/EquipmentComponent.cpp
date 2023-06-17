@@ -10,6 +10,7 @@ bool EquipmentComponent::AddProduct(const std::string& product) {
 
     equipment.push_back(product);
     equipmentChanged();
+    productAdded();
     return true;
 }
 
@@ -20,16 +21,30 @@ bool EquipmentComponent::RequestProduct(const std::string& product) {
 
     equipment.erase(foundIterator);
     equipmentChanged();
+    productRemoved();
     return true;
+}
+
+std::string EquipmentComponent::RequestOldestProduct() {
+    if (equipment.empty())
+        return "none";
+
+    std::string product = equipment.front();
+    equipment.erase(equipment.begin());
+    equipmentChanged();
+    productRemoved();
+
+    return product;
 }
 
 std::string EquipmentComponent::RequestProduct() {
     if (equipment.empty())
         return "none";
 
-    std::string product = equipment.front();
+    std::string product = equipment.back();
     equipment.pop_back();
     equipmentChanged();
+    productRemoved();
     
     return product;
 }
@@ -64,6 +79,10 @@ std::string EquipmentComponent::ToString() const {
 
 bool EquipmentComponent::IsFull() const {
     return equipment.size() >= size;
+}
+
+bool EquipmentComponent::IsEmpty() const {
+    return equipment.empty();
 }
 
 const std::vector<std::string> EquipmentComponent::GetEquipment() const {

@@ -27,13 +27,13 @@
   "type": "SeparateInputOutput",
 
   "input": {
-    "offset": [1.5, 7.5],
-    "size": [16.0, 4.0]
+    "offset": [1.5, 8.0],
+    "size": [16.0, 5.0]
   },
 
   "output": {
     "offset": [1.5, -7.2],
-    "size": [16.0, 4.0]
+    "size": [16.0, 5.0]
   },
 
   "emitters": [

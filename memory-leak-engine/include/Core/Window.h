@@ -3,7 +3,16 @@
 #include "Events/Event.h"
 #include "GLFW/glfw3.h"
 
+#define DEFAULT_VIDEO_SETTINGS_PATH "res/config/settings/video.json"
+#define VIDEO_SETTINGS_PATH "res/runtime_files/video.json"
+
 namespace mlg {
+
+    enum class WindowType {
+        Windowed,
+        Borderless,
+        Fullscreen,
+    };
 
     class Window {
     private:
@@ -16,13 +25,26 @@ namespace mlg {
             int32_t height;
             float aspectRatio;
             bool vSync;
+            bool fullscreen;
 
-            eventpp::EventDispatcher<EventType, void (const Event &), EventPolicies> eventDispatcher;
+            eventpp::EventDispatcher<EventType, void(const Event&), EventPolicies> eventDispatcher;
         };
 
         WindowData windowData;
+
+        struct WindowSettings {
+            std::string title;
+            WindowType type;
+            int32_t width;
+            int32_t height;
+            bool lockSize;
+            bool vSync;
+        } windowSettings;
+
+        bool isWindowVisible = false;
+
     public:
-        Window() = delete;
+        Window();
 
         static void Initialize(std::string title);
         static void Stop();
@@ -35,24 +57,28 @@ namespace mlg {
 
         virtual void SetWindowHint(int hint, int value);
         virtual void SetVerticalSync(bool isEnabled);
+        virtual void SetWindowType(WindowType type);
+        virtual void SetResolution(glm::ivec2 resolution);
         virtual bool GetVerticalSync();
 
         virtual int32_t GetWidth();
         virtual int32_t GetHeight();
         virtual float GetAspectRatio();
 
-        virtual eventpp::EventDispatcher<EventType, void (const Event &), EventPolicies>* GetEventDispatcher();
+        virtual eventpp::EventDispatcher<EventType, void(const Event&), EventPolicies>* GetEventDispatcher();
 
         virtual void SwapBuffers();
         virtual void PollEvents();
+        virtual void Update();
+
+        virtual void SetIcon(const std::string& path);
 
 #ifdef DEBUG
         virtual void ImGuiInit();
 #endif
 
     private:
-        Window(std::string title, int32_t width, int32_t height, float aspectRatio);
-
+        virtual void CreateWindow();
         virtual int32_t SetupWindow();
         void SetupCallbacks();
 
@@ -60,8 +86,13 @@ namespace mlg {
 
         void SetWindowContext() const;
         void SetWindowSettings() const;
-        GLFWmonitor* GetMonitor();
+        GLFWmonitor* GetMonitor() const;
 
         void SetGamepadMappings() const;
+
+        void LoadWindowSettings();
+
+        glm::ivec2 GetMonitorResolution() const;
+        glm::ivec2 GetMonitorCenter() const;
     };
-}
+}// namespace mlg

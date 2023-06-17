@@ -71,7 +71,7 @@ void StartLevelCountdown::SetTimeToStart(int timeToStart) {
 void StartLevelCountdown::InitializeCountdownLabel() {
     countdownLabel = AddComponent<mlg::Label>("CountdownLabel");
     auto sharedCountdownLabel = countdownLabel.lock();
-    sharedCountdownLabel->SetPosition(MLG_POS_CENTER);
+    sharedCountdownLabel->SetRelativePosition(MLG_POS_CENTER);
     sharedCountdownLabel->SetAnchor(MLG_ANCHOR_CENTER);
     sharedCountdownLabel->SetSize(100.f);
     sharedCountdownLabel->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);

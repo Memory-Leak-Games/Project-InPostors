@@ -22,7 +22,7 @@ namespace mlg {
         static void Initialize();
         static void Stop();
 
-        static Core* GetInstance();
+        static Core* Get();
 
         void MainLoop();
 

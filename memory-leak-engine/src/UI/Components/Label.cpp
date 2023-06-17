@@ -4,7 +4,9 @@
 #include "glad/glad.h"
 
 #include <glm/fwd.hpp>
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "Core/AssetManager/AssetManager.h"
 #include "UI/Assets/FontAsset.h"
@@ -129,10 +131,29 @@ namespace mlg {
         actualPositionDirty = true;
     }
 
+    std::string Label::WrapText(const std::string& text, int lineLength) {
+        std::istringstream iss(text);
+        std::ostringstream wrappedText;
+
+        std::string word;
+        int currentLineLength = 0;
+
+        while (iss >> word) {
+            if (currentLineLength + word.length() > lineLength) {
+                wrappedText << '\n';
+                currentLineLength = 0;
+            }
+            wrappedText << word << ' ';
+            currentLineLength += word.length() + 1;
+        }
+
+        return wrappedText.str();
+    }
+
     void Label::CalculateActualPosition(const UIRenderer* renderer, const glm::vec2& position) {
         glm::vec2 alignedPosition = position;
 
-        glm::vec2 labelSize = GetLabelSize();
+        glm::vec2 labelSize = GetSize();
 
         if (horizontalAlignment == HorizontalAlignment::Center)
             alignedPosition -= glm::vec2(labelSize.x / 2.f, 0.f);
@@ -140,7 +161,9 @@ namespace mlg {
             alignedPosition -= glm::vec2(labelSize.x, 0.f);
 
         if (verticalAlignment == VerticalAlignment::Center)
-            alignedPosition += glm::vec2(0.f, labelSize.y / 2.f);
+            alignedPosition += glm::vec2(
+                    0.f,
+                    (labelSize.y - ((float) font->fontSize * scale * 0.51f)) / 2.f);
         else if (verticalAlignment == VerticalAlignment::Down)
             alignedPosition += glm::vec2(0.f, labelSize.y);
 
@@ -150,7 +173,7 @@ namespace mlg {
     Label::Label(std::weak_ptr<Entity> owner, std::string name)
         : Label(owner, name, AssetManager::GetAsset<FontAsset>("res/fonts/terminus-bold.ttf")) {}
 
-    glm::vec2 Label::GetLabelSize() const {
+    glm::vec2 Label::GetSize() const {
         glm::vec2 result{0.f};
 
         // Calculate size of label
@@ -173,8 +196,7 @@ namespace mlg {
         }
 
         result.x = std::max(maxHorizontal, result.x);
-        result.y -= (float) font->fontSize * scale * 0.5f;
 
-        return result;
+        return result + glm::vec2(padding);
     }
 }// namespace mlg
