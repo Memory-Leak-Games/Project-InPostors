@@ -5,7 +5,7 @@
     {
       "type": "vec4",
       "name": "color",
-      "value": [0.7, 0.7, 0.7, 0.8]
+      "value": [1.0, 1.0, 1.0, 0.6]
     }
   ],
   "textures": []
