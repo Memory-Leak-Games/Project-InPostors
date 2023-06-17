@@ -53,4 +53,6 @@ private:
     void InitializeLevelSelector();
     std::weak_ptr<mlg::Button> LoadLevelButton(
         const nlohmann::json& levelsJson, mlg::Entity* entity);
+
+    void LoadBackgroundLevel(const std::string& backgroundPath);
 };

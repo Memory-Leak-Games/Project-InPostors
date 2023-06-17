@@ -6,8 +6,10 @@
 #include "Core/SceneManager/SceneManager.h"
 #include "Core/Settings/SettingsManager.h"
 #include "Core/Window.h"
+#include "Gameplay/Components/CameraComponent.h"
 #include "Gameplay/Entity.h"
 #include "Gameplay/EntityManager.h"
+#include "Levels/LevelGenerator.h"
 #include "Macros.h"
 #include "Managers/AudioManager.h"
 #include "Rendering/Assets/MaterialAsset.h"
@@ -39,22 +41,13 @@
 #include <string>
 
 #define LEVELS_FILE "res/levels/levels.json"
+#define BACKGROUND_LEVEL "res/levels/maps/menu_level.json"
 
 MenuScene::~MenuScene() = default;
 
 void MenuScene::Load() {
     auto entity = mlg::EntityManager::SpawnEntity<mlg::Entity>(
             "MenuBackground", false, mlg::SceneGraph::GetRoot());
-
-    // TODO: Remove this
-    auto catMat =
-            mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/cat_ui_material.json");
-    auto catIm = entity.lock()->AddComponent<mlg::Image>("Water", catMat);
-    catIm.lock()->SetSize(MLG_FULL_SIZE);
-    catIm.lock()->SetAnchor(MLG_ANCHOR_CENTER);
-    catIm.lock()->SetRelativePosition(MLG_POS_CENTER);
-
-
     InitializeMainMenu();
     mainMenuContainer.lock()->GrabFocus();
 
@@ -66,6 +59,8 @@ void MenuScene::Load() {
 
     InitializeLevelSelector();
     levelSelector.lock()->SetVisible(false);
+
+    LoadBackgroundLevel(BACKGROUND_LEVEL);
 }
 
 void MenuScene::InitializeMainMenu() {
@@ -476,7 +471,15 @@ void MenuScene::InitializeLevelSelector() {
     levelSelector.lock()->SetAnchor(MLG_ANCHOR_CENTER);
     levelSelector.lock()->SetRelativePosition(MLG_POS_CENTER);
 
+    auto material =
+            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BACKGROUND_MATERIAL);
+    auto background =
+            entity.lock()->AddComponent<mlg::Image>("MenuBackground", material);
+    background.lock()->SetSize(PANEL_SIZE);
+    levelSelector.lock()->AddChild(background);
+
     auto hbox = entity.lock()->AddComponent<mlg::HorizontalBox>("HBox");
+    hbox.lock()->SetRelativePosition(glm::vec2(0.f, 60.f));
     levelSelector.lock()->AddChild(hbox);
 
     mlg::ButtonBuilder buttonBuilder;
@@ -487,10 +490,10 @@ void MenuScene::InitializeLevelSelector() {
                               .SetName("BackButton")
                               .SetText("Back")
                               .BuildButton(entity.lock().get());
-    backButton.lock()->SetRelativePosition(-glm::vec2(0.f, 200.f));
+    backButton.lock()->SetRelativePosition(-glm::vec2(0.f, 140.f));
     BindToBackToMainMenu(*backButton.lock(), *levelSelector.lock());
     levelSelector.lock()->AddChild(backButton);
-    
+
     std::ifstream fileStream(LEVELS_FILE);
     nlohmann::json levelsJson = nlohmann::json::parse(fileStream);
 
@@ -508,13 +511,12 @@ void MenuScene::InitializeLevelSelector() {
 
         i++;
     }
-
 }
 
 std::weak_ptr<mlg::Button> MenuScene::LoadLevelButton(
         const nlohmann::json& levelsJson, mlg::Entity* entity) {
-    glm::vec2 buttonSize {BUTTON_SIZE.x};
-        
+    glm::vec2 buttonSize{BUTTON_SIZE.x};
+
     auto levelButton = mlg::ButtonBuilder()
                                .SetSize(buttonSize)
                                .SetAnchor(MLG_ANCHOR_CENTER)
@@ -535,4 +537,20 @@ std::weak_ptr<mlg::Button> MenuScene::LoadLevelButton(
             });
 
     return levelButton;
+}
+
+void MenuScene::LoadBackgroundLevel(const std::string& backgroundPath) {
+    auto cameraEntity =
+            mlg::EntityManager::SpawnEntity<mlg::Entity>(
+                    "Camera", false, mlg::SceneGraph::GetRoot());
+    auto cameraComponent =
+            cameraEntity.lock()->AddComponent<mlg::CameraComponent>("CameraComponent");
+
+    mlg::LevelGenerator::LoadMap(backgroundPath);
+    mlg::LevelGenerator::SpawnGroundAndWater(backgroundPath);
+    mlg::LevelGenerator::SetCityBounds(backgroundPath);
+    mlg::LevelGenerator::LoadCameraSettings(backgroundPath,
+                                            *cameraComponent.lock());
+
+
 }
