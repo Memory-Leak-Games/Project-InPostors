@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glm/fwd.hpp>
 #include <utility>
 
 #include "Gameplay/Component.h"
@@ -19,6 +20,7 @@ namespace mlg {
      */
     class UIComponent : public Component, public UIRenderable {
     private:
+        glm::vec2 relativePosition = {0.0f, 0.0f};
         glm::vec2 position = {0.0f, 0.0f};
 
     protected:
@@ -42,6 +44,7 @@ namespace mlg {
         virtual void CalculateActualPosition(const UIRenderer* renderer, const glm::vec2& position);
         void FollowTarget(const struct UIRenderer* renderer);
 
+
     public:
         std::weak_ptr<UIRenderable> thisAsRenderable;
 
@@ -50,14 +53,14 @@ namespace mlg {
         void Start() override;
         void Draw(const class UIRenderer* renderer) override;
 
-        [[nodiscard]] const glm::vec2& GetPosition() const;
+        [[nodiscard]] const glm::vec2& GetRelativePosition() const;
         [[nodiscard]] const glm::vec2& GetAnchor() const;
         [[nodiscard]] virtual glm::vec2 GetSize() const = 0;
         [[nodiscard]] bool IsBillboard() const;
         [[nodiscard]] const std::weak_ptr<struct Entity>& GetBillboardTarget() const;
         [[nodiscard]] bool IsVisible() const;
 
-        virtual void SetPosition(const glm::vec2& position);
+        virtual void SetRelativePosition(const glm::vec2& position);
         virtual void SetAnchor(const glm::vec2& anchor);
         void SetIsBillboard(bool isBillboard);
         void SetBillboardTarget(const std::weak_ptr<struct Entity>& billboardTarget);
@@ -67,5 +70,9 @@ namespace mlg {
         float GetPadding() const;
 
         void SetAutoRegister(bool autoRegister);
+
+        // Do not use this method. It is only for Containers
+        virtual void SetPosition(const glm::vec2& position);
+        glm::vec2 GetPosition() const;
     };
 }// namespace mlg

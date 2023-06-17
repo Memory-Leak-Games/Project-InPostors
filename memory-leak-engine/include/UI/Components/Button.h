@@ -32,7 +32,7 @@ namespace mlg {
         [[nodiscard]] const std::weak_ptr<Label>& GetLabel() const;
 
         void SetVisible(bool visible) override;
-        void SetPosition(const glm::vec2& position) override;
+        void SetRelativePosition(const glm::vec2& position) override;
         void SetAnchor(const glm::vec2& anchor) override;
     };
 }// namespace mlg

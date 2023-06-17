@@ -51,6 +51,14 @@ namespace mlg {
         this->autoRegister = autoRegister;
     }
 
+    glm::vec2 UIComponent::GetPosition() const {
+        return position;
+    }
+
+    void UIComponent::SetPosition(const glm::vec2& position) {
+        UIComponent::position = position;
+    }
+
     void UIComponent::Draw(const UIRenderer* renderer) {
         if (!isBillboard) {
             if (renderer->windowSizeDirty || actualPositionDirty) {
@@ -66,16 +74,18 @@ namespace mlg {
         }
     }
 
-    const glm::vec2& UIComponent::GetPosition() const {
-        return position;
+    const glm::vec2& UIComponent::GetRelativePosition() const {
+        return relativePosition;
     }
 
     const glm::vec2& UIComponent::GetAnchor() const {
         return anchor;
     }
 
-    void UIComponent::SetPosition(const glm::vec2& position) {
+    void UIComponent::SetRelativePosition(const glm::vec2& position) {
+        UIComponent::relativePosition = position;
         UIComponent::position = position;
+
         actualPositionDirty = true;
     }
 

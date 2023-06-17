@@ -92,9 +92,9 @@ namespace mlg {
         label.lock()->SetVisible(visible);
     }
 
-    void Button::SetPosition(const glm::vec2& position) {
-        UIComponent::SetPosition(position);
-        label.lock()->SetPosition(position);
+    void Button::SetRelativePosition(const glm::vec2& position) {
+        UIComponent::SetRelativePosition(position);
+        label.lock()->SetRelativePosition(position);
     }
 
     void Button::SetAnchor(const glm::vec2& anchor) {

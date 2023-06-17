@@ -127,7 +127,7 @@ void Storage::GenerateUI() {
 
     temp->SetSize({64.f, 64.f});
     temp->SetBillboardTarget(shared_from_this());
-    temp->SetPosition({0.f, 112.f});
+    temp->SetRelativePosition({0.f, 112.f});
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
             "res/materials/ui/icon/storage_material.json");
@@ -135,5 +135,5 @@ void Storage::GenerateUI() {
     temp = AddComponent<mlg::Image>("StorageIcon", material).lock();
     temp->SetSize({20.f, 20.f});
     temp->SetBillboardTarget(shared_from_this());
-    temp->SetPosition({0.f, 112.f});
+    temp->SetRelativePosition({0.f, 112.f});
 }

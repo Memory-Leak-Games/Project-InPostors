@@ -3,9 +3,9 @@
 #include "UI/Components/UIFocusableComponent.h"
 
 mlg::Container::Container(std::weak_ptr<Entity> owner, std::string name)
-: UIComponent(owner, name) { }
+    : UIComponent(owner, name) {}
 
-mlg::Container::~Container() { };
+mlg::Container::~Container(){};
 
 void mlg::Container::Start() {
     UpdateContainer();
@@ -18,10 +18,15 @@ void mlg::Container::AddChild(std::weak_ptr<UIComponent> child) {
 }
 
 void mlg::Container::RemoveChild(std::weak_ptr<UIComponent> child) {
-    children.remove_if([child](std::weak_ptr<UIComponent> another){
+    children.remove_if([child](std::weak_ptr<UIComponent> another) {
         return child.lock() == another.lock();
     });
 
+    UpdateContainer();
+}
+
+void mlg::Container::SetRelativePosition(const glm::vec2& position) {
+    UIComponent::SetRelativePosition(position);
     UpdateContainer();
 }
 
@@ -35,7 +40,7 @@ void mlg::Container::SetAnchor(const glm::vec2& anchor) {
 
     for (auto& child : children) {
         child.lock()->SetAnchor(anchor);
-    }    
+    }
 }
 
 glm::vec2 mlg::Container::GetSize() const {
@@ -45,21 +50,18 @@ glm::vec2 mlg::Container::GetSize() const {
         glm::vec2 childSize = child.lock()->GetSize();
         size.x = std::max(size.x, childSize.x);
         size.y += childSize.y;
-    }    
+    }
 
     return size + glm::vec2(padding);
 }
 
 void mlg::Container::GrabFocus() {
-    for (auto & child : std::ranges::reverse_view(children)) {
-        std::weak_ptr<UIFocusableComponent> childAsFocusable =
-                std::dynamic_pointer_cast<UIFocusableComponent>(child.lock());
+    for (auto& child : std::ranges::reverse_view(children)) {
+        if (TryFocusFocusableComponent(child.lock().get()))
+            return;
         
-        if (childAsFocusable.expired())
-            continue;
-        
-        childAsFocusable.lock()->GrabFocus();
-        break;
+        if (TryFocusContainer(child.lock().get()))
+            return;
     }
 }
 
@@ -69,4 +71,25 @@ void mlg::Container::SetVisible(bool visible) {
     }
 }
 
+bool mlg::Container::TryFocusFocusableComponent(UIComponent* child) {
+    auto childAsFocusable =
+            dynamic_cast<UIFocusableComponent*>(child);
 
+    if (childAsFocusable == nullptr)
+        return false;
+
+    childAsFocusable->GrabFocus();
+    return true;
+
+}
+
+bool mlg::Container::TryFocusContainer(UIComponent* child) {
+    auto childAsContainer =
+            dynamic_cast<Container*>(child);
+
+    if (childAsContainer == nullptr)
+        return false;
+
+    childAsContainer->GrabFocus();
+    return true;
+}

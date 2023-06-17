@@ -10,10 +10,11 @@
 #include "UI/Assets/FontAsset.h"
 #include "UI/Builders/ButtonBuilder.h"
 #include "UI/Components/Button.h"
+#include "UI/Components/Containers/CanvasPanel.h"
+#include "UI/Components/Containers/VerticalBox.h"
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
 #include "UI/Components/UIComponent.h"
-#include "UI/Components/Containers/VerticalBox.h"
 
 #include "UI/UIStyle.h"
 
@@ -29,11 +30,11 @@ void MenuScene::Load() {
     auto catIm = entity.lock()->AddComponent<mlg::Image>("Water", catMat);
     catIm.lock()->SetSize(MLG_FULL_SIZE);
     catIm.lock()->SetAnchor(MLG_ANCHOR_CENTER);
-    catIm.lock()->SetPosition(MLG_POS_CENTER);
+    catIm.lock()->SetRelativePosition(MLG_POS_CENTER);
 
 
-    InitializeMainMenu();
-    mainMenuContainer.lock()->SetVisible(false);
+//     InitializeMainMenu();
+//     mainMenuContainer.lock()->SetVisible(false);
 
     InitializeCredits();
 }
@@ -47,7 +48,7 @@ void MenuScene::InitializeMainMenu() {
     menuBackground = entity.lock()->AddComponent<mlg::Image>("MenuBackground", material);
     menuBackground.lock()->SetSize(BACKGROUND_SIZE);
     menuBackground.lock()->SetAnchor(MLG_ANCHOR_LEFT);
-    menuBackground.lock()->SetPosition(BUTTON_BASE_POSITION);
+    menuBackground.lock()->SetRelativePosition(BUTTON_BASE_POSITION);
 
     // TODO: Remove this
     menuBackground.lock()->SetVisible(false);
@@ -56,11 +57,13 @@ void MenuScene::InitializeMainMenu() {
             entity.lock()->AddComponent<mlg::VerticalBox>("VBox");
 
     mainMenuContainer.lock()->SetAnchor(MLG_ANCHOR_LEFT);
-    mainMenuContainer.lock()->SetPosition(BUTTON_BASE_POSITION + glm::vec2(0.f, 130.f));
+    mainMenuContainer.lock()->SetRelativePosition(
+            BUTTON_BASE_POSITION + glm::vec2(0.f, 130.f));
 
 
-    auto logoMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
-            "res/materials/ui/logo_material.json");
+    auto logoMaterial =
+            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
+                    "res/materials/ui/logo_material.json");
 
     auto gameLogo = entity.lock()->AddComponent<mlg::Image>(
             "GameLogo",
@@ -75,7 +78,6 @@ void MenuScene::InitializeMainMenu() {
                             .SetSize(BUTTON_SIZE)
                             .SetAnchor(MLG_ANCHOR_LEFT)
                             .SetPadding(10.f);
-
 
     auto playButton =
             buttonBuilder.SetName("PlayButton")
@@ -116,30 +118,42 @@ void MenuScene::InitializeCredits() {
     auto entity = mlg::EntityManager::SpawnEntity<mlg::Entity>(
             "Credits", false, mlg::SceneGraph::GetRoot());
 
-    mainMenuContainer =
-            entity.lock()->AddComponent<mlg::VerticalBox>("VBox");
+    creditsContainer = entity.lock()->AddComponent<mlg::CanvasPanel>("Credits");
 
-    mainMenuContainer.lock()->SetAnchor(MLG_ANCHOR_CENTER);
-    mainMenuContainer.lock()->SetPosition(MLG_POS_CENTER);
+    creditsContainer.lock()->SetSize(PANEL_SIZE);
+    creditsContainer.lock()->SetAnchor(MLG_ANCHOR_CENTER);
+    creditsContainer.lock()->SetRelativePosition(MLG_POS_CENTER);
 
-    auto creditsMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
-            "res/materials/ui/credits_material.json");
+    auto material =
+            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BACKGROUND_MATERIAL);
+    auto background =
+            entity.lock()->AddComponent<mlg::Image>("MenuBackground", material);
+    background.lock()->SetSize(PANEL_SIZE);
 
-    auto creditsImage = entity.lock()->AddComponent<mlg::Image>(
-            "CreditsImage", creditsMaterial);
+    creditsContainer.lock()->AddChild(background);
+
+    auto vbox = entity.lock()->AddComponent<mlg::VerticalBox>("VBox");
+    creditsContainer.lock()->AddChild(vbox);
+
+    auto creditsMaterial =
+            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
+                    "res/materials/ui/credits_material.json");
+
+    auto creditsImage =
+            entity.lock()->AddComponent<mlg::Image>(
+                    "CreditsImage", creditsMaterial);
     creditsImage.lock()->SetSize(glm::vec2(400.f, 400.f));
     creditsImage.lock()->SetPadding(10.f);
 
-    mainMenuContainer.lock()->AddChild(creditsImage);
+    vbox.lock()->AddChild(creditsImage);
 
     mlg::ButtonBuilder buttonBuilder;
     auto backButton = buttonBuilder
                               .SetSize(BUTTON_SIZE)
-                              .SetAnchor(MLG_ANCHOR_CENTER)
                               .SetPadding(10.f)
                               .SetName("BackButton")
                               .SetText("Back")
                               .Build(entity.lock().get());
 
-    mainMenuContainer.lock()->AddChild(backButton);
+    vbox.lock()->AddChild(backButton);
 }
