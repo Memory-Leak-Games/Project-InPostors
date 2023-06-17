@@ -234,7 +234,7 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     auto ui = newPlayer->uiArrow.lock();
     ui->SetBillboardTarget(newPlayer);
     ui->SetSize({16.f, 16.f});
-    ui->SetPosition({0.f, 24.f});
+    ui->SetRelativePosition({0.f, 24.f});
     ui->tint = newPlayer->playerData.color;
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/wood_material.json");
@@ -252,9 +252,9 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     ui->tint = newPlayer->playerData.color;
     ui->tint.a = 0.85f;
     if (newPlayer->playerData.id == 0) {
-        ui->SetPosition(ui->GetSize() * 0.5f + glm::vec2(8, 8));
+        ui->SetRelativePosition(ui->GetSize() * 0.5f + glm::vec2(8, 8));
     } else {
-        ui->SetPosition({1280 - ui->GetSize().x * 0.5f - 8, ui->GetSize().y * 0.5 + 8});
+        ui->SetRelativePosition({1280 - ui->GetSize().x * 0.5f - 8, ui->GetSize().y * 0.5 + 8});
         ui->SetAnchor({1, 0});
     }
     ui->tint -= glm::vec4(0.8, 0.8, 0.8, 0.0);
@@ -265,11 +265,11 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     label->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
     label->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
     if (newPlayer->playerData.id == 0) {
-        label->SetPosition({8 + 25, 8 + 16});
+        label->SetRelativePosition({8 + 25, 8 + 16});
         label->SetText("P1");
     } else {
         label->SetAnchor({1, 0});
-        label->SetPosition({1280 - 8 - 25, 8 + 16});
+        label->SetRelativePosition({1280 - 8 - 25, 8 + 16});
         label->SetText("P2");
     }
 
@@ -280,13 +280,13 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
     }
 
     if (newPlayer->playerData.id == 0) {
-        newPlayer->eqIcons[0]->SetPosition({72.f + 8, 17.f + 8 + 2});
-        newPlayer->eqIcons[1]->SetPosition({72.f + 36.f + 8, 17.f + 8 + 2});
-        newPlayer->eqIcons[2]->SetPosition({72.f + 72.f + 8, 17.f + 8 + 2});
+        newPlayer->eqIcons[0]->SetRelativePosition({72.f + 8, 17.f + 8 + 2});
+        newPlayer->eqIcons[1]->SetRelativePosition({72.f + 36.f + 8, 17.f + 8 + 2});
+        newPlayer->eqIcons[2]->SetRelativePosition({72.f + 72.f + 8, 17.f + 8 + 2});
     } else {
-        newPlayer->eqIcons[0]->SetPosition({1280 - 72.f - 8, 17.f + 8 + 2});
-        newPlayer->eqIcons[1]->SetPosition({1280 - 72.f - 36.f - 8, 17.f + 8 + 2});
-        newPlayer->eqIcons[2]->SetPosition({1280 - 72.f - 72.f - 8, 17.f + 8 + 2});
+        newPlayer->eqIcons[0]->SetRelativePosition({1280 - 72.f - 8, 17.f + 8 + 2});
+        newPlayer->eqIcons[1]->SetRelativePosition({1280 - 72.f - 36.f - 8, 17.f + 8 + 2});
+        newPlayer->eqIcons[2]->SetRelativePosition({1280 - 72.f - 72.f - 8, 17.f + 8 + 2});
         for (int i = 0; i < 3; ++i)
             newPlayer->eqIcons[i]->SetAnchor({1, 0});
     }
@@ -318,7 +318,7 @@ void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
         // Discount HBoxContainer
         glm::vec2 billboardPos = {-7.f * (items.size() - 1.f), 40.f};
         for (int i = 0; i < items.size(); ++i) {
-            newPlayer->eqBillboards[i]->SetPosition(billboardPos);
+            newPlayer->eqBillboards[i]->SetRelativePosition(billboardPos);
             billboardPos.x += 14.f;
         }
     });

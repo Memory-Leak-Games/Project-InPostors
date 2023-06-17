@@ -17,7 +17,7 @@ void mlg::CharacterSelector::Start() {
 }
 
 void mlg::CharacterSelector::Update() {
-    if (!hasFocus || !GetActive())
+    if (IsFocused())
         return;
 
     if (mlg::Input::IsActionJustPressed("ui_up")) {

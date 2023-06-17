@@ -266,19 +266,19 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
                 material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/arrow_panel_material.json");
                 result->barArrow = result->AddComponent<mlg::ProgressBar>("RecipeArrow", material).lock();
                 result->barArrow->SetSize({32.f, 32.f});
-                result->barArrow->SetPosition({16.f, 75.f - 16.f});
+                result->barArrow->SetRelativePosition({16.f, 75.f - 16.f});
                 result->barArrow->SetBillboardTarget(result);
 
                 material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/panel_material.json");
                 result->barReq1 = result->AddComponent<mlg::ProgressBar>("BarReq1", material).lock();
                 result->barReq1->SetSize({32.f, 32.f});
-                result->barReq1->SetPosition({-48.f, 75.f - 16.f});
+                result->barReq1->SetRelativePosition({-48.f, 75.f - 16.f});
                 result->barReq1->SetBillboardTarget(result);
 
                 material = ProductManager::Get()->GetProduct(blueprint.GetInput()[0]).icon;
                 auto iconReq1 = result->AddComponent<mlg::Image>("IconReq1", material).lock();
                 iconReq1->SetSize({24.f, 24.f});
-                iconReq1->SetPosition({-48.f, 75.f - 16.f});
+                iconReq1->SetRelativePosition({-48.f, 75.f - 16.f});
                 iconReq1->SetBillboardTarget(result);
 
                 if (blueprint.GetInput().size() > 1) {
@@ -293,25 +293,25 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
                     iconReq2->SetBillboardTarget(result);
 
                     // Positioning for 2 inputs and 1 output
-                    result->barRes->SetPosition({48.f, 75.f - 16.f});
-                    iconRes->SetPosition({48.f, 75.f - 16.f});
-                    result->barArrow->SetPosition({16.f, 75.f - 16.f});
-                    result->barReq1->SetPosition({-48.f, 75.f - 16.f});
-                    iconReq1->SetPosition({-48.f, 75.f - 16.f});
-                    result->barReq2->SetPosition({-16.f, 75.f - 16.f});
-                    iconReq2->SetPosition({-16.f, 75.f - 16.f});
+                    result->barRes->SetRelativePosition({48.f, 75.f - 16.f});
+                    iconRes->SetRelativePosition({48.f, 75.f - 16.f});
+                    result->barArrow->SetRelativePosition({16.f, 75.f - 16.f});
+                    result->barReq1->SetRelativePosition({-48.f, 75.f - 16.f});
+                    iconReq1->SetRelativePosition({-48.f, 75.f - 16.f});
+                    result->barReq2->SetRelativePosition({-16.f, 75.f - 16.f});
+                    iconReq2->SetRelativePosition({-16.f, 75.f - 16.f});
                 } else {
                     // Positioning for 1 input and 1 output
-                    result->barRes->SetPosition({32.f, 75.f - 16.f});
-                    iconRes->SetPosition({32.f, 75.f - 16.f});
-                    result->barArrow->SetPosition({0.f, 75.f - 16.f});
-                    result->barReq1->SetPosition({-32.f, 75.f - 16.f});
-                    iconReq1->SetPosition({-32.f, 75.f - 16.f});
+                    result->barRes->SetRelativePosition({32.f, 75.f - 16.f});
+                    iconRes->SetRelativePosition({32.f, 75.f - 16.f});
+                    result->barArrow->SetRelativePosition({0.f, 75.f - 16.f});
+                    result->barReq1->SetRelativePosition({-32.f, 75.f - 16.f});
+                    iconReq1->SetRelativePosition({-32.f, 75.f - 16.f});
                 }
             } else {
                 // Positioning for only output
-                result->barRes->SetPosition({0.f, 75.f - 16.f});
-                iconRes->SetPosition({0.f, 75.f - 16.f});
+                result->barRes->SetRelativePosition({0.f, 75.f - 16.f});
+                iconRes->SetRelativePosition({0.f, 75.f - 16.f});
             }
         }
     }

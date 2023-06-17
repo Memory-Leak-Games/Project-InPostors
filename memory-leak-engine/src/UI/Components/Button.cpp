@@ -1,3 +1,4 @@
+#include <glm/fwd.hpp>
 #include <utility>
 
 #include "Core/HID/Input.h"
@@ -42,11 +43,8 @@ namespace mlg {
         UIRenderer::GetInstance()->AddRenderable(label);
     }
 
-    void Button::Update() {
-        UIFocusableComponent::Update();
-
-        if (hasFocus && GetActive() && mlg::Input::IsActionJustPressed("ui_accept"))
-            OnClick();
+    void Button::Accept() {
+        OnClick();
     }
 
     void Button::Draw(const UIRenderer* renderer) {
@@ -56,7 +54,7 @@ namespace mlg {
             return;
 
         MaterialAsset* material;
-        if (hasFocus)
+        if (IsFocused())
             material = focusMaterial.get();
         else
             material = defaultMaterial.get();
@@ -74,8 +72,8 @@ namespace mlg {
         material->DeActivate();
     }
 
-    const glm::vec2& Button::GetSize() const {
-        return size;
+    glm::vec2 Button::GetSize() const {
+        return size + glm::vec2{padding};
     }
 
     void Button::SetSize(const glm::vec2& size) {
@@ -91,9 +89,9 @@ namespace mlg {
         label.lock()->SetVisible(visible);
     }
 
-    void Button::SetPosition(const glm::vec2& position) {
-        UIComponent::SetPosition(position);
-        label.lock()->SetPosition(position);
+    void Button::SetRelativePosition(const glm::vec2& position) {
+        UIComponent::SetRelativePosition(position);
+        label.lock()->SetRelativePosition(position);
     }
 
     void Button::SetAnchor(const glm::vec2& anchor) {

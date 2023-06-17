@@ -9,9 +9,10 @@ namespace mlg {
         if (!active)
             return;
 
-        hasFocus = true;
-        UIController::GetInstance()->focused = std::dynamic_pointer_cast<UIFocusableComponent>(
+        auto sharedThis = std::dynamic_pointer_cast<UIFocusableComponent>(
                 ComponentManager::GetByRawPointer(this).lock());
+
+        UIController::Get()->SetFocus(sharedThis);
     }
 
     void UIFocusableComponent::SetActive(bool active) {
@@ -21,4 +22,8 @@ namespace mlg {
     bool UIFocusableComponent::GetActive() const {
         return active;
     }
-}
+
+    bool UIFocusableComponent::IsFocused() const {
+        return hasFocus;
+    }
+}// namespace mlg

@@ -22,7 +22,7 @@ namespace mlg {
             auto newComponent = std::make_shared<T>(owner, std::forward<Args>(args) ...);
             instance->components.push_back(newComponent);
 
-            if (mlg::Core::GetInstance()->IsClosed() == false)
+            if (mlg::Core::Get()->IsClosed() == false)
                 newComponent->Start();
 
             return newComponent;

@@ -17,8 +17,7 @@ namespace mlg {
 
         void Draw(const class UIRenderer* renderer) override;
 
-        [[nodiscard]] const glm::vec2& GetSize() const;
-
+        [[nodiscard]] glm::vec2 GetSize() const override;
         void SetSize(const glm::vec2& size);
     };
 
