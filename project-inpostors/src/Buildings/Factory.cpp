@@ -241,13 +241,6 @@ void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
     result->uiPin->SetPosition({0.f, 50.f});
 
     if(result->GetBlueprintId() != "None") {
-//        auto blueprint = BlueprintManager::Get()->GetBlueprint(result->GetBlueprintId());
-//        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/progress_bar_material.json");
-//        result->uiProgress = result->AddComponent<mlg::ProgressBar>("uiProgress", material).lock();
-//        result->uiProgress->SetBillboardTarget(result);
-//        result->uiProgress->SetSize({82.f, 82.f});
-//        result->uiProgress->SetPosition({0.f, 50.f});
-//        result->uiProgress->percentage = 0.f;
 
         auto blueprint = BlueprintManager::Get()->GetBlueprint(result->GetBlueprintId());
         material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/progress_bar_material2.json");
