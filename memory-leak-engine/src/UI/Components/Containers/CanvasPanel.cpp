@@ -11,7 +11,7 @@ void mlg::CanvasPanel::SetSize(glm::vec2 size) {
 }
 
 glm::vec2 mlg::CanvasPanel::GetSize() const {
-    return panelSize;
+    return panelSize + GetPadding();
 }
 
 void mlg::CanvasPanel::UpdateContainer() {

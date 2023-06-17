@@ -12,5 +12,6 @@
 #define BUTTON_MATERIAL "res/materials/ui/buttons/button_material.json"
 #define BUTTON_FOCUSED_MATERIAL "res/materials/ui/buttons/button_focused_material.json"
 #define BACKGROUND_MATERIAL "res/materials/ui/semi_transparent_background_material.json"
+#define WHITE_MATERIAL "res/materials/ui/white_semi_material.json"
 
 #define BUTTON_BASE_POSITION glm::vec2{ 200, 150 }
