@@ -7,6 +7,7 @@
 
 #include "Gameplay/Entity.h"
 #include "UI/Components/Label.h"
+#include "UI/Components/OptionSwitcher.h"
 #include <memory>
 
 mlg::ButtonBuilder::ButtonBuilder() {
@@ -63,7 +64,7 @@ mlg::ButtonBuilder& mlg::ButtonBuilder::SetAnchor(const glm::vec2& anchor) {
     return *this;
 }
 
-std::weak_ptr<mlg::Button> mlg::ButtonBuilder::Build(mlg::Entity* owner) {
+std::weak_ptr<mlg::Button> mlg::ButtonBuilder::BuildButton(mlg::Entity* owner) {
     auto button = owner->AddComponent<mlg::Button>(
             name, defaultMaterial, focusMaterial, font);
     auto sharedButton = button.lock();
@@ -77,4 +78,19 @@ std::weak_ptr<mlg::Button> mlg::ButtonBuilder::Build(mlg::Entity* owner) {
     return button;
 }
 
+std::weak_ptr<mlg::OptionSwitcher>
+mlg::ButtonBuilder::BuildOptionSwitcher(Entity* owner) {
+    auto optionSwitcher =
+            owner->AddComponent<mlg::OptionSwitcher>(
+                    name, defaultMaterial, focusMaterial, font);
 
+    auto sharedSwitcher = optionSwitcher.lock();
+    sharedSwitcher->SetSize(size);
+    sharedSwitcher->SetAnchor(anchor);
+    sharedSwitcher->SetPadding(padding);
+
+    sharedSwitcher->GetLabel().lock()->SetText(text);
+    sharedSwitcher->GetLabel().lock()->SetTextColor(textColor);
+
+    return optionSwitcher;
+}

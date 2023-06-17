@@ -12,6 +12,7 @@
 #include "UI/Assets/FontAsset.h"
 #include "UI/Builders/ButtonBuilder.h"
 #include "UI/Components/Button.h"
+#include "UI/Components/OptionSwitcher.h"
 #include "UI/Components/Containers/CanvasPanel.h"
 #include "UI/Components/Containers/Container.h"
 #include "UI/Components/Containers/VerticalBox.h"
@@ -94,28 +95,28 @@ void MenuScene::InitializeMainMenu() {
     auto playButton =
             buttonBuilder.SetName("PlayButton")
                     .SetText("Play")
-                    .Build(entity.lock().get());
+                    .BuildButton(entity.lock().get());
     BindToOnPlay(*playButton.lock());
     vbox.lock()->AddChild(playButton);
 
     auto settingsButton =
             buttonBuilder.SetName("SettingsButton")
                     .SetText("Settings")
-                    .Build(entity.lock().get());
+                    .BuildButton(entity.lock().get());
     vbox.lock()->AddChild(settingsButton);
     BindToOnSettings(*settingsButton.lock());
 
     auto creditsButton =
             buttonBuilder.SetName("CreditsButton")
                     .SetText("Credits")
-                    .Build(entity.lock().get());
+                    .BuildButton(entity.lock().get());
     BindToOnCredits(*creditsButton.lock());
     vbox.lock()->AddChild(creditsButton);
 
     auto exitButton =
             buttonBuilder.SetName("ExitButton")
                     .SetText("Exit")
-                    .Build(entity.lock().get());
+                    .BuildButton(entity.lock().get());
     vbox.lock()->AddChild(exitButton);
     BindToOnExit(*exitButton.lock());
 }
@@ -193,7 +194,7 @@ void MenuScene::InitializeCredits() {
                               .SetPadding(10.f)
                               .SetName("BackButton")
                               .SetText("Back")
-                              .Build(entity.lock().get());
+                              .BuildButton(entity.lock().get());
     BindToBackToMainMenu(*backButton.lock(), *creditsContainer.lock());
     vbox.lock()->AddChild(backButton);
 }
@@ -229,25 +230,44 @@ void MenuScene::InitializeSettings() {
             entity.lock()->AddComponent<mlg::VerticalBox>("VBox");
     settingsContainer.lock()->AddChild(vbox);
 
-    auto separator = entity.lock()->AddComponent<mlg::Spacer>("Spacer");
-    separator.lock()->SetSize(BUTTON_SIZE);
-
     mlg::ButtonBuilder buttonBuilder;
     buttonBuilder = buttonBuilder
                             .SetSize(BUTTON_SIZE)
                             .SetPadding(10.f);
-    auto applyButton = buttonBuilder
-                               .SetName("ApplyButton")
-                               .SetText("Apply")
-                               .Build(entity.lock().get());
+
+    auto windowTypeSwitcher =
+            buttonBuilder
+                    .SetName("WindowTypeSwitcher")
+                    .SetText("Window Type")
+                    .BuildOptionSwitcher(entity.lock().get());
+    auto windowTypes = std::array{
+            "Windowed",
+            "Borderless",
+            "Fullscreen"
+    };
+    
+    windowTypeSwitcher.lock()->AddOptions(windowTypes.begin(), windowTypes.end());
+    vbox.lock()->AddChild(windowTypeSwitcher);
+
+    auto separator = entity.lock()->AddComponent<mlg::Spacer>("Spacer");
+    separator.lock()->SetSize(BUTTON_SIZE);
+    vbox.lock()->AddChild(separator);
+
+    auto applyButton =
+            buttonBuilder
+                    .SetName("ApplyButton")
+                    .SetText("Apply")
+                    .BuildButton(entity.lock().get());
     BindToOnApply(*applyButton.lock());
     vbox.lock()->AddChild(applyButton);
+
+    
 
 
     auto backButton = buttonBuilder
                               .SetName("BackButton")
                               .SetText("Back")
-                              .Build(entity.lock().get());
+                              .BuildButton(entity.lock().get());
     BindToBackToMainMenu(*backButton.lock(), *settingsContainer.lock());
     vbox.lock()->AddChild(backButton);
 }

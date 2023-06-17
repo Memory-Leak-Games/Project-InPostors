@@ -4,10 +4,11 @@
 #include "UI/Components/Label.h"
 #include <spdlog/spdlog.h>
 
-mlg::CharacterSelector::CharacterSelector(std::weak_ptr<Entity> owner, std::string name,
-                                          const std::shared_ptr<MaterialAsset>& defaultMaterial,
-                                          const std::shared_ptr<MaterialAsset>& focusMaterial,
-                                          const std::shared_ptr<class FontAsset>& font)
+mlg::CharacterSelector::CharacterSelector(
+        std::weak_ptr<Entity> owner, std::string name,
+        const std::shared_ptr<MaterialAsset>& defaultMaterial,
+        const std::shared_ptr<MaterialAsset>& focusMaterial,
+        const std::shared_ptr<class FontAsset>& font)
     : Button(owner, name, defaultMaterial, focusMaterial, font) {}
 
 void mlg::CharacterSelector::Start() {
@@ -27,7 +28,6 @@ void mlg::CharacterSelector::Update() {
     } else if (mlg::Input::IsActionJustPressed("ui_accept")) {
         SetCharacterByIndex(0);
     }
-
 }
 
 void mlg::CharacterSelector::SetCharacter(char character) {

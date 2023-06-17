@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 namespace mlg {
     class ButtonBuilder {
         std::string name = "Button";
@@ -33,7 +32,8 @@ namespace mlg {
 
         ButtonBuilder& SetAnchor(const glm::vec2& anchor);
 
-        std::weak_ptr<class Button> Build(class Entity* owner);
+        std::weak_ptr<class Button> BuildButton(class Entity* owner);
+        std::weak_ptr<class OptionSwitcher> BuildOptionSwitcher(Entity* owner);
     };
 
 }
