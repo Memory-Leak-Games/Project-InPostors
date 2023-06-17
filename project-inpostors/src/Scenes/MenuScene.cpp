@@ -28,7 +28,9 @@
 #include "UI/Components/UIComponent.h"
 
 #include "UI/UIStyle.h"
+#include <magic_enum.hpp>
 #include <spdlog/spdlog.h>
+#include <string>
 
 MenuScene::~MenuScene() = default;
 
@@ -255,7 +257,7 @@ void MenuScene::InitializeSettings() {
                             .SetSize(BUTTON_SIZE)
                             .SetPadding(10.f);
 
-    auto windowTypeSwitcher =
+    auto windowSettings =
             buttonBuilder
                     .SetName("WindowTypeSwitcher")
                     .SetText("Window Type")
@@ -263,8 +265,8 @@ void MenuScene::InitializeSettings() {
     auto windowTypes = std::array{
             "Windowed", "Borderless", "Fullscreen"};
 
-    windowTypeSwitcher.lock()->AddOptions(windowTypes.begin(), windowTypes.end());
-    vbox.lock()->AddChild(windowTypeSwitcher);
+    windowSettings.lock()->AddOptions(windowTypes.begin(), windowTypes.end());
+    vbox.lock()->AddChild(windowSettings);
 
     // GRAPHICS SETTINGS
     auto graphicsLabel = labelBuilder
@@ -300,6 +302,11 @@ void MenuScene::InitializeSettings() {
     volumeSetings.lock()->AddOptions(volumeTypes.begin(), volumeTypes.end());
     vbox.lock()->AddChild(volumeSetings);
 
+    LoadSettings(
+            *windowSettings.lock(),
+            *graphicsSettings.lock(),
+            *volumeSetings.lock());
+
     // MENU
     auto separator = entity.lock()->AddComponent<mlg::Spacer>("Spacer");
     separator.lock()->SetSize(BUTTON_SIZE);
@@ -311,7 +318,7 @@ void MenuScene::InitializeSettings() {
                     .SetText("Apply")
                     .BuildButton(entity.lock().get());
     BindToOnApply(
-            *applyButton.lock(), *windowTypeSwitcher.lock(),
+            *applyButton.lock(), *windowSettings.lock(),
             *graphicsSettings.lock(), *volumeSetings.lock());
     vbox.lock()->AddChild(applyButton);
 
@@ -322,6 +329,27 @@ void MenuScene::InitializeSettings() {
                               .BuildButton(entity.lock().get());
     BindToBackToMainMenu(*backButton.lock(), *settingsContainer.lock());
     vbox.lock()->AddChild(backButton);
+}
+
+void MenuScene::LoadSettings(mlg::OptionSelector& windowMode,
+                             mlg::OptionSelector& graphicsMode,
+                             mlg::OptionSelector& volume) {
+    auto windowTypeString =
+            mlg::SettingsManager::Get<std::string>(
+                    mlg::SettingsType::Video, "WindowType");
+    auto windowType =
+            magic_enum::enum_cast<mlg::WindowType>(windowTypeString).value();
+    int windowTypeIndex = magic_enum::enum_integer(windowType);
+    windowMode.SetOption(windowTypeIndex);
+
+    int graphicsQuality = mlg::SettingsManager::Get<int>(
+            mlg::SettingsType::Video, "GraphicsQuality");
+    graphicsMode.SetOption(graphicsQuality);
+
+    float volumeValue = mlg::SettingsManager::Get<float>(
+            mlg::SettingsType::Audio, "volume");
+    int volumeIndex = std::ceil(volumeValue / 0.25f);
+    volume.SetOption(volumeIndex);
 }
 
 void MenuScene::BindToOnApply(mlg::Button& button,
@@ -409,6 +437,11 @@ void MenuScene::SetGraphicsSettings(mlg::OptionSelector& graphicsMode) {
                 "ShadowMapResolution",
                 512);
     }
+
+    mlg::SettingsManager::Set(
+            mlg::SettingsType::Video,
+            "GraphicsQuality",
+            option);
 }
 
 void MenuScene::SetVolumeSettings(mlg::OptionSelector& volume) {
