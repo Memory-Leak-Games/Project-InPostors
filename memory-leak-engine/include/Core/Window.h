@@ -71,6 +71,8 @@ namespace mlg {
         virtual void PollEvents();
         virtual void Update();
 
+        virtual void SetIcon(const std::string& path);
+
 #ifdef DEBUG
         virtual void ImGuiInit();
 #endif

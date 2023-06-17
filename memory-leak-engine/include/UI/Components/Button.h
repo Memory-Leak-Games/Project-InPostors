@@ -24,7 +24,7 @@ namespace mlg {
         void GrabFocus() override;
 
         void Start() override;
-        void Update() override;
+        void Accept() override;
 
         [[nodiscard]] glm::vec2 GetSize() const override;
         void SetSize(const glm::vec2& size);

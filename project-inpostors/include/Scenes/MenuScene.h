@@ -29,6 +29,9 @@ private:
     void InitializeMainMenu();
     void BindToOnExit(mlg::Button& button);
     void BindToOnPlay(mlg::Button& button);
+    void BindToOnCredits(mlg::Button& button);
+    void BindToOnSettings(mlg::Button& button);
 
     void InitializeCredits();
+    void BindToOnCreditsBack(mlg::Button& button);
 };

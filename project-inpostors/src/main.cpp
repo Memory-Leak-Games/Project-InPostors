@@ -28,14 +28,7 @@ public:
     bool ParseArguments(int argc, char* argv[]) {
         cxxopts::Options options("Project Inpostors", "A game about couriers");
         options.allow_unrecognised_options();
-        options.add_options()
-            ("h,help", "Show this help")
-            ("test-scene", "Run test scene")
-            ("f,fullscreen", "Run in fullscreen mode (overrides config)")
-            ("w,windowed", "Run in windowed mode (overrides config)")
-            ("b,borderless", "Run in borderless mode (overrides config)")
-            ("resolution", "change window resolution (overrides config)", cxxopts::value<std::string>())
-            ("l,level", "provide level path", cxxopts::value<std::string>());
+        options.add_options()("h,help", "Show this help")("test-scene", "Run test scene")("f,fullscreen", "Run in fullscreen mode (overrides config)")("w,windowed", "Run in windowed mode (overrides config)")("b,borderless", "Run in borderless mode (overrides config)")("resolution", "change window resolution (overrides config)", cxxopts::value<std::string>())("l,level", "provide level path", cxxopts::value<std::string>());
 
         auto result = options.parse(argc, argv);
 
@@ -89,6 +82,8 @@ public:
     int Main() {
         mlg::Initializer::InitializeCoreComponents();
         mlg::Initializer::InitializeSceneComponents();
+
+        mlg::Window::Get()->SetIcon("res/textures/logos/aipost_logo_icon.png");
 
         if (windowTypeOverride) {
             mlg::Window::Get()->SetWindowType(windowType);

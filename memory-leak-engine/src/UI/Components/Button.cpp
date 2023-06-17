@@ -43,11 +43,8 @@ namespace mlg {
         UIRenderer::GetInstance()->AddRenderable(label);
     }
 
-    void Button::Update() {
-        UIFocusableComponent::Update();
-
-        if (hasFocus && GetActive() && mlg::Input::IsActionJustPressed("ui_accept"))
-            OnClick();
+    void Button::Accept() {
+        OnClick();
     }
 
     void Button::Draw(const UIRenderer* renderer) {
@@ -57,7 +54,7 @@ namespace mlg {
             return;
 
         MaterialAsset* material;
-        if (hasFocus)
+        if (IsFocused())
             material = focusMaterial.get();
         else
             material = defaultMaterial.get();
