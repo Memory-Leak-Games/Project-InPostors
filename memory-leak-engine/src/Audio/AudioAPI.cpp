@@ -37,7 +37,11 @@ namespace mlg {
         instance = nullptr;
     }
 
-    AudioAPI* AudioAPI::GetInstance() {
+    void AudioAPI::SetVolume(float volume) {
+        instance->soloud->setGlobalVolume(volume);
+    }
+
+    AudioAPI* AudioAPI::Get() {
         return instance;
     }
 

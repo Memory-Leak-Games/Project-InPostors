@@ -1,27 +1,34 @@
 #include "Scenes/MenuScene.h"
 
+#include "Audio/Audio.h"
+#include "Audio/AudioAPI.h"
 #include "Core/AssetManager/AssetManager.h"
 #include "Core/SceneManager/SceneManager.h"
+#include "Core/Settings/SettingsManager.h"
+#include "Core/Window.h"
 #include "Gameplay/Entity.h"
 #include "Gameplay/EntityManager.h"
 #include "Macros.h"
+#include "Managers/AudioManager.h"
 #include "Rendering/Assets/MaterialAsset.h"
 #include "SceneGraph/SceneGraph.h"
 
 #include "Scenes/TestScene.h"
 #include "UI/Assets/FontAsset.h"
 #include "UI/Builders/ButtonBuilder.h"
+#include "UI/Builders/LabelBuilder.h"
 #include "UI/Components/Button.h"
-#include "UI/Components/OptionSelector.h"
 #include "UI/Components/Containers/CanvasPanel.h"
 #include "UI/Components/Containers/Container.h"
 #include "UI/Components/Containers/VerticalBox.h"
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
+#include "UI/Components/OptionSelector.h"
 #include "UI/Components/Spacer.h"
 #include "UI/Components/UIComponent.h"
 
 #include "UI/UIStyle.h"
+#include <spdlog/spdlog.h>
 
 MenuScene::~MenuScene() = default;
 
@@ -230,6 +237,19 @@ void MenuScene::InitializeSettings() {
             entity.lock()->AddComponent<mlg::VerticalBox>("VBox");
     settingsContainer.lock()->AddChild(vbox);
 
+    mlg::LabelBuilder labelBuilder;
+    labelBuilder = labelBuilder
+                           .SetPadding(50.f)
+                           .SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center)
+                           .SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
+
+    // WINDOW SETTINGS
+    auto windowLabel = labelBuilder
+                               .SetName("WindowLabel")
+                               .SetText("Window Settings")
+                               .BuildLabel(entity.lock().get());
+    vbox.lock()->AddChild(windowLabel);
+
     mlg::ButtonBuilder buttonBuilder;
     buttonBuilder = buttonBuilder
                             .SetSize(BUTTON_SIZE)
@@ -239,16 +259,48 @@ void MenuScene::InitializeSettings() {
             buttonBuilder
                     .SetName("WindowTypeSwitcher")
                     .SetText("Window Type")
-                    .BuildOptionSwitcher(entity.lock().get());
+                    .BuildSelector(entity.lock().get());
     auto windowTypes = std::array{
-            "Windowed",
-            "Borderless",
-            "Fullscreen"
-    };
-    
+            "Windowed", "Borderless", "Fullscreen"};
+
     windowTypeSwitcher.lock()->AddOptions(windowTypes.begin(), windowTypes.end());
     vbox.lock()->AddChild(windowTypeSwitcher);
 
+    // GRAPHICS SETTINGS
+    auto graphicsLabel = labelBuilder
+                                 .SetName("GraphicsLabel")
+                                 .SetText("Graphics Settings")
+                                 .BuildLabel(entity.lock().get());
+    vbox.lock()->AddChild(graphicsLabel);
+
+    auto graphicsSettings =
+            buttonBuilder
+                    .SetName("WindowTypeSwitcher")
+                    .SetText("Window Type")
+                    .BuildSelector(entity.lock().get());
+    auto settingsTypes = std::array{
+            "Low", "Medium", "InPostible"};
+
+    graphicsSettings.lock()->AddOptions(settingsTypes.begin(), settingsTypes.end());
+    vbox.lock()->AddChild(graphicsSettings);
+
+    // Volume
+    auto volumeLabel = labelBuilder
+                               .SetName("VolumeLabel")
+                               .SetText("Volume")
+                               .BuildLabel(entity.lock().get());
+    vbox.lock()->AddChild(volumeLabel);
+
+    auto volumeSetings = buttonBuilder
+                                 .SetName("VolumeSettings")
+                                 .SetText("Volume")
+                                 .BuildSelector(entity.lock().get());
+    auto volumeTypes = std::array{
+            "0%", "25%", "50%", "75%", "100%"};
+    volumeSetings.lock()->AddOptions(volumeTypes.begin(), volumeTypes.end());
+    vbox.lock()->AddChild(volumeSetings);
+
+    // MENU
     auto separator = entity.lock()->AddComponent<mlg::Spacer>("Spacer");
     separator.lock()->SetSize(BUTTON_SIZE);
     vbox.lock()->AddChild(separator);
@@ -258,10 +310,10 @@ void MenuScene::InitializeSettings() {
                     .SetName("ApplyButton")
                     .SetText("Apply")
                     .BuildButton(entity.lock().get());
-    BindToOnApply(*applyButton.lock());
+    BindToOnApply(
+            *applyButton.lock(), *windowTypeSwitcher.lock(),
+            *graphicsSettings.lock(), *volumeSetings.lock());
     vbox.lock()->AddChild(applyButton);
-
-    
 
 
     auto backButton = buttonBuilder
@@ -272,9 +324,100 @@ void MenuScene::InitializeSettings() {
     vbox.lock()->AddChild(backButton);
 }
 
-void MenuScene::BindToOnApply(mlg::Button& button) {
+void MenuScene::BindToOnApply(mlg::Button& button,
+                              mlg::OptionSelector& windowMode,
+                              mlg::OptionSelector& graphicsMode,
+                              mlg::OptionSelector& volume) {
+
     button.OnClick.append(
-            [this]() {
-                MLG_UNIMPLEMENTED_SOFT;
+            [this, &windowMode, &graphicsMode, &volume]() {
+                SetWindowSettings(windowMode);
+                SetGraphicsSettings(graphicsMode);
+                SetVolumeSettings(volume);
+
+                mlg::SettingsManager::Save();
+
+                settingsContainer.lock()->SetVisible(false);
+                mainMenuContainer.lock()->SetVisible(true);
+                mainMenuContainer.lock()->GrabFocus();
             });
+}
+
+void MenuScene::SetWindowSettings(mlg::OptionSelector& windowMode) {
+    auto windowType = magic_enum::enum_cast<mlg::WindowType>(
+            windowMode.GetOption());
+    mlg::Window::Get()->SetWindowType(windowType.value());
+
+    SPDLOG_DEBUG("Window: {}", magic_enum::enum_name(windowType.value()));
+
+    mlg::SettingsManager::Set(
+            mlg::SettingsType::Video,
+            "WindowType",
+            magic_enum::enum_name(windowType.value()));
+}
+
+void MenuScene::SetGraphicsSettings(mlg::OptionSelector& graphicsMode) {
+    int option = graphicsMode.GetOption();
+
+    SPDLOG_DEBUG("Graphics: {}", graphicsMode.GetOption());
+
+    if (option == 2) {// Max
+        mlg::SettingsManager::Set(
+                mlg::SettingsType::Video,
+                "FXAA",
+                true);
+        mlg::SettingsManager::Set(
+                mlg::SettingsType::Video,
+                "SSAO",
+                true);
+        mlg::SettingsManager::Set(
+                mlg::SettingsType::Video,
+                "SSAOSamples",
+                32);
+        mlg::SettingsManager::Set(
+                mlg::SettingsType::Video,
+                "ShadowMapResolution",
+                4096);
+    } else if (option == 1) {
+        mlg::SettingsManager::Set(
+                mlg::SettingsType::Video,
+                "FXAA",
+                true);
+        mlg::SettingsManager::Set(
+                mlg::SettingsType::Video,
+                "SSAO",
+                true);
+        mlg::SettingsManager::Set(
+                mlg::SettingsType::Video,
+                "SSAOSamples",
+                16);
+        mlg::SettingsManager::Set(
+                mlg::SettingsType::Video,
+                "ShadowMapResolution",
+                2048);
+    } else if (option == 0) {
+        mlg::SettingsManager::Set(
+                mlg::SettingsType::Video,
+                "FXAA",
+                false);
+        mlg::SettingsManager::Set(
+                mlg::SettingsType::Video,
+                "SSAO",
+                false);
+        mlg::SettingsManager::Set(
+                mlg::SettingsType::Video,
+                "ShadowMapResolution",
+                512);
+    }
+}
+
+void MenuScene::SetVolumeSettings(mlg::OptionSelector& volume) {
+    float volumeAmount = volume.GetOption() * 0.25f;
+
+    SPDLOG_DEBUG("Volume: {}%", volumeAmount);
+    mlg::AudioAPI::Get()->SetVolume(volumeAmount);
+    mlg::SettingsManager::Set(
+            mlg::SettingsType::Audio,
+            "volume",
+            volumeAmount);
 }

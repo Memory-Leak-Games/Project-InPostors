@@ -79,7 +79,7 @@ std::weak_ptr<mlg::Button> mlg::ButtonBuilder::BuildButton(mlg::Entity* owner) {
 }
 
 std::weak_ptr<mlg::OptionSelector>
-mlg::ButtonBuilder::BuildOptionSwitcher(Entity* owner) {
+mlg::ButtonBuilder::BuildSelector(Entity* owner) {
     auto optionSwitcher =
             owner->AddComponent<mlg::OptionSelector>(
                     name, defaultMaterial, focusMaterial, font);

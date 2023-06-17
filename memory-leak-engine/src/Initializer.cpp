@@ -9,6 +9,7 @@
 #include "Core/Window.h"
 #include "Core/HID/Input.h"
 
+#include "Rendering/DirectionalLight.h"
 #include "Rendering/RenderingAPI.h"
 #include "Rendering/Renderer.h"
 #include "Rendering/Gizmos/Gizmos.h"
@@ -80,6 +81,8 @@ void mlg::Initializer::InitializeSceneComponents() {
 void mlg::Initializer::StopSceneComponents() {
     EntityManager::Stop();
     ComponentManager::Stop();
+
+    DirectionalLight::Stop();
 
     Physics::Stop();
     TimerManager::Stop();

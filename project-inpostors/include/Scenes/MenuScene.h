@@ -1,10 +1,6 @@
 #pragma once
 
 #include "Core/SceneManager/Scene.h"
-#include "UI/Components/Containers/CanvasPanel.h"
-#include "UI/Components/Label.h"
-#include <array>
-#include <memory>
 
 namespace mlg {
     class Container;
@@ -12,6 +8,7 @@ namespace mlg {
     class Image;
     class Button;
     class Label;
+    class OptionSelector;
 }// namespace mlg
 
 class MenuScene : public mlg::Scene {
@@ -36,7 +33,17 @@ private:
     void InitializeCredits();
 
     void InitializeSettings();
-    void BindToOnApply(mlg::Button& button);
+    void BindToOnApply(mlg::Button& button,
+                       mlg::OptionSelector& windowMode,
+                       mlg::OptionSelector& graphicsMode,
+                       mlg::OptionSelector& volume);
+    void LoadSettings(mlg::OptionSelector& windowMode,
+                      mlg::OptionSelector& graphicsMode,
+                      mlg::OptionSelector& volume);
 
     void BindToBackToMainMenu(mlg::Button& button, mlg::Container& container);
+
+    void SetWindowSettings(mlg::OptionSelector& windowMode);
+    void SetGraphicsSettings(mlg::OptionSelector& graphicsMode);
+    void SetVolumeSettings(mlg::OptionSelector& volume);
 };

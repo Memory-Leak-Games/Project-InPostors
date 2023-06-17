@@ -33,7 +33,7 @@ namespace mlg {
         ButtonBuilder& SetAnchor(const glm::vec2& anchor);
 
         std::weak_ptr<class Button> BuildButton(class Entity* owner);
-        std::weak_ptr<class OptionSelector> BuildOptionSwitcher(Entity* owner);
+        std::weak_ptr<class OptionSelector> BuildSelector(Entity* owner);
     };
 
 }
