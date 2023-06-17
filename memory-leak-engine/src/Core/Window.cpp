@@ -18,6 +18,7 @@
 #include "Events/WindowEvent.h"
 
 #include "magic_enum.hpp"
+#include "stb_image.h"
 
 using namespace mlg;
 
@@ -61,6 +62,16 @@ void mlg::Window::Update() {
     }
 
     wasPressedLastFrame = isPressed;
+}
+
+void mlg::Window::SetIcon(const std::string& path) {
+    GLFWimage image;
+    image.pixels = stbi_load(
+            path.c_str(), &image.width, &image.height,
+            0, 4);
+
+    glfwSetWindowIcon(glfwWindow, 1, &image);
+    stbi_image_free(image.pixels);
 }
 
 void mlg::Window::CreateWindow() {
@@ -121,13 +132,13 @@ void mlg::Window::SetResolution(glm::ivec2 resolution) {
     if (windowSettings.width == resolution.x &&
         windowSettings.height == resolution.y)
         return;
-    
+
     windowSettings.width = resolution.x;
     windowSettings.height = resolution.y;
 
     if (!isWindowVisible)
         return;
-    
+
     glfwSetWindowSize(glfwWindow, resolution.x, resolution.y);
     WindowResizeEvent event(resolution.x, resolution.y);
     windowData.eventDispatcher.dispatch(event.GetEventType(), event);

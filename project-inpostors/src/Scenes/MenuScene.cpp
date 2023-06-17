@@ -99,6 +99,7 @@ void MenuScene::InitializeMainMenu() {
                     .SetText("Settings")
                     .Build(entity.lock().get());
     vbox.lock()->AddChild(settingsButton);
+    BindToOnSettings(*settingsButton.lock());
 
     auto creditsButton =
             buttonBuilder.SetName("CreditsButton")
@@ -138,6 +139,10 @@ void MenuScene::BindToOnCredits(mlg::Button& button) {
                 creditsContainer.lock()->SetVisible(true);
                 creditsContainer.lock()->GrabFocus();
             });
+}
+
+void MenuScene::BindToOnSettings(mlg::Button& button) {
+    
 }
 
 void MenuScene::InitializeCredits() {
