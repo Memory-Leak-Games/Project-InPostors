@@ -6,7 +6,12 @@
 #include "UI/UIRenderable.h"
 
 #define MLG_ANCHOR_CENTER glm::vec2{0.5, 0.5}
+#define MLG_ANCHOR_LEFT glm::vec2{0.0, 0.5}
+#define MLG_ANCHOR_RIGHT glm::vec2{1.0, 0.5}
+
 #define MLG_POS_CENTER glm::vec2{1280.f * 0.5f, 720.f * 0.5f}
+
+#define MLG_FULL_SIZE glm::vec2{1280.f, 720.f}
 
 namespace mlg {
     /*

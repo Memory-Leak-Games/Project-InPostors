@@ -29,7 +29,7 @@ std::shared_ptr<PauseMenu> PauseMenu::Create(
     pauseMenu->background = pauseMenu->AddComponent<mlg::Image>(
             "Background",
             mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BACKGROUND_MATERIAL));
-    pauseMenu->background.lock()->SetSize(glm::vec2(BUTTON_SIZE.x * 1.25, 4 * 720));
+    pauseMenu->background.lock()->SetSize(BACKGROUND_SIZE);
     pauseMenu->background.lock()->SetPosition(BUTTON_BASE_POSITION);
 
     pauseMenu->AddResumeButton();

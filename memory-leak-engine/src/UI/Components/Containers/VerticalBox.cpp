@@ -1,4 +1,4 @@
-#include "UI/Components/VerticalBox.h"
+#include "UI/Components/Containers/VerticalBox.h"
 #include "UI/Components/UIFocusableComponent.h"
 #include <glm/fwd.hpp>
 #include <memory>
@@ -21,8 +21,9 @@ void mlg::VerticalBox::UpdateContainer() {
     float y = -size.y / 2.0f + firstSize.y / 2.0f;
 
     for (auto& child : children) {
+        y += child.lock()->GetSize().y * 0.5f;
         child.lock()->SetPosition(position + glm::vec2{0.0f, y});
-        y += child.lock()->GetSize().y;
+        y += child.lock()->GetSize().y * 0.5f;
     }
 
     UpdateFocusableComponents();
@@ -47,7 +48,4 @@ void mlg::VerticalBox::UpdateFocusableComponents() {
         focusableComponents[i].lock()->next.top =
                 focusableComponents[(i + 1) % focusableComponents.size()];
     }
-
-    focusableComponents.front().lock()->next.bottom = focusableComponents.back();
-    focusableComponents.back().lock()->next.top = focusableComponents.front();
 }

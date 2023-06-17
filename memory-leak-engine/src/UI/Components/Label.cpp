@@ -161,7 +161,9 @@ namespace mlg {
             alignedPosition -= glm::vec2(labelSize.x, 0.f);
 
         if (verticalAlignment == VerticalAlignment::Center)
-            alignedPosition += glm::vec2(0.f, labelSize.y / 2.f);
+            alignedPosition += glm::vec2(
+                    0.f,
+                    (labelSize.y - ((float) font->fontSize * scale * 0.51f)) / 2.f);
         else if (verticalAlignment == VerticalAlignment::Down)
             alignedPosition += glm::vec2(0.f, labelSize.y);
 
@@ -194,7 +196,6 @@ namespace mlg {
         }
 
         result.x = std::max(maxHorizontal, result.x);
-        result.y -= (float) font->fontSize * scale * 0.5f;
 
         return result + glm::vec2(padding);
     }

@@ -1,7 +1,6 @@
-#include "UI/Components/Container.h"
+#include "UI/Components/Containers/Container.h"
 #include "UI/Components/UIComponent.h"
 #include "UI/Components/UIFocusableComponent.h"
-#include <glm/fwd.hpp>
 
 mlg::Container::Container(std::weak_ptr<Entity> owner, std::string name)
 : UIComponent(owner, name) { }
@@ -14,7 +13,7 @@ void mlg::Container::Start() {
 }
 
 void mlg::Container::AddChild(std::weak_ptr<UIComponent> child) {
-    children.push_back(child);
+    children.push_front(child);
     UpdateContainer();
 }
 
@@ -52,7 +51,7 @@ glm::vec2 mlg::Container::GetSize() const {
 }
 
 void mlg::Container::GrabFocus() {
-    for (auto& child : children) {
+    for (auto & child : std::ranges::reverse_view(children)) {
         std::weak_ptr<UIFocusableComponent> childAsFocusable =
                 std::dynamic_pointer_cast<UIFocusableComponent>(child.lock());
         
