@@ -3,22 +3,22 @@
     {
       "symbol": "1",
       "config": "res/levels/factories/mine.json",
-      "fallback": " "
+      "fallback": "p"
     },
     {
       "symbol": "2",
       "config": "res/levels/factories/smelter.json",
-      "fallback": " "
+      "fallback": "p"
     },
     {
       "symbol": "3",
       "config": "res/levels/factories/ikea.json",
-      "fallback": " "
+      "fallback": "p"
     },
     {
       "symbol": "0",
       "config": "res/levels/factories/storage.json",
-      "fallback": " "
+      "fallback": "p"
     }
   ],
 

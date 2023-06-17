@@ -1,0 +1,9 @@
+{
+  "name": "big_city_props",
+  "tile-size": 4.0,
+  "tileset": "res/levels/tilesets/props_tileset.json",
+
+  "ignore" : "#",
+
+  "layout": []
+}

@@ -54,6 +54,7 @@ namespace mlg {
         //TODO: more info about pools?
         struct MapFactory {
             std::string configPath;
+            float rotation;
             unsigned int remaining;
             char factorySymbol;
             char fallbackSymbol;
