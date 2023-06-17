@@ -88,7 +88,7 @@ void FinishScreen::FinishScreen::CreateBackground() {
 
     auto sharedBackground = background.lock();
     sharedBackground->SetSize(PANEL_SIZE);
-    sharedBackground->SetPosition(MLG_POS_CENTER);
+    sharedBackground->SetRelativePosition(MLG_POS_CENTER);
     sharedBackground->SetAnchor(MLG_ANCHOR_CENTER);
 
     headerText = AddComponent<mlg::Label>(
@@ -97,7 +97,7 @@ void FinishScreen::FinishScreen::CreateBackground() {
     auto sharedHeaderText = headerText.lock();
     sharedHeaderText->SetSize(50);
     sharedHeaderText->SetText("Time's up!");
-    sharedHeaderText->SetPosition(
+    sharedHeaderText->SetRelativePosition(
             MLG_POS_CENTER + glm::vec2{
                                      -PANEL_SIZE.x * 0.47f,
                                      PANEL_SIZE.y * 0.42});
@@ -115,7 +115,7 @@ void FinishScreen::CreateLeftPanel() {
     auto sharedLeftBackground = leftBackground.lock();
     const glm::vec2 leftSize = glm::vec2{PANEL_SIZE.x * 0.45, PANEL_SIZE.y * 0.8};
     sharedLeftBackground->SetSize(leftSize);
-    sharedLeftBackground->SetPosition(
+    sharedLeftBackground->SetRelativePosition(
             MLG_POS_CENTER + glm::vec2{
                                      -PANEL_SIZE.x * 0.24,
                                      -PANEL_SIZE.y * 0.05});
@@ -130,7 +130,7 @@ void FinishScreen::CreateLeftPanel() {
     auto sharedExitButton = exitButton.lock();
     sharedExitButton->GetLabel().lock()->SetText("Exit");
     sharedExitButton->SetSize(BUTTON_SIZE);
-    sharedExitButton->SetPosition(
+    sharedExitButton->SetRelativePosition(
             MLG_POS_CENTER + glm::vec2{
                                      -PANEL_SIZE.x * 0.24,
                                      -PANEL_SIZE.y * 0.35});
@@ -142,7 +142,7 @@ void FinishScreen::CreateLeftPanel() {
     auto sharedScoreLabel = scoreLabel.lock();
     sharedScoreLabel->SetSize(30);
     sharedScoreLabel->SetText("Score: $2137");
-    sharedScoreLabel->SetPosition(
+    sharedScoreLabel->SetRelativePosition(
             MLG_POS_CENTER + glm::vec2{
                                      -PANEL_SIZE.x * 0.24,
                                      PANEL_SIZE.y * 0.28});
@@ -161,7 +161,7 @@ void FinishScreen::CreateRightPanel() {
 
     const glm::vec2 rightSize = glm::vec2{PANEL_SIZE.x * 0.45, PANEL_SIZE.y * 0.8};
     sharedRightBackground->SetSize(rightSize);
-    sharedRightBackground->SetPosition(
+    sharedRightBackground->SetRelativePosition(
             MLG_POS_CENTER + glm::vec2{
                                      PANEL_SIZE.x * 0.24,
                                      -PANEL_SIZE.y * 0.05});
@@ -173,7 +173,7 @@ void FinishScreen::CreateRightPanel() {
     auto sharedRightHeaderText = rightHeaderText.lock();
     sharedRightHeaderText->SetSize(30);
     sharedRightHeaderText->SetText("SCOREBOARD");
-    sharedRightHeaderText->SetPosition(
+    sharedRightHeaderText->SetRelativePosition(
             MLG_POS_CENTER + glm::vec2{
                                      PANEL_SIZE.x * 0.24,
                                      PANEL_SIZE.y * 0.28});
@@ -188,7 +188,7 @@ void FinishScreen::CreateRightPanel() {
     auto sharedScoreboard = scoreBoard.lock();
     sharedScoreboard->SetSize(28);
 
-    sharedScoreboard->SetPosition(
+    sharedScoreboard->SetRelativePosition(
             MLG_POS_CENTER + glm::vec2{
                                      PANEL_SIZE.x * 0.24,
                                      PANEL_SIZE.y * 0.16});
@@ -208,7 +208,7 @@ void FinishScreen::CreateCharacterSelectors() {
         auto sharedSelector = selector.lock();
         sharedSelector->SetSize(SELECTOR_SIZE);
         sharedSelector->SetAnchor(MLG_ANCHOR_CENTER);
-        sharedSelector->SetPosition(
+        sharedSelector->SetRelativePosition(
                 MLG_POS_CENTER + glm::vec2{
                                          -PANEL_SIZE.x * 0.24 + SELECTOR_SIZE.x * 1.5f * offset,
                                          -PANEL_SIZE.y * 0.05});

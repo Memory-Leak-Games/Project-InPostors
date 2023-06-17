@@ -4,6 +4,9 @@
 
 #include "Macros.h"
 
+#define DEFAULT_SETTINGS_PATH "res/config/settings/"
+#define SETTINGS_PATH "res/runtime_files/"
+
 namespace mlg {
 
     enum class SettingsType {

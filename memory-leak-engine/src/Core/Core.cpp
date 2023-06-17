@@ -109,6 +109,7 @@ void Core::TickWindow() const {
     ZoneScopedN("Window Update");
     Window::Get()->SwapBuffers();
     Window::Get()->PollEvents();
+    Window::Get()->Update();
 }
 
 void Core::TickGameplay() const {
@@ -214,7 +215,7 @@ void Core::Initialize() {
 #endif
 }
 
-Core* Core::GetInstance() {
+Core* Core::Get() {
     return Core::instance;
 }
 

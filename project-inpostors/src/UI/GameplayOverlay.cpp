@@ -26,7 +26,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/semi_transparent_background_material.json");
     auto temp = result->AddComponent<mlg::Image>("ClockPanel", material).lock();
     temp->SetSize({110, 48});
-    temp->SetPosition({640, 720 - 8 - 24});
+    temp->SetRelativePosition({640, 720 - 8 - 24});
     temp->SetAnchor({0.5, 1.0});
 
     auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/terminus-bold.ttf");
@@ -34,17 +34,17 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     result->clock->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
     result->clock->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
     //result->clock->SetPosition({640.f - 42.f, 720.f - 32.f - 2 - 8.f}); //TODO: Use label's property when I teach it to center text
-    result->clock->SetPosition({640.f, 720.f - 24 - 2 - 8.f});
+    result->clock->SetRelativePosition({640.f, 720.f - 24 - 2 - 8.f});
     result->clock->SetAnchor({0.5, 1.0});
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/semi_transparent_background_material.json");
     temp = result->AddComponent<mlg::Image>("ScorePanel", material).lock();
     temp->SetSize({110.f, 48.f});
-    temp->SetPosition({1280.f - 50.f - 8.f, 720.f - 8.f - 24.f});
+    temp->SetRelativePosition({1280.f - 50.f - 8.f, 720.f - 8.f - 24.f});
     temp->SetAnchor({1.0, 1.0});
 
     result->score = result->AddComponent<mlg::Label>("Score").lock();
-    result->score->SetPosition({1280.f - 50.f - 8.f, 720.f - 8.f - 24.f - 2});
+    result->score->SetRelativePosition({1280.f - 50.f - 8.f, 720.f - 8.f - 24.f - 2});
     result->score->SetAnchor({1.0, 1.0});
     result->score->SetText("$0000");
     result->score->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
@@ -52,20 +52,20 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/semi_transparent_background_material.json");
     auto ui = result->AddComponent<mlg::Image>("ChatWindow", material).lock();
-    ui->SetPosition({640.f, 0.f});
+    ui->SetRelativePosition({640.f, 0.f});
     ui->SetAnchor({0.5, 0});
     ui->SetSize({400, 200});
     ui->tint = glm::vec4(0.7f, 0.7f, 0.7f, 0.9f);
 
     ui = result->AddComponent<mlg::Image>("ChatWindow", material).lock();
-    ui->SetPosition({640.f, 0.f});
+    ui->SetRelativePosition({640.f, 0.f});
     ui->SetAnchor({0.5, 0});
     ui->SetSize({400 - 10, 200 - 10});
     ui->tint = glm::vec4(0.f, 0.f, 0.f, 0.95f);
 
     font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/terminus-bold.ttf");
     result->chat = result->AddComponent<mlg::Label>("Chat").lock();
-    result->chat->SetPosition({460.f, 65.f});
+    result->chat->SetRelativePosition({460.f, 65.f});
     result->chat->SetAnchor({0.5, 1.0});
     result->chat->SetSize(18);
     result->chat->SetText("As a language model, I am unable\nto drive vehicles myself. That is\nwhy you were hired to deliver\npackages.");
@@ -73,7 +73,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/task_panel_material.json");
     for(int i = 0; i < 10; i++) {
         result->taskPanels[i] = result->AddComponent<mlg::Image>("TaskPanel", material).lock();
-        result->taskPanels[i]->SetPosition({8 + 8 + 16 + 48 * i, 720 - 17 - 16});
+        result->taskPanels[i]->SetRelativePosition({8 + 8 + 16 + 48 * i, 720 - 17 - 16});
         result->taskPanels[i]->SetAnchor({0.0, 1.0});
         result->taskPanels[i]->SetSize({42, 42});
         result->taskPanels[i]->SetVisible(false);
@@ -82,7 +82,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/iron_material.json");
     for(int i = 0; i < 10; i++) {
         result->taskIcon[i] = result->AddComponent<mlg::Image>("TaskIcon", material).lock();
-        result->taskIcon[i]->SetPosition({8 + 8 + 16 + 48 * i, 720 - 17 - 16});
+        result->taskIcon[i]->SetRelativePosition({8 + 8 + 16 + 48 * i, 720 - 17 - 16});
         result->taskIcon[i]->SetAnchor({0.0, 1.0});
         result->taskIcon[i]->SetSize({24, 24});
         result->taskIcon[i]->SetVisible(false);
@@ -92,7 +92,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     for(int i = 0; i < 10; i++)
     {
         result->taskProgress[i] = result->AddComponent<mlg::ProgressBar>("TaskProgress", material).lock();
-        result->taskProgress[i]->SetPosition({8 + 8 + 16 + 48 * i, 720 - 17 - 16});
+        result->taskProgress[i]->SetRelativePosition({8 + 8 + 16 + 48 * i, 720 - 17 - 16});
         result->taskProgress[i]->SetAnchor({0.0, 1.0});
         result->taskProgress[i]->SetSize({64, 64});
         result->taskProgress[i]->percentage = 1.0f;

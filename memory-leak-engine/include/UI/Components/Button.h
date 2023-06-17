@@ -26,13 +26,13 @@ namespace mlg {
         void Start() override;
         void Update() override;
 
-        [[nodiscard]] const glm::vec2& GetSize() const;
+        [[nodiscard]] glm::vec2 GetSize() const override;
         void SetSize(const glm::vec2& size);
 
         [[nodiscard]] const std::weak_ptr<Label>& GetLabel() const;
 
         void SetVisible(bool visible) override;
-        void SetPosition(const glm::vec2& position) override;
+        void SetRelativePosition(const glm::vec2& position) override;
         void SetAnchor(const glm::vec2& anchor) override;
     };
 }// namespace mlg
