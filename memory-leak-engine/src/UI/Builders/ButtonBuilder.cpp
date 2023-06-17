@@ -6,6 +6,7 @@
 #include "UI/Components/Button.h"
 
 #include "Gameplay/Entity.h"
+#include "UI/Components/ImageButton.h"
 #include "UI/Components/Label.h"
 #include "UI/Components/OptionSelector.h"
 #include <memory>
@@ -93,4 +94,24 @@ mlg::ButtonBuilder::BuildSelector(Entity* owner) {
     sharedSwitcher->GetLabel().lock()->SetTextColor(textColor);
 
     return optionSwitcher;
+}
+
+std::weak_ptr<mlg::ImageButton> mlg::ButtonBuilder::BuildImageButton(
+        Entity* owner,
+        const std::string& imageMaterialPath) {
+
+    auto imageMaterial =
+            AssetManager::GetAsset<MaterialAsset>(imageMaterialPath);
+
+    auto button = owner->AddComponent<mlg::ImageButton>(
+            name, defaultMaterial, focusMaterial, font, imageMaterial);
+    auto sharedButton = button.lock();
+    sharedButton->SetSize(size);
+    sharedButton->SetAnchor(anchor);
+    sharedButton->SetPadding(padding);
+
+    sharedButton->GetLabel().lock()->SetText(text);
+    sharedButton->GetLabel().lock()->SetTextColor(textColor);
+
+    return button;
 }

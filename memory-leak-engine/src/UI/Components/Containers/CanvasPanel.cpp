@@ -1,5 +1,4 @@
 #include "UI/Components/Containers/CanvasPanel.h"
-#include <glm/fwd.hpp>
 
 mlg::CanvasPanel::CanvasPanel(std::weak_ptr<Entity> owner, std::string name)
     : Container(owner, name) {}

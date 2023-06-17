@@ -13,6 +13,7 @@
 #include "Rendering/Assets/MaterialAsset.h"
 #include "SceneGraph/SceneGraph.h"
 
+#include "Scenes/LevelScene.h"
 #include "Scenes/TestScene.h"
 #include "UI/Assets/FontAsset.h"
 #include "UI/Builders/ButtonBuilder.h"
@@ -23,6 +24,7 @@
 #include "UI/Components/Containers/HorizontalBox.h"
 #include "UI/Components/Containers/VerticalBox.h"
 #include "UI/Components/Image.h"
+#include "UI/Components/ImageButton.h"
 #include "UI/Components/Label.h"
 #include "UI/Components/OptionSelector.h"
 #include "UI/Components/Spacer.h"
@@ -32,6 +34,7 @@
 #include <fstream>
 #include <glm/fwd.hpp>
 #include <magic_enum.hpp>
+#include <memory>
 #include <spdlog/spdlog.h>
 #include <string>
 
@@ -473,24 +476,8 @@ void MenuScene::InitializeLevelSelector() {
     levelSelector.lock()->SetAnchor(MLG_ANCHOR_CENTER);
     levelSelector.lock()->SetRelativePosition(MLG_POS_CENTER);
 
-    auto material =
-            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BACKGROUND_MATERIAL);
-    auto background =
-            entity.lock()->AddComponent<mlg::Image>("MenuBackground", material);
-    background.lock()->SetSize(PANEL_SIZE);
-
-    levelSelector.lock()->AddChild(background);
-
     auto hbox = entity.lock()->AddComponent<mlg::HorizontalBox>("HBox");
     levelSelector.lock()->AddChild(hbox);
-
-    std::ifstream fileStream(LEVELS_FILE);
-    nlohmann::json levelsJson = nlohmann::json::parse(fileStream);
-
-    for (const auto& level : levelsJson) {
-        auto levelPanel = LoadLevelPanel(level, entity.lock().get());
-        hbox.lock()->AddChild(levelPanel);
-    }
 
     mlg::ButtonBuilder buttonBuilder;
     auto backButton = buttonBuilder
@@ -503,48 +490,49 @@ void MenuScene::InitializeLevelSelector() {
     backButton.lock()->SetRelativePosition(-glm::vec2(0.f, 200.f));
     BindToBackToMainMenu(*backButton.lock(), *levelSelector.lock());
     levelSelector.lock()->AddChild(backButton);
+    
+    std::ifstream fileStream(LEVELS_FILE);
+    nlohmann::json levelsJson = nlohmann::json::parse(fileStream);
+
+    int i = 0;
+
+    for (const auto& level : levelsJson) {
+        auto levelButton =
+                LoadLevelButton(level, entity.lock().get());
+        levelButton.lock()->next.bottom = backButton;
+
+        if (i == std::floor(levelsJson.size() / 2))
+            backButton.lock()->next.top = levelButton;
+
+        hbox.lock()->AddChild(levelButton);
+
+        i++;
+    }
+
 }
 
-std::weak_ptr<mlg::Container> MenuScene::LoadLevelPanel(
+std::weak_ptr<mlg::Button> MenuScene::LoadLevelButton(
         const nlohmann::json& levelsJson, mlg::Entity* entity) {
-    auto levelPanel = entity->AddComponent<mlg::CanvasPanel>("LevelPanel");
-    levelPanel.lock()->SetSize(glm::vec2{256.f, 256.f});
-    levelPanel.lock()->SetPadding(20.f);
+    glm::vec2 buttonSize {BUTTON_SIZE.x};
+        
+    auto levelButton = mlg::ButtonBuilder()
+                               .SetSize(buttonSize)
+                               .SetAnchor(MLG_ANCHOR_CENTER)
+                               .SetPadding(50.f)
+                               .SetName("LevelButton")
+                               .SetText(levelsJson["name"])
+                               .BuildImageButton(
+                                       entity,
+                                       levelsJson["material"]);
+    levelButton.lock()->GetImage().lock()->SetSize(buttonSize * 0.6f);
+    levelButton.lock()->GetImage().lock()->SetPadding(20.f);
+    levelButton.lock()->GetLabel().lock()->SetPadding(20.f);
 
-    auto material =
-            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(WHITE_MATERIAL);
-    auto background =
-            entity->AddComponent<mlg::Image>("MenuBackground", material);
-    background.lock()->SetSize(glm::vec2{256.f, 256.f});
+    levelButton.lock()->OnClick.append(
+            [this, levelsJson]() {
+                auto scene = std::make_unique<LevelScene>(levelsJson["path"]);
+                mlg::SceneManager::SetNextScene(std::move(scene));
+            });
 
-    levelPanel.lock()->AddChild(background);
-
-    auto vbox = entity->AddComponent<mlg::VerticalBox>("VBox");
-    levelSelector.lock()->AddChild(vbox);
-    vbox.lock()->SetPadding(30.f);
-
-    auto levelImageMaterial =
-            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(levelsJson["material"]);
-
-    auto levelImage =
-            entity->AddComponent<mlg::Image>("levelImage", levelImageMaterial);
-    levelImage.lock()->SetSize(glm::vec2(128.f, 128.f));
-    levelImage.lock()->SetPadding(20.f);
-    vbox.lock()->AddChild(levelImage);
-
-    mlg::LabelBuilder labelBuilder;
-    auto levelLabel = labelBuilder
-                              .SetPadding(50.f)
-                              .SetTextColor(glm::vec3(0.f))
-                              .SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center)
-                              .SetVerticalAlignment(mlg::Label::VerticalAlignment::Center)
-                              .SetAnchor(MLG_ANCHOR_CENTER)
-                              .SetSize(32)
-                              .SetText(levelsJson["name"])
-                              .SetName("LevelLabel")
-                              .BuildLabel(entity);
-    vbox.lock()->AddChild(levelLabel);
-    levelPanel.lock()->AddChild(vbox);
-
-    return levelPanel;
+    return levelButton;
 }

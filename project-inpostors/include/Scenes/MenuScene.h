@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Core/SceneManager/Scene.h"
-#include "Gameplay/Entity.h"
-#include <memory>
 
 namespace mlg {
     class Container;
@@ -53,6 +51,6 @@ private:
     void SetVolumeSettings(mlg::OptionSelector& volume);
 
     void InitializeLevelSelector();
-    std::weak_ptr<mlg::Container> LoadLevelPanel(
+    std::weak_ptr<mlg::Button> LoadLevelButton(
         const nlohmann::json& levelsJson, mlg::Entity* entity);
 };

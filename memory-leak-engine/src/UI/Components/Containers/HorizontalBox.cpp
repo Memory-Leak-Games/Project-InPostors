@@ -13,12 +13,12 @@ void mlg::HorizontalBox::UpdateContainer() {
     glm::vec2 position = GetPosition();
     glm::vec2 size = GetSize();
     glm::vec2 firstSize = children.front().lock()->GetSize();
-    float x = -size.x / 2.0f + position.x;
+    float x = size.x / 2.0f + position.x;
 
     for (auto& child : children) {
-        x += child.lock()->GetSize().x * 0.5f;
+        x -= child.lock()->GetSize().x * 0.5f;
         child.lock()->SetRelativePosition(glm::vec2{x, position.y});
-        x += child.lock()->GetSize().x * 0.5f;
+        x -= child.lock()->GetSize().x * 0.5f;
     }
 
     UpdateFocusableComponents();
@@ -51,8 +51,10 @@ void mlg::HorizontalBox::UpdateFocusableComponents() {
 
     for (int i = 0; i < focusableComponents.size(); i++) {
         focusableComponents[i].lock()->next.left =
-                focusableComponents[(i - 1) % focusableComponents.size()];
-        focusableComponents[i].lock()->next.right =
                 focusableComponents[(i + 1) % focusableComponents.size()];
+        focusableComponents[i].lock()->next.right =
+                focusableComponents[(i - 1) % focusableComponents.size()];
     }
+
+    focusableComponents.front().lock()->next.right = focusableComponents.back();
 }
