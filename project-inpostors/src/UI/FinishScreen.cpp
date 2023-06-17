@@ -5,6 +5,7 @@
 #include "Rendering/Assets/MaterialAsset.h"
 
 #include "Managers/ScoreManager.h"
+#include "Scenes/MenuScene.h"
 #include "UI/Assets/FontAsset.h"
 #include "UI/Components/Button.h"
 #include "UI/Components/CharacterSelector.h"
@@ -16,6 +17,7 @@
 
 #include "Managers/ScoreManager.h"
 #include "Scenes/LevelScene.h"
+#include <memory>
 
 FinishScreen::FinishScreen(
         uint64_t id, const std::string& name,
@@ -49,7 +51,9 @@ void FinishScreen::Start() {
         levelScene->GetScoreManager()->SaveScore(levelName, playerName, score);
 
         SetVisible(false);
-        mlg::SceneManager::ExitGame();
+
+        auto menuScene = std::make_unique<MenuScene>();
+        mlg::SceneManager::SetNextScene(std::move(menuScene));
     });
 
     SetVisible(false);
