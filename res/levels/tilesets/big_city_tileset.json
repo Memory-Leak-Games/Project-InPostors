@@ -281,6 +281,17 @@
           "collision-size": 12.0
         }
       ]
+    },
+    {
+      "symbol": "G",
+      "objects": [
+        {
+          "model": "res/models/buildings/super_big/cafe_b.obj",
+          "scale": 1.0,
+          "collision-type": "rectangle",
+          "collision-size": 12.0
+        }
+      ]
     }
   ],
   "road": {
