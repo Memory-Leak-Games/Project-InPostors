@@ -7,6 +7,7 @@ namespace mlg {
     class Container : public UIComponent {
     protected:
         std::list<std::weak_ptr<UIComponent>> children;
+        std::weak_ptr<class UIFocusableComponent> focusedComponent;
 
     public:
         Container(std::weak_ptr<Entity> owner, std::string name);
@@ -26,10 +27,12 @@ namespace mlg {
         void GrabFocus();
 
         void SetVisible(bool visible) override;
-
     protected:
         virtual void UpdateContainer() = 0;
+
     private:
+        void BindToFocusedEvent(const std::weak_ptr<UIComponent>& child);
+
         bool TryFocusFocusableComponent(UIComponent* child);
         bool TryFocusContainer(UIComponent* child);
     };

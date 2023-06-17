@@ -1,4 +1,5 @@
 #include "UI/Components/Containers/Container.h"
+
 #include "UI/Components/UIComponent.h"
 #include "UI/Components/UIFocusableComponent.h"
 
@@ -14,6 +15,7 @@ void mlg::Container::Start() {
 
 void mlg::Container::AddChild(std::weak_ptr<UIComponent> child) {
     children.push_front(child);
+    BindToFocusedEvent(child);
     UpdateContainer();
 }
 
@@ -56,10 +58,15 @@ glm::vec2 mlg::Container::GetSize() const {
 }
 
 void mlg::Container::GrabFocus() {
+    if (!focusedComponent.expired()) {
+        focusedComponent.lock()->GrabFocus();
+        return;
+    }
+
     for (auto& child : std::ranges::reverse_view(children)) {
         if (TryFocusFocusableComponent(child.lock().get()))
             return;
-        
+
         if (TryFocusContainer(child.lock().get()))
             return;
     }
@@ -71,6 +78,18 @@ void mlg::Container::SetVisible(bool visible) {
     }
 }
 
+void mlg::Container::BindToFocusedEvent(const std::weak_ptr<UIComponent>& child) {
+    auto childAsFocusable =
+            std::dynamic_pointer_cast<UIFocusableComponent>(child.lock());
+
+    if (childAsFocusable == nullptr)
+        return;
+
+    childAsFocusable->OnFocus.append([this, childAsFocusable]() {
+        focusedComponent = childAsFocusable;
+    });
+}
+
 bool mlg::Container::TryFocusFocusableComponent(UIComponent* child) {
     auto childAsFocusable =
             dynamic_cast<UIFocusableComponent*>(child);
@@ -80,7 +99,6 @@ bool mlg::Container::TryFocusFocusableComponent(UIComponent* child) {
 
     childAsFocusable->GrabFocus();
     return true;
-
 }
 
 bool mlg::Container::TryFocusContainer(UIComponent* child) {

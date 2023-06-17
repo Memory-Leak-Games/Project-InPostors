@@ -120,7 +120,7 @@ void Core::TickGameplay() const {
     TimerManager::Update();
 
     Input::Update();
-    UIController::Update();
+    UIController::Get()->Update();
 
     Physics::TickFixedTimeSteps();
 

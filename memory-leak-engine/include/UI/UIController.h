@@ -6,12 +6,14 @@ namespace mlg {
         static UIController* instance;
         UIController();
 
-    public:
         std::weak_ptr<class UIFocusableComponent> focused;
-
+    public:
         static void Initialize();
         static void Stop();
-        static UIController* GetInstance();
-        static void Update();
+
+        static UIController* Get();
+        void Update();
+
+        void SetFocus(const std::shared_ptr<class UIFocusableComponent>& component);
     };
 }

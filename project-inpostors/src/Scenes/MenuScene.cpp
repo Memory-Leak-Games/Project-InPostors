@@ -19,8 +19,6 @@
 #include "UI/Components/UIComponent.h"
 
 #include "UI/UIStyle.h"
-#include <glm/fwd.hpp>
-#include <memory>
 
 MenuScene::~MenuScene() = default;
 
@@ -106,6 +104,7 @@ void MenuScene::InitializeMainMenu() {
             buttonBuilder.SetName("CreditsButton")
                     .SetText("Credits")
                     .Build(entity.lock().get());
+    BindToOnCredits(*creditsButton.lock());
     vbox.lock()->AddChild(creditsButton);
 
     auto exitButton =
@@ -129,6 +128,15 @@ void MenuScene::BindToOnPlay(mlg::Button& button) {
             []() {
                 auto testScene = std::make_unique<TestScene>();
                 mlg::SceneManager::SetNextScene(std::move(testScene));
+            });
+}
+
+void MenuScene::BindToOnCredits(mlg::Button& button) {
+    button.OnClick.append(
+            [this]() {
+                mainMenuContainer.lock()->SetVisible(false);
+                creditsContainer.lock()->SetVisible(true);
+                creditsContainer.lock()->GrabFocus();
             });
 }
 
@@ -172,6 +180,15 @@ void MenuScene::InitializeCredits() {
                               .SetName("BackButton")
                               .SetText("Back")
                               .Build(entity.lock().get());
-
+    BindToOnCreditsBack(*backButton.lock());
     vbox.lock()->AddChild(backButton);
+}
+
+void MenuScene::BindToOnCreditsBack(mlg::Button& button) {
+    button.OnClick.append(
+            [this]() {
+                creditsContainer.lock()->SetVisible(false);
+                mainMenuContainer.lock()->SetVisible(true);
+                mainMenuContainer.lock()->GrabFocus();
+            });
 }
