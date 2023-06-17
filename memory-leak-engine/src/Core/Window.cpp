@@ -74,6 +74,10 @@ void mlg::Window::SetIcon(const std::string& path) {
     stbi_image_free(image.pixels);
 }
 
+void mlg::Window::SetTitle(const std::string& title) {
+    glfwSetWindowTitle(glfwWindow, title.c_str());
+}
+
 void mlg::Window::CreateWindow() {
     windowData.title = windowSettings.title;
     windowData.width = windowSettings.width;

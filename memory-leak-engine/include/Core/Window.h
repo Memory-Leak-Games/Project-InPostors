@@ -72,6 +72,7 @@ namespace mlg {
         virtual void Update();
 
         virtual void SetIcon(const std::string& path);
+        virtual void SetTitle(const std::string& title);
 
 #ifdef DEBUG
         virtual void ImGuiInit();
