@@ -22,7 +22,7 @@ void mlg::CanvasPanel::UpdateContainer() {
 
     for (auto& child : children) {
         glm::vec2 childRelativePosition = child.lock()->GetRelativePosition();
-        glm::vec2 childPosition = position + childRelativePosition - size * 0.5f;
-        child.lock()->SetPosition(position);
+        glm::vec2 childPosition = position + childRelativePosition;
+        child.lock()->SetPosition(childPosition);
     }
 }

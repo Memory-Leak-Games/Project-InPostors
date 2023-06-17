@@ -33,6 +33,7 @@ namespace mlg {
 
         void SetVisible(bool visible) override;
         void SetRelativePosition(const glm::vec2& position) override;
+        void SetPosition(const glm::vec2& position) override;
         void SetAnchor(const glm::vec2& anchor) override;
     };
 }// namespace mlg

@@ -45,17 +45,6 @@ void mlg::Container::SetAnchor(const glm::vec2& anchor) {
     }
 }
 
-glm::vec2 mlg::Container::GetSize() const {
-    glm::vec2 size;
-
-    for (auto& child : children) {
-        glm::vec2 childSize = child.lock()->GetSize();
-        size.x = std::max(size.x, childSize.x);
-        size.y += childSize.y;
-    }
-
-    return size + glm::vec2(padding);
-}
 
 void mlg::Container::GrabFocus() {
     if (!focusedComponent.expired()) {

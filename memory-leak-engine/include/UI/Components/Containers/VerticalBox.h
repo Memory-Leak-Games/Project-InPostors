@@ -1,6 +1,7 @@
 #pragma once
 
 #include "UI/Components/Containers/Container.h"
+#include <glm/fwd.hpp>
 
 namespace mlg {
 
@@ -11,6 +12,7 @@ namespace mlg {
 
     protected:
         void UpdateContainer() override;
+        glm::vec2 GetSize() const override;
 
     private:
         void UpdateFocusableComponents();

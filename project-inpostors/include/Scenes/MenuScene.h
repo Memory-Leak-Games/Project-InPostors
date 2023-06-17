@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Core/SceneManager/Scene.h"
+#include "Gameplay/Entity.h"
+#include <memory>
 
 namespace mlg {
     class Container;
@@ -9,6 +11,7 @@ namespace mlg {
     class Button;
     class Label;
     class OptionSelector;
+    class Entity;
 }// namespace mlg
 
 class MenuScene : public mlg::Scene {
@@ -16,6 +19,8 @@ private:
     std::weak_ptr<mlg::CanvasPanel> mainMenuContainer;
     std::weak_ptr<mlg::CanvasPanel> creditsContainer;
     std::weak_ptr<mlg::CanvasPanel> settingsContainer;
+
+    std::weak_ptr<mlg::CanvasPanel> levelSelector;
 
 public:
     explicit MenuScene() = default;
@@ -46,4 +51,8 @@ private:
     void SetWindowSettings(mlg::OptionSelector& windowMode);
     void SetGraphicsSettings(mlg::OptionSelector& graphicsMode);
     void SetVolumeSettings(mlg::OptionSelector& volume);
+
+    void InitializeLevelSelector();
+    std::weak_ptr<mlg::Container> LoadLevelPanel(
+        const nlohmann::json& levelsJson, mlg::Entity* entity);
 };

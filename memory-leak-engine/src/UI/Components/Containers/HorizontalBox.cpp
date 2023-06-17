@@ -24,6 +24,18 @@ void mlg::HorizontalBox::UpdateContainer() {
     UpdateFocusableComponents();
 }
 
+glm::vec2 mlg::HorizontalBox::GetSize() const {
+    glm::vec2 size;
+
+    for (auto& child : children) {
+        glm::vec2 childSize = child.lock()->GetSize();
+        size.x += childSize.x;
+        size.y = std::max(size.y, childSize.y);
+    }
+
+    return size + glm::vec2(padding);
+}
+
 void mlg::HorizontalBox::UpdateFocusableComponents() {
     std::vector<std::weak_ptr<UIFocusableComponent>> focusableComponents;
 

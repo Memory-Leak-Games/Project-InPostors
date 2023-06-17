@@ -20,6 +20,7 @@
 #include "UI/Components/Button.h"
 #include "UI/Components/Containers/CanvasPanel.h"
 #include "UI/Components/Containers/Container.h"
+#include "UI/Components/Containers/HorizontalBox.h"
 #include "UI/Components/Containers/VerticalBox.h"
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
@@ -28,9 +29,12 @@
 #include "UI/Components/UIComponent.h"
 
 #include "UI/UIStyle.h"
+#include <fstream>
 #include <magic_enum.hpp>
 #include <spdlog/spdlog.h>
 #include <string>
+
+#define LEVELS_FILE "res/levels/levels.json"
 
 MenuScene::~MenuScene() = default;
 
@@ -55,6 +59,9 @@ void MenuScene::Load() {
 
     InitializeSettings();
     settingsContainer.lock()->SetVisible(false);
+
+    InitializeLevelSelector();
+    levelSelector.lock()->SetVisible(false);
 }
 
 void MenuScene::InitializeMainMenu() {
@@ -140,9 +147,10 @@ void MenuScene::BindToOnExit(mlg::Button& button) {
 // TODO: Update me
 void MenuScene::BindToOnPlay(mlg::Button& button) {
     button.OnClick.append(
-            []() {
-                auto testScene = std::make_unique<TestScene>();
-                mlg::SceneManager::SetNextScene(std::move(testScene));
+            [this]() {
+                mainMenuContainer.lock()->SetVisible(false);
+                levelSelector.lock()->SetVisible(true);
+                levelSelector.lock()->GrabFocus();
             });
 }
 
@@ -453,4 +461,72 @@ void MenuScene::SetVolumeSettings(mlg::OptionSelector& volume) {
             mlg::SettingsType::Audio,
             "volume",
             volumeAmount);
+}
+
+void MenuScene::InitializeLevelSelector() {
+    auto entity = mlg::EntityManager::SpawnEntity<mlg::Entity>(
+            "Level Selector", false, mlg::SceneGraph::GetRoot());
+
+    levelSelector = entity.lock()->AddComponent<mlg::CanvasPanel>("LevelSelector");
+    levelSelector.lock()->SetSize(PANEL_SIZE);
+    levelSelector.lock()->SetAnchor(MLG_ANCHOR_CENTER);
+    levelSelector.lock()->SetRelativePosition(MLG_POS_CENTER);
+
+    auto material =
+            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BACKGROUND_MATERIAL);
+    auto background =
+            entity.lock()->AddComponent<mlg::Image>("MenuBackground", material);
+    background.lock()->SetSize(PANEL_SIZE);
+
+    levelSelector.lock()->AddChild(background);
+
+    auto hbox = entity.lock()->AddComponent<mlg::HorizontalBox>("HBox");
+    levelSelector.lock()->AddChild(hbox);
+
+    std::ifstream fileStream(LEVELS_FILE);
+    nlohmann::json levelsJson = nlohmann::json::parse(fileStream);
+
+    for (const auto& level : levelsJson) {
+        auto levelPanel = LoadLevelPanel(level, entity.lock().get());
+        hbox.lock()->AddChild(levelPanel);
+    }
+
+    mlg::ButtonBuilder buttonBuilder;
+    auto backButton = buttonBuilder
+                              .SetSize(BUTTON_SIZE)
+                              .SetAnchor(MLG_ANCHOR_CENTER)
+                              .SetPadding(10.f)
+                              .SetName("BackButton")
+                              .SetText("Back")
+                              .BuildButton(entity.lock().get());
+    backButton.lock()->SetRelativePosition( -glm::vec2(0.f, 50.f));
+    BindToBackToMainMenu(*backButton.lock(), *levelSelector.lock());
+    levelSelector.lock()->AddChild(backButton);
+}
+
+std::weak_ptr<mlg::Container> MenuScene::LoadLevelPanel(
+        const nlohmann::json& levelsJson, mlg::Entity* entity) {
+    auto vbox = entity->AddComponent<mlg::HorizontalBox>("VBox");
+    levelSelector.lock()->AddChild(vbox);
+    vbox.lock()->SetPadding(30.f);
+
+    auto levelImageMaterial =
+            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(levelsJson["material"]);
+
+    auto levelImage =
+            entity->AddComponent<mlg::Image>("levelImage", levelImageMaterial);
+    levelImage.lock()->SetSize(glm::vec2(128.f, 128.f));
+    levelImage.lock()->SetPadding(10.f);
+    vbox.lock()->AddChild(levelImage);
+
+    mlg::LabelBuilder labelBuilder;
+    auto levelLabel = labelBuilder
+                              .SetAnchor(MLG_ANCHOR_CENTER)
+                              .SetSize(32)
+                              .SetText(levelsJson["name"])
+                              .SetName("LevelLabel")
+                              .BuildLabel(entity);
+    vbox.lock()->AddChild(levelLabel);
+
+    return vbox;
 }
