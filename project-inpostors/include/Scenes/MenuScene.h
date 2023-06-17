@@ -18,6 +18,7 @@ class MenuScene : public mlg::Scene {
 private:
     std::weak_ptr<mlg::CanvasPanel> mainMenuContainer;
     std::weak_ptr<mlg::CanvasPanel> creditsContainer;
+    std::weak_ptr<mlg::CanvasPanel> settingsContainer;
 
 public:
     explicit MenuScene() = default;
@@ -33,5 +34,9 @@ private:
     void BindToOnSettings(mlg::Button& button);
 
     void InitializeCredits();
-    void BindToOnCreditsBack(mlg::Button& button);
+
+    void InitializeSettings();
+    void BindToOnApply(mlg::Button& button);
+
+    void BindToBackToMainMenu(mlg::Button& button, mlg::Container& container);
 };

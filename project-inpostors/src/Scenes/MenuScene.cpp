@@ -4,6 +4,7 @@
 #include "Core/SceneManager/SceneManager.h"
 #include "Gameplay/Entity.h"
 #include "Gameplay/EntityManager.h"
+#include "Macros.h"
 #include "Rendering/Assets/MaterialAsset.h"
 #include "SceneGraph/SceneGraph.h"
 
@@ -12,6 +13,7 @@
 #include "UI/Builders/ButtonBuilder.h"
 #include "UI/Components/Button.h"
 #include "UI/Components/Containers/CanvasPanel.h"
+#include "UI/Components/Containers/Container.h"
 #include "UI/Components/Containers/VerticalBox.h"
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
@@ -37,10 +39,12 @@ void MenuScene::Load() {
 
     InitializeMainMenu();
     mainMenuContainer.lock()->GrabFocus();
-    //     mainMenuContainer.lock()->SetVisible(false);
 
     InitializeCredits();
     creditsContainer.lock()->SetVisible(false);
+
+    InitializeSettings();
+    settingsContainer.lock()->SetVisible(false);
 }
 
 void MenuScene::InitializeMainMenu() {
@@ -142,7 +146,12 @@ void MenuScene::BindToOnCredits(mlg::Button& button) {
 }
 
 void MenuScene::BindToOnSettings(mlg::Button& button) {
-    
+    button.OnClick.append(
+            [this]() {
+                mainMenuContainer.lock()->SetVisible(false);
+                settingsContainer.lock()->SetVisible(true);
+                settingsContainer.lock()->GrabFocus();
+            });
 }
 
 void MenuScene::InitializeCredits() {
@@ -185,15 +194,67 @@ void MenuScene::InitializeCredits() {
                               .SetName("BackButton")
                               .SetText("Back")
                               .Build(entity.lock().get());
-    BindToOnCreditsBack(*backButton.lock());
+    BindToBackToMainMenu(*backButton.lock(), *creditsContainer.lock());
     vbox.lock()->AddChild(backButton);
 }
 
-void MenuScene::BindToOnCreditsBack(mlg::Button& button) {
+void MenuScene::BindToBackToMainMenu(mlg::Button& button, mlg::Container& container) {
     button.OnClick.append(
-            [this]() {
-                creditsContainer.lock()->SetVisible(false);
+            [this, &container]() {
+                container.SetVisible(false);
                 mainMenuContainer.lock()->SetVisible(true);
                 mainMenuContainer.lock()->GrabFocus();
+            });
+}
+
+void MenuScene::InitializeSettings() {
+    auto entity = mlg::EntityManager::SpawnEntity<mlg::Entity>(
+            "SettingsMenu", false, mlg::SceneGraph::GetRoot());
+
+    settingsContainer = entity.lock()->AddComponent<mlg::CanvasPanel>("SettingsMenu");
+    settingsContainer.lock()->SetAnchor(MLG_ANCHOR_LEFT);
+    settingsContainer.lock()->SetRelativePosition(
+            {BUTTON_BASE_POSITION.x, MLG_POS_CENTER.y});
+    settingsContainer.lock()->SetSize(PANEL_SIZE);
+
+    auto material =
+            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BACKGROUND_MATERIAL);
+    auto background =
+            entity.lock()->AddComponent<mlg::Image>("MenuBackground", material);
+    background.lock()->SetSize(BACKGROUND_SIZE);
+    background.lock()->SetAnchor(MLG_ANCHOR_LEFT);
+    settingsContainer.lock()->AddChild(background);
+
+    auto vbox =
+            entity.lock()->AddComponent<mlg::VerticalBox>("VBox");
+    settingsContainer.lock()->AddChild(vbox);
+
+    auto separator = entity.lock()->AddComponent<mlg::Spacer>("Spacer");
+    separator.lock()->SetSize(BUTTON_SIZE);
+
+    mlg::ButtonBuilder buttonBuilder;
+    buttonBuilder = buttonBuilder
+                            .SetSize(BUTTON_SIZE)
+                            .SetPadding(10.f);
+    auto applyButton = buttonBuilder
+                               .SetName("ApplyButton")
+                               .SetText("Apply")
+                               .Build(entity.lock().get());
+    BindToOnApply(*applyButton.lock());
+    vbox.lock()->AddChild(applyButton);
+
+
+    auto backButton = buttonBuilder
+                              .SetName("BackButton")
+                              .SetText("Back")
+                              .Build(entity.lock().get());
+    BindToBackToMainMenu(*backButton.lock(), *settingsContainer.lock());
+    vbox.lock()->AddChild(backButton);
+}
+
+void MenuScene::BindToOnApply(mlg::Button& button) {
+    button.OnClick.append(
+            [this]() {
+                MLG_UNIMPLEMENTED_SOFT;
             });
 }
