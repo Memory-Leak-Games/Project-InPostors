@@ -14,9 +14,11 @@
 #include "UI/Components/Containers/VerticalBox.h"
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
+#include "UI/Components/Spacer.h"
 #include "UI/Components/UIComponent.h"
 
 #include "UI/UIStyle.h"
+#include <glm/fwd.hpp>
 
 MenuScene::~MenuScene() = default;
 
@@ -33,10 +35,11 @@ void MenuScene::Load() {
     catIm.lock()->SetRelativePosition(MLG_POS_CENTER);
 
 
-//     InitializeMainMenu();
-//     mainMenuContainer.lock()->SetVisible(false);
+    InitializeMainMenu();
+    //     mainMenuContainer.lock()->SetVisible(false);
 
     InitializeCredits();
+    creditsContainer.lock()->SetVisible(false);
 }
 
 void MenuScene::InitializeMainMenu() {
@@ -58,8 +61,7 @@ void MenuScene::InitializeMainMenu() {
 
     mainMenuContainer.lock()->SetAnchor(MLG_ANCHOR_LEFT);
     mainMenuContainer.lock()->SetRelativePosition(
-            BUTTON_BASE_POSITION + glm::vec2(0.f, 130.f));
-
+            glm::vec2{BUTTON_BASE_POSITION.x, MLG_POS_CENTER.y});
 
     auto logoMaterial =
             mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
@@ -72,6 +74,10 @@ void MenuScene::InitializeMainMenu() {
     gameLogo.lock()->SetSize(glm::vec2(BUTTON_SIZE.x, BUTTON_SIZE.x));
     gameLogo.lock()->SetPadding(10.f);
     mainMenuContainer.lock()->AddChild(gameLogo);
+
+    auto spacer = entity.lock()->AddComponent<mlg::Spacer>("Spacer");
+    spacer.lock()->SetSize(glm::vec2(3.f * BUTTON_SIZE.y));
+    mainMenuContainer.lock()->AddChild(spacer);
 
     mlg::ButtonBuilder buttonBuilder;
     buttonBuilder = buttonBuilder
