@@ -7,7 +7,7 @@
 
 #include "Gameplay/Entity.h"
 #include "UI/Components/Label.h"
-#include "UI/Components/OptionSwitcher.h"
+#include "UI/Components/OptionSelector.h"
 #include <memory>
 
 mlg::ButtonBuilder::ButtonBuilder() {
@@ -78,10 +78,10 @@ std::weak_ptr<mlg::Button> mlg::ButtonBuilder::BuildButton(mlg::Entity* owner) {
     return button;
 }
 
-std::weak_ptr<mlg::OptionSwitcher>
+std::weak_ptr<mlg::OptionSelector>
 mlg::ButtonBuilder::BuildOptionSwitcher(Entity* owner) {
     auto optionSwitcher =
-            owner->AddComponent<mlg::OptionSwitcher>(
+            owner->AddComponent<mlg::OptionSelector>(
                     name, defaultMaterial, focusMaterial, font);
 
     auto sharedSwitcher = optionSwitcher.lock();

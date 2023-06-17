@@ -219,7 +219,6 @@ void FinishScreen::CreateCharacterSelectors() {
     int i = 0;
     for (auto& selector : characterSelectors) {
         auto sharedSelector = selector.lock();
-        sharedSelector->SetCharacter('A');
 
         selector.lock()->next.right = characterSelectors[(i + 1) % characterSelectors.size()];
         selector.lock()->next.left = characterSelectors[(i - 1) % characterSelectors.size()];

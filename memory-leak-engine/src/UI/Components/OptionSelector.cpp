@@ -1,11 +1,11 @@
-#include "UI/Components/OptionSwitcher.h"
+#include "UI/Components/OptionSelector.h"
 #include "Core/HID/Input.h"
 #include "UI/Components/Button.h"
 #include "UI/Components/Label.h"
 #include <spdlog/fmt/bundled/format.h>
 #include <string>
 
-mlg::OptionSwitcher::OptionSwitcher(
+mlg::OptionSelector::OptionSelector(
         std::weak_ptr<Entity> owner, std::string name,
         const std::shared_ptr<MaterialAsset>& defaultMaterial,
         const std::shared_ptr<MaterialAsset>& focusMaterial,
@@ -13,20 +13,20 @@ mlg::OptionSwitcher::OptionSwitcher(
     : Button(owner, name, defaultMaterial, focusMaterial, font) {
 }
 
-void mlg::OptionSwitcher::SetDirection(Direction direction) {
-    OptionSwitcher::direction = direction;
+void mlg::OptionSelector::SetDirection(Direction direction) {
+    OptionSelector::direction = direction;
 
     nextAction = direction == Direction::Horizontal ? "ui_right" : "ui_down";
     prevAction = direction == Direction::Horizontal ? "ui_left" : "ui_up";
 }
 
-void mlg::OptionSwitcher::Start() {
+void mlg::OptionSelector::Start() {
     Button::Start();
 
     SetOption(currentOption);
 }
 
-void mlg::OptionSwitcher::Update() {
+void mlg::OptionSelector::Update() {
     if (!IsFocused())
         return;
 
@@ -39,11 +39,14 @@ void mlg::OptionSwitcher::Update() {
     }
 }
 
-void mlg::OptionSwitcher::SetOption(size_t index) {
+void mlg::OptionSelector::SetOption(int index) {
     if (options.empty()) {
         GetLabel().lock()->SetText("ERROR");
         return;   
     }
+
+    if (index < 0)
+        index = options.size() - 1;
 
     currentOption = index % options.size();
      
@@ -57,6 +60,6 @@ void mlg::OptionSwitcher::SetOption(size_t index) {
     GetLabel().lock()->SetText(text);
 }
 
-size_t mlg::OptionSwitcher::GetOption() const {
+int mlg::OptionSelector::GetOption() const {
     return currentOption;
 }

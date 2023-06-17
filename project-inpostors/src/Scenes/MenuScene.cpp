@@ -12,7 +12,7 @@
 #include "UI/Assets/FontAsset.h"
 #include "UI/Builders/ButtonBuilder.h"
 #include "UI/Components/Button.h"
-#include "UI/Components/OptionSwitcher.h"
+#include "UI/Components/OptionSelector.h"
 #include "UI/Components/Containers/CanvasPanel.h"
 #include "UI/Components/Containers/Container.h"
 #include "UI/Components/Containers/VerticalBox.h"

@@ -4,7 +4,7 @@
 
 namespace mlg {
 
-    class OptionSwitcher : public Button {
+    class OptionSelector : public Button {
     public:
         enum class Direction {
             Horizontal,
@@ -13,7 +13,7 @@ namespace mlg {
 
     private:
         std::vector<std::string> options;
-        size_t currentOption = 0;
+        int currentOption = 0;
 
         Direction direction = Direction::Horizontal;
 
@@ -21,7 +21,7 @@ namespace mlg {
         std::string prevAction = "ui_left";
 
     public:
-        OptionSwitcher(std::weak_ptr<Entity> owner, std::string name,
+        OptionSelector(std::weak_ptr<Entity> owner, std::string name,
                        const std::shared_ptr<MaterialAsset>& defaultMaterial,
                        const std::shared_ptr<MaterialAsset>& focusMaterial,
                        const std::shared_ptr<class FontAsset>& font);
@@ -40,8 +40,8 @@ namespace mlg {
         void Start() override;
         void Update() override;
 
-        void SetOption(size_t index);
-        size_t GetOption() const;
+        void SetOption(int index);
+        int GetOption() const;
 
     };
 

@@ -12,6 +12,9 @@ namespace mlg {
         auto sharedThis = std::dynamic_pointer_cast<UIFocusableComponent>(
                 ComponentManager::GetByRawPointer(this).lock());
 
+        if (sharedThis == nullptr)
+            return;
+
         UIController::Get()->SetFocus(sharedThis);
     }
 
