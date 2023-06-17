@@ -16,9 +16,7 @@ namespace mlg {
 
 class MenuScene : public mlg::Scene {
 private:
-    std::weak_ptr<mlg::Container> mainMenuContainer;
-    std::weak_ptr<mlg::Image> menuBackground;
-
+    std::weak_ptr<mlg::CanvasPanel> mainMenuContainer;
     std::weak_ptr<mlg::CanvasPanel> creditsContainer;
 
 public:
@@ -29,7 +27,8 @@ public:
 
 private:
     void InitializeMainMenu();
-    void BindToOnExit(const std::shared_ptr<mlg::Button>& button);
+    void BindToOnExit(mlg::Button& button);
+    void BindToOnPlay(mlg::Button& button);
 
     void InitializeCredits();
 };

@@ -7,6 +7,7 @@
 #include "Rendering/Assets/MaterialAsset.h"
 #include "SceneGraph/SceneGraph.h"
 
+#include "Scenes/TestScene.h"
 #include "UI/Assets/FontAsset.h"
 #include "UI/Builders/ButtonBuilder.h"
 #include "UI/Components/Button.h"
@@ -19,6 +20,7 @@
 
 #include "UI/UIStyle.h"
 #include <glm/fwd.hpp>
+#include <memory>
 
 MenuScene::~MenuScene() = default;
 
@@ -36,6 +38,7 @@ void MenuScene::Load() {
 
 
     InitializeMainMenu();
+    mainMenuContainer.lock()->GrabFocus();
     //     mainMenuContainer.lock()->SetVisible(false);
 
     InitializeCredits();
@@ -46,22 +49,23 @@ void MenuScene::InitializeMainMenu() {
     auto entity = mlg::EntityManager::SpawnEntity<mlg::Entity>(
             "MainMenu", false, mlg::SceneGraph::GetRoot());
 
-    auto material =
-            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BACKGROUND_MATERIAL);
-    menuBackground = entity.lock()->AddComponent<mlg::Image>("MenuBackground", material);
-    menuBackground.lock()->SetSize(BACKGROUND_SIZE);
-    menuBackground.lock()->SetAnchor(MLG_ANCHOR_LEFT);
-    menuBackground.lock()->SetRelativePosition(BUTTON_BASE_POSITION);
-
-    // TODO: Remove this
-    menuBackground.lock()->SetVisible(false);
-
-    mainMenuContainer =
-            entity.lock()->AddComponent<mlg::VerticalBox>("VBox");
-
+    mainMenuContainer = entity.lock()->AddComponent<mlg::CanvasPanel>("MainMenu");
     mainMenuContainer.lock()->SetAnchor(MLG_ANCHOR_LEFT);
     mainMenuContainer.lock()->SetRelativePosition(
-            glm::vec2{BUTTON_BASE_POSITION.x, MLG_POS_CENTER.y});
+            {BUTTON_BASE_POSITION.x, MLG_POS_CENTER.y});
+    mainMenuContainer.lock()->SetSize(PANEL_SIZE);
+
+    auto material =
+            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BACKGROUND_MATERIAL);
+    auto menuBackground =
+            entity.lock()->AddComponent<mlg::Image>("MenuBackground", material);
+    menuBackground.lock()->SetSize(BACKGROUND_SIZE);
+    menuBackground.lock()->SetAnchor(MLG_ANCHOR_LEFT);
+    mainMenuContainer.lock()->AddChild(menuBackground);
+
+    auto vbox =
+            entity.lock()->AddComponent<mlg::VerticalBox>("VBox");
+    mainMenuContainer.lock()->AddChild(vbox);
 
     auto logoMaterial =
             mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
@@ -73,11 +77,11 @@ void MenuScene::InitializeMainMenu() {
 
     gameLogo.lock()->SetSize(glm::vec2(BUTTON_SIZE.x, BUTTON_SIZE.x));
     gameLogo.lock()->SetPadding(10.f);
-    mainMenuContainer.lock()->AddChild(gameLogo);
+    vbox.lock()->AddChild(gameLogo);
 
     auto spacer = entity.lock()->AddComponent<mlg::Spacer>("Spacer");
     spacer.lock()->SetSize(glm::vec2(3.f * BUTTON_SIZE.y));
-    mainMenuContainer.lock()->AddChild(spacer);
+    vbox.lock()->AddChild(spacer);
 
     mlg::ButtonBuilder buttonBuilder;
     buttonBuilder = buttonBuilder
@@ -89,34 +93,42 @@ void MenuScene::InitializeMainMenu() {
             buttonBuilder.SetName("PlayButton")
                     .SetText("Play")
                     .Build(entity.lock().get());
-    mainMenuContainer.lock()->AddChild(playButton);
+    BindToOnPlay(*playButton.lock());
+    vbox.lock()->AddChild(playButton);
 
     auto settingsButton =
             buttonBuilder.SetName("SettingsButton")
                     .SetText("Settings")
                     .Build(entity.lock().get());
-    mainMenuContainer.lock()->AddChild(settingsButton);
+    vbox.lock()->AddChild(settingsButton);
 
     auto creditsButton =
             buttonBuilder.SetName("CreditsButton")
                     .SetText("Credits")
                     .Build(entity.lock().get());
-    mainMenuContainer.lock()->AddChild(creditsButton);
+    vbox.lock()->AddChild(creditsButton);
 
     auto exitButton =
             buttonBuilder.SetName("ExitButton")
                     .SetText("Exit")
                     .Build(entity.lock().get());
-    mainMenuContainer.lock()->AddChild(exitButton);
-    BindToOnExit(exitButton.lock());
-
-    mainMenuContainer.lock()->GrabFocus();
+    vbox.lock()->AddChild(exitButton);
+    BindToOnExit(*exitButton.lock());
 }
 
-void MenuScene::BindToOnExit(const std::shared_ptr<mlg::Button>& button) {
-    button->OnClick.append(
+void MenuScene::BindToOnExit(mlg::Button& button) {
+    button.OnClick.append(
             []() {
                 mlg::SceneManager::ExitGame();
+            });
+}
+
+// TODO: Update me
+void MenuScene::BindToOnPlay(mlg::Button& button) {
+    button.OnClick.append(
+            []() {
+                auto testScene = std::make_unique<TestScene>();
+                mlg::SceneManager::SetNextScene(std::move(testScene));
             });
 }
 
