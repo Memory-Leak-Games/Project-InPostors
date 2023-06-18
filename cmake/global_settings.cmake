@@ -22,4 +22,5 @@ if (EXISTS "/usr/bin/mold" AND UNIX)
     add_link_options("-fuse-ld=mold")
 endif()
 
-
+set(BUILD_SHARED_LIBS OFF)
+set(CMAKE_EXE_LINKER_FLAGS "-static")
