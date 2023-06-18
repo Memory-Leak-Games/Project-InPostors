@@ -19,37 +19,37 @@
 
 #include "Physics/Colliders/Collider.h"
 
+#include "FX/FXLibrary.h"
 #include "ai/AIComponent.h"
 
 using json = nlohmann::json;
 using Random = effolkronium::random_static;
 
-TrafficCar::TrafficCar(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent)
-    : mlg::Entity(id, name, isStatic, parent){}
+TrafficCar::TrafficCar(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent, const TrafficCarData& trafficCarData)
+    : mlg::Entity(id, name, isStatic, parent), trafficCarData(trafficCarData) {}
 
 std::shared_ptr<TrafficCar> TrafficCar::Create(uint64_t id, const std::string& name, bool isStatic,
-                                               mlg::Transform* parent, const TrafficCarData& trafficCarData,
-                                               const std::string& configPath) {
-    auto newTrafficCar = std::shared_ptr<TrafficCar>(new TrafficCar(id, name, isStatic, parent));
+                                               mlg::Transform* parent, const TrafficCarData& trafficCarData) {
+    auto newTrafficCar = std::shared_ptr<TrafficCar>(new TrafficCar(id, name, isStatic, parent, trafficCarData));
 
 
-    std::ifstream configFile{configPath};
+    std::ifstream configFile{trafficCarData.carData};
     json configJson = json::parse(configFile);
+
     uint32_t modelNumber = Random::get<uint32_t>(1, 4);
-    auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>(configJson["model" + std::to_string(modelNumber)].get<std::string>());
-    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(configJson["material"].get<std::string>());
-
-    material = material->CreateDynamicInstance();
-    material->SetVec4("color", trafficCarData.color);
-
-    auto staticMeshComponent = newTrafficCar->AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
-    staticMeshComponent.lock()->GetTransform().SetPosition({0.f, 0.3f, 0.f});
-    staticMeshComponent.lock()->GetTransform().SetScale({0.7f, 0.7f, 0.7f});
-
     newTrafficCar->AddRigidbody(configJson, modelNumber);
+    newTrafficCar->LoadModel(configJson, modelNumber);
 
-    newTrafficCar->AddComponent<AIComponent>("AIComponent", configPath);
+    newTrafficCar->AddComponent<AIComponent>("AIComponent", trafficCarData.carData);
     newTrafficCar->SetTag("NPC");
+
+    // Smoke looks weird on the jeep, we'll just say it's an electric car :)
+    if (modelNumber == 2) {
+        return newTrafficCar;
+    }
+
+    auto smoke = FXLibrary::Get("smoke");
+    auto smokeComponent = newTrafficCar->AddComponent<mlg::ParticleSystemComponent>("SmokeFX", smoke);
 
     return newTrafficCar;
 }
@@ -79,4 +79,17 @@ void TrafficCar::AddRigidbody(const nlohmann::json& configJson, const uint32_t m
 
         this->rigidbodyComponent.lock()->AddCollider<mlg::ColliderShape::Circle>(offset, size);
     }
+}
+
+void TrafficCar::LoadModel(const nlohmann::json& configJson, const uint32_t modelNumber) {
+    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(configJson["material"]);
+
+    material = material->CreateDynamicInstance();
+    material->SetVec4("color", trafficCarData.color);
+
+    auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>(configJson["model" + std::to_string(modelNumber)]);
+    auto staticMeshComponent = this->AddComponent<mlg::StaticMeshComponent>("StaticMeshComponent", model, material);
+
+    staticMeshComponent.lock()->GetTransform().SetPosition({0.f, 0.3f, 0.f});
+    staticMeshComponent.lock()->GetTransform().SetScale({0.7f, 0.7f, 0.7f});
 }
