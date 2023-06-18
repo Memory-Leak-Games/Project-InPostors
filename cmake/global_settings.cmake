@@ -23,4 +23,7 @@ if (EXISTS "/usr/bin/mold" AND UNIX)
 endif()
 
 set(BUILD_SHARED_LIBS OFF)
-set(CMAKE_EXE_LINKER_FLAGS "-static")
+
+if (WIN32)
+    set(CMAKE_EXE_LINKER_FLAGS "-static")
+endif()
