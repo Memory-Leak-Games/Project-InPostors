@@ -54,6 +54,11 @@ namespace mlg {
             return {v.x, 0.f, v.y};
         }
 
+        static glm::vec4 GetRandomColor(float saturation, float value, float alpha) {
+            float hue = effolkronium::random_static::get<float>(0.f, 360.f);
+            return {glm::rgbColor(glm::vec3{hue, saturation, value}), alpha};
+        }
+
     };
 
 } // mlg
