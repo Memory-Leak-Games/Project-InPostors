@@ -9,9 +9,9 @@
 namespace mlg {
 
     enum class WindowType {
-        Windowed,
-        Borderless,
-        Fullscreen,
+        Windowed = 0,
+        Borderless = 1,
+        Fullscreen = 2,
     };
 
     class Window {

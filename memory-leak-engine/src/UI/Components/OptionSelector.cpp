@@ -34,22 +34,24 @@ void mlg::OptionSelector::Update() {
         SetOption(currentOption - 1);
     } else if (mlg::Input::IsActionJustPressed(nextAction)) {
         SetOption(currentOption + 1);
-    } else if (mlg::Input::IsActionJustPressed("ui_accept")) {
-        SetOption(0);
     }
+}
+
+void mlg::OptionSelector::Accept() {
+    SetOption(0);
 }
 
 void mlg::OptionSelector::SetOption(int index) {
     if (options.empty()) {
         GetLabel().lock()->SetText("ERROR");
-        return;   
+        return;
     }
 
     if (index < 0)
         index = options.size() - 1;
 
     currentOption = index % options.size();
-     
+
     std::string text;
 
     if (direction == Direction::Horizontal)

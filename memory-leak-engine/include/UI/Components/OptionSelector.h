@@ -39,6 +39,7 @@ namespace mlg {
 
         void Start() override;
         void Update() override;
+        void Accept() override;
 
         void SetOption(int index);
         int GetOption() const;
