@@ -5,6 +5,7 @@
 #include "Core/AssetManager/AssetManager.h"
 #include "Core/SceneManager/SceneManager.h"
 #include "Core/Settings/SettingsManager.h"
+#include "Core/Time.h"
 #include "Core/Window.h"
 #include "Gameplay/Components/CameraComponent.h"
 #include "Gameplay/Entity.h"
@@ -61,6 +62,8 @@ void MenuScene::Load() {
     levelSelector.lock()->SetVisible(false);
 
     LoadBackgroundLevel(BACKGROUND_LEVEL);
+
+    mlg::Time::PauseGame(false);
 }
 
 void MenuScene::InitializeMainMenu() {
