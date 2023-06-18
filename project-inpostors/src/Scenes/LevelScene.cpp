@@ -196,7 +196,7 @@ void LevelScene::SpawnTraffic() {
         if (i >= trafficData.numberOfAgents)
             break;
 
-        TrafficCarData aiCarData = {static_cast<int>(i), mlg::RGBA::white};
+        TrafficCarData aiCarData = {static_cast<int>(i), mlg::RGBA::black, "res/config/cars/traffic.json"};
         auto aiCar =
                 mlg::EntityManager::SpawnEntity<TrafficCar>(
                         "TrafficCar", false, mlg::SceneGraph::GetRoot(), aiCarData);
