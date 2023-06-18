@@ -493,8 +493,6 @@ namespace mlg {
             Random::shuffle(mapObjectPool);
         }
 
-        if (character == 'w')
-            SPDLOG_ERROR("Character: {}; use count: {}", character, mapEntry.useCount);
         const MapObject& mapObject = mapObjectPool[mapEntry.useCount];
 
         float smartRotation = GetSmartRotation(x, y);

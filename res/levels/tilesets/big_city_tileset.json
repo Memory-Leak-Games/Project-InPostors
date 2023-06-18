@@ -200,13 +200,6 @@
           "rotation": 90.0,
           "collision-type": "rectangle",
           "collision-size": 4.0
-        },
-        {
-          "model": "res/models/buildings/super_big/stadium.obj",
-          "scale": 1,
-          "rotation": 90.0,
-          "collision-type": "rectangle",
-          "collision-size": 10.0
         }
       ]
     },
@@ -287,9 +280,21 @@
       "objects": [
         {
           "model": "res/models/buildings/super_big/cafe_b.obj",
-          "scale": 1.0,
+          "scale": 1.2,
           "collision-type": "rectangle",
           "collision-size": 12.0
+        }
+      ]
+    },
+    {
+      "symbol": "A",
+      "objects": [
+        {
+          "model": "res/models/buildings/super_big/stadium.obj",
+          "scale": 1,
+          "rotation": 90.0,
+          "collision-type": "rectangle",
+          "collision-size": 10.0
         }
       ]
     }

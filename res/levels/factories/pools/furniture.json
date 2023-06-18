@@ -2,8 +2,13 @@
   "factories": [
     {
       "symbol": "1",
-      "config": "res/levels/factories/mine.json",
+      "config": "res/levels/factories/mine_rotated.json",
       "fallback": "p"
+    },
+    {
+      "symbol": "!",
+      "config": "res/levels/factories/mill.json",
+      "fallback": "w"
     },
     {
       "symbol": "2",
@@ -13,12 +18,12 @@
     {
       "symbol": "3",
       "config": "res/levels/factories/ikea.json",
-      "fallback": "p"
+      "fallback": "G"
     },
     {
       "symbol": "0",
       "config": "res/levels/factories/storage.json",
-      "fallback": "w"
+      "fallback": "A"
     }
   ],
 
