@@ -1,3 +1,4 @@
+#include <glm/fwd.hpp>
 #include <utility>
 
 #include "Scenes/LevelScene.h"
@@ -168,7 +169,6 @@ void LevelScene::InitializeLevelTaskManager() {
             });
     levelTaskManager->GetTaskManager().OnProductSold.append(
             [this](int price) {
-
                 scoreManager->AddScore(price);
                 gameplayOverlay->SetScore(scoreManager->GetScore());
 
@@ -196,7 +196,11 @@ void LevelScene::SpawnTraffic() {
         if (i >= trafficData.numberOfAgents)
             break;
 
-        TrafficCarData aiCarData = {static_cast<int>(i), mlg::RGBA::black, "res/config/cars/traffic.json"};
+
+        TrafficCarData aiCarData = {
+                static_cast<int>(i),
+                mlg::Math::GetRandomColor(0.2f, 0.8f, 1.f),
+                "res/config/cars/traffic.json"};
         auto aiCar =
                 mlg::EntityManager::SpawnEntity<TrafficCar>(
                         "TrafficCar", false, mlg::SceneGraph::GetRoot(), aiCarData);

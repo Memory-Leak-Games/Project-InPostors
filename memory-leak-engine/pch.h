@@ -28,6 +28,7 @@
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <glm/gtx/color_space.hpp>
 
 // Third-party libraries
 #include <eventpp/eventdispatcher.h>
