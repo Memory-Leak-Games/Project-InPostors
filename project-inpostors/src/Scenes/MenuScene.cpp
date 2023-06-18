@@ -349,8 +349,8 @@ void MenuScene::LoadSettings(mlg::OptionSelector& windowMode,
                     mlg::SettingsType::Video, "WindowType");
     auto windowType =
             magic_enum::enum_cast<mlg::WindowType>(windowTypeString).value();
-    int windowTypeIndex = magic_enum::enum_integer(windowType);
-    windowMode.SetOption(windowTypeIndex);
+    auto windowTypeIndex = magic_enum::enum_index(windowType).value();
+    windowMode.SetOption((int) windowTypeIndex);
 
     int graphicsQuality = mlg::SettingsManager::Get<int>(
             mlg::SettingsType::Video, "GraphicsQuality");
