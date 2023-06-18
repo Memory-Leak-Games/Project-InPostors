@@ -248,10 +248,17 @@ void FinishScreen::UpdateScoreBoard(int currentScore, const std::string& levelNa
         return a.score < b.score;
     };
 
+    int i = 0;
     std::string scoreBoardText;
+
     for (auto& score : scores) {
+        if (i >= 11) {
+            break;
+        }
+
         std::string scoreEntry = fmt::format("{:5} {:05d}", score.playerName, score.score);
         scoreBoardText += fmt::format("{}\n", scoreEntry);
+        i++;
     }
 
     scoreBoard.lock()->SetText(scoreBoardText);
