@@ -43,6 +43,11 @@ std::shared_ptr<TrafficCar> TrafficCar::Create(uint64_t id, const std::string& n
     newTrafficCar->AddComponent<AIComponent>("AIComponent", trafficCarData.carData);
     newTrafficCar->SetTag("NPC");
 
+    // Smoke looks weird on the jeep, we'll just say it's an electric car :)
+    if (modelNumber == 2) {
+        return newTrafficCar;
+    }
+
     auto smoke = FXLibrary::Get("smoke");
     auto smokeComponent = newTrafficCar->AddComponent<mlg::ParticleSystemComponent>("SmokeFX", smoke);
 

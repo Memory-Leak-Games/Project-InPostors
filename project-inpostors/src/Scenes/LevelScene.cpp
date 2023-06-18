@@ -35,6 +35,8 @@
 #include "UI/PauseMenu.h"
 #include "UI/StartLevelCountdown.h"
 
+using Random = effolkronium::random_static;
+
 LevelScene::LevelScene(std::string path) : levelPath(std::move(path)) {}
 
 LevelScene::~LevelScene() = default;
@@ -199,7 +201,7 @@ void LevelScene::SpawnTraffic() {
 
         TrafficCarData aiCarData = {
                 static_cast<int>(i),
-                mlg::Math::GetRandomColor(0.2f, 0.8f, 1.f),
+                mlg::Math::GetRandomColor(Random::get(0.1f, 0.3f), Random::get(0.5f, 0.9f), 1.f),
                 "res/config/cars/traffic.json"};
         auto aiCar =
                 mlg::EntityManager::SpawnEntity<TrafficCar>(
