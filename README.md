@@ -1,8 +1,8 @@
 ![](../../actions/workflows/cmake.yml/badge.svg)
 
-# **AIPOST:** ***That Time I Was Reincarnated As An Autonomous Deliveryman: Chronicles of Man And Machine Adventures In A World Of High-Tech Delivery Services*** The Game
+# **AIPOST**
 
-### Hello FOSS Community!
+### Hello **FOSS** Community!
 
 TODO: Add readme
 
