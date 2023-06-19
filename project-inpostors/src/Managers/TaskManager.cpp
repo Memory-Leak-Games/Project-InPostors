@@ -14,11 +14,16 @@ void TaskManager::Update() {
     for (auto& [id, task] : tasks) {
         if (!task.active)
             continue;
+        
+        if (task.timeLeft == 0)
+            continue;
 
         task.timeLeft -= deltaTime;
 
-        if (task.timeLeft <= 0)
+        if (task.timeLeft < 0) {
             OnTaskFailed(GetTask(id));
+            task.timeLeft = 0;
+        }
     }
 }
 
