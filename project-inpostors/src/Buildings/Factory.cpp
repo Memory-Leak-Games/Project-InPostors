@@ -34,7 +34,7 @@
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
 #include "UI/Components/ProgressBar.h"
-#include "Utils/EquipmentComponent.h"
+#include "Player/EquipmentComponent.h"
 #include "Utils/ProductManager.h"
 
 #include "UI/FactoryUI.h"

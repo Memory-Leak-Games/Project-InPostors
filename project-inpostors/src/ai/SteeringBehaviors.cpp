@@ -13,7 +13,7 @@
 
 #include "Gameplay/Entity.h"
 #include "Gameplay/EntityManager.h"
-#include "Player.h"
+#include "Player/Player.h"
 
 using json = nlohmann::json;
 using Random = effolkronium::random_static;
