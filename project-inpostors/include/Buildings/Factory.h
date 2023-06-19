@@ -28,6 +28,8 @@ private:
     unsigned int produceTimerHandle = 0;
     bool working = false;
 
+    friend class FactoryUI;
+
 public:
     ~Factory() override;
 
@@ -63,9 +65,6 @@ private:
     void ProduceItem();
 
     void FinishTask();
-
-    static void GenerateUI(const std::shared_ptr<Factory>& result);
-    void UpdateUi();
 
     void StartAsFactory();
 

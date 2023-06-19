@@ -20,7 +20,7 @@ StorageUI::StorageUI(const std::weak_ptr<mlg::Entity>& owner, const std::string&
     temp->SetBillboardTarget(owner);
     temp->SetSize({68.f, 68.f});
     temp->SetPosition({0.f, 50.f});
-    temp->tint = {0.886f, 0.584f, 0.023f, 1.0f};
+    temp->tint = {1.0f, 0.7f, 0.023f, 1.0f};
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/storage_material.json");
     temp = owner.lock()->AddComponent<mlg::Image>("StorageIcon", material).lock();

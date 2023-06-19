@@ -37,6 +37,8 @@
 #include "Utils/EquipmentComponent.h"
 #include "Utils/ProductManager.h"
 
+#include "UI/FactoryUI.h"
+
 using json = nlohmann::json;
 using Random = effolkronium::random_static;
 
@@ -71,7 +73,8 @@ std::shared_ptr<Factory> Factory::Create(
         result->AddEmitter(emitterJson);
     }
 
-    GenerateUI(result);
+    result->AddComponent<FactoryUI>("FactoryUI", result);
+    //GenerateUI(result);
 
     result->AddTriggers(configJson);
     result->mainRigidbody->SetKinematic(true);
@@ -152,24 +155,7 @@ void Factory::StartAsFactory() {
     });
 }
 
-void Factory::Update() {
-    UpdateUi();
-}
-
-void Factory::UpdateUi() {
-    if (blueprintId != "None") {
-        auto blueprint = BlueprintManager::Get()->GetBlueprint(blueprintId);
-
-        if (IsWorking()) {
-            float produceElapsed = mlg::TimerManager::Get()->GetTimerElapsedTime(produceTimerHandle);
-            float timeToProcess = BlueprintManager::Get()->GetBlueprint(blueprintId).GetTimeToProcess();
-            float timeRate = produceElapsed / timeToProcess;
-            uiProgress->percentage = timeRate * 0.75f;
-        } else {
-            uiProgress->percentage = factoryEquipment->IsOutputPresent();
-        }
-    }
-}
+void Factory::Update() { }
 
 bool Factory::IsWorking() const {
     return mlg::TimerManager::Get()->IsTimerValid(produceTimerHandle);
@@ -227,60 +213,3 @@ bool Factory::CheckBlueprint() {
 }
 
 std::string Factory::GetBlueprintId() const { return blueprintId; }
-
-void Factory::GenerateUI(const std::shared_ptr<Factory>& result) {
-
-    auto font =
-            mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/terminus-bold.ttf");
-    auto material =
-            mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/pin_material.json");
-
-    result->uiPin = result->AddComponent<mlg::Image>("uiPin", material).lock();
-    result->uiPin->SetBillboardTarget(result);
-    result->uiPin->SetSize({82.f, 82.f});
-    result->uiPin->SetPosition({0.f, 50.f});
-
-    if(result->GetBlueprintId() != "None") {
-
-        auto blueprint = BlueprintManager::Get()->GetBlueprint(result->GetBlueprintId());
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/progress_bar_material2.json");
-        result->uiProgress = result->AddComponent<mlg::ProgressBar>("uiProgress", material).lock();
-        result->uiProgress->SetBillboardTarget(result);
-        result->uiProgress->SetSize({68.f, 68.f});
-        result->uiProgress->SetPosition({0.f, 50.f});
-        result->uiProgress->percentage = 0.f;
-
-        if (blueprint.GetInput().size() > 0) {
-            const auto& required = blueprint.GetInput();
-
-            material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/required_panel_material.json");
-            auto temp = result->AddComponent<mlg::Image>("uiRequiredPanel", material).lock();
-            temp->SetBillboardTarget(result);
-            temp->SetSize({42.f, 16.f});
-            temp->SetPosition({0.f, 30.f});
-
-            glm::vec2 billboardPos = {-11.f * (required.size() - 1.f), 30.f};
-            for(int i = 0; i < required.size(); i++) {
-
-                material = ProductManager::Get()->GetProduct(required[i]).icon;
-                temp = result->AddComponent<mlg::Image>("uiRequired", material).lock();
-                temp->SetBillboardTarget(result);
-                temp->SetSize({14.f, 14.f});
-                temp->SetPosition(billboardPos);
-
-                billboardPos.x += 22.f;
-            }
-        }
-    }
-
-    if(result->blueprintId != "None") {
-        auto blueprint = BlueprintManager::Get()->GetBlueprint(result->GetBlueprintId());
-        material = ProductManager::Get()->GetProduct(blueprint.GetOutput()).icon;
-    } else {
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/storage_material.json");
-    }
-    result->uiIcon = result->AddComponent<mlg::Image>("uiIcon", material).lock();
-    result->uiIcon->SetBillboardTarget(result);
-    result->uiIcon->SetSize({24.f, 24.f});
-    result->uiIcon->SetPosition({0.f, 50.f});
-}
