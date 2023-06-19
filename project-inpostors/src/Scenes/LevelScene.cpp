@@ -41,7 +41,7 @@ LevelScene::LevelScene(std::string path) : levelPath(std::move(path)) {}
 
 LevelScene::~LevelScene() = default;
 
-void LevelScene::Load() {
+void LevelScene::Load() {;
     LoadLevel();
     InitializeLevelTaskManager();
 
@@ -179,6 +179,12 @@ void LevelScene::InitializeLevelTaskManager() {
                         "You sold product for {}$, useless piece of meat! You are courier, not a merchant!",
                         price));
             });
+    levelTaskManager->GetTaskManager().OnTaskFailed.append(
+        [this](const TaskData& taskData) {
+            gameplayOverlay->ShowMessage(fmt::format(
+                    "You failed task: {}! You are slow.. YOU MONSTER!",
+                    taskData.productId));
+        });
 
     std::vector<TaskData> tasks = mlg::LevelGenerator::GetTasks(levelPath);
     for (const auto& task : tasks) {
