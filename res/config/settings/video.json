@@ -9,5 +9,7 @@
   "ResolutionWidth": 1280,
   "ResolutionHeight": 720,
   "WindowType": "Windowed",
-  "LockSize": false
+  "LockSize": false,
+
+  "GraphicsQuality": 1
 }

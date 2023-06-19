@@ -35,6 +35,7 @@ namespace mlg {
         DirectionalLight();
     public:
         static DirectionalLight* GetInstance();
+        static void Stop();
         virtual ~DirectionalLight();
 
         virtual void BindShadowMap();

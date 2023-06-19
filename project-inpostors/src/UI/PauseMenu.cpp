@@ -1,5 +1,6 @@
 #include "UI/PauseMenu.h"
 #include "Core/SceneManager/Scene.h"
+#include "Scenes/MenuScene.h"
 #include "UI/Components/Button.h"
 
 #include "UI/Components/Button.h"
@@ -11,6 +12,7 @@
 #include "Core/SceneManager/SceneManager.h"
 
 #include "UI/UIStyle.h"
+#include <memory>
 
 PauseMenu::PauseMenu(
         uint64_t id, const std::string& name,
@@ -76,7 +78,8 @@ void PauseMenu::AddExitButton() {
     sharedExitButton->GetLabel().lock()->SetText("Exit");
 
     sharedExitButton->OnClick.append([this]() {
-        mlg::SceneManager::ExitGame();
+        auto menuScene = std::make_unique<MenuScene>();
+        mlg::SceneManager::SetNextScene(std::move(menuScene));
     });
 }
 

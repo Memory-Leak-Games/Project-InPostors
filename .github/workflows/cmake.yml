@@ -30,15 +30,18 @@ jobs:
 
     - name: Install Ninja
       run: sudo apt-get install -y ninja-build
+    
+    - name: Install mold
+      run: sudo apt-get install -y mold
+
+    - name: Install clang
+      run: sudo apt-get install -y clang
 
     - name: Install OpenGL
       run: sudo apt-get install -y libgl1-mesa-dev libxrandr-dev libx11-dev libxinerama-dev libxcursor-dev libxi-dev
       
     - name: Install Wayland
       run: sudo apt-get install -y libwayland-dev libxkbcommon-dev wayland-protocols extra-cmake-modules
-
-    - name: Install Assimp
-      run: sudo apt-get install -y libassimp-dev libassimp5 assimp-utils
 
     - name: Install OpenAL
       run: sudo apt-get install -y libopenal-dev libopenal1

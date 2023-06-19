@@ -1,0 +1,108 @@
+{
+  "name": "TestLevel",
+  "tile-size": 4.0,
+  "tileset": "res/levels/tilesets/small_city_tileset.json",
+
+  "time-limit": 120.0,
+
+  "sublevels": [ "res/levels/maps/test_level_props.json" ],
+
+  "ground": {
+    "mesh": "res/models/ground/ground.obj",
+    "material": "res/materials/buildings_material.json",
+
+    "scale": 1.0,
+    "offset": [0.0, 0.0],
+    "rotation": 0.0
+  },
+
+  "camera-settings": {
+    "position": [-6.0, 17.0, -35.0],
+    "rotation": [25.0, 16.0, 0.0],
+    "test_rotation": [90.0, 0.0, 0.0],
+
+    "size": 37.0,
+    "near": 0.1,
+    "far": 200.0
+  },
+
+  "layout": [
+    "sbbbbbbbbsbmbbbbbmbbsbbbbmbbbsbb",
+    "s##############################m",
+    "s##############################s",
+    "s##############################b",
+    "s###pppppppp###ssssss###ssss###s",
+    "s###pmmmpppp###ssssss###ssss###b",
+    "s###pmmmpppp###sbmmbm###    ###m",
+    "s###pmmmpppp###ssmbls###    ###s",
+    "s###pmmmpPpp###pppppp###    ###b",
+    "s###pLLLpppp###pwppwp###    ###m",
+    "s###pppppppp###pppppp###    ###s",
+    "s##############################b",
+    "s##############################m",
+    "s##############################b"
+  ],
+
+  "navigation": [
+    "################################",
+    "################################",
+    "##x##########x########x######x##",
+    "################################",
+    "####        ###      ###    ####",
+    "####        ###      ###    ####",
+    "####        ###      ###    ####",
+    "####        ###      ###    ####",
+    "####        ###      ###    ####",
+    "####        ###      ###    ####",
+    "####        ###      ###    ####",
+    "################################",
+    "##x##########x########x######x##",
+    "################################"
+  ],
+
+  "number-of-agents": 5,
+
+
+  "player-one": {
+    "id": 0,
+    "car-type": "res/config/cars/van.json",
+    "color": [1.0, 0.0, 0.0],
+
+    "position": [32.0, -12.0],
+    "rotation": 180.0
+  },
+
+  "player-two": {
+    "id": 1,
+    "car-type": "res/config/cars/van.json",
+    "color": [0.0, 1.0, 1.0],
+
+    "position": [-24.0, 10.0]
+  },
+
+  "events-config": "res/levels/events/default_events.json",
+  "events": [
+    {
+      "id": "3x2",
+      "position": [11.0, 10.0],
+      "vertical": false,
+      "probability": 2
+    },
+    {
+      "id": "3x2",
+      "position": [-11.0, 20.0],
+      "vertical": true,
+      "probability": 4
+    },
+    {
+      "id": "3x2",
+      "position": [53.0, 0.0],
+      "vertical": false,
+      "probability": 5
+    },
+    {
+      "id": "None",
+      "probability": 3
+    }
+  ]
+}

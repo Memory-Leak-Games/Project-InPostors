@@ -1,23 +1,23 @@
 {
   "vertexShader": "res/shaders/ui/image.vert",
-  "fragmentShader": "res/shaders/ui/textured_progress_bar.frag",
+  "fragmentShader": "res/shaders/ui/vertical_tex_progress_bar.frag",
   "uniforms": [
     {
       "type": "vec4",
       "name": "outRect",
-      "value": [0.0, 0.0, 0.0, 0.85]
+      "value": [0.0, 0.0, 0.0, 0.0]
     },
     {
       "type": "vec4",
       "name": "inRect",
-      "value": [1.0, 1.0, 1.0, 0.95]
+      "value": [1.0, 1.0, 1.0, 1.0]
     }
   ],
   "textures": [
     {
       "name": "image",
       "index": 0,
-      "path": "res/textures/ui/factory_arrow_panel.png"
+      "path": "res/textures/ui/factory_pin.png"
     }
   ]
 }

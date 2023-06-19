@@ -74,6 +74,10 @@ void mlg::Window::SetIcon(const std::string& path) {
     stbi_image_free(image.pixels);
 }
 
+void mlg::Window::SetTitle(const std::string& title) {
+    glfwSetWindowTitle(glfwWindow, title.c_str());
+}
+
 void mlg::Window::CreateWindow() {
     windowData.title = windowSettings.title;
     windowData.width = windowSettings.width;
@@ -92,12 +96,11 @@ void mlg::Window::CreateWindow() {
     instance->SetGamepadMappings();
 
     isWindowVisible = true;
+
+    instance->SetWindowType(instance->windowSettings.type);
 }
 
 void mlg::Window::SetWindowType(WindowType type) {
-    if (windowSettings.type == type)
-        return;
-
     windowSettings.type = type;
 
     if (!isWindowVisible)
@@ -106,6 +109,8 @@ void mlg::Window::SetWindowType(WindowType type) {
     int32_t windowWidth = windowSettings.width;
     int32_t windowHeight = windowSettings.height;
 
+    glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
     if (type == WindowType::Fullscreen) {
         glm::ivec2 monitorResolution = GetMonitorResolution();
         windowWidth = monitorResolution.x;
@@ -113,6 +118,8 @@ void mlg::Window::SetWindowType(WindowType type) {
 
         SPDLOG_DEBUG("Switching to fullscreen mode: {}x{}",
                      windowWidth, windowHeight);
+
+        glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     }
 
     glm::ivec2 windowPosition = GetMonitorCenter() -
@@ -147,11 +154,9 @@ void mlg::Window::SetResolution(glm::ivec2 resolution) {
 int32_t Window::SetupWindow() {
     SetWindowContext();
 
-    GLFWmonitor* monitor = GetMonitor();
-
     glfwWindow = glfwCreateWindow(
             windowData.width, windowData.height,
-            windowData.title.c_str(), monitor, nullptr);
+            windowData.title.c_str(), nullptr, nullptr);
 
     MLG_ASSERT_MSG(glfwWindow != nullptr, "Failed to crate window");
 

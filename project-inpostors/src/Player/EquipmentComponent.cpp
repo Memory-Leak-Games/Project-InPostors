@@ -2,7 +2,7 @@
 
 #include "Utils/Blueprint.h"
 #include "Utils/BlueprintManager.h"
-#include "Utils/EquipmentComponent.h"
+#include "Player/EquipmentComponent.h"
 
 bool EquipmentComponent::AddProduct(const std::string& product) {
     if (equipment.size() >= size)
@@ -87,6 +87,10 @@ bool EquipmentComponent::IsEmpty() const {
 
 const std::vector<std::string> EquipmentComponent::GetEquipment() const {
     return equipment;
+}
+
+int EquipmentComponent::GetMaxSize() {
+    return size;
 }
 
 EquipmentComponent::EquipmentComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name, int size)

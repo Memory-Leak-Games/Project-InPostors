@@ -27,6 +27,7 @@ private:
 public:
     eventpp::CallbackList<void(const TaskData&)> OnTaskFinished;
     eventpp::CallbackList<void(const TaskData&)> OnTaskAccepted;
+    eventpp::CallbackList<void(const TaskData&)> OnTaskFailed;
     eventpp::CallbackList<void(int)> OnProductSold;
 
     TaskManager() = default;

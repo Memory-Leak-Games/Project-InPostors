@@ -9,9 +9,9 @@
 namespace mlg {
 
     enum class WindowType {
-        Windowed,
-        Borderless,
-        Fullscreen,
+        Windowed = 0,
+        Borderless = 1,
+        Fullscreen = 2,
     };
 
     class Window {
@@ -72,6 +72,7 @@ namespace mlg {
         virtual void Update();
 
         virtual void SetIcon(const std::string& path);
+        virtual void SetTitle(const std::string& title);
 
 #ifdef DEBUG
         virtual void ImGuiInit();

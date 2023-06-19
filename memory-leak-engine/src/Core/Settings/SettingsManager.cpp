@@ -1,8 +1,9 @@
 #include "Core/Settings/SettingsManager.h"
 
 #include <filesystem>
-#include <nlohmann/json.hpp>
 #include <fstream>
+#include <nlohmann/json.hpp>
+#include <spdlog/spdlog.h>
 
 #include "Macros.h"
 
@@ -32,6 +33,19 @@ namespace mlg {
 
     SettingsManager* SettingsManager::GetInstance() {
         return instance;
+    }
+
+    void SettingsManager::Save() {
+        SPDLOG_DEBUG("Saving settings");
+        std::ofstream settingsFile;
+
+        settingsFile.open(SETTINGS_PATH "video.json");
+        settingsFile << instance->videoSettings.dump(4);
+        settingsFile.close();
+
+        settingsFile.open(SETTINGS_PATH "audio.json");
+        settingsFile << instance->audioSettings.dump(4);
+        settingsFile.close();
     }
 
     void SettingsManager::LoadSettings() {
@@ -74,4 +88,4 @@ namespace mlg {
         audioSettings = json::parse(settingsFile);
         settingsFile.close();
     }
-} // mlg
+}// namespace mlg

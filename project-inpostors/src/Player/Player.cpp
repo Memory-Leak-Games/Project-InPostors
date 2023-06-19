@@ -1,4 +1,4 @@
-#include "Player.h"
+#include "Player/Player.h"
 
 #include <fstream>
 #include <memory>
@@ -13,6 +13,7 @@
 #include "Core/TimerManager.h"
 
 #include "Gameplay/Entity.h"
+#include "Player/PlayerFXComponent.h"
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
 
@@ -28,8 +29,8 @@
 
 #include "FX/FXLibrary.h"
 
+#include "Player/EquipmentComponent.h"
 #include "Utils/BlueprintManager.h"
-#include "Utils/EquipmentComponent.h"
 #include "Utils/ProductManager.h"
 
 #include "Buildings/Factory.h"
@@ -37,6 +38,8 @@
 #include "UI/Assets/FontAsset.h"
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
+
+#include "UI/PlayerUI.h"
 
 using json = nlohmann::json;
 
@@ -70,11 +73,8 @@ std::shared_ptr<Player> Player::Create(
                                             equipmentSize)
                                    .lock();
 
-    auto smoke = FXLibrary::Get("smoke");
-    auto smokeComponent = newPlayer->AddComponent<mlg::ParticleSystemComponent>(
-            "SmokeFX", smoke);
-
-    GenerateUI(newPlayer);
+    newPlayer->AddComponent<PlayerUI>("PlayerUI");
+    newPlayer->AddComponent<PlayerFXComponent>("PlayerFXComponent");
 
     return newPlayer;
 }
@@ -177,7 +177,7 @@ void Player::PickUp() {
                 return collider.lock()->GetTag() == "output" ||
                        collider.lock()->GetTag() == "inputOutput";
             });
-    
+
     if (output == overlappingColliders.end())
         return;
 
@@ -217,109 +217,8 @@ void Player::Drop() {
     auto factory = std::dynamic_pointer_cast<InteractiveBuilding>(owner);
 
     if (!factory)
-        return;;
+        return;
 
     if (factory->TakeInputsFromInventory(*equipment))
         dropSound->Play(4.f);
-
-}
-
-void Player::GenerateUI(const std::shared_ptr<Player>& newPlayer) {
-
-    auto font =
-            mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/terminus-bold.ttf");
-
-    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/player/arrow_material.json");
-    newPlayer->uiArrow = newPlayer->AddComponent<mlg::Image>("Arrow", material);
-    auto ui = newPlayer->uiArrow.lock();
-    ui->SetBillboardTarget(newPlayer);
-    ui->SetSize({16.f, 16.f});
-    ui->SetRelativePosition({0.f, 24.f});
-    ui->tint = newPlayer->playerData.color;
-
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/wood_material.json");
-
-    for (auto& eqBillboard : newPlayer->eqBillboards) {
-        eqBillboard = newPlayer->AddComponent<mlg::Image>("eqBillboard", material).lock();
-        eqBillboard->SetBillboardTarget(newPlayer);
-        eqBillboard->SetSize({14.f, 14.f});
-        eqBillboard->SetVisible(false);
-    }
-
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/player/panel_material.json");
-    ui = newPlayer->AddComponent<mlg::Image>("Panel", material).lock();
-    ui->SetSize({70.f + 36.f * 3, 38.f});//TODO: Scale panel according to amout of slots in equipment
-    ui->tint = newPlayer->playerData.color;
-    ui->tint.a = 0.85f;
-    if (newPlayer->playerData.id == 0) {
-        ui->SetRelativePosition(ui->GetSize() * 0.5f + glm::vec2(8, 8));
-    } else {
-        ui->SetRelativePosition({1280 - ui->GetSize().x * 0.5f - 8, ui->GetSize().y * 0.5 + 8});
-        ui->SetAnchor({1, 0});
-    }
-    ui->tint -= glm::vec4(0.8, 0.8, 0.8, 0.0);
-
-    auto label = newPlayer->AddComponent<mlg::Label>("PlayerName").lock();
-    label->SetSize(32);
-    label->SetTextColor(newPlayer->playerData.color);
-    label->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
-    label->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
-    if (newPlayer->playerData.id == 0) {
-        label->SetRelativePosition({8 + 25, 8 + 16});
-        label->SetText("P1");
-    } else {
-        label->SetAnchor({1, 0});
-        label->SetRelativePosition({1280 - 8 - 25, 8 + 16});
-        label->SetText("P2");
-    }
-
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/none_material.json");
-    for (int i = 0; i < 3; ++i) {
-        newPlayer->eqIcons[i] = newPlayer->AddComponent<mlg::Image>("eqIcon", material).lock();
-        newPlayer->eqIcons[i]->SetSize({32.f, 32.f});
-    }
-
-    if (newPlayer->playerData.id == 0) {
-        newPlayer->eqIcons[0]->SetRelativePosition({72.f + 8, 17.f + 8 + 2});
-        newPlayer->eqIcons[1]->SetRelativePosition({72.f + 36.f + 8, 17.f + 8 + 2});
-        newPlayer->eqIcons[2]->SetRelativePosition({72.f + 72.f + 8, 17.f + 8 + 2});
-    } else {
-        newPlayer->eqIcons[0]->SetRelativePosition({1280 - 72.f - 8, 17.f + 8 + 2});
-        newPlayer->eqIcons[1]->SetRelativePosition({1280 - 72.f - 36.f - 8, 17.f + 8 + 2});
-        newPlayer->eqIcons[2]->SetRelativePosition({1280 - 72.f - 72.f - 8, 17.f + 8 + 2});
-        for (int i = 0; i < 3; ++i)
-            newPlayer->eqIcons[i]->SetAnchor({1, 0});
-    }
-
-    // Update equipment ui callback
-    newPlayer->equipment->equipmentChanged.append([newPlayer]() {
-        auto noneMaterial = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/none_material.json");
-        auto productManager = ProductManager::Get();
-        auto items = newPlayer->equipment->GetEquipment();
-
-        for (int i = 0; i < 3; ++i) {
-
-            // Wouldn't game crash be more appropriate?
-            if (!newPlayer->eqIcons[i] || !newPlayer->eqBillboards[i])
-                break;
-
-            if (items.size() > i) {
-                newPlayer->eqIcons[i]->material = productManager->GetProduct(items[i]).icon;
-                newPlayer->eqBillboards[i]->material = productManager->GetProduct(items[i]).icon;
-                newPlayer->eqIcons[i]->SetVisible(true);
-                newPlayer->eqBillboards[i]->SetVisible(true);
-            } else {
-                newPlayer->eqIcons[i]->material = noneMaterial;
-                newPlayer->eqBillboards[i]->SetVisible(false);
-                break;// It ain't much, but it's honest optimization
-            }
-        }
-
-        // Discount HBoxContainer
-        glm::vec2 billboardPos = {-7.f * (items.size() - 1.f), 40.f};
-        for (int i = 0; i < items.size(); ++i) {
-            newPlayer->eqBillboards[i]->SetRelativePosition(billboardPos);
-            billboardPos.x += 14.f;
-        }
-    });
 }

@@ -6,7 +6,7 @@
     {
       "name": "image",
       "index": 0,
-      "path": "res/textures/ui/factory_arrow.png"
+      "path": "res/textures/error_texture.png"
     }
   ]
 }

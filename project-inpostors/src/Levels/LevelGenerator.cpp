@@ -26,7 +26,7 @@
 #include "Gameplay/Components/StaticMeshComponent.h"
 #include "Physics/Colliders/ColliderShapes.h"
 #include "Physics/CollisionManager.h"
-#include "Player.h"
+#include "Player/Player.h"
 
 #include "Buildings/AutoDestroyComponent.h"
 #include "Buildings/Factory.h"
@@ -85,6 +85,7 @@ namespace mlg {
         cameraComponent.GetTransform().SetPosition(position);
         cameraComponent.GetTransform().SetRotation(glm::radians(eulerRotation));
         cameraComponent.SetOrtho(size, near, far);
+        cameraComponent.SetActive();
 
         levelFile.close();
     }

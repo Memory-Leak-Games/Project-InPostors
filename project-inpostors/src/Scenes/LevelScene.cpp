@@ -1,3 +1,4 @@
+#include <glm/fwd.hpp>
 #include <utility>
 
 #include "Scenes/LevelScene.h"
@@ -34,11 +35,13 @@
 #include "UI/PauseMenu.h"
 #include "UI/StartLevelCountdown.h"
 
+using Random = effolkronium::random_static;
+
 LevelScene::LevelScene(std::string path) : levelPath(std::move(path)) {}
 
 LevelScene::~LevelScene() = default;
 
-void LevelScene::Load() {
+void LevelScene::Load() {;
     LoadLevel();
     InitializeLevelTaskManager();
 
@@ -69,7 +72,7 @@ void LevelScene::Load() {
                              .lock();
 
     // TODO: Remove me
-    gameplayOverlay->SetChat(fmt::format(
+    gameplayOverlay->ShowMessage(fmt::format(
             "Welcome to {}, useless piece of meat!", levelName));
 }
 
@@ -168,14 +171,20 @@ void LevelScene::InitializeLevelTaskManager() {
             });
     levelTaskManager->GetTaskManager().OnProductSold.append(
             [this](int price) {
-
                 scoreManager->AddScore(price);
                 gameplayOverlay->SetScore(scoreManager->GetScore());
 
                 // TODO: transfer to chat manager
-                gameplayOverlay->SetChat(fmt::format(
+                gameplayOverlay->ShowMessage(fmt::format(
                         "You sold product for {}$, useless piece of meat! You are courier, not a merchant!",
                         price));
+            });
+    levelTaskManager->GetTaskManager().OnTaskFailed.append(
+            [this](const TaskData& taskData) {
+                gameplayOverlay->ShowMessage(fmt::format(
+                        "You failed task: {}... Not bad. I forgot how good you are at this. You should pace yourself, though. We have A LOT of stuff to deliver.",
+                        taskData.productId),
+                        7.f);
             });
 
     std::vector<TaskData> tasks = mlg::LevelGenerator::GetTasks(levelPath);
@@ -196,7 +205,11 @@ void LevelScene::SpawnTraffic() {
         if (i >= trafficData.numberOfAgents)
             break;
 
-        TrafficCarData aiCarData = {static_cast<int>(i), mlg::RGBA::white};
+
+        TrafficCarData aiCarData = {
+                static_cast<int>(i),
+                mlg::Math::GetRandomColor(Random::get(0.1f, 0.3f), Random::get(0.5f, 0.9f), 1.f),
+                "res/config/cars/traffic.json"};
         auto aiCar =
                 mlg::EntityManager::SpawnEntity<TrafficCar>(
                         "TrafficCar", false, mlg::SceneGraph::GetRoot(), aiCarData);

@@ -84,6 +84,7 @@ public:
         mlg::Initializer::InitializeSceneComponents();
 
         mlg::Window::Get()->SetIcon("res/textures/logos/aipost_logo_icon.png");
+        mlg::Window::Get()->SetTitle("AIPost™");
 
         if (windowTypeOverride) {
             mlg::Window::Get()->SetWindowType(windowType);

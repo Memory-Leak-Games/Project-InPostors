@@ -1,8 +1,6 @@
 #include "Rendering/Assets/MaterialAsset.h"
-#include <Utils/Blueprint.h>
-#include <Utils/EquipmentComponent.h>
-#include <math.h>
-#include <string>
+#include "Utils/Blueprint.h"
+#include "Player/EquipmentComponent.h"
 
 Blueprint::Blueprint(const nlohmann::json& blueprintJson)
     : name(blueprintJson["name"]), input(), output(blueprintJson["output"]),

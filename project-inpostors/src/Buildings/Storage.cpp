@@ -13,7 +13,8 @@
 
 #include "UI/Assets/FontAsset.h"
 #include "UI/Components/Image.h"
-#include "Utils/EquipmentComponent.h"
+#include "UI/StorageUI.h"
+#include "Player/EquipmentComponent.h"
 
 #include <fstream>
 #include <vector>
@@ -59,8 +60,9 @@ std::shared_ptr<Storage> Storage::Create(
             "input",
             mainRigidbody.get());
 
-    storage->GenerateUI();
     mainRigidbody->SetKinematic(true);
+
+    storage->AddComponent<StorageUI>("StorageUI");
 
     return storage;
 }
@@ -111,29 +113,4 @@ std::vector<std::string> Storage::GetInputs() const {
     }
 
     return result;
-}
-
-void Storage::GenerateUI() {
-    auto font =
-            mlg::AssetManager::GetAsset<mlg::FontAsset>(
-                    "res/fonts/terminus-bold.ttf");
-    auto material =
-            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
-                    "res/materials/ui/factory/task_panel_material.json");
-
-    auto temp = AddComponent<mlg::Image>(
-                        "Storage", material)
-                        .lock();
-
-    temp->SetSize({64.f, 64.f});
-    temp->SetBillboardTarget(shared_from_this());
-    temp->SetRelativePosition({0.f, 112.f});
-
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
-            "res/materials/ui/icon/storage_material.json");
-
-    temp = AddComponent<mlg::Image>("StorageIcon", material).lock();
-    temp->SetSize({20.f, 20.f});
-    temp->SetBillboardTarget(shared_from_this());
-    temp->SetRelativePosition({0.f, 112.f});
 }

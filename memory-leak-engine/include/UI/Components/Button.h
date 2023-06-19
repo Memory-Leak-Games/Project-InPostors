@@ -7,6 +7,7 @@ namespace mlg {
     class Button : public UIFocusableComponent {
     private:
         glm::vec2 size{200.f, 50.f};
+
         std::shared_ptr<class MaterialAsset> defaultMaterial;
         std::shared_ptr<MaterialAsset> focusMaterial;
 
@@ -29,10 +30,13 @@ namespace mlg {
         [[nodiscard]] glm::vec2 GetSize() const override;
         void SetSize(const glm::vec2& size);
 
+        void SetLabelOffset(const glm::vec2& offset);
+
         [[nodiscard]] const std::weak_ptr<Label>& GetLabel() const;
 
         void SetVisible(bool visible) override;
         void SetRelativePosition(const glm::vec2& position) override;
+        void SetPosition(const glm::vec2& position) override;
         void SetAnchor(const glm::vec2& anchor) override;
     };
 }// namespace mlg

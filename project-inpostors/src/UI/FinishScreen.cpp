@@ -5,6 +5,7 @@
 #include "Rendering/Assets/MaterialAsset.h"
 
 #include "Managers/ScoreManager.h"
+#include "Scenes/MenuScene.h"
 #include "UI/Assets/FontAsset.h"
 #include "UI/Components/Button.h"
 #include "UI/Components/CharacterSelector.h"
@@ -16,6 +17,7 @@
 
 #include "Managers/ScoreManager.h"
 #include "Scenes/LevelScene.h"
+#include <memory>
 
 FinishScreen::FinishScreen(
         uint64_t id, const std::string& name,
@@ -49,7 +51,9 @@ void FinishScreen::Start() {
         levelScene->GetScoreManager()->SaveScore(levelName, playerName, score);
 
         SetVisible(false);
-        mlg::SceneManager::ExitGame();
+
+        auto menuScene = std::make_unique<MenuScene>();
+        mlg::SceneManager::SetNextScene(std::move(menuScene));
     });
 
     SetVisible(false);
@@ -219,7 +223,6 @@ void FinishScreen::CreateCharacterSelectors() {
     int i = 0;
     for (auto& selector : characterSelectors) {
         auto sharedSelector = selector.lock();
-        sharedSelector->SetCharacter('A');
 
         selector.lock()->next.right = characterSelectors[(i + 1) % characterSelectors.size()];
         selector.lock()->next.left = characterSelectors[(i - 1) % characterSelectors.size()];
@@ -245,10 +248,17 @@ void FinishScreen::UpdateScoreBoard(int currentScore, const std::string& levelNa
         return a.score < b.score;
     };
 
+    int i = 0;
     std::string scoreBoardText;
+
     for (auto& score : scores) {
+        if (i >= 11) {
+            break;
+        }
+
         std::string scoreEntry = fmt::format("{:5} {:05d}", score.playerName, score.score);
         scoreBoardText += fmt::format("{}\n", scoreEntry);
+        i++;
     }
 
     scoreBoard.lock()->SetText(scoreBoardText);

@@ -47,6 +47,26 @@ namespace mlg {
             MLG_ASSERT_MSG(false, "Unknown settings type");
         }
 
+        template<typename T>
+        static void Set(SettingsType settingsType, const std::string& id, T value) {
+            switch (settingsType) {
+                case SettingsType::Debug:
+                    instance->debugSettings[id] = value;
+                    break;
+                case SettingsType::Engine:
+                    instance->engineSettings[id] = value;
+                    break;
+                case SettingsType::Video:
+                    instance->videoSettings[id] = value;
+                    break;
+                case SettingsType::Audio:
+                    instance->audioSettings[id] = value;
+                    break;
+            }
+        }
+
+        static void Save();
+
     private:
         void LoadSettings();
     };

@@ -15,7 +15,9 @@ namespace mlg {
         static void Initialize();
         static void Stop();
 
-        static AudioAPI* GetInstance();
+        void SetVolume(float volume);
+
+        static AudioAPI* Get();
         static SoLoud::Soloud* GetSoLoud();
     };
 
