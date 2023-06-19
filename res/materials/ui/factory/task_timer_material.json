@@ -1,6 +1,6 @@
 {
   "vertexShader": "res/shaders/ui/image.vert",
-  "fragmentShader": "res/shaders/ui/round_progress_bar.frag",
+  "fragmentShader": "res/shaders/ui/textured_progress_bar.frag",
   "uniforms": [
     {
       "type": "vec4",

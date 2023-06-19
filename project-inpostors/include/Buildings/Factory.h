@@ -24,13 +24,14 @@ private:
     std::string blueprintId;
     std::shared_ptr<class FactoryEquipmentComponent> factoryEquipment;
 
-    std::shared_ptr<class mlg::ProgressBar> barReq1;
-    std::shared_ptr<class mlg::ProgressBar> barReq2;
-    std::shared_ptr<class mlg::ProgressBar> barArrow;
-    std::shared_ptr<class mlg::ProgressBar> barRes;
+    std::shared_ptr<class mlg::Image> uiPin;
+    std::shared_ptr<class mlg::ProgressBar> uiProgress;
+    std::shared_ptr<class mlg::Image> uiIcon;
 
     unsigned int produceTimerHandle = 0;
     bool working = false;
+
+    friend class FactoryUI;
 
 public:
     ~Factory() override;
@@ -67,9 +68,6 @@ private:
     void ProduceItem();
 
     void FinishTask();
-
-    static void GenerateUI(const std::shared_ptr<Factory>& result);
-    void UpdateUi();
 
     void StartAsFactory();
 
