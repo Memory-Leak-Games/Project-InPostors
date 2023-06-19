@@ -21,9 +21,7 @@ private:
     std::string blueprintId;
     std::shared_ptr<class FactoryEquipmentComponent> factoryEquipment;
 
-    std::shared_ptr<class mlg::Image> uiPin;
-    std::shared_ptr<class mlg::ProgressBar> uiProgress;
-    std::shared_ptr<class mlg::Image> uiIcon;
+    std::shared_ptr<class FactoryUI> factoryUi;
 
     unsigned int produceTimerHandle = 0;
     bool working = false;

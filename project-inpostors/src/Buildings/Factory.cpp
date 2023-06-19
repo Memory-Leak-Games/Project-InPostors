@@ -73,8 +73,7 @@ std::shared_ptr<Factory> Factory::Create(
         result->AddEmitter(emitterJson);
     }
 
-    result->AddComponent<FactoryUI>("FactoryUI", result);
-    //GenerateUI(result);
+    result->factoryUi = result->AddComponent<FactoryUI>("FactoryUI", result).lock();
 
     result->AddTriggers(configJson);
     result->mainRigidbody->SetKinematic(true);
@@ -152,6 +151,10 @@ void Factory::StartAsFactory() {
 
     factoryEquipment->outputProductRemoved.append([this]() {
         CheckBlueprintAndStartWorking();
+    });
+
+    factoryEquipment->inputProductChanged.append([this]() {
+       this->factoryUi->UpdateFactoryInputIcons();
     });
 }
 

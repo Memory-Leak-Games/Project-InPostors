@@ -30,11 +30,9 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     temp->SetPosition({640, 720 - 8 - 24});
     temp->SetAnchor({0.5, 1.0});
 
-    auto font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/terminus-bold.ttf");
     result->clock = result->AddComponent<mlg::Label>("Clock").lock();
     result->clock->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
     result->clock->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
-    //result->clock->SetPosition({640.f - 42.f, 720.f - 32.f - 2 - 8.f}); //TODO: Use label's property when I teach it to center text
     result->clock->SetPosition({640.f, 720.f - 24 - 2 - 8.f});
     result->clock->SetAnchor({0.5, 1.0});
 
@@ -64,7 +62,6 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     ui->SetSize({400 - 10, 200 - 10});
     ui->tint = glm::vec4(0.f, 0.f, 0.f, 0.95f);
 
-    font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/terminus-bold.ttf");
     result->chat = result->AddComponent<mlg::Label>("Chat").lock();
     result->chat->SetPosition({460.f, 65.f});
     result->chat->SetAnchor({0.5, 1.0});
@@ -72,7 +69,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     result->chat->SetText("As a language model, I am unable\nto drive vehicles myself. That is\nwhy you were hired to deliver\npackages.");
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/task_panel_material.json");
-    for(int i = 0; i < TASK_PANELS; i++) {
+    for (int i = 0; i < TASK_PANELS; i++) {
         result->taskPanel[i] = result->AddComponent<mlg::Image>("TaskPanel", material).lock();
         result->taskPanel[i]->SetPosition({8 + 48 + i * (96.f + 8.f)
                                                    , 720 - 48});
@@ -82,8 +79,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     }
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/task_progress_material.json");
-    for(int i = 0; i < TASK_PANELS; i++)
-    {
+    for (int i = 0; i < TASK_PANELS; i++) {
         result->taskProgress[i] = result->AddComponent<mlg::ProgressBar>("TaskProgress", material).lock();
         result->taskProgress[i]->SetPosition(result->taskPanel[i]->GetPosition());
         result->taskProgress[i]->SetAnchor({0.0, 1.0});
@@ -93,7 +89,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     }
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/iron_material.json");
-    for(int i = 0; i < TASK_PANELS; i++) {
+    for (int i = 0; i < TASK_PANELS; i++) {
         result->taskIcon[i] = result->AddComponent<mlg::Image>("TaskIcon", material).lock();
         result->taskIcon[i]->SetPosition(result->taskPanel[i]->GetPosition()
                                          + glm::vec2(0.f, -15.f));
@@ -102,21 +98,10 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
         result->taskIcon[i]->SetVisible(false);
     }
 
-//    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/task_required_panel_material.json");
-//    for (int i = 0; i < TASK_PANELS; i++) {
-//        for (int j = 0; j < 2; j++) {
-//            result->taskRequiredPanel[i][j] = result->AddComponent<mlg::ProgressBar>("TaskRequiredPanel", material).lock();
-//            result->taskRequiredPanel[i][j]->SetAnchor({0.0, 1.0});
-//            result->taskRequiredPanel[i][j]->SetSize({42.f, 24.f});
-//            result->taskRequiredPanel[i][j]->SetVisible(false);
-//        }
-//    }
-
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/iron_material.json");
     for (int i = 0; i < TASK_PANELS; i++) {
         for (int j = 0; j < 2; j++) {
             result->taskRequired[i][j] = result->AddComponent<mlg::ProgressBar>("TaskRequired", material).lock();
-//            result->taskRequired[i][j]->SetPosition(result->taskRequiredPanel[i][j]->GetPosition());
             result->taskRequired[i][j]->SetAnchor({0.0, 1.0});
             result->taskRequired[i][j]->SetSize({16.f, 16.f});
             result->taskRequired[i][j]->SetVisible(false);
@@ -149,7 +134,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
         int count = result->taskManager->GetTaskManager().GetActiveTasksCount();
         auto tasks = result->taskManager->GetTaskManager().GetActiveTasks();
 
-        for(int i = count - 1; i >= 0; --i) {
+        for (int i = count - 1; i >= 0; --i) {
             result->UpdateTask(i);
         }
         result->taskPanel[count - 1]->SetVisible(false);
