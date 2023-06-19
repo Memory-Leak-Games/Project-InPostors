@@ -158,6 +158,10 @@ namespace mlg {
         return parent;
     }
 
+    void Transform::ReParent(Transform* newParent) {
+        parent = newParent;
+    }
+
     void Transform::AddChild(const std::shared_ptr<Transform>& newChild) {
         if (newChild.get() == this || newChild.get() == parent)
             return;

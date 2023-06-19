@@ -12,6 +12,8 @@ private:
     std::weak_ptr<mlg::RigidbodyComponent> rigidbodyComponent;
     std::weak_ptr<mlg::ParticleSystemComponent> smokeParticleSystem;
 
+    bool collidedThisFrame = false;
+
 public:
     PlayerFXComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name);
     ~PlayerFXComponent() override;
@@ -21,4 +23,5 @@ public:
 
 private:
     void OnTaskFinished();
+    void OnCollision(glm::vec2 position);
 };

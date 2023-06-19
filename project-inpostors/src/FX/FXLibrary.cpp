@@ -4,6 +4,7 @@
 #include "FX/DestroyFX.h"
 #include "FX/SmokeFX.h"
 #include "FX/FactorySmokeFX.h"
+#include "FX/SparklesFX.h"
 
 FXLibrary* FXLibrary::instance;
 
@@ -12,6 +13,7 @@ FXLibrary::FXLibrary() {
     fxMap["factorySmoke"] = std::make_shared<FactorySmokeFX>();
     fxMap["destroy"] = std::make_shared<DestroyFX>();
     fxMap["cash"] = std::make_shared<CashFX>();
+    fxMap["sparkles"] = std::make_shared<SparklesFX>();
 }
 
 std::shared_ptr<mlg::ParticleSystem> FXLibrary::Get(const std::string& id) {

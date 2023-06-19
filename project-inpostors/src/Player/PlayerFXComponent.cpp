@@ -11,7 +11,9 @@
 #include "Macros.h"
 #include "Managers/TaskManager.h"
 #include "Physics/Colliders/Collider.h"
+#include "SceneGraph/SceneGraph.h"
 #include "Scenes/LevelScene.h"
+#include <glm/fwd.hpp>
 
 PlayerFXComponent::PlayerFXComponent(
         const std::weak_ptr<mlg::Entity>& owner, const std::string& name)
@@ -39,9 +41,19 @@ void PlayerFXComponent::Start() {
             [this](const TaskData& taskData) {
                 OnTaskFinished();
             });
+
+    rigidbodyComponent.lock()->OnCollisionEnter.append(
+            [this](mlg::CollisionEvent collisionEvent) {
+                if (collisionEvent.isTrigger)
+                    return;
+
+                OnCollision(collisionEvent.position);
+            });
 }
 
 void PlayerFXComponent::Update() {
+    collidedThisFrame = false;
+
 #ifdef DEBUG
     if (mlg::Input::IsActionJustPressed("DEBUG")) {
         OnTaskFinished();
@@ -73,4 +85,21 @@ void PlayerFXComponent::OnTaskFinished() {
     auto cashParticleSystem =
             GetOwner().lock()->AddComponent<mlg::ParticleSystemComponent>(
                     "CashFX", cash, true);
+}
+
+void PlayerFXComponent::OnCollision(glm::vec2 position) {
+    if (collidedThisFrame)
+        return;
+
+    auto sparkles = FXLibrary::Get("sparkles");
+    auto sparklesParticleSystem =
+            GetOwner().lock()->AddComponent<mlg::ParticleSystemComponent>(
+                    "SparklesFX", sparkles, true);
+
+    sparklesParticleSystem.lock()->GetTransform().ReParent(
+            mlg::SceneGraph::GetRoot());
+    sparklesParticleSystem.lock()->GetTransform().SetPosition(
+            mlg::Math::ProjectTo3D(position));
+
+    collidedThisFrame = true;
 }
