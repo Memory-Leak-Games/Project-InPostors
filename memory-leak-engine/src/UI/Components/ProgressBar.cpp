@@ -26,8 +26,9 @@ namespace mlg {
         material->GetShaderProgram()->SetVec2F("size", GetSize() * renderer->uiScale);
         material->GetShaderProgram()->SetVec2F("screenPosition", actualPosition);
         material->GetShaderProgram()->SetMat4F("projection", renderer->GetProjection());
-
         material->GetShaderProgram()->SetFloat("percentage", percentage);
+        if(tint != glm::vec4(1.0))
+            material->GetShaderProgram()->SetVec4F("tint", tint);
 
         MLG_ASSERT(UIRenderer::GetInstance()->vao != 0);
         glBindVertexArray(UIRenderer::GetInstance()->vao);

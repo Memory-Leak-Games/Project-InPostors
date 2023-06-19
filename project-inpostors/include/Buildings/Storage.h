@@ -22,7 +22,6 @@ public:
     bool TakeInputsFromInventory(class EquipmentComponent& equipment) override;
 
 private:
-    void GenerateUI();
 
     void FinishTaskOrSellProduct(const std::string& productId);
     std::vector<std::string> GetInputs() const;

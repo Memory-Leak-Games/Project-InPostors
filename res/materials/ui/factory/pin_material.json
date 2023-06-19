@@ -5,14 +5,14 @@
     {
       "type": "vec4",
       "name": "tint",
-      "value": [1.0, 1.0, 1.0, 0.9]
+      "value": [0.0, 0.0, 0.0, 0.9]
     }
   ],
   "textures": [
     {
       "name": "image",
       "index": 0,
-      "path": "res/textures/ui/task_panel.png"
+      "path": "res/textures/ui/factory_pin.png"
     }
   ]
 }

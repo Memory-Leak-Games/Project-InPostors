@@ -21,10 +21,6 @@ private:
     std::shared_ptr<class CarInput> carInput;
     std::shared_ptr<class EquipmentComponent> equipment;
 
-    std::weak_ptr<class mlg::Image> uiArrow;
-    std::shared_ptr<class mlg::Image> eqBillboards[3];
-    std::shared_ptr<class mlg::Image> eqIcons[3];
-
     std::shared_ptr<class mlg::AudioAsset> pickUpSound;
     std::shared_ptr<class mlg::AudioAsset> dropSound;
     std::shared_ptr<class mlg::AudioAsset> hitSound;
@@ -32,6 +28,8 @@ private:
     bool canPlaySound = true;
 
     PlayerData playerData;
+
+    friend class PlayerUI;
 
 private:
     Player(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent, const PlayerData& playerData);
@@ -55,5 +53,5 @@ private:
     void PickUp();
     void Drop();
 	
-    static void GenerateUI(const std::shared_ptr<Player>& newPlayer);
+    //static void GenerateUI(const std::shared_ptr<Player>& newPlayer);
 };
