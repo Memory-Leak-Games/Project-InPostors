@@ -72,7 +72,7 @@ void LevelScene::Load() {
                              .lock();
 
     // TODO: Remove me
-    gameplayOverlay->SetChat(fmt::format(
+    gameplayOverlay->ShowMessage(fmt::format(
             "Welcome to {}, useless piece of meat!", levelName));
 }
 
@@ -175,7 +175,7 @@ void LevelScene::InitializeLevelTaskManager() {
                 gameplayOverlay->SetScore(scoreManager->GetScore());
 
                 // TODO: transfer to chat manager
-                gameplayOverlay->SetChat(fmt::format(
+                gameplayOverlay->ShowMessage(fmt::format(
                         "You sold product for {}$, useless piece of meat! You are courier, not a merchant!",
                         price));
             });
