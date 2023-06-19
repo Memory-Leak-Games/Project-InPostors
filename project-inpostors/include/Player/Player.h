@@ -1,7 +1,9 @@
 #pragma once
 
 #include <Gameplay/Entity.h>
+#include <memory>
 #include "Audio/Assets/AudioAsset.h"
+#include "Player/PlayerFXComponent.h"
 
 namespace mlg {
     class RigidbodyComponent;
@@ -20,6 +22,7 @@ private:
     std::weak_ptr<mlg::RigidbodyComponent> rigidbodyComponent;
     std::shared_ptr<class CarInput> carInput;
     std::shared_ptr<class EquipmentComponent> equipment;
+    // std::shared_ptr<class PlayerFXComponent> playerFX;
 
     std::shared_ptr<class mlg::AudioAsset> pickUpSound;
     std::shared_ptr<class mlg::AudioAsset> dropSound;

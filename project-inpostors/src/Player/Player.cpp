@@ -13,6 +13,7 @@
 #include "Core/TimerManager.h"
 
 #include "Gameplay/Entity.h"
+#include "Player/PlayerFXComponent.h"
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
 
@@ -72,11 +73,8 @@ std::shared_ptr<Player> Player::Create(
                                             equipmentSize)
                                    .lock();
 
-    auto smoke = FXLibrary::Get("smoke");
-    auto smokeComponent = newPlayer->AddComponent<mlg::ParticleSystemComponent>(
-            "SmokeFX", smoke);
-
-    newPlayer->AddComponent<PlayerUI>("PlayerUI", newPlayer);
+    newPlayer->AddComponent<PlayerUI>("PlayerUI");
+    newPlayer->AddComponent<PlayerFXComponent>("PlayerFXComponent");
 
     return newPlayer;
 }

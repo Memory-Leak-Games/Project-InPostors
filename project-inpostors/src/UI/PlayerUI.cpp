@@ -1,6 +1,7 @@
 #include "UI/PlayerUI.h"
 
 #include "Gameplay/Entity.h"
+#include "Macros.h"
 #include "Player/Player.h"
 #include "Rendering/Assets/MaterialAsset.h"
 #include "UI/Assets/FontAsset.h"
@@ -9,8 +10,11 @@
 #include "Player/EquipmentComponent.h"
 #include "Utils/ProductManager.h"
 
-PlayerUI::PlayerUI(const std::weak_ptr<mlg::Entity>& owner, const std::string& name, const std::shared_ptr<class Player>& player)
-    : Component(owner, name), player(player) {
+PlayerUI::PlayerUI(const std::weak_ptr<mlg::Entity>& owner, const std::string& name)
+    : Component(owner, name) {
+
+    player = std::dynamic_pointer_cast<Player>(owner.lock());
+    MLG_ASSERT_MSG(player != nullptr, "PlayerUI can only be added to Player");
 
     auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/player/arrow_material.json");
 
