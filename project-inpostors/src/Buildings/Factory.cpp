@@ -37,6 +37,8 @@
 #include "Utils/EquipmentComponent.h"
 #include "Utils/ProductManager.h"
 
+#include "Animation/AnimationComponent.h"
+
 using json = nlohmann::json;
 using Random = effolkronium::random_static;
 
@@ -60,6 +62,8 @@ std::shared_ptr<Factory> Factory::Create(
 
     result->AddMesh(configJson["static-mesh"]);
     result->mainRigidbody = result->AddComponent<mlg::RigidbodyComponent>("MainRigidbody").lock();
+
+    result->animComponent = result->AddComponent<AnimationComponent>("Anim").lock();
 
     result->blueprintId = configJson.value("blueprintID", "None");
 
