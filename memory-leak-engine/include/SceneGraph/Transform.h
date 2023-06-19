@@ -52,6 +52,7 @@ namespace mlg {
 
         const std::vector<std::weak_ptr<Transform>>& GetChildren();
         Transform* GetParent();
+        void ReParent(Transform* newParent);
 
         void AddChild(const std::shared_ptr<Transform>& newChild);
 

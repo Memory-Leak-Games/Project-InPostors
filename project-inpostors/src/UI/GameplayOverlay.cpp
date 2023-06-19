@@ -4,14 +4,15 @@
 #include "Core/Time.h"
 #include "Core/TimerManager.h"
 #include "Managers/LevelTaskManager.h"
-#include "Rendering/Assets/MaterialAsset.h"
 #include "Managers/TaskManager.h"
+#include "Rendering/Assets/MaterialAsset.h"
 #include "UI/Assets/FontAsset.h"
+#include "UI/Components/Containers/CanvasPanel.h"
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
 #include "UI/Components/ProgressBar.h"
-#include "Utils/ProductManager.h"
 #include "Utils/BlueprintManager.h"
+#include "Utils/ProductManager.h"
 #include <spdlog/fmt/bundled/format.h>
 #include <string>
 
@@ -49,30 +50,35 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     result->score->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
     result->score->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
 
+
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay_background_material.json");
+    result->chatWindow = result->AddComponent<mlg::CanvasPanel>("ChatWindow").lock();
+    result->chatWindow->SetPosition({640.f, 0.f});
+    result->chatWindow->SetSize({400, 200});
+
     auto ui = result->AddComponent<mlg::Image>("ChatWindow", material).lock();
-    ui->SetPosition({640.f, 0.f});
     ui->SetAnchor({0.5, 0});
     ui->SetSize({400, 200});
     ui->tint = glm::vec4(0.7f, 0.7f, 0.7f, 0.9f);
+    result->chatWindow->AddChild(ui);
 
     ui = result->AddComponent<mlg::Image>("ChatWindow", material).lock();
-    ui->SetPosition({640.f, 0.f});
     ui->SetAnchor({0.5, 0});
     ui->SetSize({400 - 10, 200 - 10});
     ui->tint = glm::vec4(0.f, 0.f, 0.f, 0.95f);
+    result->chatWindow->AddChild(ui);
 
     result->chat = result->AddComponent<mlg::Label>("Chat").lock();
-    result->chat->SetPosition({460.f, 65.f});
+    result->chat->SetRelativePosition({-180.f, 65.f});
     result->chat->SetAnchor({0.5, 1.0});
     result->chat->SetSize(18);
     result->chat->SetText("As a language model, I am unable\nto drive vehicles myself. That is\nwhy you were hired to deliver\npackages.");
+    result->chatWindow->AddChild(result->chat);
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/task_panel_material.json");
     for (int i = 0; i < TASK_PANELS; i++) {
         result->taskPanel[i] = result->AddComponent<mlg::Image>("TaskPanel", material).lock();
-        result->taskPanel[i]->SetPosition({8 + 48 + i * (96.f + 8.f)
-                                                   , 720 - 48});
+        result->taskPanel[i]->SetPosition({8 + 48 + i * (96.f + 8.f), 720 - 48});
         result->taskPanel[i]->SetAnchor({0.0, 1.0});
         result->taskPanel[i]->SetSize({96, 96});
         result->taskPanel[i]->SetVisible(false);
@@ -170,7 +176,7 @@ void GameplayOverlay::Update() {
         taskProgress[i]->percentage = timeRate * 0.8f + 0.1f;
 
         // You useless piece of meat, you are late!
-        if(timeRate <= 0.0f) {
+        if (timeRate <= 0.0f) {
             taskPanel[i]->tint = {0.5, 0.0, 0.0, 0.9};
         } else {
             taskPanel[i]->tint = {1.0, 1.0, 1.0, 0.9};
@@ -182,18 +188,21 @@ void GameplayOverlay::SetScore(int score) {
     this->score->SetText(fmt::format("${:04}", score));
 }
 
-void GameplayOverlay::SetChat(const std::string& message) {
+void GameplayOverlay::ShowMessage(const std::string& message, float visibleTime) {
+    if (mlg::TimerManager::Get()->IsTimerValid(chatTimer))
+        mlg::TimerManager::Get()->ClearTimer(chatTimer);
+
+    this->chatWindow->SetVisible(true);
+
     std::string text = fmt::format("AIPost: {}", message);
-
-    constexpr int chatLimit = 34;
-    // wrap text
-    for (int i = 0; i < text.size(); i++) {
-        if (i % chatLimit == 0 && i != 0) {
-            text.insert(i, "\n");
-        }
-    }
-
+    text = mlg::Label::WrapText(text, 40);
     this->chat->SetText(text);
+
+    chatTimer = mlg::TimerManager::Get()->SetTimer(
+            visibleTime, false,
+            [this]() -> void {
+                this->chatWindow->SetVisible(false);
+            });
 }
 
 void GameplayOverlay::SetClock(float time) {

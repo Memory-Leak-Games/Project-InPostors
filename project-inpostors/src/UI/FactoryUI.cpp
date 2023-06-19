@@ -1,4 +1,4 @@
-#include "include/UI/FactoryUI.h"
+#include "UI/FactoryUI.h"
 
 #include "Buildings/Factory.h"
 #include "Buildings/FactoryEquipmentComponent.h"

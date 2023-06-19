@@ -14,7 +14,7 @@
 #include "UI/Assets/FontAsset.h"
 #include "UI/Components/Image.h"
 #include "UI/StorageUI.h"
-#include "Utils/EquipmentComponent.h"
+#include "Player/EquipmentComponent.h"
 
 #include <fstream>
 #include <vector>

@@ -26,7 +26,7 @@
 #include "Gameplay/Components/StaticMeshComponent.h"
 #include "Physics/Colliders/ColliderShapes.h"
 #include "Physics/CollisionManager.h"
-#include "Player.h"
+#include "Player/Player.h"
 
 #include "Buildings/AutoDestroyComponent.h"
 #include "Buildings/Factory.h"

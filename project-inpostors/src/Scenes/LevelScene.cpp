@@ -41,7 +41,7 @@ LevelScene::LevelScene(std::string path) : levelPath(std::move(path)) {}
 
 LevelScene::~LevelScene() = default;
 
-void LevelScene::Load() {
+void LevelScene::Load() {;
     LoadLevel();
     InitializeLevelTaskManager();
 
@@ -72,7 +72,7 @@ void LevelScene::Load() {
                              .lock();
 
     // TODO: Remove me
-    gameplayOverlay->SetChat(fmt::format(
+    gameplayOverlay->ShowMessage(fmt::format(
             "Welcome to {}, useless piece of meat!", levelName));
 }
 
@@ -175,10 +175,16 @@ void LevelScene::InitializeLevelTaskManager() {
                 gameplayOverlay->SetScore(scoreManager->GetScore());
 
                 // TODO: transfer to chat manager
-                gameplayOverlay->SetChat(fmt::format(
+                gameplayOverlay->ShowMessage(fmt::format(
                         "You sold product for {}$, useless piece of meat! You are courier, not a merchant!",
                         price));
             });
+    levelTaskManager->GetTaskManager().OnTaskFailed.append(
+        [this](const TaskData& taskData) {
+            gameplayOverlay->ShowMessage(fmt::format(
+                    "You failed task: {}! You are slow.. YOU MONSTER!",
+                    taskData.productId));
+        });
 
     std::vector<TaskData> tasks = mlg::LevelGenerator::GetTasks(levelPath);
     for (const auto& task : tasks) {

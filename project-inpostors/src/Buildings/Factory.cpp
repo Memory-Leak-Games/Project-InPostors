@@ -8,6 +8,8 @@
 #include "Core/SceneManager/SceneManager.h"
 #include "Core/Settings/SettingsManager.h"
 #include "Core/TimerManager.h"
+#include "FX/FactorySmokeFX.h"
+#include "FX/SmokeFX.h"
 #include "Gameplay/Components/RigidbodyComponent.h"
 #include "Gameplay/Components/StaticMeshComponent.h"
 
@@ -34,7 +36,7 @@
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
 #include "UI/Components/ProgressBar.h"
-#include "Utils/EquipmentComponent.h"
+#include "Player/EquipmentComponent.h"
 #include "Utils/ProductManager.h"
 
 #include "UI/FactoryUI.h"
@@ -132,10 +134,6 @@ void Factory::CheckBlueprintAndStartWorking() {
 }
 
 void Factory::Start() {
-    StartAsFactory();
-}
-
-void Factory::StartAsFactory() {
     createProductSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/create_product.wav");
 
     factoryEquipment = AddComponent<FactoryEquipmentComponent>(
@@ -153,12 +151,29 @@ void Factory::StartAsFactory() {
         CheckBlueprintAndStartWorking();
     });
 
+
     factoryEquipment->inputProductChanged.append([this]() {
        this->factoryUi->UpdateFactoryInputIcons();
     });
+
+    GetAllSmokes();
 }
 
-void Factory::Update() { }
+void Factory::Update() {
+    for (auto& emiter: emitters) {
+        mlg::ParticleSystem* particleSystem = emiter.lock()->GetParticleSystem();
+        FactorySmokeFX* factorySmoke = dynamic_cast<FactorySmokeFX*>(particleSystem);
+
+        if (!factorySmoke)
+            continue;
+
+        if (working) {
+            factorySmoke->SetTimeToSpawn(0.1f);
+        } else {
+            factorySmoke->SetTimeToSpawn(0.4f);
+        }
+    }
+}
 
 bool Factory::IsWorking() const {
     return mlg::TimerManager::Get()->IsTimerValid(produceTimerHandle);
@@ -213,6 +228,10 @@ std::string Factory::GiveOutput() {
 
 bool Factory::CheckBlueprint() {
     return factoryEquipment->IsAllInputsPresent();
+}
+
+void Factory::GetAllSmokes() {
+    GetAllComponentByClass<mlg::ParticleSystemComponent>(emitters);
 }
 
 std::string Factory::GetBlueprintId() const { return blueprintId; }

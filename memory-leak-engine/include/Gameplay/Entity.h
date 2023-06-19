@@ -58,6 +58,15 @@ namespace mlg {
         }
 
         template<typename T>
+        void GetAllComponentByClass(std::vector<std::weak_ptr<T>>& out) {
+            for (auto& component : components) {
+                auto casted = std::dynamic_pointer_cast<T>(component.lock());
+                if (casted != nullptr)
+                    out.push_back(casted);
+            }
+        }
+
+        template<typename T>
         std::weak_ptr<T> GetComponentByName(const std::string& name) {
             auto foundIterator = std::find_if(
                     components.begin(), components.end(),
@@ -70,6 +79,8 @@ namespace mlg {
             else
                 return std::weak_ptr<T>();
         }
+
+
 
         void RemoveComponent(Component* component);
 
