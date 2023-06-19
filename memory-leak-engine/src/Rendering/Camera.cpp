@@ -6,6 +6,7 @@
 #include "Rendering/CommonUniformBuffer.h"
 #include "Rendering/Renderer.h"
 #include "SceneGraph/Transform.h"
+#include <spdlog/spdlog.h>
 
 namespace mlg {
     Camera::Projection::Projection(float nearPlane, float farPlane)
@@ -29,11 +30,13 @@ namespace mlg {
 
     void Camera::SetOrtho(float size, float nearPlane, float farPlane) {
         isProjectionDirty = true;
+        projection.reset();
         projection = std::make_unique<OrthoProjection>(size, nearPlane, farPlane);
     }
 
     void Camera::SetPerspective(float fov, float nearPlane, float farPlane) {
         isProjectionDirty = true;
+        projection.reset();
         projection = std::make_unique<PerspectiveProjection>(fov, nearPlane, farPlane);
     }
 
@@ -53,6 +56,9 @@ namespace mlg {
 
     void Camera::SetActive() {
         Renderer::GetInstance()->SetCurrentCamera(this);
+        float aspectRatio = Window::Get()->GetAspectRatio();
+        CommonUniformBuffer::SetProjection(projection->CalculateProjection(aspectRatio));
+        isProjectionDirty = true;
     }
 
     bool Camera::IsActive() {
@@ -60,6 +66,9 @@ namespace mlg {
     }
 
     void Camera::OnWindowResize(const Event& event) {
+        if (!IsActive())
+            return;
+
         auto& windowResizeEvent = (WindowResizeEvent&) event;
         CommonUniformBuffer::SetProjection(projection->CalculateProjection(windowResizeEvent.GetAspectRatio()));
         isProjectionDirty = true;

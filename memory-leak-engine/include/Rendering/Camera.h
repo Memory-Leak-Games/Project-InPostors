@@ -1,5 +1,6 @@
 #pragma once
 
+#include <spdlog/spdlog.h>
 namespace mlg {
 
     class Camera {
@@ -14,14 +15,14 @@ namespace mlg {
             virtual glm::mat4 CalculateProjection(float aspectRatio) = 0;
         };
 
-        struct OrthoProjection : Projection {
+        struct OrthoProjection : public Projection {
             float size;
 
             OrthoProjection(float size, float nearPlane, float farPlane);
             glm::mat4 CalculateProjection(float aspectRatio) override;
         };
 
-        struct PerspectiveProjection : Projection {
+        struct PerspectiveProjection : public Projection {
             float fov;
 
             PerspectiveProjection(float fov, float nearPlane, float farPlane);

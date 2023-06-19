@@ -6,7 +6,6 @@
 
 namespace mlg {
 
-
     CameraComponent::CameraComponent(const std::weak_ptr<Entity>& owner, const std::string& name)
         : Component(owner, name), camera(std::make_unique<Camera>()) {
         owner.lock()->GetTransform().AddChild(camera->transform);
@@ -60,8 +59,8 @@ namespace mlg {
             camera->GetTransform().SetRotation({glm::radians(rotation)});
         }
 
-        auto* orthoProjection = dynamic_cast<Camera::OrthoProjection*>(camera->GetProjection());
-        auto* perspectiveProjection = dynamic_cast<Camera::PerspectiveProjection*>(camera->GetProjection());
+        auto orthoProjection = dynamic_cast<Camera::OrthoProjection*>(camera->GetProjection());
+        auto perspectiveProjection = dynamic_cast<Camera::PerspectiveProjection*>(camera->GetProjection());
 
         if (orthoProjection) {
             float size = orthoProjection->size;

@@ -85,6 +85,7 @@ namespace mlg {
         cameraComponent.GetTransform().SetPosition(position);
         cameraComponent.GetTransform().SetRotation(glm::radians(eulerRotation));
         cameraComponent.SetOrtho(size, near, far);
+        cameraComponent.SetActive();
 
         levelFile.close();
     }
