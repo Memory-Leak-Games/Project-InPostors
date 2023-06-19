@@ -27,7 +27,7 @@ std::shared_ptr<AudioManager> AudioManager::Create(
             new AudioManager(id, name, isStatic, parent));
 
     audioManager->finishTaskSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>(
-            "res/audio/sfx/finish_task.mp3");
+            "res/audio/sfx/cha-ching.wav");
     audioManager->startLevelCountdownSound =
             mlg::AssetManager::GetAsset<mlg::AudioAsset>(
                     "res/audio/sfx/start_level_countdown.wav");

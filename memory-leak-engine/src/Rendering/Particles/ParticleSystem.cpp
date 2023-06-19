@@ -88,6 +88,18 @@ namespace mlg {
         glDrawArraysInstanced(GL_TRIANGLES, 0, rect->GetSize(), particlesToRender.size());
     }
 
+    bool ParticleSystem::IsFinished() const {
+        if (!finished)
+            return false;
+
+        for (const auto& particle: particlesPool) {
+            if (particle.isActive)
+                return false;
+        }
+
+        return true;
+    }
+
     void ParticleSystem::Update(const Transform& transform) {
         ZoneScopedN("Update Particle System");
 

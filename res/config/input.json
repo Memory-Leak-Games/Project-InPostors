@@ -365,5 +365,14 @@
         "code": 269
       }
     ]
+  },
+  {
+    "name": "DEBUG",
+    "mappings": [
+      {
+        "deviceType": "Keyboard",
+        "code": 268
+      }
+    ]
   }
 ]

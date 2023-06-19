@@ -2,7 +2,7 @@
 
 #include "Utils/Blueprint.h"
 #include "Utils/BlueprintManager.h"
-#include "Utils/EquipmentComponent.h"
+#include "Player/EquipmentComponent.h"
 
 bool EquipmentComponent::AddProduct(const std::string& product) {
     if (equipment.size() >= size)

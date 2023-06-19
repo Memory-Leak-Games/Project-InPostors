@@ -8,14 +8,16 @@ FactorySmokeFX::FactorySmokeFX(): mlg::ParticleSystem(100) {
     SetMaterial(mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/particles/smoke_fx.json"));
 }
 
+void FactorySmokeFX::SetTimeToSpawn(float timeToSpawn) {
+    this->timeToSpawn = timeToSpawn;
+}
+
 std::shared_ptr<mlg::ParticleSystem> FactorySmokeFX::Clone() {
     return std::make_shared<FactorySmokeFX>();
 }
 
 void FactorySmokeFX::UpdateSystem(const mlg::Transform& transform) {
     using Random = effolkronium::random_static;
-
-    const float timeToSpawn = 0.1f;
 
     timeAccumulator += mlg::Time::GetDeltaSeconds();
 

@@ -4,14 +4,15 @@
 #include "Core/Time.h"
 #include "Core/TimerManager.h"
 #include "Managers/LevelTaskManager.h"
-#include "Rendering/Assets/MaterialAsset.h"
 #include "Managers/TaskManager.h"
+#include "Rendering/Assets/MaterialAsset.h"
 #include "UI/Assets/FontAsset.h"
+#include "UI/Components/Containers/CanvasPanel.h"
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
 #include "UI/Components/ProgressBar.h"
-#include "Utils/ProductManager.h"
 #include "Utils/BlueprintManager.h"
+#include "Utils/ProductManager.h"
 #include <spdlog/fmt/bundled/format.h>
 #include <string>
 
@@ -51,39 +52,43 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     result->score->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
     result->score->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
 
+
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay_background_material.json");
+    result->chatWindow = result->AddComponent<mlg::CanvasPanel>("ChatWindow").lock();
+    result->chatWindow->SetPosition({640.f, 0.f});
+    result->chatWindow->SetSize({400, 200});
+
     auto ui = result->AddComponent<mlg::Image>("ChatWindow", material).lock();
-    ui->SetPosition({640.f, 0.f});
     ui->SetAnchor({0.5, 0});
     ui->SetSize({400, 200});
     ui->tint = glm::vec4(0.7f, 0.7f, 0.7f, 0.9f);
+    result->chatWindow->AddChild(ui);
 
     ui = result->AddComponent<mlg::Image>("ChatWindow", material).lock();
-    ui->SetPosition({640.f, 0.f});
     ui->SetAnchor({0.5, 0});
     ui->SetSize({400 - 10, 200 - 10});
     ui->tint = glm::vec4(0.f, 0.f, 0.f, 0.95f);
+    result->chatWindow->AddChild(ui);
 
     font = mlg::AssetManager::GetAsset<mlg::FontAsset>("res/fonts/terminus-bold.ttf");
     result->chat = result->AddComponent<mlg::Label>("Chat").lock();
-    result->chat->SetPosition({460.f, 65.f});
+    result->chat->SetRelativePosition({-180.f, 65.f});
     result->chat->SetAnchor({0.5, 1.0});
     result->chat->SetSize(18);
     result->chat->SetText("As a language model, I am unable\nto drive vehicles myself. That is\nwhy you were hired to deliver\npackages.");
+    result->chatWindow->AddChild(result->chat);
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/task_panel_material.json");
-    for(int i = 0; i < TASK_PANELS; i++) {
+    for (int i = 0; i < TASK_PANELS; i++) {
         result->taskPanel[i] = result->AddComponent<mlg::Image>("TaskPanel", material).lock();
-        result->taskPanel[i]->SetPosition({8 + 48 + i * (96.f + 8.f)
-                                                   , 720 - 48});
+        result->taskPanel[i]->SetPosition({8 + 48 + i * (96.f + 8.f), 720 - 48});
         result->taskPanel[i]->SetAnchor({0.0, 1.0});
         result->taskPanel[i]->SetSize({96, 96});
         result->taskPanel[i]->SetVisible(false);
     }
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/task_progress_material.json");
-    for(int i = 0; i < TASK_PANELS; i++)
-    {
+    for (int i = 0; i < TASK_PANELS; i++) {
         result->taskProgress[i] = result->AddComponent<mlg::ProgressBar>("TaskProgress", material).lock();
         result->taskProgress[i]->SetPosition(result->taskPanel[i]->GetPosition());
         result->taskProgress[i]->SetAnchor({0.0, 1.0});
@@ -93,31 +98,30 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     }
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/iron_material.json");
-    for(int i = 0; i < TASK_PANELS; i++) {
+    for (int i = 0; i < TASK_PANELS; i++) {
         result->taskIcon[i] = result->AddComponent<mlg::Image>("TaskIcon", material).lock();
-        result->taskIcon[i]->SetPosition(result->taskPanel[i]->GetPosition()
-                                         + glm::vec2(0.f, -15.f));
+        result->taskIcon[i]->SetPosition(result->taskPanel[i]->GetPosition() + glm::vec2(0.f, -15.f));
         result->taskIcon[i]->SetAnchor({0.0, 1.0});
         result->taskIcon[i]->SetSize({36, 36});
         result->taskIcon[i]->SetVisible(false);
     }
 
-//    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/task_required_panel_material.json");
-//    for (int i = 0; i < TASK_PANELS; i++) {
-//        for (int j = 0; j < 2; j++) {
-//            result->taskRequiredPanel[i][j] = result->AddComponent<mlg::ProgressBar>("TaskRequiredPanel", material).lock();
-//            result->taskRequiredPanel[i][j]->SetAnchor({0.0, 1.0});
-//            result->taskRequiredPanel[i][j]->SetSize({42.f, 24.f});
-//            result->taskRequiredPanel[i][j]->SetVisible(false);
-//        }
-//    }
+    //    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/task_required_panel_material.json");
+    //    for (int i = 0; i < TASK_PANELS; i++) {
+    //        for (int j = 0; j < 2; j++) {
+    //            result->taskRequiredPanel[i][j] = result->AddComponent<mlg::ProgressBar>("TaskRequiredPanel", material).lock();
+    //            result->taskRequiredPanel[i][j]->SetAnchor({0.0, 1.0});
+    //            result->taskRequiredPanel[i][j]->SetSize({42.f, 24.f});
+    //            result->taskRequiredPanel[i][j]->SetVisible(false);
+    //        }
+    //    }
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/iron_material.json");
     for (int i = 0; i < TASK_PANELS; i++) {
         for (int j = 0; j < 2; j++) {
             // TODO: there was a Progressbar here before but it generates errors
             result->taskRequired[i][j] = result->AddComponent<mlg::Image>("TaskRequired", material).lock();
-//            result->taskRequired[i][j]->SetPosition(result->taskRequiredPanel[i][j]->GetPosition());
+            //            result->taskRequired[i][j]->SetPosition(result->taskRequiredPanel[i][j]->GetPosition());
             result->taskRequired[i][j]->SetAnchor({0.0, 1.0});
             result->taskRequired[i][j]->SetSize({16.f, 16.f});
             result->taskRequired[i][j]->SetVisible(false);
@@ -125,7 +129,6 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     }
 
     result->taskManager->GetTaskManager().OnTaskAccepted.append([result](const TaskData& taskData) {
-
         auto productManager = ProductManager::Get();
         auto blueprintManager = BlueprintManager::Get();
         int count = result->taskManager->GetTaskManager().GetActiveTasksCount();
@@ -150,7 +153,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
         int count = result->taskManager->GetTaskManager().GetActiveTasksCount();
         auto tasks = result->taskManager->GetTaskManager().GetActiveTasks();
 
-        for(int i = count - 1; i >= 0; --i) {
+        for (int i = count - 1; i >= 0; --i) {
             result->UpdateTask(i);
         }
         result->taskPanel[count - 1]->SetVisible(false);
@@ -177,7 +180,7 @@ void GameplayOverlay::Start() {
     int taskCount = taskManager->GetTaskManager().GetActiveTasksCount();
     auto productManager = ProductManager::Get();
 
-    for(int i = taskCount - 1; i >= 0; --i) {
+    for (int i = taskCount - 1; i >= 0; --i) {
         UpdateTask(i);
 
         taskPanel[i]->SetVisible(true);
@@ -193,12 +196,12 @@ void GameplayOverlay::Start() {
 void GameplayOverlay::Update() {
     auto tasks = taskManager->GetTaskManager().GetActiveTasks();
     int taskCount = taskManager->GetTaskManager().GetActiveTasksCount();
-    for(int i = taskCount - 1; i >= 0; --i) {
+    for (int i = taskCount - 1; i >= 0; --i) {
         float timeRate = tasks[i].time / tasks[i].timeLimit;
         taskProgress[i]->percentage = timeRate * 0.8f + 0.1f;
 
         // You useless piece of meat, you are late!
-        if(timeRate <= 0.0f) {
+        if (timeRate <= 0.0f) {
             taskPanel[i]->tint = {0.5, 0.0, 0.0, 0.9};
             //taskProgress[i]->SetVisible(false);
         } else {
@@ -213,18 +216,21 @@ void GameplayOverlay::SetScore(int score) {
     this->score->SetText(fmt::format("${:04}", score));
 }
 
-void GameplayOverlay::SetChat(const std::string& message) {
+void GameplayOverlay::ShowMessage(const std::string& message, float visibleTime) {
+    if (mlg::TimerManager::Get()->IsTimerValid(chatTimer))
+        mlg::TimerManager::Get()->ClearTimer(chatTimer);
+
+    this->chatWindow->SetVisible(true);
+
     std::string text = fmt::format("AIPost: {}", message);
-
-    constexpr int chatLimit = 34;
-    // wrap text
-    for (int i = 0; i < text.size(); i++) {
-        if (i % chatLimit == 0 && i != 0) {
-            text.insert(i, "\n");
-        }
-    }
-
+    text = mlg::Label::WrapText(text, 40);
     this->chat->SetText(text);
+
+    chatTimer = mlg::TimerManager::Get()->SetTimer(
+            visibleTime, false,
+            [this]() -> void {
+                this->chatWindow->SetVisible(false);
+            });
 }
 
 void GameplayOverlay::SetClock(float time) {
@@ -259,13 +265,10 @@ void GameplayOverlay::UpdateTask(int idx) {
     }
 
     if (blueprint.GetInput().size() == 1) {
-        taskRequired[idx][0]->SetPosition(taskPanel[idx]->GetPosition()
-                                  + glm::vec2(0.f, 30.f));
+        taskRequired[idx][0]->SetPosition(taskPanel[idx]->GetPosition() + glm::vec2(0.f, 30.f));
     } else if (blueprint.GetInput().size() == 2) {
-        taskRequired[idx][0]->SetPosition(taskPanel[idx]->GetPosition()
-                      + glm::vec2(-12.f, 30.f));
-        taskRequired[idx][1]->SetPosition(taskPanel[idx]->GetPosition()
-                                          + glm::vec2(+12.f, 30.f));
+        taskRequired[idx][0]->SetPosition(taskPanel[idx]->GetPosition() + glm::vec2(-12.f, 30.f));
+        taskRequired[idx][1]->SetPosition(taskPanel[idx]->GetPosition() + glm::vec2(+12.f, 30.f));
     }
     //taskRequiredPanel[idx][0]->SetPosition(taskRequired[idx][0]->GetPosition());
     //taskRequiredPanel[idx][1]->SetPosition(taskRequired[idx][1]->GetPosition());
