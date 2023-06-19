@@ -176,10 +176,6 @@ void GameplayOverlay::Update() {
             taskPanel[i]->tint = {1.0, 1.0, 1.0, 0.9};
         }
     }
-
-    ImGui::Begin("Tasks");
-    ImGui::Text(fmt::to_string(taskCount).c_str());
-    ImGui::End();
 }
 
 void GameplayOverlay::SetScore(int score) {

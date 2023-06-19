@@ -22,7 +22,7 @@ FactoryUI::FactoryUI(const std::weak_ptr<mlg::Entity>& owner, const std::string&
 
     uiPin = factory->AddComponent<mlg::Image>("uiPin", material).lock();
     uiPin->SetBillboardTarget(owner);
-    uiPin->SetSize({82.f, 82.f});
+    uiPin->SetSize({88.f, 88.f});
     uiPin->SetPosition({0.f, 50.f});
 
     const auto& required = blueprint.GetInput();
@@ -32,11 +32,11 @@ FactoryUI::FactoryUI(const std::weak_ptr<mlg::Entity>& owner, const std::string&
         auto temp = factory->AddComponent<mlg::Image>("uiRequiredPanel", material).lock();
         temp->SetBillboardTarget(owner);
         temp->SetSize({40.f, 18.f});
-        temp->SetPosition({0.f, 30.f});
+        temp->SetPosition({0.f, 25.f});
     }
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/required_bar_material.json");
-    glm::vec2 pos = {-9.f, 30.f};
+    glm::vec2 pos = {-9.f, 25.f};
     for (auto & uiInputBar : uiInputBars) {
         uiInputBar = factory->AddComponent<mlg::Image>("uiInputBar", material).lock();
         uiInputBar->SetSize({18.f, 14.f});
@@ -49,7 +49,7 @@ FactoryUI::FactoryUI(const std::weak_ptr<mlg::Entity>& owner, const std::string&
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/pin_progress_material.json");
     uiProgress = factory->AddComponent<mlg::ProgressBar>("uiProgress", material).lock();
     uiProgress->SetBillboardTarget(owner);
-    uiProgress->SetSize({68.f, 68.f});
+    uiProgress->SetSize({74.f, 74.f});
     uiProgress->SetPosition({0.f, 50.f});
     uiProgress->percentage = 0.f;
 
@@ -59,7 +59,7 @@ FactoryUI::FactoryUI(const std::weak_ptr<mlg::Entity>& owner, const std::string&
     uiIcon->SetSize({24.f, 24.f});
     uiIcon->SetPosition({0.f, 50.f});
 
-    glm::vec2 billboardPos = {-11.f * (required.size() - 1.f), 30.f};
+    glm::vec2 billboardPos = {-11.f * (required.size() - 1.f), 25.f};
     for(const auto & i : required) {
 
         material = ProductManager::Get()->GetProduct(i).icon;
@@ -69,6 +69,14 @@ FactoryUI::FactoryUI(const std::weak_ptr<mlg::Entity>& owner, const std::string&
         temp->SetPosition(billboardPos);
 
         billboardPos.x += 22.f;
+    }
+
+    if (!blueprint.GetInput().empty()) {
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/arrow_material.json");
+        auto temp = factory->AddComponent<mlg::Image>("uiArrow", material).lock();
+        temp->SetBillboardTarget(owner);
+        temp->SetSize({8.f, 8.f});
+        temp->SetPosition({0.f, 37.f});
     }
 }
 
