@@ -101,7 +101,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/iron_material.json");
     for (int i = 0; i < TASK_PANELS; i++) {
         for (int j = 0; j < 2; j++) {
-            result->taskRequired[i][j] = result->AddComponent<mlg::ProgressBar>("TaskRequired", material).lock();
+            result->taskRequired[i][j] = result->AddComponent<mlg::Image>("TaskRequired", material).lock();
             result->taskRequired[i][j]->SetAnchor({0.0, 1.0});
             result->taskRequired[i][j]->SetSize({16.f, 16.f});
             result->taskRequired[i][j]->SetVisible(false);
