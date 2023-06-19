@@ -269,7 +269,8 @@
       "objects": [
         {
           "model": "res/models/buildings/super_big/townhall.obj",
-          "scale": 1.0,
+          "rotation": 180.0,
+          "scale": 1.1,
           "collision-type": "rectangle",
           "collision-size": 12.0
         }

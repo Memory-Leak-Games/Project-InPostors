@@ -1,5 +1,5 @@
 {
-  "ShadowMapSize": 60.0,
+  "ShadowMapSize": 90.0,
   "ShadowMapResolution": 2048,
   "VSync": false,
   "SSAO": true,
