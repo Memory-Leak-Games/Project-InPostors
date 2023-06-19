@@ -5,7 +5,6 @@
 
 namespace mlg {
     class RigidbodyComponent;
-    class StaticMeshComponent;
     class Entity;
 }
 
@@ -15,7 +14,6 @@ class NavigationGraph;
 class AIComponent : public mlg::Component {
 private:
     std::shared_ptr<mlg::RigidbodyComponent> rigidbodyComponent;
-    std::shared_ptr<mlg::StaticMeshComponent> staticMeshComponent;
     std::unique_ptr<SteeringBehaviors> steering;
 
     //Driving params

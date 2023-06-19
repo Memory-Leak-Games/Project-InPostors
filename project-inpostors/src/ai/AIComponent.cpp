@@ -11,7 +11,6 @@
 #include "Core/SceneManager/SceneManager.h"
 #include "Core/Settings/SettingsManager.h"
 #include "Gameplay/Components/RigidbodyComponent.h"
-#include "Gameplay/Components/StaticMeshComponent.h"
 #include "Gameplay/Entity.h"
 
 #include "Rendering/Gizmos/Gizmos.h"
@@ -28,8 +27,6 @@ using json = nlohmann::json;
 void AIComponent::Start() {
     rigidbodyComponent = GetOwner().lock()->GetComponentByClass<mlg::RigidbodyComponent>().lock();
     rigidbodyComponent->SetLinearDrag(600.f);
-
-    staticMeshComponent = GetOwner().lock()->GetComponentByClass<mlg::StaticMeshComponent>().lock();
 
     mlg::Scene* currentScene = mlg::SceneManager::GetCurrentScene();
     auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
