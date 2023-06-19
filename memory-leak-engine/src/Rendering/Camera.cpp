@@ -56,6 +56,10 @@ namespace mlg {
 
     void Camera::SetActive() {
         Renderer::GetInstance()->SetCurrentCamera(this);
+
+        if (projection == nullptr)
+            return;
+
         float aspectRatio = Window::Get()->GetAspectRatio();
         CommonUniformBuffer::SetProjection(projection->CalculateProjection(aspectRatio));
         isProjectionDirty = true;
