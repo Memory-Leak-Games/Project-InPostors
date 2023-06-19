@@ -17,46 +17,46 @@
   },
 
   "layout": [
-    "             mbmmbmbmmbbmbmmbmmbb                             ",
-    "             s##################m                             ",
-    "             m##################m                             ",
+    "             mbmmbmbmmbbmbmmbrmbb                             ",
+    "             s##################m  F                          ",
+    "           F m##################m                             ",
     "             s##ppppp###ppppp###Lbmmbmss                      ",
     "             s##ppppp###ppppp##########m                      ",
     "             m##pp1pp###pp1pp##########s                      ",
-    "             b##ppppp###ppppp###sssss##s                      ",
-    "             b##################pppps##m                      ",
-    "             m##################pppps##b                      ",
+    "             b##ppppp###ppppp###cssss##s                      ",
+    "             b##################pppps##m  F                   ",
+    "           F r##################pppps##b                      ",
     "             m##################p3pps##m                      ",
-    "             s##pppppppp########pppps##ssmsmm                 ",
+    "             s##pppppppp########pppps##ssmsrm                 ",
     "             m##p      p####################s                 ",
     "             m##p      p####################s                 ",
-    "             s##p      p####################b                 ",
-    "             s##p      p###sspps###sspppss##m                 ",
+    "             s##p      p####################b  F              ",
+    "           F s##p      p###shpps###sBpppBs##m                 ",
     "             m##p      p###sppps###sppppps##s                 ",
-    "             s##pppppppp###sppss###sspppss##ssmmsbms           ",
+    "             s##pppppppp###sppzs###sfpppfs##ssmrsbms          ",
     "             b#####################################m          ",
-    "             m#####################################m          ",
+    "             r#####################################m          ",
     "             m#####################################b          ",
-    "             s##sm###ppp###ppTpp###ppp###ppp###sm##m          ",
-    "             s##so###p0p###ppppp###pHp###p0p###ss##s          ",
-    "             m##sm###ppp###ppppp###ppp###ppp###sb##s          ",
+    "           F s##sm###ppp###ppTpp###ppp###ppp###zm##r          ",
+    "             s##sD###p0p###ppppp###pHp###p0p###zs##s          ",
+    "             m##sm###ppp###zpppz###ppp###ppp###sb##s          ",
     "             b#################################mm##m          ",
     "             s#################################ss##b          ",
     "             s#####################################m          ",
-    "             bsmsL###ssmm##ppppp########sms########m          ",
-    "                 s###mbbs##ppPpp########sbm##Bbmb##s          ",
-    "                 s###sbbs##ppppp########mbs##bmbb##m          ",
-    "                 m###mssm###############ssm########m          ",
+    "           F bsmsL###zsmz##ppppp########sms########r          ",
+    "                 s###mbbs##ppPpp########sbm##bbrb##s          ",
+    "                 s###sbbs##ppppp########mbs##hmbb##m          ",
+    "                 r###hssz###############ssm########m          ",
     "                 s#################################s          ",
     "                 s#################################s          ",
-    "                 bmsmssmbl##pppp#############ppppssb          ",
-    "                          m##pp2p###mppppm###p2ppb            ",
-    "                          s##pppp###mbppmb###pppps            ",
-    "                          s######################s            ",
-    "                          m######################m            ",
+    "           F     bmsmsssrbl##pppp############pppppsb          ",
+    "                          m##pp2p###mbpppm###p2pppb           ",
+    "                          s##pppp###rpppmb###ppppps           ",
+    "                          s######################sL           ",
+    "                          r######################m            ",
     "                          m######################s            ",
-    "                                ppppppppppppp                 ",
-    "                                pp!ppp ppp!pp                 ",
+    "           F                    ppppppppppppp                 ",
+    "                                pp!ppppppp!pp                 ",
     "                                ppppppppppppp                 "
   ],
 
@@ -122,7 +122,7 @@
     "color": [1.0, 0.0, 0.0],
 
     "position": [16.0, 36.0],
-    "rotation": 135.0
+    "rotation": -135.0
   },
 
   "player-two": {
@@ -131,6 +131,6 @@
     "color": [0.0, 1.0, 1.0],
 
     "position": [-16.0, -24.0],
-    "rotation": -215.0
+    "rotation": 215.0
   }
 }

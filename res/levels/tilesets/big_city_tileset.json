@@ -181,6 +181,177 @@
       ]
     },
     {
+      "symbol": "r",
+      "objects": [
+        {
+          "model": "res/models/buildings/medium/building_medium_1.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_2.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_3.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_4.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_5.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_6.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_7.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_8.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_9.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/special/donut.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/burger.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/caffee.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/fries.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/library.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "h",
+      "objects": [
+        {
+          "model": "res/models/buildings/small/building_small_2.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/small/building_small_4.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/small/building_small_6.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/library.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/library.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "z",
+      "objects": [
+        {
+          "model": "res/models/buildings/small/building_small_1.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/small/building_small_2.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/small/building_small_3.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/donut.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/burger.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/caffee.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/fries.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
       "symbol": "c",
       "objects": [
         {
@@ -216,10 +387,10 @@
       ]
     },
     {
-      "symbol": "o",
+      "symbol": "D",
       "objects": [
         {
-          "model": "res/models/buildings/special/library.obj",
+          "model": "res/models/buildings/special/donut.obj",
           "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
@@ -231,6 +402,12 @@
       "objects": [
         {
           "model": "res/models/buildings/special/donut.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/caffee.obj",
           "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
@@ -251,6 +428,17 @@
           "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "F",
+      "objects": [
+        {
+          "model": "res/models/buildings/special/fan.obj",
+          "scale": 1.0,
+          "collision-type": "rectangle",
+          "collision-size": 12.0
         }
       ]
     },
