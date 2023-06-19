@@ -7,6 +7,10 @@
 namespace mlg {
     ParticleSystemComponent::~ParticleSystemComponent() = default;
 
+    ParticleSystem* ParticleSystemComponent::GetParticleSystem() const {
+        return particleSystem.get();
+    }
+
     ParticleSystemComponent::ParticleSystemComponent(
             const std::weak_ptr<Entity>& owner,
             const std::string& name,

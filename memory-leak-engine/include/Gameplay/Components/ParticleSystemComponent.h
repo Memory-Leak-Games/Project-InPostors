@@ -23,6 +23,8 @@ namespace mlg {
 
         ~ParticleSystemComponent();
 
+        ParticleSystem* GetParticleSystem() const;
+
         void LateUpdate() override;
         void Emit(ParticleProps particleProps);
     };
