@@ -4,8 +4,8 @@
   "uniforms": [
     {
       "type": "vec4",
-      "name": "color",
-      "value": [0.0, 0.0, 0.0, 0.8]
+      "name": "tint",
+      "value": [1.0, 1.0, 1.0, 1.0]
     }
   ],
   "textures": []

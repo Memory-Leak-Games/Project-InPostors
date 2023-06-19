@@ -21,11 +21,10 @@ private:
     std::shared_ptr<mlg::CanvasPanel> chatWindow;
     std::shared_ptr<mlg::Label> score;
 
-    std::shared_ptr<mlg::Image> taskPanel[TASK_PANELS];
-    std::shared_ptr<mlg::Image> taskIcon[TASK_PANELS];
-    std::shared_ptr<mlg::ProgressBar> taskProgress[TASK_PANELS];
-    std::shared_ptr<mlg::Image> taskRequired[TASK_PANELS][2];
-//    std::shared_ptr<class mlg::Image> taskRequiredPanel[TASK_PANELS][2];
+    std::shared_ptr<class mlg::Image> taskPanel[TASK_PANELS];
+    std::shared_ptr<class mlg::Image> taskIcon[TASK_PANELS];
+    std::shared_ptr<class mlg::ProgressBar> taskProgress[TASK_PANELS];
+    std::shared_ptr<class mlg::Image> taskRequired[TASK_PANELS][2];
 
     size_t chatTimer = 0;
 

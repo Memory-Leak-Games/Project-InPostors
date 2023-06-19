@@ -30,6 +30,8 @@ public:
     bool IsEmpty() const;
     const std::vector<std::string> GetEquipment() const;
 
+    int GetMaxSize();
+
     std::string ToString() const;
 };
 

@@ -34,9 +34,10 @@ PlayerUI::PlayerUI(const std::weak_ptr<mlg::Entity>& owner, const std::string& n
         eqBillboard->SetVisible(false);
     }
 
+    int equipmentSize = player->equipment->GetMaxSize();
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/player/panel_material.json");
     ui = player->AddComponent<mlg::Image>("Panel", material).lock();
-    ui->SetSize({70.f + 36.f * 3, 38.f});//TODO: Scale panel according to amount of slots in equipment
+    ui->SetSize({70.f + 36.f * equipmentSize, 38.f});
     ui->tint = player->playerData.color;
     ui->tint.a = 0.85f;
     if (player->playerData.id == 0) {
@@ -77,6 +78,10 @@ PlayerUI::PlayerUI(const std::weak_ptr<mlg::Entity>& owner, const std::string& n
         eqIcons[2]->SetRelativePosition({1280 - 72.f - 72.f - 8, 17.f + 8 + 2});
         for (const auto& eqIcon : eqIcons)
             eqIcon->SetAnchor({1, 0});
+    }
+
+    for(int i = 0; i < 3; ++i) {
+        eqIcons[i]->SetVisible(equipmentSize >= i + 1);
     }
 
     // Update equipment ui callback

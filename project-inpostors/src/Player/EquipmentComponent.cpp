@@ -89,6 +89,10 @@ const std::vector<std::string> EquipmentComponent::GetEquipment() const {
     return equipment;
 }
 
+int EquipmentComponent::GetMaxSize() {
+    return size;
+}
+
 EquipmentComponent::EquipmentComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name, int size)
     : Component(owner, name), size(size) {}
 
