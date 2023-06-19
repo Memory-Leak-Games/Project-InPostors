@@ -3,7 +3,7 @@
     {
       "symbol": "1",
       "config": "res/levels/factories/mine.json",
-      "fallback": "p"
+      "fallback": "V"
     },
     {
       "symbol": "!",

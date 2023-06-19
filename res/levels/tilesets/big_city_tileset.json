@@ -208,9 +208,10 @@
       "objects": [
         {
           "model": "res/models/buildings/super_big/park.obj",
-          "scale": 0.75,
+          "rotation": 90.0,
+          "scale": 0.9,
           "collision-type": "rectangle",
-          "collision-size": 10.0
+          "collision-size": 12.0
         }
       ]
     },
@@ -296,6 +297,25 @@
           "rotation": 90.0,
           "collision-type": "rectangle",
           "collision-size": 10.0
+        }
+      ]
+    },
+    {
+      "symbol": "V",
+      "objects": [
+        {
+          "model": "res/models/buildings/big/building_big_1.obj",
+          "collision-type": "rectangle",
+          "collision-size": 8.0,
+          "rotation": 90.0,
+          "scale": 1.7
+        },
+        {
+          "model": "res/models/buildings/big/building_big_2.obj",
+          "collision-type": "rectangle",
+          "collision-size": 8.0,
+          "rotation": 90.0,
+          "scale": 1.7
         }
       ]
     }
