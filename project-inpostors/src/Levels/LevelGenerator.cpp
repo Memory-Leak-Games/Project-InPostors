@@ -26,7 +26,7 @@
 #include "Gameplay/Components/StaticMeshComponent.h"
 #include "Physics/Colliders/ColliderShapes.h"
 #include "Physics/CollisionManager.h"
-#include "Player.h"
+#include "Player/Player.h"
 
 #include "Buildings/AutoDestroyComponent.h"
 #include "Buildings/Factory.h"
@@ -412,6 +412,7 @@ namespace mlg {
 
         MapFactory mf;
         mf.configPath = jsonObject["config"].get<std::string>();
+        mf.rotation = jsonObject.value("rotation", 0.f);
         mf.factorySymbol = tileSymbol;
         mf.fallbackSymbol = jsonObject["fallback"].get<std::string>()[0];
         mf.remaining = jsonObject.value("count", 1);
@@ -463,7 +464,7 @@ namespace mlg {
                 }
 
                 if (fac.remaining > 0 && Random::get<bool>(chance)) {
-                    PutFactory(fac.configPath, {pos.x - 1, pos.y - 1}, 0.0f);
+                    PutFactory(fac.configPath, {pos.x - 1, pos.y - 1}, fac.rotation);
                     fac.remaining -= 1;
                 } else if (fac.fallbackSymbol != ' ') {
                     PutTile(static_cast<int>(pos.x) - 1,
@@ -484,6 +485,7 @@ namespace mlg {
 
         MapEntry& mapEntry = mapObjects.at(character);
         std::vector<MapObject>& mapObjectPool = mapEntry.objectsPool;
+        Random::shuffle(mapObjectPool);
 
         mapEntry.useCount++;
 
@@ -665,6 +667,7 @@ namespace mlg {
                               mlg::SceneGraph::GetRoot(),
                               configPath)
                               .lock();
+
 
         auto factoryRigidBody =
                 factory->GetComponentByName<mlg::RigidbodyComponent>("MainRigidbody");

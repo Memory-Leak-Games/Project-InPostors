@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Buildings/InteractiveBuilding.h"
-#include "Gameplay/Entity.h"
 
 namespace mlg {
     class RigidbodyComponent;
@@ -9,6 +8,7 @@ namespace mlg {
     class Label;
     class ProgressBar;
     class AudioAsset;
+    class ParticleSystemComponent;
 }// namespace mlg
 
 class AnimationComponent;
@@ -24,9 +24,9 @@ private:
     std::string blueprintId;
     std::shared_ptr<class FactoryEquipmentComponent> factoryEquipment;
 
-    std::shared_ptr<class mlg::Image> uiPin;
-    std::shared_ptr<class mlg::ProgressBar> uiProgress;
-    std::shared_ptr<class mlg::Image> uiIcon;
+    std::shared_ptr<class FactoryUI> factoryUi;
+
+    std::vector<std::weak_ptr<mlg::ParticleSystemComponent>> emitters;
 
     unsigned int produceTimerHandle = 0;
     bool working = false;
@@ -69,8 +69,7 @@ private:
     void ProduceItem();
 
     void FinishTask();
-
-    void StartAsFactory();
-
     bool CheckBlueprint();
+
+    void GetAllSmokes();
 };

@@ -1,16 +1,20 @@
-#include "include/UI/PlayerUI.h"
+#include "UI/PlayerUI.h"
 
 #include "Gameplay/Entity.h"
-#include "Player.h"
-#include "include/UI/Components/Image.h"
+#include "Macros.h"
+#include "Player/Player.h"
+#include "Rendering/Assets/MaterialAsset.h"
+#include "UI/Assets/FontAsset.h"
+#include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
-#include "include/UI/Assets/FontAsset.h"
-#include "include/Rendering/Assets/MaterialAsset.h"
-#include "Utils/EquipmentComponent.h"
+#include "Player/EquipmentComponent.h"
 #include "Utils/ProductManager.h"
 
-PlayerUI::PlayerUI(const std::weak_ptr<mlg::Entity>& owner, const std::string& name, const std::shared_ptr<class Player>& player)
-    : Component(owner, name), player(player) {
+PlayerUI::PlayerUI(const std::weak_ptr<mlg::Entity>& owner, const std::string& name)
+    : Component(owner, name) {
+
+    player = std::dynamic_pointer_cast<Player>(owner.lock());
+    MLG_ASSERT_MSG(player != nullptr, "PlayerUI can only be added to Player");
 
     auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/player/arrow_material.json");
 
@@ -30,9 +34,10 @@ PlayerUI::PlayerUI(const std::weak_ptr<mlg::Entity>& owner, const std::string& n
         eqBillboard->SetVisible(false);
     }
 
+    int equipmentSize = player->equipment->GetMaxSize();
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/player/panel_material.json");
     ui = player->AddComponent<mlg::Image>("Panel", material).lock();
-    ui->SetSize({70.f + 36.f * 3, 38.f}); //TODO: Scale panel according to amount of slots in equipment
+    ui->SetSize({70.f + 36.f * equipmentSize, 38.f});
     ui->tint = player->playerData.color;
     ui->tint.a = 0.85f;
     if (player->playerData.id == 0) {
@@ -71,8 +76,12 @@ PlayerUI::PlayerUI(const std::weak_ptr<mlg::Entity>& owner, const std::string& n
         eqIcons[0]->SetRelativePosition({1280 - 72.f - 8, 17.f + 8 + 2});
         eqIcons[1]->SetRelativePosition({1280 - 72.f - 36.f - 8, 17.f + 8 + 2});
         eqIcons[2]->SetRelativePosition({1280 - 72.f - 72.f - 8, 17.f + 8 + 2});
-        for (const auto & eqIcon : eqIcons)
+        for (const auto& eqIcon : eqIcons)
             eqIcon->SetAnchor({1, 0});
+    }
+
+    for(int i = 0; i < 3; ++i) {
+        eqIcons[i]->SetVisible(equipmentSize >= i + 1);
     }
 
     // Update equipment ui callback
@@ -109,9 +118,7 @@ PlayerUI::PlayerUI(const std::weak_ptr<mlg::Entity>& owner, const std::string& n
 }
 
 void PlayerUI::Start() {
-
 }
 
 void PlayerUI::Update() {
-
 }

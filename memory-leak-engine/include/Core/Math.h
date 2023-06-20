@@ -1,6 +1,5 @@
 #pragma once
 
-#include <glm/fwd.hpp>
 namespace mlg {
 
     class Math {
@@ -57,6 +56,13 @@ namespace mlg {
         static glm::vec4 GetRandomColor(float saturation, float value, float alpha) {
             float hue = effolkronium::random_static::get<float>(0.f, 360.f);
             return {glm::rgbColor(glm::vec3{hue, saturation, value}), alpha};
+        }
+
+        static glm::vec3 GetRandomDirection() {
+            return glm::normalize(glm::vec3{
+                effolkronium::random_static::get<float>(-1.f, 1.f),
+                effolkronium::random_static::get<float>(-1.f, 1.f),
+                effolkronium::random_static::get<float>(-1.f, 1.f)});
         }
 
     };

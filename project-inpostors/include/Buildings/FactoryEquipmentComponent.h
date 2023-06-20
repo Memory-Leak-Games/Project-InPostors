@@ -10,6 +10,7 @@ private:
 
 public:
     eventpp::CallbackList<void()> inputProductAdded;
+    eventpp::CallbackList<void()> inputProductChanged;
     eventpp::CallbackList<void()> outputProductRemoved;
 
     FactoryEquipmentComponent(

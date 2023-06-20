@@ -21,9 +21,12 @@ namespace mlg {
 
         uint32_t maxParticlesCount;
 
+
     protected:
         explicit ParticleSystem(uint32_t maxParticlesCount);
         void SetMaterial(const std::shared_ptr<MaterialAsset>& material);
+
+        bool finished = false;
 
     public:
         ParticleSystem(const std::shared_ptr<MaterialAsset>& material, uint32_t maxParticlesCount);
@@ -39,6 +42,8 @@ namespace mlg {
         virtual void Emit(const ParticleProps& particleProps);
 
         void LateDraw(struct Renderer* renderer) override;
+
+        bool IsFinished() const;
 
     private:
         void InitializeVao();

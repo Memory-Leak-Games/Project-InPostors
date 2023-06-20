@@ -27,12 +27,14 @@ void FactoryEquipmentComponent::Produce() {
 void FactoryEquipmentComponent::AddInput(const std::string& productId) {
     inputs.at(productId) = true;
     inputProductAdded();
+    inputProductChanged();
 }
 
 void FactoryEquipmentComponent::ClearInput() {
     for (auto& input : inputs) {
         input.second = false;
     }
+    inputProductChanged();
 }
 
 void FactoryEquipmentComponent::RemoveOutput() {

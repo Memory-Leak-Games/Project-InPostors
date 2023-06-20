@@ -1,5 +1,11 @@
 [
     {
+        "name": "wood",
+        "input": [],
+        "output": "wood",
+        "time": 6.0
+    },
+    {
         "name": "ore",
         "input": [],
         "output": "ore",

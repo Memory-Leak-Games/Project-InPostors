@@ -41,7 +41,7 @@ LevelScene::LevelScene(std::string path) : levelPath(std::move(path)) {}
 
 LevelScene::~LevelScene() = default;
 
-void LevelScene::Load() {
+void LevelScene::Load() {;
     LoadLevel();
     InitializeLevelTaskManager();
 
@@ -72,7 +72,7 @@ void LevelScene::Load() {
                              .lock();
 
     // TODO: Remove me
-    gameplayOverlay->SetChat(fmt::format(
+    gameplayOverlay->ShowMessage(fmt::format(
             "Welcome to {}, useless piece of meat!", levelName));
 }
 
@@ -175,9 +175,16 @@ void LevelScene::InitializeLevelTaskManager() {
                 gameplayOverlay->SetScore(scoreManager->GetScore());
 
                 // TODO: transfer to chat manager
-                gameplayOverlay->SetChat(fmt::format(
+                gameplayOverlay->ShowMessage(fmt::format(
                         "You sold product for {}$, useless piece of meat! You are courier, not a merchant!",
                         price));
+            });
+    levelTaskManager->GetTaskManager().OnTaskFailed.append(
+            [this](const TaskData& taskData) {
+                gameplayOverlay->ShowMessage(fmt::format(
+                        "You failed task: {}... Not bad. I forgot how good you are at this. You should pace yourself, though. We have A LOT of stuff to deliver.",
+                        taskData.productId),
+                        7.f);
             });
 
     std::vector<TaskData> tasks = mlg::LevelGenerator::GetTasks(levelPath);
@@ -211,7 +218,7 @@ void LevelScene::SpawnTraffic() {
                 aiCar.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
 
         aiCarRigidbody.lock()->SetPosition(node->position);
-        i++;
+        ++i;
     }
 }
 
