@@ -2,6 +2,7 @@
 
 #include "TextureAsset.h"
 #include "nlohmann/json.hpp"
+#include <glm/fwd.hpp>
 
 namespace mlg {
 
@@ -66,6 +67,8 @@ namespace mlg {
         [[nodiscard]] const std::shared_ptr<struct ShaderProgram>& GetShaderProgram() const;
 
         std::shared_ptr<MaterialAsset> CreateDynamicInstance();
+
+        glm::vec4 HTMLtoVec4(const std::string& html);
     };
 
 } // mlg

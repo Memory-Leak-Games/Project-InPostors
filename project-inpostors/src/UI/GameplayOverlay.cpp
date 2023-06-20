@@ -1,4 +1,5 @@
 #include "../../include/UI/GameplayOverlay.h"
+#include "Core/RGBA.h"
 #include "SceneGraph/Transform.h"
 
 #include "Core/Time.h"
@@ -195,15 +196,11 @@ void GameplayOverlay::Update() {
     auto tasks = taskManager->GetTaskManager().GetActiveTasks();
     int taskCount = taskManager->GetTaskManager().GetActiveTasksCount();
     for(int i = 0; i < taskCount; ++i) {
-        float timeRate = tasks[i].time / tasks[i].timeLimit;
-        taskProgress[i]->percentage = timeRate + 0.09f;
+        float percentage = tasks[i].time / tasks[i].timeLimit;
+        taskProgress[i]->percentage = percentage;
 
         // Hurry up, useless piece of meat!
-        if (timeRate > 0.5f) {
-            taskProgress[i]->tint = {1.0, 0.7, 0.023, 1.0};
-        } else if (timeRate > 0.f) {
-            taskProgress[i]->tint = {1.0, 0.0, 0.0, 1.0};
-        } else if (taskProgress[i]->IsVisible()) {
+        if (taskProgress[i]->IsVisible() && percentage <= 0.f) {
             taskProgress[i]->SetVisible(false);
             taskProgressBg[i]->SetVisible(false);
             taskPlus[i]->SetVisible(false);

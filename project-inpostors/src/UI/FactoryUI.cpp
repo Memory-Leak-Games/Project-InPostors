@@ -4,17 +4,17 @@
 #include "Buildings/FactoryEquipmentComponent.h"
 #include "Core/TimerManager.h"
 #include "Gameplay/Entity.h"
+#include "Rendering/Assets/MaterialAsset.h"
+#include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
 #include "UI/Components/ProgressBar.h"
 #include "Utils/BlueprintManager.h"
 #include "Utils/ProductManager.h"
-#include "include/Rendering/Assets/MaterialAsset.h"
-#include "include/UI/Components/Image.h"
-#include <glm/fwd.hpp>
-#include <spdlog/spdlog.h>
 
-FactoryUI::FactoryUI(const std::weak_ptr<mlg::Entity>& owner, const std::string& name, const std::shared_ptr<Factory>& factory)
-    : Component(owner, name), factory(factory) {
+FactoryUI::FactoryUI(const std::weak_ptr<mlg::Entity>& owner, const std::string& name)
+    : Component(owner, name) {
+    factory = std::dynamic_pointer_cast<Factory>(owner.lock());
+    MLG_ASSERT_MSG(factory != nullptr, "FactoryUI can only be attached to Factory");
 
     auto blueprint = BlueprintManager::Get()->GetBlueprint(factory->GetBlueprintId());
 
