@@ -13,6 +13,11 @@
 #include "Gameplay/Components/StaticMeshComponent.h"
 #include "Gameplay/Entity.h"
 
+#include "Buildings/Factory.h"
+#include "Buildings/FactoryEquipmentComponent.h"
+
+#include "Utils/BlueprintManager.h"
+
 #include "Core/Math.h"
 #include "Core/Time.h"
 
@@ -21,6 +26,8 @@ using json = nlohmann::json;
 void AnimationComponent::Start() {
     staticMeshComponent = GetOwner().lock()->GetComponentByClass<mlg::StaticMeshComponent>().lock();
     meshScale = staticMeshComponent->GetTransform().GetScale();
+
+    factory = GetOwner().lock()->GetComponentByClass<FactoryEquipmentComponent>().lock();
 }
 
 AnimationComponent::AnimationComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
@@ -31,12 +38,16 @@ AnimationComponent::AnimationComponent(const std::weak_ptr<mlg::Entity>& owner, 
 AnimationComponent::~AnimationComponent() = default;
 
 void AnimationComponent::Update() {
-    glm::vec3 targetScale = meshScale;
+    if (factory != nullptr) {
+        if (factory->IsOutputPresent()) {
+            glm::vec3 targetScale = meshScale;
 
-    float factor = glm::sin(mlg::Time::GetSeconds() * animSpeed) * wiggleWeight;
-    targetScale += (meshScale * factor);
+            float factor = glm::sin(mlg::Time::GetSeconds() * animSpeed) * wiggleWeight;
+            targetScale += (meshScale * factor);
 
-    staticMeshComponent->GetTransform().SetScale(targetScale);
+            staticMeshComponent->GetTransform().SetScale(targetScale);
+        }
+    }
 }
 
 void AnimationComponent::LoadParameters(const std::string& path = "res/config/anim.json") {

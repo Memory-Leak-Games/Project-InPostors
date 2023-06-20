@@ -11,6 +11,8 @@ class AnimationComponent : public mlg::Component {
 private:
     std::shared_ptr<mlg::StaticMeshComponent> staticMeshComponent;
 
+    std::shared_ptr<class FactoryEquipmentComponent> factory;
+
     // Animation params
     glm::vec3 meshScale {};
     float animSpeed;

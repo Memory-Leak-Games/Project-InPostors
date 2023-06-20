@@ -65,8 +65,6 @@ std::shared_ptr<Factory> Factory::Create(
     result->AddMesh(configJson["static-mesh"]);
     result->mainRigidbody = result->AddComponent<mlg::RigidbodyComponent>("MainRigidbody").lock();
 
-    result->animComponent = result->AddComponent<AnimationComponent>("Anim").lock();
-
     result->blueprintId = configJson.value("blueprintID", "None");
 
     for (const auto& colliderJson : configJson["colliders"]) {
@@ -157,6 +155,9 @@ void Factory::StartAsFactory() {
     factoryEquipment->outputProductRemoved.append([this]() {
         CheckBlueprintAndStartWorking();
     });
+
+    // This should not be here :|
+    animComponent = AddComponent<AnimationComponent>("Anim").lock();
 }
 
 void Factory::Update() { }

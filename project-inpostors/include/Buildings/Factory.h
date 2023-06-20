@@ -32,6 +32,7 @@ private:
     bool working = false;
 
     friend class FactoryUI;
+    friend class AnimationComponent;
 
 public:
     ~Factory() override;
