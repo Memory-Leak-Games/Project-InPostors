@@ -73,8 +73,9 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     result->chat->SetRelativePosition({-190.f, 75.f});
     result->chat->SetAnchor({0.5, 1.0});
     result->chat->SetSize(18);
-    result->chat->SetText("As a language model, I am unable\nto drive vehicles myself. That is\nwhy you were hired to deliver\npackages.");
     result->chatWindow->AddChild(result->chat);
+
+    result->chatWindow->SetVisible(false);
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/task_panel_material.json");
     for (int i = 0; i < TASK_PANELS; i++) {
@@ -228,6 +229,10 @@ void GameplayOverlay::ShowMessage(const std::string& message, float visibleTime)
             [this]() -> void {
                 this->chatWindow->SetVisible(false);
             });
+}
+
+bool GameplayOverlay::IsChatVisible() const {
+    return this->chatWindow->IsVisible();
 }
 
 void GameplayOverlay::SetClock(float time) {

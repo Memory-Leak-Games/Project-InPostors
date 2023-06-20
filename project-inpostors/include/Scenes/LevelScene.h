@@ -49,7 +49,7 @@ public:
     [[nodiscard]] StartLevelCountdown& GetLevelCountdown();
 
     [[nodiscard]] const std::string& GetLevelName() const;
-    [[nodiscard]] const std::shared_ptr<class GameplayOverlay>& GetGameplayOverlay() const;
+    [[nodiscard]] GameplayOverlay* GetGameplayOverlay() ;
     [[nodiscard]] const std::shared_ptr<class FinishScreen>& GetFinishScreen() const;
     [[nodiscard]] const std::shared_ptr<class PauseMenu>& GetPauseMenu() const;
 
