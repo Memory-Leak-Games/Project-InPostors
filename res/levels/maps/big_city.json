@@ -132,5 +132,13 @@
 
     "position": [-16.0, -24.0],
     "rotation": 215.0
-  }
+  },
+
+  "events-config": "res/levels/events/default_events.json",
+  "events": [
+    {
+      "id": "None",
+      "probability": 3
+    }
+  ]
 }

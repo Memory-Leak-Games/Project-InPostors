@@ -95,5 +95,31 @@
     "color": [0.0, 1.0, 1.0],
     "position": [20.0, 0.0],
     "rotation": 120.0
-  }
+  },
+
+  "events-config": "res/levels/events/default_events.json",
+  "events": [
+    {
+      "id": "3x2",
+      "position": [21.0, 0.0],
+      "vertical": false,
+      "probability": 2
+    },
+    {
+      "id": "3x2",
+      "position": [-12.0, 3.0],
+      "vertical": false,
+      "probability": 3
+    },
+    {
+      "id": "3x2",
+      "position": [-20.0, -24.0],
+      "vertical": false,
+      "probability": 2
+    },
+    {
+      "id": "None",
+      "probability": 2
+    }
+  ]
 }
