@@ -1,23 +1,27 @@
 {
   "vertexShader": "res/shaders/ui/image.vert",
-  "fragmentShader": "res/shaders/ui/textured_progress_bar.frag",
+  "fragmentShader": "res/shaders/ui/gradient_progress_bar.frag",
   "uniforms": [
     {
       "type": "vec4",
       "name": "outRect",
-      "value": [1.0, 0.0, 0.0, 0.9]
+      "value": "#000000ff"
     },
     {
       "type": "vec4",
-      "name": "inRect",
-      "value": [0.0, 0.0, 0.0, 0.9]
+      "name": "inRectFull",
+      "value": "#ffd700ff"
+    },
+    {
+      "type": "vec4",
+      "name": "inRectEmpty",
+      "value": "#ff0000ff"
+    },
+    {
+      "type": "vec4",
+      "name": "tint",
+      "value": "#ffffffff"
     }
   ],
-  "textures": [
-    {
-      "name": "image",
-      "index": 0,
-      "path": "res/textures/ui/task_timer.png"
-    }
-  ]
+  "textures": []
 }

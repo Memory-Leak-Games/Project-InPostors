@@ -55,7 +55,7 @@ void PlayerFXComponent::Update() {
     collidedThisFrame = false;
 
 #ifdef DEBUG
-    if (mlg::Input::IsActionJustPressed("DEBUG")) {
+    if (mlg::Input::IsActionJustPressed("debug_particle")) {
         OnTaskFinished();
     }
 #endif

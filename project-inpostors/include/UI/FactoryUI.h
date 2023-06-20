@@ -6,6 +6,7 @@ namespace mlg {
     class Entity;
     class Image;
     class ProgressBar;
+    class CanvasPanel;
 }
 
 class FactoryUI : public mlg::Component {
@@ -18,7 +19,7 @@ class FactoryUI : public mlg::Component {
     std::shared_ptr<class mlg::Image> uiIcon;
 
 public:
-    FactoryUI(const std::weak_ptr<class mlg::Entity>& owner, const std::string& name, const std::shared_ptr<Factory>& factory);
+    FactoryUI(const std::weak_ptr<class mlg::Entity>& owner, const std::string& name);
 
     void Update() override;
 

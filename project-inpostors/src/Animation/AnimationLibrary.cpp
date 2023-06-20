@@ -5,7 +5,7 @@
 AnimationLibrary* AnimationLibrary::instance;
 
 AnimationLibrary::AnimationLibrary() {
-//    animMap["ferris_wheel"] = std::make_shared<FerrisWheelAnim>();
+    //    animMap["ferris_wheel"] = std::make_shared<FerrisWheelAnim>();
 }
 
 std::shared_ptr<AnimationSystem> AnimationLibrary::Get(const std::string& id) {
@@ -14,5 +14,6 @@ std::shared_ptr<AnimationSystem> AnimationLibrary::Get(const std::string& id) {
 
     MLG_ASSERT_MSG(instance->animMap.contains(id), "Animation with this id, doesn't exist");
 
-//    return instance->animMap[id]->Clone();
+    //    return instance->animMap[id]->Clone();
+    return nullptr;
 }

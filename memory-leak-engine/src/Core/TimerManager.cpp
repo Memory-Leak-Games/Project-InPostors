@@ -34,7 +34,7 @@ void mlg::TimerManager::Update() {
 
     for (auto& [id, timer] : instance->timersMap) {
         const float elapsedTime = instance->GetTimerElapsedTime(id);
-        if (elapsedTime < timer.timeToTrigger) 
+        if (elapsedTime < timer.timeToTrigger)
             continue;
 
         if (timer.repeat) {
@@ -47,7 +47,7 @@ void mlg::TimerManager::Update() {
         timer.onTrigger();
     }
 
-    for (const auto& id: timersToRemove) {
+    for (const auto& id : timersToRemove) {
         instance->ClearTimer(id);
     }
 }
@@ -108,4 +108,16 @@ float mlg::TimerManager::GetTimerRate(size_t id) {
         return -1.f;
 
     return foundIterator->second.timeToTrigger;
+}
+
+float mlg::TimerManager::GetPercentage(size_t id) {
+    auto foundIterator = timersMap.find(id);
+    if (foundIterator == timersMap.end())
+        return -1.f;
+
+    const auto currentTimePoint = (float) Time::GetSeconds();
+    double startTimePoint = foundIterator->second.startTimePoint;
+    float elapsedTime = (float) (currentTimePoint - startTimePoint);
+
+    return (float) elapsedTime / foundIterator->second.timeToTrigger;
 }

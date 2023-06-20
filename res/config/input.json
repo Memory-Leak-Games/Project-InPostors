@@ -367,7 +367,7 @@
     ]
   },
   {
-    "name": "DEBUG",
+    "name": "debug_particle",
     "mappings": [
       {
         "deviceType": "Keyboard",
