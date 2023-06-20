@@ -51,6 +51,8 @@ private:
     void SetVolumeSettings(mlg::OptionSelector& volume);
 
     void InitializeLevelSelector();
+    std::weak_ptr<mlg::Button> LoadTutorialButton(
+        const nlohmann::json& levelsJson, mlg::Entity* entity);
     std::weak_ptr<mlg::Button> LoadLevelButton(
         const nlohmann::json& levelsJson, mlg::Entity* entity);
 

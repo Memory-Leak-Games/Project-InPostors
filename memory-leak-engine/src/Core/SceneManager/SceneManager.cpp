@@ -63,6 +63,10 @@ bool mlg::SceneManager::HasNextScene() {
     return instance->nextScene != nullptr;
 }
 
+void mlg::SceneManager::Start() {
+    instance->currentScene->Start();
+}
+
 void mlg::SceneManager::Update() {
     if (instance->currentScene == nullptr)
         return;

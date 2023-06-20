@@ -25,6 +25,7 @@ namespace mlg {
         static void LoadNextScene();
         static bool HasNextScene();
 
+        static void Start();
         static void Update();
 
         static void ExitGame();

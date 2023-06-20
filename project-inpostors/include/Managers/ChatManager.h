@@ -34,6 +34,8 @@ private:
 
     std::shared_ptr<mlg::AudioAsset> messageSound;
 
+    eventpp::CallbackList<void(const struct TaskData&)>::Handle onTaskFailedHandle;
+    eventpp::CallbackList<void(int)>::Handle onProductSoldHandle;
 public:
     static std::shared_ptr<ChatManager> Create(
             size_t id,
@@ -48,6 +50,7 @@ public:
 
     void Start() override;
     void Update() override;
+    void Stop() override;
 
 private:
     void StartRandomMessageTimer();

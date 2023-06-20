@@ -38,7 +38,7 @@
 
 using Random = effolkronium::random_static;
 
-LevelScene::LevelScene(std::string path) : levelPath(std::move(path)) {}
+LevelScene::LevelScene(const std::string& path) : levelPath(path) {}
 
 LevelScene::~LevelScene() = default;
 
