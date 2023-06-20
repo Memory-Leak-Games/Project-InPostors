@@ -87,21 +87,6 @@
     ]
   },
   {
-    "name": "drop_one",
-    "mappings": [
-      {
-        "deviceType": "Keyboard",
-        "code": 340
-      },
-      {
-        "deviceType": "Gamepad",
-        "deviceIndex": 0,
-        "isAxis": false,
-        "code": 1
-      }
-    ]
-  },
-  {
     "name": "forward_two",
     "mappings": [
       {
@@ -185,21 +170,6 @@
         "deviceIndex": 1,
         "isAxis": false,
         "code": 0
-      }
-    ]
-  },
-  {
-    "name": "drop_two",
-    "mappings": [
-      {
-        "deviceType": "Keyboard",
-        "code": 322
-      },
-      {
-        "deviceType": "Gamepad",
-        "deviceIndex": 1,
-        "isAxis": false,
-        "code": 1
       }
     ]
   },

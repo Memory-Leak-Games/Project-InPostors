@@ -32,12 +32,12 @@
 #include "Utils/Blueprint.h"
 #include "Utils/BlueprintManager.h"
 
+#include "Player/EquipmentComponent.h"
 #include "UI/Assets/FontAsset.h"
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
 #include "UI/Components/ProgressBar.h"
 #include "UI/FactoryUI.h"
-#include "Player/EquipmentComponent.h"
 #include "Utils/ProductManager.h"
 
 #include "Animation/AnimationComponent.h"
@@ -81,6 +81,11 @@ std::shared_ptr<Factory> Factory::Create(
 
     result->AddTriggers(configJson);
     result->mainRigidbody->SetKinematic(true);
+
+    result->factoryEquipment = result->AddComponent<FactoryEquipmentComponent>(
+                                             "FactoryEquipmentComponent",
+                                             result->blueprintId)
+                                       .lock();
     return result;
 }
 
@@ -138,10 +143,6 @@ void Factory::CheckBlueprintAndStartWorking() {
 void Factory::Start() {
     createProductSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/create_product.wav");
 
-    factoryEquipment = AddComponent<FactoryEquipmentComponent>(
-                               "FactoryEquipmentComponent",
-                               blueprintId)
-                               .lock();
 
     CheckBlueprintAndStartWorking();
 
@@ -155,15 +156,12 @@ void Factory::Start() {
 
     animComponent = AddComponent<AnimationComponent>("Anim").lock();
 
-    factoryEquipment->inputProductChanged.append([this]() {
-       this->factoryUi->UpdateFactoryInputIcons();
-    });
 
     GetAllSmokes();
 }
 
 void Factory::Update() {
-    for (auto& emiter: emitters) {
+    for (auto& emiter : emitters) {
         mlg::ParticleSystem* particleSystem = emiter.lock()->GetParticleSystem();
         FactorySmokeFX* factorySmoke = dynamic_cast<FactorySmokeFX*>(particleSystem);
 
@@ -227,6 +225,10 @@ std::string Factory::GiveOutput() {
     }
 
     return result;
+}
+
+bool Factory::IsOutputPresent() const {
+    return factoryEquipment->IsOutputPresent();
 }
 
 bool Factory::CheckBlueprint() {

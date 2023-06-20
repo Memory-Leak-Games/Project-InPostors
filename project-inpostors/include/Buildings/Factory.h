@@ -53,6 +53,8 @@ public:
     bool TakeInputsFromInventory(class EquipmentComponent& equipment) override;
     std::string GiveOutput();
 
+    bool IsOutputPresent() const;
+
 private:
     enum class FactoryType {
         OneInput,

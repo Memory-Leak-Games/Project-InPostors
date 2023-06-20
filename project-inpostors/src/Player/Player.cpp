@@ -123,7 +123,6 @@ void Player::Update() {
     if (carInput->GetPickUpInput()) {
         if (!PickUp())
             Drop();
-
     }
 
     std::vector<std::weak_ptr<mlg::Collider>> overlappingColliders;
