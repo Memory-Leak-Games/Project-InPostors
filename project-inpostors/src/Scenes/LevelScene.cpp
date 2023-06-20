@@ -180,11 +180,12 @@ void LevelScene::InitializeLevelTaskManager() {
                         price));
             });
     levelTaskManager->GetTaskManager().OnTaskFailed.append(
-        [this](const TaskData& taskData) {
-            gameplayOverlay->ShowMessage(fmt::format(
-                    "You failed task: {}! You are slow.. YOU MONSTER!",
-                    taskData.productId));
-        });
+            [this](const TaskData& taskData) {
+                gameplayOverlay->ShowMessage(fmt::format(
+                        "You failed task: {}... Not bad. I forgot how good you are at this. You should pace yourself, though. We have A LOT of stuff to deliver.",
+                        taskData.productId),
+                        7.f);
+            });
 
     std::vector<TaskData> tasks = mlg::LevelGenerator::GetTasks(levelPath);
     for (const auto& task : tasks) {
@@ -217,7 +218,7 @@ void LevelScene::SpawnTraffic() {
                 aiCar.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
 
         aiCarRigidbody.lock()->SetPosition(node->position);
-        i++;
+        ++i;
     }
 }
 

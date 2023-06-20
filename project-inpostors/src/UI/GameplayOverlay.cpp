@@ -69,7 +69,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     result->chatWindow->AddChild(ui);
 
     result->chat = result->AddComponent<mlg::Label>("Chat").lock();
-    result->chat->SetRelativePosition({-180.f, 65.f});
+    result->chat->SetRelativePosition({-190.f, 75.f});
     result->chat->SetAnchor({0.5, 1.0});
     result->chat->SetSize(18);
     result->chat->SetText("As a language model, I am unable\nto drive vehicles myself. That is\nwhy you were hired to deliver\npackages.");
@@ -223,7 +223,7 @@ void GameplayOverlay::ShowMessage(const std::string& message, float visibleTime)
     this->chatWindow->SetVisible(true);
 
     std::string text = fmt::format("AIPost: {}", message);
-    text = mlg::Label::WrapText(text, 40);
+    text = mlg::Label::WrapText(text, 42);
     this->chat->SetText(text);
 
     chatTimer = mlg::TimerManager::Get()->SetTimer(

@@ -36,10 +36,12 @@
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
 #include "UI/Components/ProgressBar.h"
+#include "UI/FactoryUI.h"
 #include "Player/EquipmentComponent.h"
 #include "Utils/ProductManager.h"
 
-#include "UI/FactoryUI.h"
+#include "Animation/AnimationComponent.h"
+
 
 using json = nlohmann::json;
 using Random = effolkronium::random_static;
@@ -151,6 +153,7 @@ void Factory::Start() {
         CheckBlueprintAndStartWorking();
     });
 
+    animComponent = AddComponent<AnimationComponent>("Anim").lock();
 
     factoryEquipment->inputProductChanged.append([this]() {
        this->factoryUi->UpdateFactoryInputIcons();

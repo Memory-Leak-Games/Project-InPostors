@@ -128,7 +128,20 @@
           "model": "res/models/props/plants/tree_small.obj"
         }
       ]
+    },
+    {
+      "symbol": "T",
+      "objects": [
+        {
+          "model": "res/models/props/plants/tree_medium.obj"
+        },
+        {
+          "model": "res/models/props/plants/tree_big.obj"
+        },
+        {
+          "model": "res/models/props/plants/tree_big.obj"
+        }
+      ]
     }
   ]
 }
-

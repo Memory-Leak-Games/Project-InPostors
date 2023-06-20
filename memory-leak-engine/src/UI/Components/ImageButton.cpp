@@ -43,6 +43,7 @@ void mlg::ImageButton::SetPosition(const glm::vec2& position) {
 }
 
 void mlg::ImageButton::SetAnchor(const glm::vec2& anchor) {
+    Button::SetAnchor(anchor);
     container.lock()->SetAnchor(anchor);
 }
 

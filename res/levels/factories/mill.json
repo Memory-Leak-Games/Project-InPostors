@@ -1,0 +1,32 @@
+{
+  "static-mesh": {
+    "model": "res/models/factories/mine.obj",
+    "material": "res/materials/buildings_material.json",
+
+    "position": [0.0, 0.3, 0.0],
+    "rotation": 180.0,
+    "scale": 0.55
+  },
+
+  "colliders":[
+    {
+      "offset": [-0.5, 5.0],
+      "size": [18.0, 10.0]
+    },
+    {
+      "offset": [-1.5, -3.0],
+      "size": [16.5, 5.0]
+    }
+  ],
+
+  "blueprintID": "wood",
+  "equipmentSize": 1,
+  "type": "OneOutput",
+
+  "output": {
+    "offset": [-0.5, -9.0],
+    "size": [18.5, 6.0]
+  },
+
+  "emitters": []
+}
