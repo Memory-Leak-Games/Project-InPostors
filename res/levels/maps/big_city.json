@@ -5,7 +5,7 @@
 
   "time-limit": 240.0,
 
-  "sublevels": [],
+  "sublevels": ["res/levels/maps/big_city_props.json"],
 
   "ground": {
     "mesh": "res/models/ground/ground_small_city.obj",
@@ -32,7 +32,7 @@
     "             m##p      p####################s                 ",
     "             s##p      p####################b  F              ",
     "           F s##p      p###shpps###sBpppBs##m                 ",
-    "             m##p      p###sppps###sppppps##s                 ",
+    "             m##p      p###sppps###spp pps##s                 ",
     "             s##pppppppp###sppzs###sfpppfs##ssmrsbms          ",
     "             b#####################################m          ",
     "             r#####################################m          ",
@@ -55,9 +55,9 @@
     "                          s######################sL           ",
     "                          r######################m            ",
     "                          m######################s            ",
-    "           F                    ppppppppppppp                 ",
-    "                                pp!ppppppp!pp                 ",
-    "                                ppppppppppppp                 "
+    "           F                    ppppp   ppppp                 ",
+    "                                pp!pp   pp!pp                 ",
+    "                                ppppp   ppppp                 "
   ],
 
   "navigation": [
