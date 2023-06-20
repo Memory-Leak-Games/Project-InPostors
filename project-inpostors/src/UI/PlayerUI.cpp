@@ -9,6 +9,7 @@
 #include "UI/Components/Label.h"
 #include "Player/EquipmentComponent.h"
 #include "Utils/ProductManager.h"
+#include "Core/TimerManager.h"
 
 PlayerUI::PlayerUI(const std::weak_ptr<mlg::Entity>& owner, const std::string& name)
     : Component(owner, name) {
@@ -80,6 +81,21 @@ PlayerUI::PlayerUI(const std::weak_ptr<mlg::Entity>& owner, const std::string& n
             eqIcon->SetAnchor({1, 0});
     }
 
+    startLabel = player->AddComponent<mlg::Label>("PlayerStartLabel").lock();
+    startLabel->SetBillboardTarget(owner);
+    startLabel->SetSize(24);
+    startLabel->SetTextColor(player->playerData.color);
+    startLabel->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
+    startLabel->SetRelativePosition({-48.f, 40.f});
+    startLabel->SetText(fmt::format("Player {:d}", player->playerData.id + 1));
+
+    startTimerHandle = mlg::TimerManager::Get()->SetTimer(
+            7.f,
+            false,
+            [this](){
+                this->startLabel->SetVisible(false);
+            });
+
     for(int i = 0; i < 3; ++i) {
         eqIcons[i]->SetVisible(equipmentSize >= i + 1);
     }
@@ -121,4 +137,5 @@ void PlayerUI::Start() {
 }
 
 void PlayerUI::Update() {
+
 }

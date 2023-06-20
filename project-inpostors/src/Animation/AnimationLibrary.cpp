@@ -15,5 +15,6 @@ std::shared_ptr<AnimatedEntity> AnimationLibrary::Get(const std::string& id) {
 
     MLG_ASSERT_MSG(instance->animMap.contains(id), "Animation with this id, doesn't exist");
 
-    return instance->animMap[id]->Clone();
+    //    return instance->animMap[id]->Clone();
+    return nullptr;
 }

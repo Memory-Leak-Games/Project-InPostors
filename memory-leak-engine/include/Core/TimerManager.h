@@ -38,6 +38,7 @@ namespace mlg {
         float GetTimerRemainingTime(size_t id);
         float GetTimerElapsedTime(size_t id);
         float GetTimerRate(size_t id);
+        float GetPercentage(size_t id);
 
     };
 
