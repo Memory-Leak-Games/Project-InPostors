@@ -2,16 +2,15 @@
 
 #include "Component.h"
 #include "ComponentManager.h"
+#include "SceneGraph/SceneGraphClient.h"
 #include "SceneGraph/Transform.h"
-
-#include "Macros.h"
-#include <cstddef>
-#include <memory>
 
 namespace mlg {
     class Component;
 
-    class Entity : public std::enable_shared_from_this<Entity> {
+    class Entity
+        : public ISceneGraphClient,
+          public std::enable_shared_from_this<Entity> {
     private:
         size_t id;
         std::string name;
@@ -31,7 +30,7 @@ namespace mlg {
                 size_t id, const std::string& name, bool isStatic, Transform* parent);
 
         Entity() = delete;
-        virtual ~Entity();
+        ~Entity() override;
 
         template<typename T, typename... Args>
         std::weak_ptr<T> AddComponent(Args&&... args) {
@@ -80,8 +79,6 @@ namespace mlg {
                 return std::weak_ptr<T>();
         }
 
-
-
         void RemoveComponent(Component* component);
 
         virtual void Start();
@@ -95,7 +92,7 @@ namespace mlg {
         [[nodiscard]] bool IsQueuedForDeletion() const;
 
         [[nodiscard]] bool IsStatic() const;
-        Transform& GetTransform();
+        Transform& GetTransform() override;
         const std::string& GetName() const;
         const std::string& GetTag() const;
         size_t GetId() const;
