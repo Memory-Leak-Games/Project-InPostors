@@ -1,15 +1,15 @@
 #pragma once
 
-class AnimationSystem;
+class AnimatedEntity;
 
 class AnimationLibrary {
 private:
     static AnimationLibrary* instance;
 
-    std::unordered_map<std::string, std::shared_ptr<AnimationSystem>> animMap;
+    std::unordered_map<std::string, std::shared_ptr<AnimatedEntity>> animMap;
 
 public:
     AnimationLibrary();
 
-    static std::shared_ptr<AnimationSystem> Get(const std::string& id);
+    static std::shared_ptr<AnimatedEntity> Get(const std::string& id);
 };
