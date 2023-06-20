@@ -7,11 +7,11 @@
     {
         "name": "Zeszuf",
         "material": "res/materials/ui/error_material.json",
-        "path": "res/levels/maps/test_level.json"
+        "path": "res/levels/maps/big_city.json"
     },
     {
         "name": "El Uc",
         "material": "res/materials/ui/error_material.json",
-        "path": "res/levels/maps/boat_city.json"
+        "path": "res/levels/maps/test_level.json"
     }
 ]
