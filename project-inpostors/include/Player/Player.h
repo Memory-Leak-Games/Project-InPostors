@@ -53,8 +53,8 @@ private:
     void AddRigidbody(const nlohmann::json& configJson);
     void LoadModel(const nlohmann::json& configJson);
 
-    void PickUp();
-    void Drop();
+    bool PickUp();
+    bool Drop();
 	
     //static void GenerateUI(const std::shared_ptr<Player>& newPlayer);
 };
