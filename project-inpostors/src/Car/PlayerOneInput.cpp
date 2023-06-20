@@ -27,7 +27,3 @@ bool PlayerOneInput::GetPickUpInput() {
     return mlg::Input::IsActionJustPressed("pick_up_one");
 }
 
-bool PlayerOneInput::GetDropInput() {
-    return mlg::Input::IsActionJustPressed("drop_one");
-}
-

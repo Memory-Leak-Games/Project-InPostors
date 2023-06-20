@@ -2,6 +2,7 @@
 
 #include "Gameplay/Entity.h"
 #include "Rendering/CommonUniformBuffer.h"
+#include "SceneGraph/SceneGraphClient.h"
 #include "UI/UIRenderer.h"
 
 namespace mlg {
@@ -103,11 +104,13 @@ namespace mlg {
         actualPositionDirty = true;
     }
 
-    const std::weak_ptr<Entity>& UIComponent::GetBillboardTarget() const {
+    const std::weak_ptr<ISceneGraphClient>& UIComponent::GetBillboardTarget() const {
         return billboardTarget;
     }
 
-    void UIComponent::SetBillboardTarget(const std::weak_ptr<Entity>& billboardTarget) {
+    void UIComponent::SetBillboardTarget(
+            const std::weak_ptr<ISceneGraphClient>& billboardTarget) {
+
         UIComponent::billboardTarget = billboardTarget;
         isBillboard = true;
         actualPositionDirty = true;
