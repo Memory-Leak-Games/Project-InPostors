@@ -522,7 +522,7 @@ std::weak_ptr<mlg::Button> MenuScene::LoadLevelButton(
 
     auto levelButton = mlg::ButtonBuilder()
                                .SetSize(buttonSize)
-                               .SetAnchor(MLG_ANCHOR_CENTER)
+                        //        .SetAnchor(MLG_ANCHOR_CENTER)
                                .SetPadding(50.f)
                                .SetName("LevelButton")
                                .SetText(levelsJson["name"])
@@ -532,6 +532,7 @@ std::weak_ptr<mlg::Button> MenuScene::LoadLevelButton(
     levelButton.lock()->GetImage().lock()->SetSize(buttonSize * 0.6f);
     levelButton.lock()->GetImage().lock()->SetPadding(20.f);
     levelButton.lock()->GetLabel().lock()->SetPadding(20.f);
+
 
     levelButton.lock()->OnClick.append(
             [this, levelsJson]() {
