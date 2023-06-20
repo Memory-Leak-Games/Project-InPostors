@@ -24,8 +24,11 @@ private:
     std::shared_ptr<class mlg::Image> taskPanel[TASK_PANELS];
     std::shared_ptr<class mlg::Image> taskIcon[TASK_PANELS];
     std::shared_ptr<class mlg::ProgressBar> taskProgress[TASK_PANELS];
+    std::shared_ptr<class mlg::Image> taskProgressBg[TASK_PANELS];
     std::shared_ptr<class mlg::Image> taskRequired[TASK_PANELS][2];
     std::shared_ptr<class mlg::Label> taskReward[TASK_PANELS];
+    std::shared_ptr<class mlg::Image> taskPlus[TASK_PANELS];
+    std::shared_ptr<class mlg::Label> taskBonus[TASK_PANELS];
 
     size_t chatTimer = 0;
 
@@ -51,4 +54,6 @@ public:
     void ShowMessage(const std::string& message, float visibleTime = 5.f);
     void SetClock(float time);
     void UpdateTask(int idx);
+
+    void SetTaskVisible(int idx, bool visible);
 };

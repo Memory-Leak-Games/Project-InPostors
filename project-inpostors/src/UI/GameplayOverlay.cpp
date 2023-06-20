@@ -84,21 +84,48 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
         result->taskPanel[i]->SetVisible(false);
     }
 
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/task_progress_material.json");
+    // Bonus
     for (int i = 0; i < TASK_PANELS; i++) {
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/task_progress_bg_material.json");
+        result->taskProgressBg[i] = result->AddComponent<mlg::Image>("TaskProgressBg", material).lock();
+        result->taskProgressBg[i]->SetPosition(result->taskPanel[i]->GetPosition()
+                                             + glm::vec2(0.f, -50.f));
+        result->taskProgressBg[i]->SetAnchor({0.0, 1.0});
+        result->taskProgressBg[i]->SetSize({70.f, 28.f});
+        result->taskProgressBg[i]->SetVisible(false);
+
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/task_progress_material.json");
         result->taskProgress[i] = result->AddComponent<mlg::ProgressBar>("TaskProgress", material).lock();
-        result->taskProgress[i]->SetPosition(result->taskPanel[i]->GetPosition());
+        result->taskProgress[i]->SetPosition(result->taskPanel[i]->GetPosition()
+                                             + glm::vec2(0.f, -50.f));
         result->taskProgress[i]->SetAnchor({0.0, 1.0});
-        result->taskProgress[i]->SetSize(result->taskPanel[i]->GetSize());
+        result->taskProgress[i]->SetSize({64.f, 22.f});
         result->taskProgress[i]->percentage = 0.0f;
         result->taskProgress[i]->SetVisible(false);
+
+        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/plus_material.json");
+        result->taskPlus[i] = result->AddComponent<mlg::Image>("TaskProgressBg", material).lock();
+        result->taskPlus[i]->SetPosition(result->taskPanel[i]->GetPosition()
+                                               + glm::vec2(-30.f, -50.f));
+        result->taskPlus[i]->SetAnchor({0.0, 1.0});
+        result->taskPlus[i]->SetSize({32.f, 32.f});
+        result->taskPlus[i]->SetVisible(false);
+
+        result->taskBonus[i] = result->AddComponent<mlg::Label>("TaskBonus").lock();
+        result->taskBonus[i]->SetPosition(result->taskPanel[i]->GetPosition()
+                                         + glm::vec2(10.f, -51.f));
+        result->taskBonus[i]->SetAnchor({0.0, 1.0});
+        result->taskBonus[i]->SetSize(20);
+        result->taskBonus[i]->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
+        result->taskBonus[i]->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
+        result->taskBonus[i]->SetVisible(false);
     }
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/iron_material.json");
     for (int i = 0; i < TASK_PANELS; i++) {
         result->taskIcon[i] = result->AddComponent<mlg::Image>("TaskIcon", material).lock();
         result->taskIcon[i]->SetRelativePosition(result->taskPanel[i]->GetPosition()
-                                         + glm::vec2(-22.f, -10.f));
+                                         + glm::vec2(-25.f, -10.f));
         result->taskIcon[i]->SetAnchor({0.0, 1.0});
         result->taskIcon[i]->SetSize({32, 32});
         result->taskIcon[i]->SetVisible(false);
@@ -108,7 +135,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
         result->taskReward[i] = result->AddComponent<mlg::Label>("TaskReward").lock();
         result->taskReward[i]->SetRelativePosition(result->taskPanel[i]->GetPosition() + glm::vec2(22.f, -10.f));
         result->taskReward[i]->SetAnchor({0.0, 1.0});
-        result->taskReward[i]->SetSize(16);
+        result->taskReward[i]->SetSize(20);
         result->taskReward[i]->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
         result->taskReward[i]->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
         result->taskReward[i]->SetVisible(false);
@@ -132,13 +159,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
             result->UpdateTask(i);
         }
 
-        result->taskPanel[count - 1]->SetVisible(true);
-        result->taskIcon[count - 1]->SetVisible(true);
-        result->taskProgress[count - 1]->SetVisible(true);
-        for (int i = 0; i < 2; ++i) {
-            result->taskRequired[count - 1][i]->SetVisible(true);
-        }
-        result->taskReward[count - 1]->SetVisible(true);
+        result->SetTaskVisible(count - 1, true);
     });
 
     result->taskManager->GetTaskManager().OnTaskFinished.append([result](const TaskData& taskData) {
@@ -148,13 +169,8 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
         for (int i = 0; i < count; ++i) {
             result->UpdateTask(i);
         }
-        result->taskPanel[count - 1]->SetVisible(false);
-        result->taskIcon[count - 1]->SetVisible(false);
-        result->taskProgress[count - 1]->SetVisible(false);
-        for (int i = 0; i < 2; ++i) {
-            result->taskRequired[count - 1][i]->SetVisible(false);
-        }
-        result->taskReward[count - 1]->SetVisible(false);
+
+        result->SetTaskVisible(count - 1, false);
     });
 
     return result;
@@ -171,13 +187,7 @@ void GameplayOverlay::Start() {
     for(int i = 0; i < taskCount; ++i) {
         UpdateTask(i);
 
-        taskPanel[i]->SetVisible(true);
-        taskIcon[i]->SetVisible(true);
-        taskProgress[i]->SetVisible(true);
-        for (int j = 0; j < 2; ++j) {
-            taskRequired[i][j]->SetVisible(true);
-        }
-        taskReward[i]->SetVisible(true);
+        SetTaskVisible(i, true);
     }
 }
 
@@ -186,13 +196,18 @@ void GameplayOverlay::Update() {
     int taskCount = taskManager->GetTaskManager().GetActiveTasksCount();
     for(int i = 0; i < taskCount; ++i) {
         float timeRate = tasks[i].time / tasks[i].timeLimit;
-        taskProgress[i]->percentage = timeRate * 0.8f + 0.1f;
+        taskProgress[i]->percentage = timeRate + 0.09f;
 
-        // You useless piece of meat, you are late!
-        if (timeRate <= 0.0f) {
-            taskPanel[i]->tint = {0.5, 0.0, 0.0, 0.9};
-        } else {
-            taskPanel[i]->tint = {1.0, 1.0, 1.0, 0.9};
+        // Hurry up, useless piece of meat!
+        if (timeRate > 0.5f) {
+            taskProgress[i]->tint = {1.0, 0.7, 0.023, 1.0};
+        } else if (timeRate > 0.f) {
+            taskProgress[i]->tint = {1.0, 0.0, 0.0, 1.0};
+        } else if (taskProgress[i]->IsVisible()) {
+            taskProgress[i]->SetVisible(false);
+            taskProgressBg[i]->SetVisible(false);
+            taskPlus[i]->SetVisible(false);
+            taskBonus[i]->SetVisible(false);
         }
     }
 }
@@ -258,4 +273,18 @@ void GameplayOverlay::UpdateTask(int idx) {
     }
 
     taskReward[idx]->SetText(fmt::format("${:d}", tasks[idx].reward));
+    taskBonus[idx]->SetText(fmt::format("${:d}", tasks[idx].bonus));
+}
+
+void GameplayOverlay::SetTaskVisible(int idx, bool visible) {
+    taskPanel[idx]->SetVisible(visible);
+    taskIcon[idx]->SetVisible(visible);
+    taskProgress[idx]->SetVisible(visible);
+    taskProgressBg[idx]->SetVisible(visible);
+    for (int i = 0; i < 2; ++i) {
+        taskRequired[idx][i]->SetVisible(visible);
+    }
+    taskReward[idx]->SetVisible(visible);
+    taskPlus[idx]->SetVisible(visible);
+    taskBonus[idx]->SetVisible(visible);
 }

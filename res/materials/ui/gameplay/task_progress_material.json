@@ -1,6 +1,6 @@
 {
   "vertexShader": "res/shaders/ui/image.vert",
-  "fragmentShader": "res/shaders/ui/textured_progress_bar.frag",
+  "fragmentShader": "res/shaders/ui/progress_bar.frag",
   "uniforms": [
     {
       "type": "vec4",
@@ -10,14 +10,8 @@
     {
       "type": "vec4",
       "name": "inRect",
-      "value": [0.0, 0.0, 0.0, 0.0]
+      "value": [1.0, 1.0, 1.0, 1.0]
     }
   ],
-  "textures": [
-    {
-      "name": "image",
-      "index": 0,
-      "path": "res/textures/ui/task_timer.png"
-    }
-  ]
+  "textures": []
 }
