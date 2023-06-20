@@ -24,15 +24,16 @@
 using json = nlohmann::json;
 
 void AnimationComponent::Start() {
-    staticMeshComponent = GetOwner().lock()->GetComponentByClass<mlg::StaticMeshComponent>().lock();
-    meshScale = staticMeshComponent->GetTransform().GetScale();
-
-    factory = GetOwner().lock()->GetComponentByClass<FactoryEquipmentComponent>().lock();
 }
 
 AnimationComponent::AnimationComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
                                        const std::string& configPath) : Component(owner, name) {
     LoadParameters(configPath);
+
+    staticMeshComponent = GetOwner().lock()->GetComponentByClass<mlg::StaticMeshComponent>().lock();
+    meshScale = staticMeshComponent->GetTransform().GetScale();
+
+    factory = GetOwner().lock()->GetComponentByClass<FactoryEquipmentComponent>().lock();
 }
 
 AnimationComponent::~AnimationComponent() = default;
