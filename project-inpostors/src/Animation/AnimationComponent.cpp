@@ -72,7 +72,7 @@ void AnimationComponent::LoadParameters(const std::string& path = "res/config/an
     outputAnimSpeed = parameters["outputAnimSpeed"];
     outputAnimWeight = parameters["outputAnimWeight"];
 
-    workingAnimOn = parameters["outputAnimOn"];
+    workingAnimOn = parameters["workingAnimOn"];
     workingAnimSpeed = parameters["workingAnimSpeed"];
     workingAnimWeight = parameters["workingAnimWeight"];
 }
