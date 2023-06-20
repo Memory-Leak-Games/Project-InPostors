@@ -1,6 +1,6 @@
 {
   "vertexShader": "res/shaders/ui/image.vert",
-  "fragmentShader": "res/shaders/ui/vertical_tex_progress_bar.frag",
+  "fragmentShader": "res/shaders/ui/pin_progress_bar.frag",
   "uniforms": [
     {
       "type": "vec4",
@@ -17,7 +17,7 @@
     {
       "name": "image",
       "index": 0,
-      "path": "res/textures/ui/factory_pin.png"
+      "path": "res/textures/ui/factory_pin_outline.png"
     }
   ]
 }

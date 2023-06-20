@@ -15,25 +15,10 @@ FactoryUI::FactoryUI(const std::weak_ptr<mlg::Entity>& owner, const std::string&
     : Component(owner, name), factory(factory) {
 
     auto blueprint = BlueprintManager::Get()->GetBlueprint(factory->GetBlueprintId());
-    auto material =
-            mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/pin_material.json");
-
-    uiPin = factory->AddComponent<mlg::Image>("uiPin", material).lock();
-    uiPin->SetBillboardTarget(owner);
-    uiPin->SetSize({88.f, 88.f});
-    uiPin->SetPosition({0.f, 50.f});
 
     const auto& required = blueprint.GetInput();
 
-    if (!blueprint.GetInput().empty()) {
-        material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/required_panel_material.json");
-        auto temp = factory->AddComponent<mlg::Image>("uiRequiredPanel", material).lock();
-        temp->SetBillboardTarget(owner);
-        temp->SetSize({40.f, 18.f});
-        temp->SetPosition({0.f, 25.f});
-    }
-
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/required_bar_material.json");
+    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/required_bar_material.json");
     glm::vec2 pos = {-9.f, 25.f};
     for (auto & uiInputBar : uiInputBars) {
         uiInputBar = factory->AddComponent<mlg::Image>("uiInputBar", material).lock();
@@ -57,6 +42,15 @@ FactoryUI::FactoryUI(const std::weak_ptr<mlg::Entity>& owner, const std::string&
     uiIcon->SetSize({24.f, 24.f});
     uiIcon->SetPosition({0.f, 50.f});
 
+    if (!blueprint.GetInput().empty()) {
+        auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/required_panel_material.json");
+        auto temp = factory->AddComponent<mlg::Image>("uiRequiredPanel", material).lock();
+        temp->SetBillboardTarget(owner);
+        temp->SetSize({40.f, 18.f});
+        temp->SetPosition({0.f, 25.f});
+    }
+
+
     glm::vec2 billboardPos = {-11.f * (required.size() - 1.f), 25.f};
     for(const auto & i : required) {
 
@@ -76,6 +70,7 @@ FactoryUI::FactoryUI(const std::weak_ptr<mlg::Entity>& owner, const std::string&
         temp->SetSize({8.f, 8.f});
         temp->SetPosition({0.f, 37.f});
     }
+
 }
 
 void FactoryUI::Update() {
