@@ -1,0 +1,533 @@
+{
+  "default-material": "res/materials/buildings_material.json",
+  "factory-pool": "res/levels/factories/pools/furniture.json",
+  "tiles": [
+    {
+      "symbol": "b",
+      "objects": [
+        {
+          "model": "res/models/buildings/big/building_big_1.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/big/building_big_2.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        }
+      ]
+    },
+    {
+      "symbol": "m",
+      "objects": [
+        {
+          "model": "res/models/buildings/medium/building_medium_1.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_2.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_3.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_4.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_5.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_6.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_7.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_8.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_9.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        }
+      ]
+    },
+    {
+      "symbol": "s",
+      "objects": [
+        {
+          "model": "res/models/buildings/small/building_small_1.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/small/building_small_2.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/small/building_small_3.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/small/building_small_4.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/small/building_small_5.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/small/building_small_6.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "L",
+      "objects": [
+        {
+          "model": "res/models/buildings/corner/corner_big_1.obj",
+          "rotation": -90.0,
+          "scale": 0.85,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        },
+        {
+          "model": "res/models/buildings/corner/corner_big_2.obj",
+          "rotation": -90.0,
+          "scale": 0.85,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        },
+        {
+          "model": "res/models/buildings/corner/corner_big_3.obj",
+          "rotation": -90.0,
+          "scale": 0.85,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        }
+      ]
+    },
+    {
+      "symbol": "l",
+      "objects": [
+        {
+          "model": "res/models/buildings/corner/corner_small_1.obj",
+          "rotation": 90.0,
+          "scale": 0.85,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        },
+        {
+          "model": "res/models/buildings/corner/corner_small_2.obj",
+          "rotation": 90.0,
+          "scale": 0.85,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        },
+        {
+          "model": "res/models/buildings/corner/corner_small_3.obj",
+          "rotation": 90.0,
+          "scale": 0.85,
+          "collision-size": 4.0,
+          "collision-type": "rectangle"
+        }
+      ]
+    },
+    {
+      "symbol": "p",
+      "is-path-way": true,
+      "objects": [
+        {
+          "model": "res/models/roads/path_way.obj"
+        }
+      ]
+    },
+    {
+      "symbol": "r",
+      "objects": [
+        {
+          "model": "res/models/buildings/medium/building_medium_1.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_2.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_3.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_4.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_5.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_6.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_7.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_8.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/medium/building_medium_9.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/special/donut.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/burger.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/caffee.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/fries.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/library.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "h",
+      "objects": [
+        {
+          "model": "res/models/buildings/small/building_small_2.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/small/building_small_4.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/small/building_small_6.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/library.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/library.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "z",
+      "objects": [
+        {
+          "model": "res/models/buildings/small/building_small_1.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/small/building_small_2.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/small/building_small_3.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/donut.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/burger.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/caffee.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/fries.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "c",
+      "objects": [
+        {
+          "model": "res/models/buildings/special/caffee.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "w",
+      "objects": [
+        {
+          "model": "res/models/buildings/special/ferris_wheel.obj",
+          "scale": 0.85,
+          "rotation": 90.0,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "P",
+      "objects": [
+        {
+          "model": "res/models/buildings/super_big/park.obj",
+          "rotation": 90.0,
+          "scale": 0.9,
+          "collision-type": "rectangle",
+          "collision-size": 12.0
+        }
+      ]
+    },
+    {
+      "symbol": "D",
+      "objects": [
+        {
+          "model": "res/models/buildings/special/donut.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "B",
+      "objects": [
+        {
+          "model": "res/models/buildings/special/donut.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/caffee.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "f",
+      "objects": [
+        {
+          "model": "res/models/buildings/special/fries.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/burger.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "F",
+      "objects": [
+        {
+          "model": "res/models/buildings/special/fan.obj",
+          "scale": 1.0,
+          "collision-type": "rectangle",
+          "collision-size": 12.0
+        }
+      ]
+    },
+    {
+      "symbol": "H",
+      "objects": [
+        {
+          "model": "res/models/buildings/super_big/hospital.obj",
+          "scale": 1.0,
+          "collision-type": "rectangle",
+          "collision-size": 12.0
+        }
+      ]
+    },
+    {
+      "symbol": "T",
+      "objects": [
+        {
+          "model": "res/models/buildings/super_big/townhall.obj",
+          "rotation": 180.0,
+          "scale": 1.1,
+          "collision-type": "rectangle",
+          "collision-size": 12.0
+        }
+      ]
+    },
+    {
+      "symbol": "G",
+      "objects": [
+        {
+          "model": "res/models/buildings/super_big/cafe_b.obj",
+          "scale": 1.2,
+          "collision-type": "rectangle",
+          "collision-size": 12.0
+        }
+      ]
+    },
+    {
+      "symbol": "A",
+      "objects": [
+        {
+          "model": "res/models/buildings/super_big/stadium.obj",
+          "scale": 1,
+          "rotation": 90.0,
+          "collision-type": "rectangle",
+          "collision-size": 10.0
+        }
+      ]
+    },
+    {
+      "symbol": "V",
+      "objects": [
+        {
+          "model": "res/models/buildings/big/building_big_1.obj",
+          "collision-type": "rectangle",
+          "collision-size": 8.0,
+          "rotation": 90.0,
+          "scale": 1.7
+        },
+        {
+          "model": "res/models/buildings/big/building_big_2.obj",
+          "collision-type": "rectangle",
+          "collision-size": 8.0,
+          "rotation": 90.0,
+          "scale": 1.7
+        }
+      ]
+    }
+  ],
+  "road": {
+    "symbol": "#",
+    "road": {
+      "model": "res/models/roads/road.obj",
+      "rotation": 90.0
+    },
+    "edge": {
+      "model": "res/models/roads/road_edge.obj",
+      "rotation": -90.0
+    },
+    "corner": {
+      "model": "res/models/roads/road_corner.obj",
+      "rotation": 180.0
+    },
+    "cross": {
+      "model": "res/models/roads/road_cross.obj"
+    },
+    "curve": {
+      "model": "res/models/roads/road_curve.obj",
+      "rotation": -90.0
+    }
+  }
+}
