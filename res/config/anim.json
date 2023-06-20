@@ -1,7 +1,7 @@
 {
   "name": "Animation Settings",
   "parameters": {
-    "outputAnimOn": true,
+    "outputAnimOn": false,
     "outputAnimSpeed": 5.0,
     "outputAnimWeight": 0.02,
     "workingAnimOn": false,
