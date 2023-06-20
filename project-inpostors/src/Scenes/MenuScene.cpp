@@ -18,6 +18,7 @@
 
 #include "Scenes/LevelScene.h"
 #include "Scenes/TestScene.h"
+#include "Scenes/TutorialScene.h"
 #include "UI/Assets/FontAsset.h"
 #include "UI/Builders/ButtonBuilder.h"
 #include "UI/Builders/LabelBuilder.h"
@@ -502,7 +503,12 @@ void MenuScene::InitializeLevelSelector() {
 
     int i = 0;
 
-    for (const auto& level : levelsJson) {
+    auto tutorialButton =
+            LoadTutorialButton(levelsJson, entity.lock().get());
+    hbox.lock()->AddChild(tutorialButton);
+    tutorialButton.lock()->next.bottom = backButton;
+
+    for (const auto& level : levelsJson["levels"]) {
         auto levelButton =
                 LoadLevelButton(level, entity.lock().get());
         levelButton.lock()->next.bottom = backButton;
@@ -512,8 +518,30 @@ void MenuScene::InitializeLevelSelector() {
 
         hbox.lock()->AddChild(levelButton);
 
+        levelButton.lock()->OnClick.append(
+                [this, levelsJson]() {
+                    auto scene = std::make_unique<LevelScene>(levelsJson["path"]);
+                    mlg::SceneManager::SetNextScene(std::move(scene));
+                });
+
         i++;
     }
+}
+
+std::weak_ptr<mlg::Button> MenuScene::LoadTutorialButton(
+        const nlohmann::json& levelsJson, mlg::Entity* entity) {
+    auto button =
+            LoadLevelButton(levelsJson["tutorial"], entity);
+
+    std::string tutorialPath = levelsJson["tutorial"]["path"];
+
+    button.lock()->OnClick.append(
+            [this, tutorialPath]() {
+                auto scene = std::make_unique<TutorialScene>(tutorialPath);
+                mlg::SceneManager::SetNextScene(std::move(scene));
+            });
+
+    return button;
 }
 
 std::weak_ptr<mlg::Button> MenuScene::LoadLevelButton(
@@ -522,7 +550,6 @@ std::weak_ptr<mlg::Button> MenuScene::LoadLevelButton(
 
     auto levelButton = mlg::ButtonBuilder()
                                .SetSize(buttonSize)
-                        //        .SetAnchor(MLG_ANCHOR_CENTER)
                                .SetPadding(50.f)
                                .SetName("LevelButton")
                                .SetText(levelsJson["name"])
@@ -532,13 +559,6 @@ std::weak_ptr<mlg::Button> MenuScene::LoadLevelButton(
     levelButton.lock()->GetImage().lock()->SetSize(buttonSize * 0.6f);
     levelButton.lock()->GetImage().lock()->SetPadding(20.f);
     levelButton.lock()->GetLabel().lock()->SetPadding(20.f);
-
-
-    levelButton.lock()->OnClick.append(
-            [this, levelsJson]() {
-                auto scene = std::make_unique<LevelScene>(levelsJson["path"]);
-                mlg::SceneManager::SetNextScene(std::move(scene));
-            });
 
     return levelButton;
 }
@@ -555,6 +575,4 @@ void MenuScene::LoadBackgroundLevel(const std::string& backgroundPath) {
     mlg::LevelGenerator::SetCityBounds(backgroundPath);
     mlg::LevelGenerator::LoadCameraSettings(backgroundPath,
                                             *cameraComponent.lock());
-
-
 }

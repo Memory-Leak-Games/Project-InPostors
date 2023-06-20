@@ -36,6 +36,7 @@ public:
     void Update();
 
     void AddTaskToPool(const TaskData& taskData);
+    
     bool FinishTask(const std::string& productId);
     void SellProduct(const std::string& productId);
     bool HasTask(const std::string& productId);

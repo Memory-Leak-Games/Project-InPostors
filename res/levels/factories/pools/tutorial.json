@@ -1,0 +1,23 @@
+{
+  "factories": [
+    {
+      "symbol": "1",
+      "config": "res/levels/factories/mine.json",
+      "count": 1,
+      "fallback": "w"
+    },
+    {
+      "symbol": "2",
+      "config": "res/levels/factories/smelter.json",
+      "count": 1,
+      "fallback": "P"
+    },
+    {
+      "symbol": "0",
+      "config": "res/levels/factories/storage.json",
+      "fallback": "p"
+    }
+  ],
+
+  "tasks": []
+}

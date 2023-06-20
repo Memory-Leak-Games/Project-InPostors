@@ -7,6 +7,8 @@ private:
     int maxActiveTasks = 4;
 
     std::unique_ptr<class TaskManager> taskManager;
+
+    bool disabled = false;
 public:
     LevelTaskManager();
     ~LevelTaskManager() = default;
@@ -20,4 +22,7 @@ public:
     void SetNewTaskProbability(float newTaskProbability);
 
     TaskManager& GetTaskManager() const;
+    
+    void SetDisabled(bool disabled);
+    [[nodiscard]] bool IsDisabled() const;
 };
