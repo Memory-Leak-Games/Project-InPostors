@@ -33,20 +33,31 @@ AnimationComponent::AnimationComponent(const std::weak_ptr<mlg::Entity>& owner, 
     staticMeshComponent = GetOwner().lock()->GetComponentByClass<mlg::StaticMeshComponent>().lock();
     meshScale = staticMeshComponent->GetTransform().GetScale();
 
-    factory = GetOwner().lock()->GetComponentByClass<FactoryEquipmentComponent>().lock();
+    factory = dynamic_pointer_cast<Factory>(GetOwner().lock());
 }
 
 AnimationComponent::~AnimationComponent() = default;
 
 void AnimationComponent::Update() {
     if (factory != nullptr) {
-        if (factory->IsOutputPresent()) {
+        if (outputAnimOn && factory->factoryEquipment->IsOutputPresent()) {
             glm::vec3 targetScale = meshScale;
 
-            float factor = glm::sin(mlg::Time::GetSeconds() * animSpeed) * wiggleWeight;
+            float factor = glm::sin(mlg::Time::GetSeconds() * outputAnimSpeed) * outputAnimWeight;
             targetScale += (meshScale * factor);
 
             staticMeshComponent->GetTransform().SetScale(targetScale);
+            return;
+        }
+
+        if (workingAnimOn && factory->IsWorking()) {
+            glm::vec3 targetScale = meshScale;
+
+            float factor = glm::sin(mlg::Time::GetSeconds() * workingAnimSpeed) * workingAnimWeight;
+            targetScale.y += (meshScale.y * factor);
+
+            staticMeshComponent->GetTransform().SetScale(targetScale);
+            return;
         }
     }
 }
@@ -57,6 +68,11 @@ void AnimationComponent::LoadParameters(const std::string& path = "res/config/an
 
     auto parameters = configJson["parameters"];
 
-    animSpeed = parameters["animSpeed"];
-    wiggleWeight = parameters["wiggleWeight"];
+    outputAnimOn = parameters["outputAnimOn"];
+    outputAnimSpeed = parameters["outputAnimSpeed"];
+    outputAnimWeight = parameters["outputAnimWeight"];
+
+    workingAnimOn = parameters["outputAnimOn"];
+    workingAnimSpeed = parameters["workingAnimSpeed"];
+    workingAnimWeight = parameters["workingAnimWeight"];
 }

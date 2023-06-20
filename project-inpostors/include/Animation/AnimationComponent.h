@@ -11,12 +11,18 @@ class AnimationComponent : public mlg::Component {
 private:
     std::shared_ptr<mlg::StaticMeshComponent> staticMeshComponent;
 
-    std::shared_ptr<class FactoryEquipmentComponent> factory;
+    std::shared_ptr<class Factory> factory;
 
     // Animation params
     glm::vec3 meshScale {};
-    float animSpeed;
-    float wiggleWeight;
+
+    bool outputAnimOn;
+    float outputAnimSpeed;
+    float outputAnimWeight;
+
+    bool workingAnimOn;
+    float workingAnimSpeed;
+    float workingAnimWeight;
 
 public:
     AnimationComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
