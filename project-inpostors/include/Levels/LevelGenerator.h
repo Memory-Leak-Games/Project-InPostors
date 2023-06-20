@@ -5,6 +5,21 @@
 
 namespace mlg {
 
+    struct MapObject {
+        std::string modelPath;
+        std::string materialPath;
+        std::string colliderType;
+        float worldRot;
+        float scale;
+        float colliderSize = 1.0f;
+        float colliderOffset = 0.0f;
+        float lifetime = -1.f; // Only valid when isDynamic is set to true
+        float linearDrag = 20.f;
+        float angularDrag = 10.f;
+        bool hasCollision = false;
+        bool isDynamic = false;
+    };
+
     class LevelGenerator {
 
     public:
@@ -27,21 +42,6 @@ namespace mlg {
         std::vector<std::string> GetLevelLayout();
 
     private:
-        struct MapObject {
-            std::string modelPath;
-            std::string materialPath;
-            std::string colliderType;
-            float worldRot;
-            float scale;
-            float colliderSize = 1.0f;
-            float colliderOffset = 0.0f;
-            float lifetime = -1.f; // Only valid when isDynamic is set to true
-            float linearDrag = 20.f;
-            float angularDrag = 10.f;
-            bool hasCollision = false;
-            bool isDynamic = false;
-        };
-
         struct Roads {
             MapObject road;
             MapObject edge;

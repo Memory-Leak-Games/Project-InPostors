@@ -6,10 +6,10 @@
 AnimationLibrary* AnimationLibrary::instance;
 
 AnimationLibrary::AnimationLibrary() {
-    animMap["ferris_wheel"] = std::make_shared<FerrisWheelAnim>();
+//    animMap["ferris_wheel"] = std::make_shared<FerrisWheelAnim>();
 }
 
-std::shared_ptr<AnimatedEntity> AnimationLibrary::Get(const std::string& id) {
+std::shared_ptr<mlg::Entity> AnimationLibrary::Get(const std::string& id) {
     if (instance == nullptr)
         instance = new AnimationLibrary();
 

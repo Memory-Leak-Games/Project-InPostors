@@ -361,7 +361,7 @@ namespace mlg {
         roadsObjects.corner = ParseObject(roadJson["corner"]);
     }
 
-    LevelGenerator::MapObject LevelGenerator::ParseObject(const json& jsonMapObject) {
+    MapObject LevelGenerator::ParseObject(const json& jsonMapObject) {
         MapObject mapObj;
         mapObj.modelPath = jsonMapObject["model"];
         mapObj.materialPath = jsonMapObject.value("material", defaultMaterial);
