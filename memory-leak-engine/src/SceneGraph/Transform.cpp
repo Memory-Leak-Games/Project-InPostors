@@ -160,6 +160,7 @@ namespace mlg {
 
     void Transform::ReParent(Transform* newParent) {
         parent = newParent;
+        SetDirtyRecursive();
     }
 
     void Transform::AddChild(const std::shared_ptr<Transform>& newChild) {
