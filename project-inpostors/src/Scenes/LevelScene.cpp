@@ -1,6 +1,7 @@
 #include <glm/fwd.hpp>
 #include <utility>
 
+#include "Managers/ChatManager.h"
 #include "Scenes/LevelScene.h"
 
 #include "Core/HID/Input.h"
@@ -71,9 +72,9 @@ void LevelScene::Load() {;
                              "StartLevelCountdown", false, mlg::SceneGraph::GetRoot())
                              .lock();
 
-    // TODO: Remove me
-    gameplayOverlay->ShowMessage(fmt::format(
-            "Welcome to {}, useless piece of meat!", levelName));
+    auto chatManager = mlg::EntityManager::SpawnEntity<ChatManager>(
+                               "ChatManager", false, mlg::SceneGraph::GetRoot(), this)
+                               .lock();
 }
 
 void LevelScene::Update() {
@@ -96,29 +97,10 @@ void LevelScene::Update() {
 
         navigationGraph->DrawNodes();
     }
-
-    // IMGUI: Task manager
-    ImGui::Begin("Task manager");
-    {
-        ImGui::Text("Score: %i", scoreManager->GetScore());
-        ImGui::Separator();
-
-        auto activeTasks = levelTaskManager->GetTaskManager().GetActiveTasks();
-        for (const auto& task : activeTasks) {
-            ImGui::Text("Task: %s", task.productId.c_str());
-            ImGui::Text("Time left: %f", task.time);
-            ImGui::Text("Reward: %i", task.reward);
-            ImGui::Text("Bonus: %i", task.bonus);
-            ImGui::Separator();
-        }
-    }
-    ImGui::End();
-
 #endif
 }
 
 void LevelScene::HandlePauseGame() {
-
     if (mlg::Input::IsActionJustPressed("pause") &&
         mlg::TimerManager::Get()->GetTimerRemainingTime(timeLimitTimer) > 0.0f) {
         bool isGamePaused = mlg::Time::IsGamePaused();
@@ -147,6 +129,10 @@ const std::string& LevelScene::GetLevelName() const {
     return levelName;
 }
 
+GameplayOverlay* LevelScene::GetGameplayOverlay() {
+    return gameplayOverlay.get();
+}
+
 GameplayEventsManager& LevelScene::GetGameplayEventsManager() {
     return *gameplayEventsManager;
 }
@@ -173,18 +159,6 @@ void LevelScene::InitializeLevelTaskManager() {
             [this](int price) {
                 scoreManager->AddScore(price);
                 gameplayOverlay->SetScore(scoreManager->GetScore());
-
-                // TODO: transfer to chat manager
-                gameplayOverlay->ShowMessage(fmt::format(
-                        "You sold product for {}$, useless piece of meat! You are courier, not a merchant!",
-                        price));
-            });
-    levelTaskManager->GetTaskManager().OnTaskFailed.append(
-            [this](const TaskData& taskData) {
-                gameplayOverlay->ShowMessage(fmt::format(
-                        "You failed task: {}... Not bad. I forgot how good you are at this. You should pace yourself, though. We have A LOT of stuff to deliver.",
-                        taskData.productId),
-                        7.f);
             });
 
     std::vector<TaskData> tasks = mlg::LevelGenerator::GetTasks(levelPath);

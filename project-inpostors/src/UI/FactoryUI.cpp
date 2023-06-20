@@ -26,17 +26,8 @@ FactoryUI::FactoryUI(const std::weak_ptr<mlg::Entity>& owner, const std::string&
 
     const auto& required = blueprint.GetInput();
 
-    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/required_bar_material.json");
-    glm::vec2 pos = {-9.f, 25.f};
-    for (auto& uiInputBar : uiInputBars) {
-        uiInputBar = factory->AddComponent<mlg::Image>("uiInputBar", material).lock();
-        uiInputBar->SetSize({18.f, 14.f});
-        uiInputBar->SetRelativePosition(pos);
-        uiInputBar->SetVisible(false);
-        pos.x += 18.f;
-    }
 
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/pin_progress_material.json");
+    auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/pin_progress_material.json");
     uiProgress = factory->AddComponent<mlg::ProgressBar>("uiProgress", material).lock();
     uiProgress->SetSize(glm::vec2{60.5f});
     uiProgress->SetPosition({0.f, 40.f});
@@ -47,12 +38,22 @@ FactoryUI::FactoryUI(const std::weak_ptr<mlg::Entity>& owner, const std::string&
     uiIcon->SetSize({24.f, 24.f});
     uiIcon->SetPosition({0.f, 50.f});
 
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/required_bar_material.json");
     if (!blueprint.GetInput().empty()) {
         auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/factory/required_panel_material.json");
         auto temp = factory->AddComponent<mlg::Image>("uiRequiredPanel", material).lock();
         temp->SetSize({40.f, 18.f});
         temp->SetPosition({0.f, 25.f});
         requiredIcons.push_back(temp);
+    }
+
+    glm::vec2 pos = {-9.f, 25.f};
+    for (auto& uiInputBar : uiInputBars) {
+        uiInputBar = factory->AddComponent<mlg::Image>("uiInputBar", material).lock();
+        uiInputBar->SetSize({18.f, 14.f});
+        uiInputBar->SetRelativePosition(pos);
+        uiInputBar->SetVisible(false);
+        pos.x += 18.f;
     }
 
 
