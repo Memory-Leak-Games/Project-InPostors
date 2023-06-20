@@ -98,10 +98,20 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     for (int i = 0; i < TASK_PANELS; i++) {
         result->taskIcon[i] = result->AddComponent<mlg::Image>("TaskIcon", material).lock();
         result->taskIcon[i]->SetRelativePosition(result->taskPanel[i]->GetPosition()
-                                         + glm::vec2(0.f, -15.f));
+                                         + glm::vec2(-22.f, -10.f));
         result->taskIcon[i]->SetAnchor({0.0, 1.0});
-        result->taskIcon[i]->SetSize({36, 36});
+        result->taskIcon[i]->SetSize({32, 32});
         result->taskIcon[i]->SetVisible(false);
+    }
+
+    for (int i = 0; i < TASK_PANELS; i++) {
+        result->taskReward[i] = result->AddComponent<mlg::Label>("TaskReward").lock();
+        result->taskReward[i]->SetRelativePosition(result->taskPanel[i]->GetPosition() + glm::vec2(22.f, -10.f));
+        result->taskReward[i]->SetAnchor({0.0, 1.0});
+        result->taskReward[i]->SetSize(16);
+        result->taskReward[i]->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
+        result->taskReward[i]->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
+        result->taskReward[i]->SetVisible(false);
     }
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/iron_material.json");
@@ -128,6 +138,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
         for (int i = 0; i < 2; ++i) {
             result->taskRequired[count - 1][i]->SetVisible(true);
         }
+        result->taskReward[count - 1]->SetVisible(true);
     });
 
     result->taskManager->GetTaskManager().OnTaskFinished.append([result](const TaskData& taskData) {
@@ -143,6 +154,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
         for (int i = 0; i < 2; ++i) {
             result->taskRequired[count - 1][i]->SetVisible(false);
         }
+        result->taskReward[count - 1]->SetVisible(false);
     });
 
     return result;
@@ -165,6 +177,7 @@ void GameplayOverlay::Start() {
         for (int j = 0; j < 2; ++j) {
             taskRequired[i][j]->SetVisible(true);
         }
+        taskReward[i]->SetVisible(true);
     }
 }
 
@@ -243,6 +256,6 @@ void GameplayOverlay::UpdateTask(int idx) {
         taskRequired[idx][1]->SetRelativePosition(taskPanel[idx]->GetPosition()
                                           + glm::vec2(+12.f, 30.f));
     }
-    //taskRequiredPanel[idx][0]->SetPosition(taskRequired[idx][0]->GetPosition());
-    //taskRequiredPanel[idx][1]->SetPosition(taskRequired[idx][1]->GetPosition());
+
+    taskReward[idx]->SetText(fmt::format("${:d}", tasks[idx].reward));
 }

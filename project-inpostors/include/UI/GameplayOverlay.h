@@ -25,6 +25,7 @@ private:
     std::shared_ptr<class mlg::Image> taskIcon[TASK_PANELS];
     std::shared_ptr<class mlg::ProgressBar> taskProgress[TASK_PANELS];
     std::shared_ptr<class mlg::Image> taskRequired[TASK_PANELS][2];
+    std::shared_ptr<class mlg::Label> taskReward[TASK_PANELS];
 
     size_t chatTimer = 0;
 

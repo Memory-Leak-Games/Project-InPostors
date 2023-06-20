@@ -5,12 +5,12 @@
     {
       "type": "vec4",
       "name": "outRect",
-      "value": [1.0, 0.0, 0.0, 0.9]
+      "value": [0.0, 0.0, 0.0, 0.0]
     },
     {
       "type": "vec4",
       "name": "inRect",
-      "value": [0.0, 0.0, 0.0, 0.9]
+      "value": [0.0, 0.0, 0.0, 0.0]
     }
   ],
   "textures": [
