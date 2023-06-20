@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 class LevelTaskManager {
 private:
     size_t newTaskTimer = 0;
@@ -25,4 +26,5 @@ public:
     
     void SetDisabled(bool disabled);
     [[nodiscard]] bool IsDisabled() const;
+
 };

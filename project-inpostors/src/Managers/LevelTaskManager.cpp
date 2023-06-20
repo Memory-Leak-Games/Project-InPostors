@@ -26,6 +26,9 @@ void LevelTaskManager::StartNewTaskLogic() {
     if (disabled)
         return;
 
+    if (taskManager->GetTaskCount() == 0)
+        return;
+
     if (taskManager->GetActiveTasksCount() >= GetMaxActiveTasks())
         return;
 

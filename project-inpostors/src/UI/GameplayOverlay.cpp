@@ -197,7 +197,12 @@ void GameplayOverlay::Update() {
     auto tasks = taskManager->GetTaskManager().GetActiveTasks();
     int taskCount = taskManager->GetTaskManager().GetActiveTasksCount();
     for(int i = 0; i < taskCount; ++i) {
-        float percentage = tasks[i].time / tasks[i].timeLimit;
+        float percentage;
+        if (tasks[i].timeLimit <= 0.f)
+            percentage = 0.f;
+        else
+            percentage = tasks[i].time / tasks[i].timeLimit;
+
         taskProgress[i]->percentage = percentage;
 
         // Hurry up, useless piece of meat!

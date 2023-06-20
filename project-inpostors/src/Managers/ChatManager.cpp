@@ -60,7 +60,8 @@ void ChatManager::Start() {
     StartRandomMessageTimer();
 
     TaskManager* taskManager = currentLevelScene->GetTaskManager();
-    taskManager->OnTaskFailed.append(
+
+    onTaskFailedHandle = taskManager->OnTaskFailed.append(
             [this](const TaskData& taskData) {
                 std::string message = fmt::format(
                         fmt::runtime(GetMessage("task_failed")),
@@ -70,7 +71,7 @@ void ChatManager::Start() {
 
                 ShowMessage(message, 7.f);
             });
-    taskManager->OnProductSold.append(
+    onProductSoldHandle = taskManager->OnProductSold.append(
             [this](int price) {
                 std::string message = fmt::format(
                         fmt::runtime(GetMessage("product_sold")),
@@ -81,6 +82,15 @@ void ChatManager::Start() {
 }
 
 void ChatManager::Update() {
+}
+
+void ChatManager::Stop() {
+    TaskManager* taskManager = currentLevelScene->GetTaskManager();
+
+    taskManager->OnTaskFailed.remove(onTaskFailedHandle);
+    taskManager->OnProductSold.remove(onProductSoldHandle);
+
+    mlg::TimerManager::Get()->ClearTimer(randomMessageTimer);
 }
 
 void ChatManager::StartRandomMessageTimer() {

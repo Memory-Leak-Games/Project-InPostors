@@ -49,6 +49,8 @@ public:
 
     size_t AcceptNewTask();
 
+    size_t GetTaskCount() const;
+
 private:
     void RemoveTask(size_t id);
     std::vector<size_t> GetActiveTasksIds();

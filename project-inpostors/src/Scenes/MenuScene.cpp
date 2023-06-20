@@ -471,7 +471,6 @@ void MenuScene::InitializeLevelSelector() {
             "Level Selector", false, mlg::SceneGraph::GetRoot());
 
     levelSelector = entity.lock()->AddComponent<mlg::CanvasPanel>("LevelSelector");
-    levelSelector.lock()->SetSize(PANEL_SIZE);
     levelSelector.lock()->SetAnchor(MLG_ANCHOR_CENTER);
     levelSelector.lock()->SetRelativePosition(MLG_POS_CENTER);
 
@@ -479,7 +478,7 @@ void MenuScene::InitializeLevelSelector() {
             mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BACKGROUND_MATERIAL);
     auto background =
             entity.lock()->AddComponent<mlg::Image>("MenuBackground", material);
-    background.lock()->SetSize(PANEL_SIZE);
+    background.lock()->SetSize(PANEL_SIZE + glm::vec2{512.f, 0.f});
     levelSelector.lock()->AddChild(background);
 
     auto hbox = entity.lock()->AddComponent<mlg::HorizontalBox>("HBox");
