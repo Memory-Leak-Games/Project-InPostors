@@ -120,11 +120,10 @@ void Player::Start() {
 }
 
 void Player::Update() {
-    if (carInput->GetPickUpInput())
-        PickUp();
-
-    if (carInput->GetDropInput())
-        Drop();
+    if (carInput->GetPickUpInput()) {
+        if (!PickUp())
+            Drop();
+    }
 
     std::vector<std::weak_ptr<mlg::Collider>> overlappingColliders;
     rigidbodyComponent.lock()->GetOverlappingColliders(overlappingColliders);
@@ -163,9 +162,9 @@ void Player::SetPlayerRotation(float angle) {
     rigidbodyComponent.lock()->SetRotation(angle);
 }
 
-void Player::PickUp() {
+bool Player::PickUp() {
     if (equipment->IsFull())
-        return;
+        return false;
 
     std::vector<std::weak_ptr<mlg::Collider>> overlappingColliders;
     rigidbodyComponent.lock()->GetOverlappingColliders(overlappingColliders);
@@ -179,25 +178,27 @@ void Player::PickUp() {
             });
 
     if (output == overlappingColliders.end())
-        return;
+        return false;
 
     std::shared_ptr<mlg::Entity> owner =
             mlg::RigidbodyComponent::GetColliderOwner(*output->lock()).lock();
     std::shared_ptr<Factory> factory = std::dynamic_pointer_cast<Factory>(owner);
 
     if (!factory)
-        return;
+        return false;
 
     std::string outputProduct = factory->GiveOutput();
 
     if (outputProduct == "None")
-        return;
+        return false;
 
     equipment->AddProduct(outputProduct);
     pickUpSound->Play(4.f);
+
+    return true;
 }
 
-void Player::Drop() {
+bool Player::Drop() {
     std::vector<std::weak_ptr<mlg::Collider>> overlappingColliders;
     rigidbodyComponent.lock()->GetOverlappingColliders(overlappingColliders);
 
@@ -210,15 +211,18 @@ void Player::Drop() {
             });
 
     if (input == overlappingColliders.end())
-        return;
+        return false;
 
     std::shared_ptr<mlg::Entity> owner =
             mlg::RigidbodyComponent::GetColliderOwner(*input->lock()).lock();
     auto factory = std::dynamic_pointer_cast<InteractiveBuilding>(owner);
 
     if (!factory)
-        return;
+        return false;
 
-    if (factory->TakeInputsFromInventory(*equipment))
-        dropSound->Play(4.f);
+    if (!factory->TakeInputsFromInventory(*equipment))
+        return false;
+
+    dropSound->Play(4.f);
+    return true;
 }

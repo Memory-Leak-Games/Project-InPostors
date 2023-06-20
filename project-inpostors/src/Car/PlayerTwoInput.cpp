@@ -22,7 +22,3 @@ PlayerTwoInput::~PlayerTwoInput() {}
 bool PlayerTwoInput::GetPickUpInput() {
     return mlg::Input::IsActionJustPressed("pick_up_two");
 }
-
-bool PlayerTwoInput::GetDropInput() {
-    return mlg::Input::IsActionJustPressed("drop_two");
-}

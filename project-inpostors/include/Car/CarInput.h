@@ -10,5 +10,4 @@ public:
 
     virtual glm::vec2 GetMovementInput() = 0;
     virtual bool GetPickUpInput() = 0;
-    virtual bool GetDropInput() = 0;
 };

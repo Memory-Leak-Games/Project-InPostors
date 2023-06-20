@@ -32,7 +32,7 @@ namespace mlg {
         ParticleSystem(const std::shared_ptr<MaterialAsset>& material, uint32_t maxParticlesCount);
         ~ParticleSystem();
 
-        void Start(const class Transform& transfomr);
+        void Start(const class Transform& transform);
         void Update(const class Transform& transform);
 
         virtual std::shared_ptr<ParticleSystem> Clone() = 0;

@@ -1,12 +1,15 @@
 #include "Rendering/Assets/MaterialAsset.h"
 
-#include <nlohmann/json.hpp>
 #include <fstream>
+#include <glm/fwd.hpp>
+#include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
+#include <sstream>
+#include <string>
 
-#include "Rendering/ShaderProgram.h"
-#include "Rendering/Assets/ShaderAsset.h"
 #include "Core/AssetManager/AssetManager.h"
+#include "Rendering/Assets/ShaderAsset.h"
+#include "Rendering/ShaderProgram.h"
 
 #include "Macros.h"
 
@@ -65,7 +68,7 @@ namespace mlg {
     }
 
     MaterialAsset::MaterialAsset(const std::string& path)
-            : Asset(path) {}
+        : Asset(path) {}
 
     void MaterialAsset::Activate() {
         shaderProgram->Activate();
@@ -118,12 +121,18 @@ namespace mlg {
             } else if (type == "int") {
                 SetInt(jsonUniform["name"], jsonUniform["value"]);
             } else if (type == "vec4") {
+                if (jsonUniform["value"].type() == json::value_t::string) {
+                    glm::vec4 value = HTMLtoVec4(jsonUniform["value"]);
+                    SetVec4(jsonUniform["name"], value);
+                    continue;;
+                }
+
                 SetVec4(jsonUniform["name"], {
-                    jsonUniform["value"][0].get<float>(),
-                    jsonUniform["value"][1].get<float>(),
-                    jsonUniform["value"][2].get<float>(),
-                    jsonUniform["value"][3].get<float>(),
-                });
+                                                     jsonUniform["value"][0],
+                                                     jsonUniform["value"][1],
+                                                     jsonUniform["value"][2],
+                                                     jsonUniform["value"][3],
+                                             });
             } else {
                 SPDLOG_ERROR("MATERIAL: Unknown uniform type {}", type);
             }
@@ -148,7 +157,7 @@ namespace mlg {
 
     void MaterialAsset::RemoveUniform(const std::string& name) {
         uniforms.erase(std::remove_if(uniforms.begin(), uniforms.end(),
-                       [name](const std::unique_ptr<Uniform>& uniform) { return uniform->name == name; }),
+                                      [name](const std::unique_ptr<Uniform>& uniform) { return uniform->name == name; }),
                        uniforms.end());
     }
 
@@ -196,7 +205,7 @@ namespace mlg {
 
     std::shared_ptr<MaterialAsset> MaterialAsset::CreateDynamicInstance() {
         auto dynamicInstance = std::make_shared<MaterialAsset>(GetPath());
-        for (auto& uniform: uniforms) {
+        for (auto& uniform : uniforms) {
             dynamicInstance->uniforms.push_back(std::move(uniform->Clone()));
         }
 
@@ -205,4 +214,15 @@ namespace mlg {
         return dynamicInstance;
     }
 
-} // mlg
+    glm::vec4 MaterialAsset::HTMLtoVec4(const std::string& html) {
+        if (html[0] != '#') {
+            SPDLOG_ERROR("HTMLtoVec4: Invalid HTML color");
+            return glm::vec4(0.0f);
+        }
+
+        unsigned int hex = std::stoul(html.substr(1), nullptr, 16);
+
+        return HEX_RGBA(hex);
+    }
+
+}// namespace mlg

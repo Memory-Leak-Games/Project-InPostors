@@ -32,14 +32,16 @@
 #include "Utils/Blueprint.h"
 #include "Utils/BlueprintManager.h"
 
+#include "Player/EquipmentComponent.h"
 #include "UI/Assets/FontAsset.h"
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
 #include "UI/Components/ProgressBar.h"
-#include "Player/EquipmentComponent.h"
+#include "UI/FactoryUI.h"
 #include "Utils/ProductManager.h"
 
-#include "UI/FactoryUI.h"
+#include "Animation/AnimationComponent.h"
+
 
 using json = nlohmann::json;
 using Random = effolkronium::random_static;
@@ -75,10 +77,15 @@ std::shared_ptr<Factory> Factory::Create(
         result->AddEmitter(emitterJson);
     }
 
-    result->factoryUi = result->AddComponent<FactoryUI>("FactoryUI", result).lock();
+    result->factoryUi = result->AddComponent<FactoryUI>("FactoryUI").lock();
 
     result->AddTriggers(configJson);
     result->mainRigidbody->SetKinematic(true);
+
+    result->factoryEquipment = result->AddComponent<FactoryEquipmentComponent>(
+                                             "FactoryEquipmentComponent",
+                                             result->blueprintId)
+                                       .lock();
     return result;
 }
 
@@ -136,10 +143,6 @@ void Factory::CheckBlueprintAndStartWorking() {
 void Factory::Start() {
     createProductSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/create_product.wav");
 
-    factoryEquipment = AddComponent<FactoryEquipmentComponent>(
-                               "FactoryEquipmentComponent",
-                               blueprintId)
-                               .lock();
 
     CheckBlueprintAndStartWorking();
 
@@ -151,16 +154,14 @@ void Factory::Start() {
         CheckBlueprintAndStartWorking();
     });
 
+    animComponent = AddComponent<AnimationComponent>("Anim").lock();
 
-    factoryEquipment->inputProductChanged.append([this]() {
-       this->factoryUi->UpdateFactoryInputIcons();
-    });
 
     GetAllSmokes();
 }
 
 void Factory::Update() {
-    for (auto& emiter: emitters) {
+    for (auto& emiter : emitters) {
         mlg::ParticleSystem* particleSystem = emiter.lock()->GetParticleSystem();
         FactorySmokeFX* factorySmoke = dynamic_cast<FactorySmokeFX*>(particleSystem);
 
@@ -224,6 +225,10 @@ std::string Factory::GiveOutput() {
     }
 
     return result;
+}
+
+bool Factory::IsOutputPresent() const {
+    return factoryEquipment->IsOutputPresent();
 }
 
 bool Factory::CheckBlueprint() {
