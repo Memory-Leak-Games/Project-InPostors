@@ -161,6 +161,10 @@ size_t TaskManager::AcceptNewTask() {
     return newTask;
 }
 
+size_t TaskManager::GetTaskCount() const {
+    return tasks.size();
+}
+
 void TaskManager::RemoveTask(size_t id) {
     const Task& task = tasks.at(id);
 
@@ -174,9 +178,8 @@ void TaskManager::RemoveTask(size_t id) {
             task.reward,
             task.bonus};
 
-    OnTaskFinished(taskData);
-
     tasks.erase(id);
+    OnTaskFinished(taskData);
 }
 
 std::vector<size_t> TaskManager::GetActiveTasksIds() {

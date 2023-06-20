@@ -51,7 +51,10 @@ public:
     void Update() override;
 
     void SetScore(int score);
+
     void ShowMessage(const std::string& message, float visibleTime = 5.f);
+    bool IsChatVisible() const;
+
     void SetClock(float time);
     void UpdateTask(int idx);
 

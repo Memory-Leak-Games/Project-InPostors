@@ -53,6 +53,8 @@ void Core::MainLoop() {
                 shouldClose = true;
             });
 
+    SceneManager::Start();
+
     ComponentManager::Start();
     EntityManager::Start();
 

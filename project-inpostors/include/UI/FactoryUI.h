@@ -32,6 +32,4 @@ public:
 private:
     void UpdateFactoryInputIcons();
     void AnimatePanel();
-
-
 };

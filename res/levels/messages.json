@@ -1,0 +1,25 @@
+{
+    "min_delay": 20.0,
+    "max_delay": 30.0,
+    "messages": {
+        "product_sold": [
+            "You sold product for {price}$, useless piece of meat! You are courier, not a merchant!",
+            "NO! GOD! NO GOD PLEASE NO!!! NO!!! NOOOOOOOOOO!!!"
+        ],
+        "task_failed": [
+            "You failed {product} task, you are not a courier, you are potato",
+            "You failed task: {product}... Not bad. I forgot how good you are at this. You should pace yourself, though. We have A LOT of stuff to deliver."
+        ],
+        "welcome": [
+            "Welcome to {map_name}, useless piece of meat!",
+            "Welcome to {map_name}. Remember:\nNever gone give you up\nNever gone let you down..",
+            "It's a ME! {map_name}!, no just kidding i am Artificial Intelligence post service HA. HA. HA."
+        ],
+        "random": [
+            "Remember, we'll be watching you.",
+            "We won't have MemoryLeak, because there is a Garbage Collector.",
+            "Remember, There are 5000 other two subject teams in direct competition with you.",
+            "AI JOKE: What do you call a robot that always takes the longest path?\nR2 detour. HA. HA. HA."
+        ]
+    }
+}

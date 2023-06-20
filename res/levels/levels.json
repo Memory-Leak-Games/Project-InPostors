@@ -1,17 +1,24 @@
-[
-    {
-        "name": "San Domierz",
-        "material": "res/materials/ui/error_material.json",
-        "path": "res/levels/maps/small_city.json"
-    },
-    {
-        "name": "Zeszuf",
+{
+    "tutorial": {
+        "name": "0. Snowiecsons",
         "material": "res/materials/ui/error_material.json",
         "path": "res/levels/maps/big_city.json"
     },
-    {
-        "name": "El Uc",
-        "material": "res/materials/ui/error_material.json",
-        "path": "res/levels/maps/test_level.json"
-    }
-]
+    "levels": [
+        {
+            "name": "1. San Domierz",
+            "material": "res/materials/ui/error_material.json",
+            "path": "res/levels/maps/small_city.json"
+        },
+        {
+            "name": "2. Zeszuf",
+            "material": "res/materials/ui/error_material.json",
+            "path": "res/levels/maps/test_level.json"
+        },
+        {
+            "name": "3. El Uc",
+            "material": "res/materials/ui/error_material.json",
+            "path": "res/levels/maps/boat_city.json"
+        }
+    ]
+}
