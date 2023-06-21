@@ -66,7 +66,7 @@
     "car-type": "res/config/cars/van.json",
     "color": [1.0, 0.0, 0.0],
 
-    "position": [32.0, -12.0],
+    "position": [34.0, -13.0],
     "rotation": 180.0
   },
 
@@ -75,32 +75,11 @@
     "car-type": "res/config/cars/van.json",
     "color": [0.0, 1.0, 1.0],
 
-    "position": [-24.0, 10.0]
+    "position": [-34.0, 15.0],
+    "rotation": 90.0
   },
 
   "events-config": "res/levels/events/default_events.json",
   "events": [
-    {
-      "id": "3x2",
-      "position": [11.0, 10.0],
-      "vertical": false,
-      "probability": 2
-    },
-    {
-      "id": "3x2",
-      "position": [-11.0, 20.0],
-      "vertical": true,
-      "probability": 4
-    },
-    {
-      "id": "3x2",
-      "position": [53.0, 0.0],
-      "vertical": false,
-      "probability": 5
-    },
-    {
-      "id": "None",
-      "probability": 3
-    }
   ]
 }

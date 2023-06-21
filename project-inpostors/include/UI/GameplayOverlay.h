@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Gameplay/Entity.h"
-#include <cstddef>
-#include <memory>
 
 #define TASK_PANELS 5
 
@@ -57,7 +55,10 @@ public:
     bool IsChatVisible() const;
 
     void SetClock(float time);
-    void UpdateTask(int idx);
 
     void SetTaskVisible(int idx, bool visible);
+
+private:
+    void UpdateAllTasks();
+    void UpdateTask(int idx);
 };
