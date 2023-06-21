@@ -23,8 +23,6 @@ jobs:
       with:
         submodules: recursive
         
-    - uses: openrndr/setup-opengl@v1.1
-
     - name: Apt update
       run: sudo apt-get update
 
