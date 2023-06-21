@@ -15,6 +15,7 @@
 
 #include "Rendering/Gizmos/Gizmos.h"
 #include "Scenes/LevelScene.h"
+#include "Scenes/MenuScene.h"
 #include "ai/SteeringBehaviors.h"
 
 #include "Core/Math.h"
@@ -30,7 +31,13 @@ void AIComponent::Start() {
 
     mlg::Scene* currentScene = mlg::SceneManager::GetCurrentScene();
     auto* levelScene = dynamic_cast<LevelScene*>(currentScene);
-    steering->SetNavigationGraph(levelScene->GetNavigationGraph());
+
+    if (levelScene != nullptr) {
+        steering->SetNavigationGraph(levelScene->GetNavigationGraph());
+    } else {
+        auto* menuScene = dynamic_cast<MenuScene*>(currentScene);
+        steering->SetNavigationGraph(menuScene->GetNavigationGraph());
+    }
 
     steering->CreatePath(256);
 

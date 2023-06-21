@@ -50,6 +50,7 @@ std::shared_ptr<TrafficCar> TrafficCar::Create(uint64_t id, const std::string& n
 
     auto smoke = FXLibrary::Get("smoke");
     auto smokeComponent = newTrafficCar->AddComponent<mlg::ParticleSystemComponent>("SmokeFX", smoke);
+    smokeComponent.lock()->GetTransform().SetPosition({0.f, 0.3f, 2.f});
 
     return newTrafficCar;
 }

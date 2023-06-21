@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Gameplay/Component.h"
-#include <memory>
 
 namespace mlg {
     class RigidbodyComponent;
