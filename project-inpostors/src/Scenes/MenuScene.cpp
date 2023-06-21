@@ -8,9 +8,11 @@
 #include "Core/Time.h"
 #include "Core/Window.h"
 #include "Gameplay/Components/CameraComponent.h"
+#include "Gameplay/Components/RigidbodyComponent.h"
 #include "Gameplay/Entity.h"
 #include "Gameplay/EntityManager.h"
 #include "Levels/LevelGenerator.h"
+#include "Levels/NavigationGraph.h"
 #include "Macros.h"
 #include "Managers/AudioManager.h"
 #include "Rendering/Assets/MaterialAsset.h"
@@ -35,6 +37,7 @@
 #include "UI/Components/UIComponent.h"
 
 #include "UI/UIStyle.h"
+#include "ai/TrafficCar.h"
 #include <fstream>
 #include <glm/fwd.hpp>
 #include <magic_enum.hpp>
@@ -62,6 +65,10 @@ void MenuScene::Load() {
     LoadBackgroundLevel(BACKGROUND_LEVEL);
 
     mlg::Time::PauseGame(false);
+}
+
+std::shared_ptr<NavigationGraph> MenuScene::GetNavigationGraph() const {
+    return navigationGraph;
 }
 
 void MenuScene::InitializeMainMenu() {
@@ -559,6 +566,8 @@ std::weak_ptr<mlg::Button> MenuScene::LoadLevelButton(
     return levelButton;
 }
 
+using Random = effolkronium::random_static;
+
 void MenuScene::LoadBackgroundLevel(const std::string& backgroundPath) {
     auto cameraEntity =
             mlg::EntityManager::SpawnEntity<mlg::Entity>(
@@ -571,4 +580,25 @@ void MenuScene::LoadBackgroundLevel(const std::string& backgroundPath) {
     mlg::LevelGenerator::SetCityBounds(backgroundPath);
     mlg::LevelGenerator::LoadCameraSettings(backgroundPath,
                                             *cameraComponent.lock());
+
+    navigationGraph = std::make_shared<NavigationGraph>(backgroundPath);
+
+    int i = 0;
+    for (const auto& node : navigationGraph->GetAllNodes()) {
+        TrafficCarData aiCarData = {
+                i,
+                mlg::Math::GetRandomColor(
+                        Random::get(0.1f, 0.3f),
+                        Random::get(0.5f, 0.9f), 1.f),
+                "res/config/cars/traffic.json"};
+        auto aiCar =
+                mlg::EntityManager::SpawnEntity<TrafficCar>(
+                        "TrafficCar", false, mlg::SceneGraph::GetRoot(), aiCarData);
+
+        auto aiCarRigidbody =
+                aiCar.lock()->GetComponentByName<mlg::RigidbodyComponent>("Rigidbody");
+
+        aiCarRigidbody.lock()->SetPosition(node->position);
+        i++;
+    }
 }

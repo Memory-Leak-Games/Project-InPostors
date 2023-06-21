@@ -1,30 +1,55 @@
-#include "include/UI/StorageUI.h"
+#include "UI/StorageUI.h"
 
-#include "include/Gameplay/Entity.h"
-#include "include/UI/Components/Image.h"
-#include "include/UI/Assets/FontAsset.h"
-#include "include/Rendering/Assets/MaterialAsset.h"
+#include "Core/SceneManager/SceneManager.h"
+#include "Core/Time.h"
+#include "Gameplay/Entity.h"
+#include "Managers/TaskManager.h"
+#include "Rendering/Assets/MaterialAsset.h"
+#include "Scenes/LevelScene.h"
+#include "UI/Assets/FontAsset.h"
+#include "UI/Components/Image.h"
 
-StorageUI::StorageUI(const std::weak_ptr<mlg::Entity>& owner, const std::string& name) : Component(owner, name) {
-    auto font =
-            mlg::AssetManager::GetAsset<mlg::FontAsset>(
-                    "res/fonts/terminus-bold.ttf");
-
+StorageUI::StorageUI(const std::weak_ptr<mlg::Entity>& owner, const std::string& name)
+    : SceneComponent(owner, name) {
     auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/storage/pin_material.json");
-    auto temp = owner.lock()->AddComponent<mlg::Image>("StoragePin", material).lock();
-    temp->SetBillboardTarget(owner);
-    temp->SetSize({82.f, 82.f});
-    temp->SetPosition({0.f, 50.f});
+    pin = owner.lock()->AddComponent<mlg::Image>("StoragePin", material).lock();
+    pin->SetSize({60.5f, 60.5f});
+    pin->SetPosition({0.f, 50.f});
+}
 
-    temp = owner.lock()->AddComponent<mlg::Image>("StoragePin2", material).lock();
-    temp->SetBillboardTarget(owner);
-    temp->SetSize({68.f, 68.f});
-    temp->SetPosition({0.f, 50.f});
-    temp->tint = {1.0f, 0.7f, 0.023f, 1.0f};
+void StorageUI::Start() {
+    auto sharedThis =
+            mlg::ComponentManager::GetByRawPointer(this).lock();
+    auto thisAsSceneComponent =
+            std::static_pointer_cast<mlg::SceneComponent>(sharedThis);
 
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/icon/storage_material.json");
-    temp = owner.lock()->AddComponent<mlg::Image>("StorageIcon", material).lock();
-    temp->SetSize({20.f, 20.f});
-    temp->SetBillboardTarget(owner);
-    temp->SetPosition({0.f, 50.f});
+    pin->SetBillboardTarget(thisAsSceneComponent);
+
+    mlg::Scene* scene = mlg::SceneManager::GetCurrentScene();
+    LevelScene* levelScene = dynamic_cast<LevelScene*>(scene);
+
+    levelScene->GetTaskManager()->OnTaskFinished.append(
+            [this](const TaskData& taskData) {
+                animate = true;
+                time = 0.f;
+            });
+}
+
+void StorageUI::Update() {
+    if (!animate)
+        return;
+
+    if (time > glm::pi<float>()) {
+        animate = false;
+        time = 0.f;
+    }
+
+    const float speed = 10.f;
+    const float amplitude = 2.f;
+
+    time += mlg::Time::GetDeltaSeconds() * speed;
+
+    glm::vec3 position = GetTransform().GetPosition();
+    position.y = glm::sin(time) * amplitude;
+    GetTransform().SetPosition(position);
 }

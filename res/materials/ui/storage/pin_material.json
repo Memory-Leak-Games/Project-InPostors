@@ -2,11 +2,6 @@
   "vertexShader": "res/shaders/ui/image.vert",
   "fragmentShader": "res/shaders/ui/image.frag",
   "uniforms": [
-    {
-      "type": "vec4",
-      "name": "tint",
-      "value": [0.0, 0.0, 0.0, 0.9]
-    }
   ],
   "textures": [
     {
