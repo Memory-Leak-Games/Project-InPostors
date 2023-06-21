@@ -518,8 +518,8 @@ void MenuScene::InitializeLevelSelector() {
         hbox.lock()->AddChild(levelButton);
 
         levelButton.lock()->OnClick.append(
-                [this, levelsJson]() {
-                    auto scene = std::make_unique<LevelScene>(levelsJson["path"]);
+                [this, level]() {
+                    auto scene = std::make_unique<LevelScene>(level["path"]);
                     mlg::SceneManager::SetNextScene(std::move(scene));
                 });
 
