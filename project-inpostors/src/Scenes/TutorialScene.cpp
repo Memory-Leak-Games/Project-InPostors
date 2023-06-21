@@ -20,14 +20,14 @@ TutorialScene::TutorialScene(const std::string& levelPath)
 void TutorialScene::Load() {
     LevelScene::Load();
     GetLevelTaskManager()->SetDisabled(true);
-    mlg::Entity* chatManagerEntity =
+    auto chatManagerEntity =
             mlg::EntityManager::FindByName("ChatManager")
-                    .lock()
-                    .get();
+                    .lock();
 
-    ChatManager* chatManager = dynamic_cast<ChatManager*>(chatManagerEntity);
+    chatManager = std::dynamic_pointer_cast<ChatManager>(chatManagerEntity);
     chatManager->SetWelcome("welcome-tutorial");
-    chatManager->QueueForDeletion();
+    chatManager->DisableRandomMessages();
+    chatManager->DisableTaskMessages();
 
     TaskData oreTaskData{};
     oreTaskData.productId = "ore";
@@ -73,21 +73,12 @@ void TutorialScene::Update() {
 }
 
 void TutorialScene::OreTutorial() {
-    GetGameplayOverlay()->ShowMessage(
-            "To complete your first assignment pick up the ore from "
-            "the factory and deliver it to the main storage.",
-            30.f);
-    messageSound->Play();
+    chatManager->NewMessage("ore-tutorial", 30.f);
 }
 
 void TutorialScene::IronTutorial() {
     GetTaskManager()->AcceptNewTask();
-    GetGameplayOverlay()->ShowMessage(
-            "Now for something more complex. "
-            "When you deliver products to some factories they can convert them into other products, "
-            "you can try that out by delivering ore to the iron factory ;)",
-            30.f);
-    messageSound->Play();
+    chatManager->NewMessage("iron-tutorial", 30.f);
 }
 
 void TutorialScene::BonusTutorial() {
@@ -100,11 +91,8 @@ void TutorialScene::BonusTutorial() {
     GetTaskManager()->AddTaskToPool(ironTaskDataWithLongBonus);
 
     GetTaskManager()->AcceptNewTask();
-    GetGameplayOverlay()->ShowMessage(
-            "We put strong emphasis on saving our customer's time, "
-            "that's why if you manage to deliver required products to the storage quickly, "
-            "you might receive a bonus!",
-            30.f);
+
+    chatManager->NewMessage("bonus-tutorial", 30.f);
     messageSound->Play();
 }
 
@@ -130,28 +118,18 @@ void TutorialScene::AfterIronTutorial() {
         GetTaskManager()->AcceptNewTask();
     }
 
-    GetGameplayOverlay()->ShowMessage(
-            "Now for your last assignment: You have 3 tasks to complete. "
-            "If you got through all the previous steps this shouldn't be a problem.",
-            30.f);
+    chatManager->NewMessage("after-iron-tutorial", 30.f);
     messageSound->Play();
 }
 
 void TutorialScene::FinalTutorial() {
-    GetGameplayOverlay()->ShowMessage(
-            "You have successfully completed your test"
-            "assignment, which means you are worthy of working under me! "
-            "I want to officially welcome you as a new AiPost courier!",
-            10.f);
+    chatManager->NewMessage("final-tutorial", 10.f);
     messageSound->Play();
 
     mlg::TimerManager::Get()->SetTimer(
             10.f,
             false, [this]() {
-                GetGameplayOverlay()->ShowMessage(
-                        "Now you will be exterminated... khm... khm.."
-                        " old habit... moved to a new city shortly.",
-                        10.f);
+                chatManager->NewMessage("end-tutorial", 10.f);
                 messageSound->Play();
             });
 

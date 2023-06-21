@@ -6,6 +6,8 @@ class TutorialScene : public LevelScene {
 private:
     int finishedTaskCount = 0;
     std::shared_ptr<mlg::AudioAsset> messageSound;
+    std::shared_ptr<class ChatManager> chatManager;
+
 public:
     explicit TutorialScene(const std::string& levelPath);
 
@@ -13,7 +15,7 @@ public:
     void Load() override;
     void Update() override;
 
-private: 
+private:
     void OreTutorial();
     void IronTutorial();
     void BonusTutorial();
