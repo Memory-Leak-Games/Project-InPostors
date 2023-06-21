@@ -42,9 +42,6 @@
 #include <spdlog/spdlog.h>
 #include <string>
 
-#define LEVELS_FILE "res/levels/levels.json"
-#define BACKGROUND_LEVEL "res/levels/maps/menu_level.json"
-
 MenuScene::~MenuScene() = default;
 
 void MenuScene::Load() {
