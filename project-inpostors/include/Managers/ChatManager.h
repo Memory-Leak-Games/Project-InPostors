@@ -3,6 +3,7 @@
 #include "Gameplay/Entity.h"
 #include <cstddef>
 #include <memory>
+#include <string>
 
 #define MESSAGES_PATH "res/levels/messages.json"
 
@@ -28,6 +29,8 @@ private:
             bool isStatic,
             mlg::Transform* parent);
 
+    std::string welcomeKey = "welcome";
+
     float minDelayBetweenRandomMessages = 10.f;
     float maxDelayBetweenRandomMessages = 20.f;
     size_t randomMessageTimer = 0;
@@ -47,6 +50,8 @@ public:
     ~ChatManager() override = default;
 
     void ParseJson();
+
+    void SetWelcome(const std::string& key);
 
     void Start() override;
     void Update() override;

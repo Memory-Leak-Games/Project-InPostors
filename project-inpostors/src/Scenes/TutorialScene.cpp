@@ -2,7 +2,9 @@
 
 #include "Core/SceneManager/SceneManager.h"
 #include "Core/TimerManager.h"
+#include "Gameplay/Entity.h"
 #include "Gameplay/EntityManager.h"
+#include "Managers/ChatManager.h"
 #include "Managers/LevelTaskManager.h"
 #include "Managers/TaskManager.h"
 #include "Scenes/LevelScene.h"
@@ -18,7 +20,14 @@ TutorialScene::TutorialScene(const std::string& levelPath)
 void TutorialScene::Load() {
     LevelScene::Load();
     GetLevelTaskManager()->SetDisabled(true);
-    mlg::EntityManager::FindByName("ChatManager").lock()->QueueForDeletion();
+    mlg::Entity* chatManagerEntity =
+            mlg::EntityManager::FindByName("ChatManager")
+                    .lock()
+                    .get();
+
+    ChatManager* chatManager = dynamic_cast<ChatManager*>(chatManagerEntity);
+    chatManager->SetWelcome("welcome-tutorial");
+    chatManager->QueueForDeletion();
 
     TaskData oreTaskData{};
     oreTaskData.productId = "ore";
@@ -65,7 +74,7 @@ void TutorialScene::Update() {
 
 void TutorialScene::OreTutorial() {
     GetGameplayOverlay()->ShowMessage(
-            "Ore Task: To complete your first assignment pick up the ore from "
+            "To complete your first assignment pick up the ore from "
             "the factory and deliver it to the main storage.",
             30.f);
     messageSound->Play();
@@ -74,7 +83,7 @@ void TutorialScene::OreTutorial() {
 void TutorialScene::IronTutorial() {
     GetTaskManager()->AcceptNewTask();
     GetGameplayOverlay()->ShowMessage(
-            "Iron Tutorial: Now for something more complex. "
+            "Now for something more complex. "
             "When you deliver products to some factories they can convert them into other products, "
             "you can try that out by delivering ore to the iron factory ;)",
             30.f);
@@ -92,7 +101,7 @@ void TutorialScene::BonusTutorial() {
 
     GetTaskManager()->AcceptNewTask();
     GetGameplayOverlay()->ShowMessage(
-            "Bonus Tutorial: We put strong emphasis on saving our customer's time, "
+            "We put strong emphasis on saving our customer's time, "
             "that's why if you manage to deliver required products to the storage quickly, "
             "you might receive a bonus!",
             30.f);
@@ -130,7 +139,7 @@ void TutorialScene::AfterIronTutorial() {
 
 void TutorialScene::FinalTutorial() {
     GetGameplayOverlay()->ShowMessage(
-            "Finish: You have successfully completed your test"
+            "You have successfully completed your test"
             "assignment, which means you are worthy of working under me! "
             "I want to officially welcome you as a new AiPost courier!",
             10.f);
@@ -140,8 +149,8 @@ void TutorialScene::FinalTutorial() {
             10.f,
             false, [this]() {
                 GetGameplayOverlay()->ShowMessage(
-                        "Now you will be exterminated... yhym moved to a"
-                        " new city shortly.",
+                        "Now you will be exterminated... khm... khm.."
+                        " old habit... moved to a new city shortly.",
                         10.f);
                 messageSound->Play();
             });

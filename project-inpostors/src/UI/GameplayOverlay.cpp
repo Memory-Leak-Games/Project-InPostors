@@ -14,6 +14,7 @@
 #include "UI/Components/ProgressBar.h"
 #include "Utils/BlueprintManager.h"
 #include "Utils/ProductManager.h"
+#include <glm/fwd.hpp>
 #include <spdlog/fmt/bundled/format.h>
 #include <string>
 
@@ -53,15 +54,22 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
 
 
     // chat window
-    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay_background_material.json");
     result->chatWindow = result->AddComponent<mlg::CanvasPanel>("ChatWindow").lock();
     result->chatWindow->SetPosition({1280.f - 230.f, 95.f});
     result->chatWindow->SetAnchor({1.f, 0.f});
 
+    material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay_background_material.json");
     auto ui = result->AddComponent<mlg::Image>("ChatWindow", material).lock();
     ui->SetSize({400, 125});
     ui->tint = glm::vec4(0.7f, 0.7f, 0.7f, 0.9f);
     result->chatWindow->AddChild(ui);
+
+    auto logoMaterial =
+            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
+                    "res/materials/ui/gameplay/logo_transparent_material.json");
+    auto logo = result->AddComponent<mlg::Image>("Logo", logoMaterial).lock();
+    logo->SetSize(glm::vec2{64.f});
+    result->chatWindow->AddChild(logo);
 
     ui = result->AddComponent<mlg::Image>("ChatWindow", material).lock();
     ui->SetAnchor({0.5, 0});
@@ -262,8 +270,7 @@ void GameplayOverlay::ShowMessage(const std::string& message, float visibleTime)
 
     this->chatWindow->SetVisible(true);
 
-    std::string text = fmt::format("AIPost: {}", message);
-    text = mlg::Label::WrapText(text, 42);
+    std::string text = mlg::Label::WrapText(message, 42);
     this->chat->SetText(text);
 
     chatTimer = mlg::TimerManager::Get()->SetTimer(

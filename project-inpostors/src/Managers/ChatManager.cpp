@@ -126,7 +126,7 @@ const std::string& ChatManager::GetMessage(const std::string& key) {
 
 void ChatManager::ShowWelcomeMessage() {
     std::string message = fmt::format(
-            fmt::runtime(GetMessage("welcome")),
+            fmt::runtime(GetMessage(welcomeKey)),
             fmt::arg("map_name", currentLevelScene->GetLevelName()));
     ShowMessage(message, 7.f);
 }
@@ -134,4 +134,8 @@ void ChatManager::ShowWelcomeMessage() {
 void ChatManager::ShowMessage(const std::string& message, float duration) {
     currentLevelScene->GetGameplayOverlay()->ShowMessage(message, duration);
     messageSound->Play();
+}
+
+void ChatManager::SetWelcome(const std::string& key) {
+    welcomeKey = key;
 }
