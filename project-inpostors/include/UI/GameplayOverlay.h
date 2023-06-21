@@ -2,6 +2,7 @@
 
 #include "Gameplay/Entity.h"
 #include <cstddef>
+#include <memory>
 
 #define TASK_PANELS 5
 
