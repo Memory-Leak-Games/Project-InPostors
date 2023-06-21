@@ -35,7 +35,7 @@ void LevelTaskManager::StartNewTaskLogic() {
 
     int taskCount = taskManager->GetActiveTasksCount();
     int maxTasksToStart = maxActiveTasks - 1 - taskCount;
-    int minTasksToStart = taskCount > 1 ? 1 : 0;
+    int minTasksToStart = taskCount <= 2 ? 1 : 0;
     int tasksToStart = Random::get(minTasksToStart, std::min(2, maxTasksToStart));
 
     size_t newTaskId = 0;
