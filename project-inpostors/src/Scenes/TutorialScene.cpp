@@ -30,10 +30,7 @@ void TutorialScene::Load() {
     ironTaskData.productId = "iron";
     ironTaskData.timeLimit = -1.f;
     ironTaskData.reward = 100;
-
-    for (int i = 0; i < 4; ++i) {
-        GetTaskManager()->AddTaskToPool(ironTaskData);
-    }
+    GetTaskManager()->AddTaskToPool(ironTaskData);
 
     GetTaskManager()->OnTaskFinished.append(
             [this](const TaskData& taskData) {
@@ -42,8 +39,10 @@ void TutorialScene::Load() {
                 if (finishedTaskCount == 1) {
                     IronTutorial();
                 } else if (finishedTaskCount == 2) {
+                    BonusTutorial();
+                } else if (finishedTaskCount == 3) {
                     AfterIronTutorial();
-                } else if (finishedTaskCount == 5) {
+                } else if (finishedTaskCount == 6) {
                     FinalTutorial();
                 }
             });
@@ -74,10 +73,42 @@ void TutorialScene::IronTutorial() {
     messageSound->Play();
 }
 
+void TutorialScene::BonusTutorial() {
+    TaskData ironTaskDataWithLongBonus{};
+    ironTaskDataWithLongBonus.productId = "iron";
+    ironTaskDataWithLongBonus.timeLimit = -1.f;
+    ironTaskDataWithLongBonus.time = 600.f;
+    ironTaskDataWithLongBonus.reward = 100;
+    ironTaskDataWithLongBonus.bonus = 50;
+    GetTaskManager()->AddTaskToPool(ironTaskDataWithLongBonus);
+
+    GetTaskManager()->AcceptNewTask();
+    GetGameplayOverlay()->ShowMessage("Bonus Tutorial: Bla bla bla", 30.f);
+    messageSound->Play();
+}
+
 void TutorialScene::AfterIronTutorial() {
-    for (int i = 0; i < 3; ++i) {
+    TaskData ironTaskDataWithNormalBonus{};
+    ironTaskDataWithNormalBonus.productId = "iron";
+    ironTaskDataWithNormalBonus.timeLimit = -1.f;
+    ironTaskDataWithNormalBonus.time = 45.f;
+    ironTaskDataWithNormalBonus.reward = 100;
+    ironTaskDataWithNormalBonus.bonus = 50;
+
+    TaskData oreTaskDataWithNormalBonus{};
+    oreTaskDataWithNormalBonus.productId = "ore";
+    oreTaskDataWithNormalBonus.timeLimit = -1.f;
+    oreTaskDataWithNormalBonus.time = 20.f;
+    oreTaskDataWithNormalBonus.reward = 50;
+    oreTaskDataWithNormalBonus.bonus = 25;
+    GetTaskManager()->AddTaskToPool(oreTaskDataWithNormalBonus);
+    GetTaskManager()->AcceptNewTask();
+
+    for (int i = 0; i < 2; ++i) {
+        GetTaskManager()->AddTaskToPool(ironTaskDataWithNormalBonus);
         GetTaskManager()->AcceptNewTask();
     }
+
     GetGameplayOverlay()->ShowMessage("Post Iron Tutorial: Bla bla bla", 30.f);
     messageSound->Play();
 }

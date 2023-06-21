@@ -16,6 +16,7 @@ public:
 private: 
     void OreTutorial();
     void IronTutorial();
+    void BonusTutorial();
     void AfterIronTutorial();
     void FinalTutorial();
 };
