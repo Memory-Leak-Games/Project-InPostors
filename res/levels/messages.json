@@ -15,6 +15,9 @@
             "Welcome to {map_name}. Remember:\nNever gone give you up\nNever gone let you down..",
             "It's a ME! {map_name}!, no just kidding i am Artificial Intelligence post service HA. HA. HA."
         ],
+        "welcome-tutorial": [
+            "Welcome to your test assignment! I'm AiPost your possible future employer and I want to verify your delivery skills. If you are in need of a refresher on how to drive press ESCAPE! :)"
+        ],
         "random": [
             "Remember, we'll be watching you.",
             "We won't have MemoryLeak, because there is a Garbage Collector.",
