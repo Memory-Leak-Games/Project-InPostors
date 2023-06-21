@@ -78,7 +78,7 @@ void LevelScene::Load() {;
 }
 
 void LevelScene::Start() {
-    levelTaskManager->StartNewTaskLogic();
+    levelTaskManager->GetTaskManager().AcceptNewTask();
 }
 
 void LevelScene::Update() {
