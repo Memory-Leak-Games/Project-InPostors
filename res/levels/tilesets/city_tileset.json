@@ -1,6 +1,6 @@
 {
   "default-material": "res/materials/buildings_material.json",
-  "factory-pool": "res/levels/factories/pools/furniture.json",
+  "factory-pool": "res/levels/factories/pools/tutorial.json",
   "tiles": [
     {
       "symbol": "b",

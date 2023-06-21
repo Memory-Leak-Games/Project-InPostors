@@ -23,6 +23,12 @@ LevelTaskManager::LevelTaskManager() {
 // so it will start new task when it will be possible.
 
 void LevelTaskManager::StartNewTaskLogic() {
+    if (disabled)
+        return;
+
+    if (taskManager->GetTaskCount() == 0)
+        return;
+
     if (taskManager->GetActiveTasksCount() >= GetMaxActiveTasks())
         return;
 
@@ -72,4 +78,12 @@ void LevelTaskManager::SetNewTaskProbability(float newTaskProbability) {
 
 TaskManager& LevelTaskManager::GetTaskManager() const {
     return *taskManager;
+}
+
+void LevelTaskManager::SetDisabled(bool disabled) {
+    this->disabled = disabled;
+}
+
+bool LevelTaskManager::IsDisabled() const {
+    return disabled;
 }

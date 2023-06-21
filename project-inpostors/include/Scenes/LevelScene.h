@@ -32,7 +32,7 @@ private:
 public:
     eventpp::CallbackList<void()> OnLevelFinished;
 
-    explicit LevelScene(std::string  path);
+    explicit LevelScene(const std::string& path);
     ~LevelScene() override;
 
     void Load() override;

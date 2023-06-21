@@ -7,6 +7,7 @@ namespace mlg {
         virtual ~Scene() = default;
 
         virtual void Load() = 0;
+        virtual void Start(){};
         virtual void Update(){};
         virtual void UnLoad(){};
     };

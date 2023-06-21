@@ -36,6 +36,7 @@ public:
     void Update();
 
     void AddTaskToPool(const TaskData& taskData);
+    
     bool FinishTask(const std::string& productId);
     void SellProduct(const std::string& productId);
     bool HasTask(const std::string& productId);
@@ -47,6 +48,8 @@ public:
     uint32_t GetActiveTasksCount() const;
 
     size_t AcceptNewTask();
+
+    size_t GetTaskCount() const;
 
 private:
     void RemoveTask(size_t id);
