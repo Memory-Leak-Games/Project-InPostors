@@ -74,9 +74,9 @@
   "number-of-agents": 15,
 
   "camera-settings": {
-    "position": [16.0, 50.0, -14.0],
+    "position": [5.0, 48.0, -28.5],
     "rotation": [65.0, -45.0, 0.0],
-    "size": 82.0,
+    "size": 88.0,
     "near": 0.1,
     "far": 200.0
   },

@@ -52,26 +52,25 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     result->score->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
 
 
+    // chat window
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay_background_material.json");
     result->chatWindow = result->AddComponent<mlg::CanvasPanel>("ChatWindow").lock();
-    result->chatWindow->SetPosition({640.f, 0.f});
-    result->chatWindow->SetSize({400, 200});
+    result->chatWindow->SetPosition({1280.f - 225.f , 75.f});
+    result->chatWindow->SetAnchor({1.f, 0.f});
 
     auto ui = result->AddComponent<mlg::Image>("ChatWindow", material).lock();
-    ui->SetAnchor({0.5, 0});
-    ui->SetSize({400, 200});
+    ui->SetSize({400, 100});
     ui->tint = glm::vec4(0.7f, 0.7f, 0.7f, 0.9f);
     result->chatWindow->AddChild(ui);
 
     ui = result->AddComponent<mlg::Image>("ChatWindow", material).lock();
     ui->SetAnchor({0.5, 0});
-    ui->SetSize({400 - 10, 200 - 10});
+    ui->SetSize({400 - 10, 100 - 10});
     ui->tint = glm::vec4(0.f, 0.f, 0.f, 0.95f);
     result->chatWindow->AddChild(ui);
 
     result->chat = result->AddComponent<mlg::Label>("Chat").lock();
-    result->chat->SetRelativePosition({-190.f, 75.f});
-    result->chat->SetAnchor({0.5, 1.0});
+    result->chat->SetRelativePosition({-190.f, 25.f});
     result->chat->SetSize(18);
     result->chatWindow->AddChild(result->chat);
 

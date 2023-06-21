@@ -117,8 +117,6 @@ PlayerUI::PlayerUI(const std::weak_ptr<mlg::Entity>& owner, const std::string& n
                 auto items = this->player->equipment->GetEquipment();
 
                 for (int i = 0; i < equipmentSize; ++i) {
-
-                    // Wouldn't game crash be more appropriate?
                     if (!eqIcons[i] || !eqBillboards[i])
                         break;
 
@@ -130,7 +128,6 @@ PlayerUI::PlayerUI(const std::weak_ptr<mlg::Entity>& owner, const std::string& n
                     } else {
                         eqIcons[i]->material = noneMaterial;
                         eqBillboards[i]->SetVisible(false);
-                        break;// It ain't much, but it's honest optimization
                     }
                 }
 
