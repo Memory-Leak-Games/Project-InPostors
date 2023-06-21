@@ -2,12 +2,15 @@
 
 #include "Core/SceneManager/SceneManager.h"
 #include "Core/TimerManager.h"
+#include "Gameplay/Entity.h"
 #include "Gameplay/EntityManager.h"
+#include "Managers/ChatManager.h"
 #include "Managers/LevelTaskManager.h"
 #include "Managers/TaskManager.h"
 #include "Scenes/LevelScene.h"
 #include "Scenes/MenuScene.h"
 #include "UI/GameplayOverlay.h"
+#include <fstream>
 #include <memory>
 
 TutorialScene::TutorialScene(const std::string& levelPath)
@@ -17,7 +20,14 @@ TutorialScene::TutorialScene(const std::string& levelPath)
 void TutorialScene::Load() {
     LevelScene::Load();
     GetLevelTaskManager()->SetDisabled(true);
-    mlg::EntityManager::FindByName("ChatManager").lock()->QueueForDeletion();
+    mlg::Entity* chatManagerEntity =
+            mlg::EntityManager::FindByName("ChatManager")
+                    .lock()
+                    .get();
+
+    ChatManager* chatManager = dynamic_cast<ChatManager*>(chatManagerEntity);
+    chatManager->SetWelcome("welcome-tutorial");
+    chatManager->QueueForDeletion();
 
     TaskData oreTaskData{};
     oreTaskData.productId = "ore";
@@ -63,16 +73,20 @@ void TutorialScene::Update() {
 }
 
 void TutorialScene::OreTutorial() {
-    GetGameplayOverlay()->ShowMessage("Ore Task: To complete your first assignment pick up the ore from "
-                                      "the factory and deliver it to the main storage.", 30.f);
+    GetGameplayOverlay()->ShowMessage(
+            "To complete your first assignment pick up the ore from "
+            "the factory and deliver it to the main storage.",
+            30.f);
     messageSound->Play();
 }
 
 void TutorialScene::IronTutorial() {
     GetTaskManager()->AcceptNewTask();
-    GetGameplayOverlay()->ShowMessage("Iron Tutorial: Now for something more complex. "
-                                      "When you deliver products to some factories they can convert them into other products, "
-                                      "you can try that out by delivering ore to the iron factory ;)", 30.f);
+    GetGameplayOverlay()->ShowMessage(
+            "Now for something more complex. "
+            "When you deliver products to some factories they can convert them into other products, "
+            "you can try that out by delivering ore to the iron factory ;)",
+            30.f);
     messageSound->Play();
 }
 
@@ -86,9 +100,11 @@ void TutorialScene::BonusTutorial() {
     GetTaskManager()->AddTaskToPool(ironTaskDataWithLongBonus);
 
     GetTaskManager()->AcceptNewTask();
-    GetGameplayOverlay()->ShowMessage("Bonus Tutorial: We put strong emphasis on saving our customer's time, "
-                                      "that's why if you manage to deliver required products to the storage quickly, "
-                                      "you might receive a bonus!", 30.f);
+    GetGameplayOverlay()->ShowMessage(
+            "We put strong emphasis on saving our customer's time, "
+            "that's why if you manage to deliver required products to the storage quickly, "
+            "you might receive a bonus!",
+            30.f);
     messageSound->Play();
 }
 
@@ -114,28 +130,39 @@ void TutorialScene::AfterIronTutorial() {
         GetTaskManager()->AcceptNewTask();
     }
 
-    GetGameplayOverlay()->ShowMessage("Now for your last assignment: You have 3 tasks to complete. "
-                                      "If you got through all the previous steps this shouldn't be a problem.", 30.f);
+    GetGameplayOverlay()->ShowMessage(
+            "Now for your last assignment: You have 3 tasks to complete. "
+            "If you got through all the previous steps this shouldn't be a problem.",
+            30.f);
     messageSound->Play();
 }
 
 void TutorialScene::FinalTutorial() {
-    GetGameplayOverlay()->ShowMessage("Finish: You have successfully completed your test assignment, "
-                                      "which means you are worthy of working under me! "
-                                      "I want to officially welcome you as a new AiPost courier!", 10.f);
+    GetGameplayOverlay()->ShowMessage(
+            "You have successfully completed your test"
+            "assignment, which means you are worthy of working under me! "
+            "I want to officially welcome you as a new AiPost courier!",
+            10.f);
     messageSound->Play();
 
     mlg::TimerManager::Get()->SetTimer(
             10.f,
             false, [this]() {
-                GetGameplayOverlay()->ShowMessage("Now you will be exterminated... yhym moved to a new city shortly.", 10.f);
+                GetGameplayOverlay()->ShowMessage(
+                        "Now you will be exterminated... khm... khm.."
+                        " old habit... moved to a new city shortly.",
+                        10.f);
                 messageSound->Play();
             });
 
     mlg::TimerManager::Get()->SetTimer(
             15.f,
             false, [this]() {
-                auto scene = std::make_unique<MenuScene>();
+                std::ifstream file(LEVELS_FILE);
+                nlohmann::json levels = nlohmann::json::parse(file);
+                std::string path = levels["levels"][0]["path"];
+
+                auto scene = std::make_unique<LevelScene>(path);
                 mlg::SceneManager::SetNextScene(std::move(scene));
             });
 }

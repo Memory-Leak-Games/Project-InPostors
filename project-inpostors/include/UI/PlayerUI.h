@@ -1,21 +1,26 @@
 #pragma once
 
 #include "Gameplay/Component.h"
+#include <memory>
 
 namespace mlg {
     class Entity;
     class Image;
     class Label;
+    class CanvasPanel;
 }
 
 class PlayerUI : public mlg::Component {
 
     std::shared_ptr<class Player> player;
 
-    std::weak_ptr<class mlg::Image> uiArrow;
-    std::shared_ptr<class mlg::Image> eqBillboards[3];
-    std::shared_ptr<class mlg::Image> eqIcons[3];
-    std::shared_ptr<class mlg::Label> startLabel;
+    std::weak_ptr<mlg::Image> uiArrow;
+
+    std::weak_ptr<mlg::CanvasPanel> eqPanel;
+    std::vector<std::shared_ptr<mlg::Image>> eqIcons;
+
+    std::shared_ptr<mlg::Image> eqBillboards[3];
+    std::shared_ptr<mlg::Label> startLabel;
 
     unsigned int startTimerHandle;
 

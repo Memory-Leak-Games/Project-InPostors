@@ -5,7 +5,7 @@
 
   "time-limit": 120.0,
 
-  "sublevels": [ "res/levels/maps/test_level_props.json" ],
+  "sublevels": [ "res/levels/maps/menu_level_props.json" ],
 
   "ground": {
     "mesh": "res/models/ground/ground.obj",

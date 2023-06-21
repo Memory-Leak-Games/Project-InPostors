@@ -2,6 +2,9 @@
 
 #include "Core/SceneManager/Scene.h"
 
+#define LEVELS_FILE "res/levels/levels.json"
+#define BACKGROUND_LEVEL "res/levels/maps/menu_level.json"
+
 namespace mlg {
     class Container;
     class CanvasPanel;

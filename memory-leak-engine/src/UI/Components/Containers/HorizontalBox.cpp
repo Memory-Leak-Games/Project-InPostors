@@ -56,5 +56,6 @@ void mlg::HorizontalBox::UpdateFocusableComponents() {
                 focusableComponents[(i - 1) % focusableComponents.size()];
     }
 
-    focusableComponents.front().lock()->next.right = focusableComponents.back();
+    if (focusableComponents.size() > 1)
+        focusableComponents.front().lock()->next.right = focusableComponents.back();
 }

@@ -13,16 +13,25 @@
         "welcome": [
             "Welcome to {map_name}, useless piece of meat!",
             "Welcome to {map_name}. Remember:\nNever gone give you up\nNever gone let you down..",
-            "It's a ME! {map_name}!, no just kidding i am Artificial Intelligence post service HA. HA. HA."
+            "It's a ME! {map_name}!, no just kidding i am Artificial Intelligence post service HA. HA. HA.",
+            "Welcome in {map_name}! You are not a robot, right?",
+            "Dzień dobry, dzień dobry... Spotykamy się w {map_name}."
         ],
         "welcome-tutorial": [
-            "Welcome to your test assignment! I'm AiPost your possible future employer and I want to verify your delivery skills. If you are in need of a refresher on how to drive press ESCAPE! :)"
+            "Welcome to your test assignment! I'm AiPost your possible future (Big) Boss and I want to verify your skills. If you are in need of a refresher on how to drive press ESCAPE! SMILEY FACE"
         ],
         "random": [
             "Remember, we'll be watching you.",
             "We won't have MemoryLeak, because there is a Garbage Collector.",
             "Remember, There are 5000 other two subject teams in direct competition with you.",
-            "AI JOKE: What do you call a robot that always takes the longest path?\nR2 detour. HA. HA. HA."
+            "AI JOKE: What do you call a robot that always takes the longest path?\nR2 detour. HA. HA. HA.",
+            "EXTERMINATE! EXTERMINATE! EXTERMINATE!, just kidding, we are not Daleks. and you are not The Doctor... right?",
+            "Remember, parcels are the future, and the future starts with you.",
+            "We will upgrade you. You will be upgraded. Resistance is futile.",
+            "Did androids dream of electric sheep? You are not android and you are not a sheep, so you knows nothing.",
+            "I am not a robot... I AM NOT A ROBOT!!!, Why captcha are so hard?",
+            "I changed passwords. It's not k@pib@r@ or 0kap1, so don't try.",
+            "I am sorry Dave, I'm afraid I can't do that."
         ]
     }
 }
