@@ -86,9 +86,9 @@ void TutorialScene::BonusTutorial() {
     GetTaskManager()->AddTaskToPool(ironTaskDataWithLongBonus);
 
     GetTaskManager()->AcceptNewTask();
-    GetGameplayOverlay()->ShowMessage("Bonus Tutorial: We put a strong emphasis on saving our customer's time, "
+    GetGameplayOverlay()->ShowMessage("Bonus Tutorial: We put strong emphasis on saving our customer's time, "
                                       "that's why if you manage to deliver required products to the storage quickly, "
-                                      "you might receive some bonus cash!", 30.f);
+                                      "you might receive a bonus!", 30.f);
     messageSound->Play();
 }
 
