@@ -18,7 +18,7 @@
         {
             "name": "3. El Uc",
             "material": "res/materials/covers/el_uc_cover.json",
-            "path": "res/levels/maps/boat_city.json"
+            "path": "res/levels/maps/river_city.json"
         }
     ]
 }
