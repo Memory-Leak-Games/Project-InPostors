@@ -17,7 +17,7 @@ glm::vec2 PlayerOneInput::GetMovementInput() {
     return movement;
 }
 
-void PlayerOneInput::SetVibration(float lowStrength, float highStrength, int duration) {
+void PlayerOneInput::SetVibration(float lowStrength, float highStrength, float duration) {
     mlg::Input::SetVibration(0, lowStrength, highStrength, duration);
 }
 

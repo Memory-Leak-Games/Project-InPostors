@@ -10,5 +10,5 @@ public:
     glm::vec2 GetMovementInput() override;
     bool GetPickUpInput() override;
 
-    void SetVibration(float lowStrength, float highStrength, int duration) override;
+    void SetVibration(float lowStrength, float highStrength, float duration) override;
 };

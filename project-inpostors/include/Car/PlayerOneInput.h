@@ -10,7 +10,7 @@ public:
     ~PlayerOneInput() override;
 
     glm::vec2 GetMovementInput() override;
-    void SetVibration(float lowStrength, float highStrength, int duration) override;
+    void SetVibration(float lowStrength, float highStrength, float duration) override;
 
     bool GetPickUpInput() override;
 };

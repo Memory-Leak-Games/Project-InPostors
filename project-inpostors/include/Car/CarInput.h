@@ -10,5 +10,5 @@ public:
 
     virtual glm::vec2 GetMovementInput() = 0;
     virtual bool GetPickUpInput() = 0;
-    virtual void SetVibration(float lowStrength, float highStrength, int duration) = 0;
+    virtual void SetVibration(float lowStrength, float highStrength, float duration) = 0;
 };

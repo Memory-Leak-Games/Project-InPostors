@@ -99,7 +99,7 @@ namespace mlg {
 
     void Input::SetVibration(
             int index, float lowStrength,
-            float hightStrength, int duration) {
+            float hightStrength, float duration) {
         SDL_GameController* gamepad = instance->GetGamepad(index);
         if (gamepad == nullptr)
             return;
@@ -108,7 +108,7 @@ namespace mlg {
                 gamepad,
                 (uint16_t) (lowStrength * 0xFFFF),
                 (uint16_t) (hightStrength * 0xFFFF),
-                (uint32_t) (duration * 1000));
+                (uint32_t) (duration * 1000.f));
     }
 
     void Input::LoadActions() {

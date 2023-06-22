@@ -40,7 +40,7 @@ namespace mlg {
 
         static void SetVibration(
                 int index, float lowStrength,
-                float hightStrength, int duration);
+                float hightStrength, float duration);
 
         bool IsGamepadPresent(const SDL_GameController* gamepad);
         SDL_GameController* GetGamepad(int index);
