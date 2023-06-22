@@ -1,13 +1,6 @@
 #pragma once
 
-#include "Gameplay/Entity.h"
-#include "Animation/AnimatedEntity.h"
 #include "Levels/LevelGenerator.h"
-
-namespace mlg {
-    class RigidbodyComponent;
-    class StaticMeshComponent;
-}
 
 struct AnimatedEntityData {
     int id;
@@ -17,21 +10,12 @@ struct AnimatedEntityData {
     float rotation;
 };
 
-class FerrisWheelAnim : public mlg::Entity {
-private:
-    std::weak_ptr<mlg::RigidbodyComponent> rigidbodyComponent;
-
-    AnimatedEntityData* animData;
-
-    FerrisWheelAnim(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent, AnimatedEntityData* animData);
+class FerrisWheelAnim {
 
 public:
-    static std::shared_ptr<FerrisWheelAnim> Create(uint64_t id, const std::string& name,
-                                                   bool isStatic, mlg::Transform* parent,
-                                                   AnimatedEntityData* animData);
+    FerrisWheelAnim();
 
-    void Start() override;
-    void Update() override;
+    void Spawn(AnimatedEntityData* animData);
 
-    ~FerrisWheelAnim() override = default;
+    ~FerrisWheelAnim() = default;
 };

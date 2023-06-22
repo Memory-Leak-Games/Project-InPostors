@@ -7,7 +7,7 @@ namespace mlg {
     class Entity;
 }
 
-class AnimationComponent : public mlg::Component {
+class FactoryAnimationComponent : public mlg::Component {
 private:
     std::shared_ptr<mlg::StaticMeshComponent> staticMeshComponent;
 
@@ -25,9 +25,9 @@ private:
     float workingAnimWeight;
 
 public:
-    AnimationComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
+    FactoryAnimationComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
                        const std::string& configPath = "res/config/anim.json");
-    ~AnimationComponent() override;
+    ~FactoryAnimationComponent() override;
 
     void Start() override;
     void Update() override;

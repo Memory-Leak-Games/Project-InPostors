@@ -1,27 +1,23 @@
 #include "Animation/FerrisWheelAnim.h"
 
-#include "Animation/AnimatedEntity.h"
+#include "Animation/SpecialAnimationComponent.h"
 
 #include "Rendering/Assets/ModelAsset.h"
 #include "Rendering/Assets/MaterialAsset.h"
+
 #include "Gameplay/Components/StaticMeshComponent.h"
 #include "Gameplay/Components/RigidbodyComponent.h"
+#include "Gameplay/Entity.h"
+#include "Gameplay/EntityManager.h"
 
-FerrisWheelAnim::FerrisWheelAnim(
-        uint64_t id,
-        const std::string& name,
-        bool isStatic,
-        mlg::Transform* parent,
-        AnimatedEntityData* animData)
-    : mlg::Entity(id, name, isStatic, parent), animData(animData) {
+#include "SceneGraph/SceneGraph.h"
 
-}
+FerrisWheelAnim::FerrisWheelAnim() {}
 
-std::shared_ptr<FerrisWheelAnim> FerrisWheelAnim::Create(uint64_t id, const std::string& name,
-                                                         bool isStatic, mlg::Transform* parent,
-                                                         AnimatedEntityData* animData) {
-    auto newFerrisWheel = std::shared_ptr<FerrisWheelAnim>(
-            new FerrisWheelAnim(id, name, isStatic, parent, animData));
+void FerrisWheelAnim::Spawn(AnimatedEntityData* animData) {
+    auto newFerrisWheel = mlg::EntityManager::SpawnEntity<mlg::Entity>(
+                                  "FerrisWheel", !animData->mapObject->isDynamic, mlg::SceneGraph::GetRoot())
+                                  .lock();
 
     auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>(animData->mapObject->modelPath);
     auto material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>(animData->mapObject->materialPath);
@@ -56,13 +52,5 @@ std::shared_ptr<FerrisWheelAnim> FerrisWheelAnim::Create(uint64_t id, const std:
     rigidbody->SetLinearDrag(animData->mapObject->linearDrag);
     rigidbody->SetAngularDrag(animData->mapObject->angularDrag);
 
-    return newFerrisWheel;
-}
-
-void FerrisWheelAnim::Start() {
-
-}
-
-void FerrisWheelAnim::Update() {
-
+    auto animComponent = newFerrisWheel->AddComponent<SpecialAnimationComponent>("AnimComponent", animMesh);
 }

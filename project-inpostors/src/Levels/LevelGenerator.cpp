@@ -28,6 +28,8 @@
 #include "Physics/CollisionManager.h"
 #include "Player/Player.h"
 
+#include "Animation/AnimationLibrary.h"
+#include "Animation/FerrisWheelAnim.h"
 #include "Buildings/AutoDestroyComponent.h"
 #include "Buildings/Factory.h"
 #include "Managers/TaskManager.h"
@@ -600,6 +602,18 @@ namespace mlg {
     }
 
     void LevelGenerator::PutEntity(const MapObject& mapObject, const glm::ivec2& position, float rotation) const {
+        if (mapObject.modelPath == "res/models/buildings/special/ferris_wheel.obj") {
+            AnimatedEntityData* animData;
+            animData->position = position;
+            animData->objectPosition = GetLevelPosition(position);
+            animData->rotation = rotation;
+            animData->mapObject = mapObject;
+
+            auto ferris_wheel = AnimationLibrary::Get("ferris_wheel");
+            ferris_wheel->Spawn(animData);
+            return;
+        }
+
         auto newEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>(
                                  "MapObject", !mapObject.isDynamic, mlg::SceneGraph::GetRoot())
                                  .lock();

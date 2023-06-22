@@ -1,4 +1,4 @@
-#include "Animation/AnimationComponent.h"
+#include "Animation/FactoryAnimationComponent.h"
 
 #include <fstream>
 #include <glm/gtc/constants.hpp>
@@ -23,10 +23,10 @@
 
 using json = nlohmann::json;
 
-void AnimationComponent::Start() {
+void FactoryAnimationComponent::Start() {
 }
 
-AnimationComponent::AnimationComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
+FactoryAnimationComponent::FactoryAnimationComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
                                        const std::string& configPath) : Component(owner, name) {
     LoadParameters(configPath);
 
@@ -36,9 +36,9 @@ AnimationComponent::AnimationComponent(const std::weak_ptr<mlg::Entity>& owner, 
     factory = dynamic_pointer_cast<Factory>(GetOwner().lock());
 }
 
-AnimationComponent::~AnimationComponent() = default;
+FactoryAnimationComponent::~FactoryAnimationComponent() = default;
 
-void AnimationComponent::Update() {
+void FactoryAnimationComponent::Update() {
     if (factory != nullptr) {
         if (outputAnimOn && factory->factoryEquipment->IsOutputPresent()) {
             glm::vec3 targetScale = meshScale;
@@ -62,7 +62,7 @@ void AnimationComponent::Update() {
     }
 }
 
-void AnimationComponent::LoadParameters(const std::string& path = "res/config/anim.json") {
+void FactoryAnimationComponent::LoadParameters(const std::string& path = "res/config/anim.json") {
     std::ifstream configFile{path};
     json configJson = json::parse(configFile);
 
