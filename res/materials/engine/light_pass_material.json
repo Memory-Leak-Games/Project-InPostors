@@ -5,7 +5,7 @@
     {
       "type": "float",
       "name": "posterizationLevels",
-      "value": 16
+      "value": 32
     }
   ],
   "textures": []

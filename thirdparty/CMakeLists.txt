@@ -19,6 +19,9 @@ target_include_directories(stb_image PRIVATE ${STB_IMAGE_DIR})
 # SoLoud
 INCLUDE(SoLoud.cmake)
 
+# SDL
+INCLUDE(SDL.cmake)
+
 target_include_directories(soloud PUBLIC ${soloud_SOURCE_DIR}/include)
 set_target_properties(soloud PROPERTIES FOLDER thirdparty)
 

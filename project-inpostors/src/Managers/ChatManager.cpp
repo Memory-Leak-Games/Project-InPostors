@@ -57,7 +57,12 @@ void ChatManager::ParseJson() {
 
 void ChatManager::Start() {
     ShowWelcomeMessage();
-    StartRandomMessageTimer();
+
+    if (randomMessagesEnabled)
+        StartRandomMessageTimer();
+
+    if (!taskMessagesEnabled)
+        return;
 
     TaskManager* taskManager = currentLevelScene->GetTaskManager();
 
@@ -85,12 +90,8 @@ void ChatManager::Update() {
 }
 
 void ChatManager::Stop() {
-    TaskManager* taskManager = currentLevelScene->GetTaskManager();
-
-    taskManager->OnTaskFailed.remove(onTaskFailedHandle);
-    taskManager->OnProductSold.remove(onProductSoldHandle);
-
-    mlg::TimerManager::Get()->ClearTimer(randomMessageTimer);
+    DisableRandomMessages();
+    DisableRandomMessages();
 }
 
 void ChatManager::StartRandomMessageTimer() {
@@ -126,7 +127,7 @@ const std::string& ChatManager::GetMessage(const std::string& key) {
 
 void ChatManager::ShowWelcomeMessage() {
     std::string message = fmt::format(
-            fmt::runtime(GetMessage("welcome")),
+            fmt::runtime(GetMessage(welcomeKey)),
             fmt::arg("map_name", currentLevelScene->GetLevelName()));
     ShowMessage(message, 7.f);
 }
@@ -134,4 +135,25 @@ void ChatManager::ShowWelcomeMessage() {
 void ChatManager::ShowMessage(const std::string& message, float duration) {
     currentLevelScene->GetGameplayOverlay()->ShowMessage(message, duration);
     messageSound->Play();
+}
+
+void ChatManager::DisableRandomMessages() {
+    mlg::TimerManager::Get()->ClearTimer(randomMessageTimer);
+    randomMessagesEnabled = false;
+}
+
+void ChatManager::DisableTaskMessages() {
+    TaskManager* taskManager = currentLevelScene->GetTaskManager();
+
+    taskManager->OnTaskFailed.remove(onTaskFailedHandle);
+    taskManager->OnProductSold.remove(onProductSoldHandle);
+    taskMessagesEnabled = false;
+}
+
+void ChatManager::NewMessage(const std::string& key, float duration) {
+    ShowMessage(GetMessage(key), duration);
+}
+
+void ChatManager::SetWelcome(const std::string& key) {
+    welcomeKey = key;
 }

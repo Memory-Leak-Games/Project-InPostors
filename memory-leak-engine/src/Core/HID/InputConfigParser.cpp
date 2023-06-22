@@ -1,5 +1,5 @@
 #include "Core/HID/InputConfigParser.h"
-
+#include "Core/HID/KeyCodes.h"
 
 namespace mlg {
     std::unique_ptr<std::unordered_map<std::string, std::unique_ptr<InputAction>>>
@@ -40,20 +40,21 @@ namespace mlg {
     }
 
     void InputConfigParser::LoadGamepadMapping(const json& jsonMapping, InputAction* inputAction) {
-        Gamepad::GamepadIndex gamepadIndex = jsonMapping["deviceIndex"].get<int>();
+        int gamepadIndex = jsonMapping["deviceIndex"].get<int>();
         bool isAxis = jsonMapping["isAxis"].get<bool>();
-        uint16_t buttonOrAxis = jsonMapping["code"].get<int>();
 
         if (isAxis) {
             bool isPositive = jsonMapping["isPositive"].get<bool>();
             float triggerZone = jsonMapping["triggerZone"].get<float>();
             float deadZone = jsonMapping["deadZone"].get<float>();
+            auto axis = (Gamepad::GamepadAxis) jsonMapping["code"].get<int>();
             auto gamepadMappingPtr = std::make_unique<GamepadActionMapping>(gamepadIndex, deadZone,
-                                                                            triggerZone, isPositive, buttonOrAxis);
+                                                                            triggerZone, isPositive, axis);
             inputAction->AddMapping(std::move(gamepadMappingPtr));
         } else {
-            auto gamepadMappingPtr = std::make_unique<GamepadActionMapping>(gamepadIndex, buttonOrAxis);
+            auto button = (Gamepad::GamepadButton) jsonMapping["code"].get<int>();
+            auto gamepadMappingPtr = std::make_unique<GamepadActionMapping>(gamepadIndex, button);
             inputAction->AddMapping(std::move(gamepadMappingPtr));
         }
     }
-} // mlg
+}// namespace mlg

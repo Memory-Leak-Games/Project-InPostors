@@ -36,6 +36,7 @@ public:
     ~LevelScene() override;
 
     void Load() override;
+    void Start() override;
     void Update() override;
 
     void HandlePauseGame();

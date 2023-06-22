@@ -22,10 +22,17 @@
   "tasks": [
     {
       "product-id": "iron",
-      "time": 20.0,
+      "time": 40.0,
       "quantity": 10,
       "reward": 100,
       "bonus": 50
+    },
+    {
+      "product-id": "ore",
+      "time": 20.0,
+      "quantity": 5,
+      "reward": 50,
+      "bonus": 25
     }
   ]
 }

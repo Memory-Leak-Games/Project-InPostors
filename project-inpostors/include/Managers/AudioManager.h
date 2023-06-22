@@ -9,6 +9,8 @@ namespace mlg {
 
 class AudioManager : public mlg::Entity {
     std::shared_ptr<mlg::AudioAsset> finishTaskSound;
+    std::shared_ptr<mlg::AudioAsset> mediumFinishTaskSound;
+    std::shared_ptr<mlg::AudioAsset> superFinishTaskSound;
 
     std::shared_ptr<class mlg::AudioAsset> startLevelCountdownSound;
     std::shared_ptr<class mlg::AudioAsset> finishCountdownSound;

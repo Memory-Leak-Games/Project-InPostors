@@ -13,11 +13,12 @@ LevelTaskManager::LevelTaskManager() {
     taskManager = std::make_unique<TaskManager>();
     taskManager->OnTaskFinished.append(
             [this](const TaskData& taskData) {
+                tasksCompleted++;
                 StartNewTaskLogic();
             });
 }
 
-// It starts from 1 to 2 task and set timer to start new task in
+// It starts from 0 to 2 task and set timer to start new task in
 // (probability * taskTime) seconds. If there are no free slots for new task,
 // it will do nothing. But whole object is waiting for OnTaskFinished event,
 // so it will start new task when it will be possible.
@@ -32,8 +33,10 @@ void LevelTaskManager::StartNewTaskLogic() {
     if (taskManager->GetActiveTasksCount() >= GetMaxActiveTasks())
         return;
 
-    int maxTasksToStart = maxActiveTasks - taskManager->GetActiveTasksCount();
-    int tasksToStart = Random::get(1, std::min(2, maxTasksToStart));
+    int taskCount = taskManager->GetActiveTasksCount();
+    int maxTasksToStart = maxActiveTasks - 1 - taskCount;
+    int minTasksToStart = taskCount <= 2 ? 1 : 0;
+    int tasksToStart = Random::get(minTasksToStart, std::min(2, maxTasksToStart));
 
     size_t newTaskId = 0;
 

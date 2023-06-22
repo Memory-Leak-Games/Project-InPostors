@@ -4,6 +4,9 @@
 class LevelTaskManager {
 private:
     size_t newTaskTimer = 0;
+
+    int tasksCompleted = 0;
+    
     float newTaskProbability = 0.8f;
     int maxActiveTasks = 4;
 

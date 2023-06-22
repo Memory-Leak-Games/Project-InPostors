@@ -1,6 +1,11 @@
 #pragma once
 
 #include "Core/SceneManager/Scene.h"
+#include "Levels/NavigationGraph.h"
+#include <memory>
+
+#define LEVELS_FILE "res/levels/levels.json"
+#define BACKGROUND_LEVEL "res/levels/maps/menu_level.json"
 
 namespace mlg {
     class Container;
@@ -20,11 +25,15 @@ private:
 
     std::weak_ptr<mlg::CanvasPanel> levelSelector;
 
+    std::shared_ptr<class NavigationGraph> navigationGraph;
+
 public:
     explicit MenuScene() = default;
     ~MenuScene() override;
 
     void Load() override;
+
+    std::shared_ptr<NavigationGraph> GetNavigationGraph() const;
 
 private:
     void InitializeMainMenu();

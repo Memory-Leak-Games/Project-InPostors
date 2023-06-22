@@ -7,8 +7,6 @@
 
 #include "Core/SceneManager/SceneManager.h"
 #include "Scenes/LevelScene.h"
-#include <cmath>
-#include <spdlog/spdlog.h>
 
 AudioManager::AudioManager(uint64_t id,
                            const std::string& name,
@@ -28,6 +26,12 @@ std::shared_ptr<AudioManager> AudioManager::Create(
 
     audioManager->finishTaskSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>(
             "res/audio/sfx/cha-ching.wav");
+    audioManager->mediumFinishTaskSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>(
+            "res/audio/sfx/coins.mp3");
+    audioManager->superFinishTaskSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>(
+            "res/audio/sfx/tada.mp3");
+
+
     audioManager->startLevelCountdownSound =
             mlg::AssetManager::GetAsset<mlg::AudioAsset>(
                     "res/audio/sfx/start_level_countdown.wav");
@@ -52,8 +56,17 @@ void AudioManager::Start() {
     LevelScene* levelScene = dynamic_cast<LevelScene*>(scene);
 
     levelScene->GetTaskManager()->OnTaskFinished.append(
-            [this](const auto& TaskData) {
+            [this](const TaskData& taskData) {
+                int price = taskData.reward;
+                if (taskData.time > 0.f)
+                    price += taskData.bonus;
+
                 finishTaskSound->Play();
+                if (price > 100.f)
+                    mediumFinishTaskSound->Play();
+
+                if (price > 200.f)
+                    superFinishTaskSound->Play();
             });
     levelScene->GetLevelCountdown().OnCountdownTick.append(
             [this]() {

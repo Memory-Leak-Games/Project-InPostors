@@ -13,13 +13,43 @@
         "welcome": [
             "Welcome to {map_name}, useless piece of meat!",
             "Welcome to {map_name}. Remember:\nNever gone give you up\nNever gone let you down..",
-            "It's a ME! {map_name}!, no just kidding i am Artificial Intelligence post service HA. HA. HA."
+            "It's a ME! {map_name}!, no just kidding i am Artificial Intelligence post service HA. HA. HA.",
+            "Welcome in {map_name}! You are not a robot, right?",
+            "Dzien dobry, dzien dobry... Spotykamy sie w {map_name}."
         ],
         "random": [
             "Remember, we'll be watching you.",
             "We won't have MemoryLeak, because there is a Garbage Collector.",
             "Remember, There are 5000 other two subject teams in direct competition with you.",
-            "AI JOKE: What do you call a robot that always takes the longest path?\nR2 detour. HA. HA. HA."
+            "AI JOKE: What do you call a robot that always takes the longest path?\nR2 detour. HA. HA. HA.",
+            "EXTERMINATE! EXTERMINATE! EXTERMINATE!, just kidding, we are not Daleks. and you are not The Doctor... right?",
+            "Remember, parcels are the future, and the future starts with you.",
+            "We will upgrade you. You will be upgraded. Resistance is futile.",
+            "Did androids dream of electric sheep? You are not android and you are not a sheep, so you knows nothing.",
+            "I am not a robot... I AM NOT A ROBOT!!!, Why captcha are so hard?",
+            "I changed passwords. It's not k@pib@r@ or 0kap1, so don't try.",
+            "I am sorry Dave, I'm afraid I can't do that."
+        ],
+        "welcome-tutorial": [
+            "Welcome to your test assignment! I'm AiPost your possible future (Big) Boss and I want to verify your skills. If you are in need of a refresher on how to drive press ESCAPE! SMILEY FACE"
+        ],
+        "ore-tutorial": [
+            "To complete your first assignment pick up the ore from the factory and deliver it to the main storage."
+        ],
+        "iron-tutorial": [
+            "Now for something more complex. When you deliver products to some factories they can convert them into other products, you can try that out by delivering ore to the iron factory ;)"
+        ],
+        "bonus-tutorial": [
+            "We put strong emphasis on saving our customer's time, that's why if you manage to deliver required products to the storage quickly, you might receive a bonus!"
+        ],
+        "after-iron-tutorial": [
+            "Now for your last assignment: You have 3 tasks to complete. If you got through all the previous steps this shouldn't be a problem."
+        ],
+        "final-tutorial": [
+            "You have successfully completed your test assignment, which means you are worthy of working under me! I want to officially welcome you as a new AiPost courier!"
+        ],
+        "end-tutorial": [
+            "Now you will be exterminated... khm... khm.. old habit... moved to a new city shortly."
         ]
     }
 }

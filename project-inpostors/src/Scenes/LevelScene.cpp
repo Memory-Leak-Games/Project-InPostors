@@ -77,6 +77,10 @@ void LevelScene::Load() {;
                                .lock();
 }
 
+void LevelScene::Start() {
+    levelTaskManager->GetTaskManager().AcceptNewTask();
+}
+
 void LevelScene::Update() {
     HandlePauseGame();
     levelTaskManager->GetTaskManager().Update();
@@ -165,8 +169,6 @@ void LevelScene::InitializeLevelTaskManager() {
     for (const auto& task : tasks) {
         GetTaskManager()->AddTaskToPool(task);
     }
-
-    levelTaskManager->StartNewTaskLogic();
 }
 
 void LevelScene::SpawnTraffic() {
