@@ -22,3 +22,6 @@ PlayerTwoInput::~PlayerTwoInput() {}
 bool PlayerTwoInput::GetPickUpInput() {
     return mlg::Input::IsActionJustPressed("pick_up_two");
 }
+void PlayerTwoInput::SetVibration(float lowStrength, float highStrength, float duration) {
+    mlg::Input::SetVibration(1, lowStrength, highStrength, duration);
+}

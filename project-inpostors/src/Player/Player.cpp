@@ -194,6 +194,7 @@ bool Player::PickUp() {
 
     equipment->AddProduct(outputProduct);
     pickUpSound->Play(4.f);
+    carInput->SetVibration(0.f, 0.5f, 0.1f);
 
     return true;
 }
@@ -224,5 +225,7 @@ bool Player::Drop() {
         return false;
 
     dropSound->Play(4.f);
+    carInput->SetVibration(0.f, 0.5f, 0.1f);
+
     return true;
 }

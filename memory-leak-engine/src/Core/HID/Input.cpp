@@ -2,13 +2,16 @@
 
 #include "Core/HID/InputConfigParser.h"
 #include "Macros.h"
+#include "SDL_stdinc.h"
 
 #include <GLFW/glfw3.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
+#include <SDL2/SDL_gamecontroller.h>
 #include <SDL2/SDL_joystick.h>
 #include <array>
+#include <cstdint>
 
 namespace mlg {
     Input* Input::instance;
@@ -92,6 +95,20 @@ namespace mlg {
         }
 
         return iterator->second->GetStrength();
+    }
+
+    void Input::SetVibration(
+            int index, float lowStrength,
+            float hightStrength, float duration) {
+        SDL_GameController* gamepad = instance->GetGamepad(index);
+        if (gamepad == nullptr)
+            return;
+
+        SDL_GameControllerRumble(
+                gamepad,
+                (uint16_t) (lowStrength * 0xFFFF),
+                (uint16_t) (hightStrength * 0xFFFF),
+                (uint32_t) (duration * 1000.f));
     }
 
     void Input::LoadActions() {
@@ -246,7 +263,7 @@ namespace mlg {
                 int16_t axisValue = SDL_GameControllerGetAxis(
                         gamepad.controller, axis);
                 float value = (float) axisValue / 32767.f;
-                
+
                 if (value != axisesStates[axis]) {
                     SPDLOG_INFO("Gamepad {}: {}, id: {} value: {}", gamepad.index,
                                 SDL_GameControllerGetStringForAxis(axis),
