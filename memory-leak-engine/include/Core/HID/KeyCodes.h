@@ -163,52 +163,7 @@ namespace mlg {
     }// namespace Mouse
 
     namespace Gamepad {
-        using GamepadIndex = int;
-
-        enum : GamepadIndex {
-            Gamepad1 = 0,
-            Gamepad2 = 1,
-            Gamepad3 = 2,
-            Gamepad4 = 3
-        };
-
-        using GamepadCode = int;
-
-        enum : GamepadCode {
-            A = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_A,// 0
-            B = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_B,// 1
-            X = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_X,// 2
-            Y = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_Y,// 3
-            LB = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_LEFTSHOULDER,// 4
-            RB = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_RIGHTSHOULDER,// 5
-            Back = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_BACK,// 6
-            Start = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_START,// 7
-            Guide = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_GUIDE,// 8
-            ButtonLT = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_LEFTSTICK,// 9
-            ButtonRT = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_RIGHTSTICK,// 10
-
-            //DPAD
-            Up = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_UP,// 11
-            Right = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_RIGHT,// 12
-            Down = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_DOWN,// 13
-            Left = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_LEFT,// 14
-
-            Last = Left,
-            ButtonsCount = 15
-        };
-
-        using GamepadAxis = int;
-
-        enum : GamepadAxis {
-            LeftX = SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_LEFTX,
-            LeftY = SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_LEFTY,
-            RightX = SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_RIGHTX,
-            RightY = SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_RIGHTY,
-            AxisLT = SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_TRIGGERLEFT,
-            AxisRT = SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_TRIGGERRIGHT,
-
-            AxisLast = AxisRT,
-            AxesCount = 6
-        };
+        using GamepadButton = SDL_GameControllerButton;
+        using GamepadAxis = SDL_GameControllerAxis;
     }// namespace Gamepad
 }// namespace mlg

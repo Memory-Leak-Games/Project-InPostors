@@ -34,6 +34,7 @@ namespace mlg {
     public:
         static void Initialize();
         static void Stop();
+        static Input* Get();
 
         static bool IsActionPressed(const std::string& actionName);
         static bool IsActionJustPressed(const std::string& actionName);
@@ -41,10 +42,12 @@ namespace mlg {
 
         static float GetActionStrength(const std::string& actionName);
 
-        friend class Core;
+        bool IsGamepadPresent(const SDL_GameController* gamepad);
+        SDL_GameController* GetGamepad(int index);
 
-    private:
+        static void DebugInput();
         static void Update();
+    private:
 
         void LoadActions();
         void FindGamepads();
@@ -53,7 +56,6 @@ namespace mlg {
         void HandleDeviceDisconnection(const SDL_Event& event);
 
         int FindSmallestValidGamepadIndex();
-        bool IsGamepadPresent(const SDL_GameController* gamepad);
     };
 
 }// namespace mlg

@@ -1,12 +1,14 @@
 #include "Core/HID/Input.h"
 
 #include "Core/HID/InputConfigParser.h"
-#include "GLFW/glfw3.h"
 #include "Macros.h"
-#include "SDL2/SDL.h"
+
+#include <GLFW/glfw3.h>
+
+#include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_joystick.h>
-#include <spdlog/spdlog.h>
+#include <array>
 
 namespace mlg {
     Input* Input::instance;
@@ -33,6 +35,10 @@ namespace mlg {
 
         delete instance;
         instance = nullptr;
+    }
+
+    Input* Input::Get() {
+        return instance;
     }
 
     void Input::Update() {
@@ -185,6 +191,70 @@ namespace mlg {
         }
 
         return false;
+    }
+
+    SDL_GameController* Input::GetGamepad(int index) {
+        for (auto& gamepadInstance : gamepads) {
+            if (gamepadInstance.index == index)
+                return gamepadInstance.controller;
+        }
+
+        return nullptr;
+    }
+
+    void Input::DebugInput() {
+        auto buttons = std::array{
+                SDL_CONTROLLER_BUTTON_A,
+                SDL_CONTROLLER_BUTTON_B,
+                SDL_CONTROLLER_BUTTON_X,
+                SDL_CONTROLLER_BUTTON_Y,
+                SDL_CONTROLLER_BUTTON_BACK,
+                SDL_CONTROLLER_BUTTON_GUIDE,
+                SDL_CONTROLLER_BUTTON_START,
+                SDL_CONTROLLER_BUTTON_LEFTSTICK,
+                SDL_CONTROLLER_BUTTON_RIGHTSTICK,
+                SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
+                SDL_CONTROLLER_BUTTON_RIGHTSHOULDER,
+                SDL_CONTROLLER_BUTTON_DPAD_UP,
+                SDL_CONTROLLER_BUTTON_DPAD_DOWN,
+                SDL_CONTROLLER_BUTTON_DPAD_LEFT,
+                SDL_CONTROLLER_BUTTON_DPAD_RIGHT,
+        };
+
+        auto axises = std::array{
+                SDL_CONTROLLER_AXIS_LEFTX,
+                SDL_CONTROLLER_AXIS_LEFTY,
+                SDL_CONTROLLER_AXIS_RIGHTX,
+                SDL_CONTROLLER_AXIS_RIGHTY,
+                SDL_CONTROLLER_AXIS_TRIGGERLEFT,
+                SDL_CONTROLLER_AXIS_TRIGGERRIGHT,
+        };
+
+        static std::array<int16_t, 6> axisesStates;
+
+        for (auto& gamepad : instance->gamepads) {
+            for (auto& button : buttons) {
+                if (SDL_GameControllerGetButton(
+                            gamepad.controller, button)) {
+
+                    SPDLOG_INFO("Gamepad {}: {}, id: {} pressed", gamepad.index,
+                                SDL_GameControllerGetStringForButton(button),
+                                button);
+                }
+            }
+            for (auto& axis : axises) {
+                int16_t axisValue = SDL_GameControllerGetAxis(
+                        gamepad.controller, axis);
+                
+                if (axisValue != axisesStates[axis]) {
+                    SPDLOG_INFO("Gamepad {}: {}, id: {} value: {}", gamepad.index,
+                                SDL_GameControllerGetStringForAxis(axis),
+                                axis, axisValue);
+                }
+
+                axisesStates[axis] = axisValue;
+            }
+        }
     }
 
 
