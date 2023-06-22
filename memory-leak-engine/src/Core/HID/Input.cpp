@@ -230,7 +230,7 @@ namespace mlg {
                 SDL_CONTROLLER_AXIS_TRIGGERRIGHT,
         };
 
-        static std::array<int16_t, 6> axisesStates;
+        static std::array<float, 6> axisesStates;
 
         for (auto& gamepad : instance->gamepads) {
             for (auto& button : buttons) {
@@ -245,14 +245,15 @@ namespace mlg {
             for (auto& axis : axises) {
                 int16_t axisValue = SDL_GameControllerGetAxis(
                         gamepad.controller, axis);
+                float value = (float) axisValue / 32767.f;
                 
-                if (axisValue != axisesStates[axis]) {
+                if (value != axisesStates[axis]) {
                     SPDLOG_INFO("Gamepad {}: {}, id: {} value: {}", gamepad.index,
                                 SDL_GameControllerGetStringForAxis(axis),
-                                axis, axisValue);
+                                axis, value);
                 }
 
-                axisesStates[axis] = axisValue;
+                axisesStates[axis] = value;
             }
         }
     }

@@ -77,6 +77,7 @@ namespace mlg {
               isPositive(isPositive),
               deadZone(deadZone),
               triggerZone(triggerZone),
+              axisCode(axisCode),
               buttonCode(SDL_CONTROLLER_BUTTON_INVALID) {}
 
         [[nodiscard]] int GetDeviceIndex() const {

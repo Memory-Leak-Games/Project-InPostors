@@ -68,9 +68,9 @@ namespace mlg {
             return result;
 
         if (gamepadActionMapping->IsAxis()) {
-            float value = SDL_GameControllerGetAxis(
+            int16_t intValue = SDL_GameControllerGetAxis(
                     gamepad, gamepadActionMapping->GetAxisCode());
-            value /= 32767.f; // 2^15 - 1
+            float value = (float) intValue / 32767.f; // 2^15 - 1
 
             if (gamepadActionMapping->IsPositive() && value < 0.f)
                 value = 0.f;

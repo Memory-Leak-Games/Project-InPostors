@@ -7,11 +7,7 @@
 #include <unordered_set>
 #include <vector>
 
-#ifndef WIN32
 #define MLG_INPUT_CONFIG_PATH "res/config/input.json"
-#else
-#define MLG_INPUT_CONFIG_PATH "res/config/input_windows.json"
-#endif
 
 #define GAMEPADS_MAX_COUNT 2
 
