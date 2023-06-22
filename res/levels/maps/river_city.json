@@ -1,0 +1,92 @@
+{
+  "name": "El Uc",
+  "tile-size": 4.0,
+  "tileset": "res/levels/tilesets/big_city_tileset.json",
+
+  "time-limit": 180.0,
+
+  "sublevels": [],
+
+  "ground": {
+    "mesh": "res/models/ground/ground_small_city.obj",
+    "material": "res/materials/buildings_material.json",
+
+    "scale": 1.5,
+    "offset": [0.0, 0.0],
+    "rotation": 0.0
+  },
+
+  "layout": [
+    "                                                              ",
+    "                                                              ",
+    "                                                              ",
+    "           ssssssssssssssssssssssssssssss                     ",
+    "           s############################s                     ",
+    "           s############################s                     ",
+    "           s############################s                     ",
+    "           s###               s      ###s                     ",
+    "       sssss###               s      ###sssss                 ",
+    "       s####################################s                 ",
+    "       s####################################s                 ",
+    "       s####################################s                 ",
+    "                              s                               ",
+    "                              s                               ",
+    "                              x                               ",
+    "                              s                               ",
+    "                              s                               ",
+    "                   s#################################s        ",
+    "                   s#################################s        ",
+    "                   s#################################s        ",
+    "                   s###       s               ###sssss        ",
+    "                   s###       s               ###s            ",
+    "                   s#############################s            ",
+    "                   s#############################s            ",
+    "                   s#############################s            ",
+    "                   sssssssssssssssssssssssssssssss            ",
+    "                                                              ",
+    "                                                              ",
+    "                                                              ",
+    "                                                              ",
+    "                                                              "
+  ],
+
+  "navigation": [],
+
+  "cross-character": "x",
+  "number-of-agents": 0,
+
+  "camera-settings": {
+    "position": [16.0, 50.0, -14.0],
+    "rotation": [65.0, -45.0, 0.0],
+
+    "size": 100.0,
+    "near": 0.1,
+    "far": 200.0
+  },
+
+  "player-one": {
+    "id": 0,
+    "car-type": "res/config/cars/racecar.json",
+    "color": [1.0, 0.0, 0.0],
+
+    "position": [16.0, 36.0],
+    "rotation": -135.0
+  },
+
+  "player-two": {
+    "id": 1,
+    "car-type": "res/config/cars/racecar.json",
+    "color": [0.0, 1.0, 1.0],
+
+    "position": [-16.0, -24.0],
+    "rotation": 215.0
+  },
+
+  "events-config": "res/levels/events/default_events.json",
+  "events": [
+    {
+      "id": "None",
+      "probability": 3
+    }
+  ]
+}
