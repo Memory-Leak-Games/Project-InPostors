@@ -2,6 +2,7 @@
 
 #include "Core/Window.h"
 #include "GLFW/glfw3.h"
+#include "SDL2/SDL.h"
 
 namespace mlg {
     InputAction::InputAction(std::string name)

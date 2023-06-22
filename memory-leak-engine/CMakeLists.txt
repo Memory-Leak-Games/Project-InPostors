@@ -30,6 +30,7 @@ target_link_libraries(${PROJECT_NAME} soloud)
 target_link_libraries(${PROJECT_NAME} magic_enum)
 target_link_libraries(${PROJECT_NAME} tinyobjloader)
 target_link_libraries(${PROJECT_NAME} Tracy::TracyClient)
+target_link_libraries(${PROJECT_NAME} SDL2)
 
 if (WIN32)
     target_link_libraries(${PROJECT_NAME} -static-libstdc++)
