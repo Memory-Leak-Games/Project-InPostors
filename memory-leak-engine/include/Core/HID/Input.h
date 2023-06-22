@@ -38,13 +38,17 @@ namespace mlg {
 
         static float GetActionStrength(const std::string& actionName);
 
+        static void SetVibration(
+                int index, float lowStrength,
+                float hightStrength, float duration);
+
         bool IsGamepadPresent(const SDL_GameController* gamepad);
         SDL_GameController* GetGamepad(int index);
 
         static void DebugInput();
         static void Update();
-    private:
 
+    private:
         void LoadActions();
         void FindGamepads();
         void ProcessSDLEvents();
