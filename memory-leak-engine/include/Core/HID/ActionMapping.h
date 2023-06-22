@@ -1,6 +1,7 @@
 #pragma once
 
 #include "KeyCodes.h"
+#include <SDL2/SDL_gamecontroller.h>
 
 namespace mlg {
 
@@ -44,24 +45,42 @@ namespace mlg {
 
     class GamepadActionMapping : public ActionMapping {
     private:
-        Gamepad::GamepadIndex deviceIndex;
+        int deviceIndex;
         bool isAxis;
         bool isPositive = false;
         float deadZone = 0.f;
         float triggerZone = 0.f;
-        Gamepad::GamepadCode buttonCode;
+        Gamepad::GamepadButton buttonCode;
+        Gamepad::GamepadAxis axisCode;
 
     public:
         GamepadActionMapping() = delete;
 
-        explicit GamepadActionMapping(Gamepad::GamepadIndex deviceIndex, Gamepad::GamepadCode buttonCode)
-            : ActionMapping(Device::Type::Gamepad), deviceIndex(deviceIndex), isAxis(false), buttonCode(buttonCode) {}
+        explicit GamepadActionMapping(
+                int deviceIndex,
+                Gamepad::GamepadButton buttonCode)
+            : ActionMapping(Device::Type::Gamepad),
+              deviceIndex(deviceIndex),
+              isAxis(false),
+              buttonCode(buttonCode),
+              axisCode(SDL_CONTROLLER_AXIS_INVALID) {}
 
-        explicit GamepadActionMapping(Gamepad::GamepadIndex deviceIndex, float deadZone, float triggerZone, bool isPositive, Gamepad::GamepadCode buttonCode)
-            : ActionMapping(Device::Type::Gamepad), deviceIndex(deviceIndex), isAxis(true), isPositive(isPositive), deadZone(deadZone),
-              triggerZone(triggerZone), buttonCode(buttonCode) {}
+        explicit GamepadActionMapping(
+                int deviceIndex,
+                float deadZone,
+                float triggerZone,
+                bool isPositive,
+                Gamepad::GamepadAxis axisCode)
+            : ActionMapping(Device::Type::Gamepad),
+              deviceIndex(deviceIndex),
+              isAxis(true),
+              isPositive(isPositive),
+              deadZone(deadZone),
+              triggerZone(triggerZone),
+              axisCode(axisCode),
+              buttonCode(SDL_CONTROLLER_BUTTON_INVALID) {}
 
-        [[nodiscard]] Gamepad::GamepadIndex GetDeviceIndex() const {
+        [[nodiscard]] int GetDeviceIndex() const {
             return deviceIndex;
         }
 
@@ -81,8 +100,12 @@ namespace mlg {
             return triggerZone;
         }
 
-        [[nodiscard]] Gamepad::GamepadCode GetButtonCode() const {
+        [[nodiscard]] Gamepad::GamepadButton GetButtonCode() const {
             return buttonCode;
+        }
+
+        [[nodiscard]] Gamepad::GamepadAxis GetAxisCode() const {
+            return axisCode;
         }
     };
 

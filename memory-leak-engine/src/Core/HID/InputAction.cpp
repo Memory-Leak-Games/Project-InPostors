@@ -1,7 +1,13 @@
 #include "Core/HID/InputAction.h"
 
+#include "Core/HID/Input.h"
+#include "Core/HID/KeyCodes.h"
 #include "Core/Window.h"
-#include "GLFW/glfw3.h"
+
+#include <GLFW/glfw3.h>
+
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_gamecontroller.h>
 
 namespace mlg {
     InputAction::InputAction(std::string name)
@@ -37,11 +43,15 @@ namespace mlg {
     }
 
     InputAction::MappingValue InputAction::ProcessKeyboardMapping(const ActionMapping* actionMapping) {
+
         auto keyboardActionMapping = (KeyboardActionMapping*) actionMapping;
         MappingValue result{};
 
-        result.digital = glfwGetKey((GLFWwindow*) Window::Get()->GetNativeWindowHandle(),
-                                     keyboardActionMapping->GetKeyCode());
+        if (Window::Get() == nullptr)
+            return result;
+
+        GLFWwindow* window = (GLFWwindow*) Window::Get()->GetNativeWindowHandle();
+        result.digital = glfwGetKey(window, keyboardActionMapping->GetKeyCode());
         result.analog = result.digital ? 1.f : 0.f;
 
         return result;
@@ -51,22 +61,16 @@ namespace mlg {
         auto gamepadActionMapping = (GamepadActionMapping*) actionMapping;
         MappingValue result{false, 0.f};
 
-        Gamepad::GamepadIndex gamepadIndex = gamepadActionMapping->GetDeviceIndex();
+        int gamepadIndex = gamepadActionMapping->GetDeviceIndex();
+        SDL_GameController* gamepad = Input::Get()->GetGamepad(gamepadIndex);
 
-        if (!glfwJoystickPresent(gamepadIndex))
-            return result;
-
-        int axesCount = Gamepad::AxesCount;
-        const float* axes = glfwGetJoystickAxes(gamepadIndex, &axesCount);
-        int buttonsCount = Gamepad::ButtonsCount;
-        const uint8_t* buttons = glfwGetJoystickButtons(gamepadIndex, &buttonsCount);
-
-        // skip gaming mouses hack
-        if (buttonsCount > 32)
+        if (!gamepad)
             return result;
 
         if (gamepadActionMapping->IsAxis()) {
-            float value = axes[gamepadActionMapping->GetButtonCode()];
+            int16_t intValue = SDL_GameControllerGetAxis(
+                    gamepad, gamepadActionMapping->GetAxisCode());
+            float value = (float) intValue / 32767.f; // 2^15 - 1
 
             if (gamepadActionMapping->IsPositive() && value < 0.f)
                 value = 0.f;
@@ -81,7 +85,8 @@ namespace mlg {
                 result.analog = 0.f;
 
         } else {
-            result.digital = buttons[gamepadActionMapping->GetButtonCode()];
+            result.digital = SDL_GameControllerGetButton(
+                    gamepad, gamepadActionMapping->GetButtonCode());
             result.analog = result.digital ? 1.f : 0.f;
         }
 

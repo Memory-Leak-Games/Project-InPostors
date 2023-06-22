@@ -10,10 +10,10 @@
         "deviceType": "Gamepad",
         "deviceIndex": 0,
         "isAxis": true,
-        "isPositive": false,
+        "isPositive": true,
         "triggerZone": 0.5,
         "deadZone": 0.2,
-        "code": 2
+        "code": 5
       }
     ]
   },
@@ -28,10 +28,10 @@
         "deviceType": "Gamepad",
         "deviceIndex": 0,
         "isAxis": true,
-        "isPositive": false,
+        "isPositive": true,
         "triggerZone": 0.5,
         "deadZone": 0.2,
-        "code": 5
+        "code": 4
       }
     ]
   },
@@ -97,10 +97,10 @@
         "deviceType": "Gamepad",
         "deviceIndex": 1,
         "isAxis": true,
-        "isPositive": false,
+        "isPositive": true,
         "triggerZone": 0.5,
         "deadZone": 0.2,
-        "code": 2
+        "code": 5
       }
     ]
   },
@@ -115,10 +115,10 @@
         "deviceType": "Gamepad",
         "deviceIndex": 1,
         "isAxis": true,
-        "isPositive": false,
+        "isPositive": true,
         "triggerZone": 0.5,
         "deadZone": 0.2,
-        "code": 5
+        "code": 4
       }
     ]
   },
@@ -194,6 +194,21 @@
         "deviceIndex": 0,
         "isAxis": false,
         "code": 11
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": true,
+        "isPositive": false,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 1
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": false,
+        "code": 11
       }
     ]
   },
@@ -217,7 +232,22 @@
         "deviceType": "Gamepad",
         "deviceIndex": 0,
         "isAxis": false,
-        "code": 13
+        "code": 12
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": true,
+        "isPositive": true,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 1
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": false,
+        "code": 12
       }
     ]
   },
@@ -241,7 +271,22 @@
         "deviceType": "Gamepad",
         "deviceIndex": 0,
         "isAxis": false,
-        "code": 14
+        "code": 13
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": true,
+        "isPositive": false,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 0
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": false,
+        "code": 13
       }
     ]
   },
@@ -265,7 +310,22 @@
         "deviceType": "Gamepad",
         "deviceIndex": 0,
         "isAxis": false,
-        "code": 12
+        "code": 14
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": true,
+        "isPositive": true,
+        "triggerZone": 0.5,
+        "deadZone": 0.2,
+        "code": 0
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
+        "isAxis": false,
+        "code": 14
       }
     ]
   },
@@ -283,6 +343,12 @@
       {
         "deviceType": "Gamepad",
         "deviceIndex": 0,
+        "isAxis": false,
+        "code": 0
+      },
+      {
+        "deviceType": "Gamepad",
+        "deviceIndex": 1,
         "isAxis": false,
         "code": 0
       }
@@ -305,10 +371,11 @@
         "deviceType": "Gamepad",
         "deviceIndex": 1,
         "isAxis": false,
-        "code": 7
+        "code": 6
       }
     ]
   },
+
   {
     "name": "accept_task",
     "mappings": [

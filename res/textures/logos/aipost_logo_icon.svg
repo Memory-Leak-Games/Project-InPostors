@@ -28,8 +28,8 @@
      inkscape:document-units="px"
      showgrid="false"
      inkscape:zoom="1.0799951"
-     inkscape:cx="280.09387"
-     inkscape:cy="321.29776"
+     inkscape:cx="266.66788"
+     inkscape:cy="247.22334"
      inkscape:window-width="1920"
      inkscape:window-height="1011"
      inkscape:window-x="0"
@@ -37,6 +37,11 @@
      inkscape:window-maximized="1"
      inkscape:current-layer="g2164" /><defs
      id="defs2"><rect
+       x="86.574467"
+       y="410.14003"
+       width="376.53527"
+       height="133.53287"
+       id="rect355" /><rect
        x="192.43613"
        y="208.50608"
        width="290.28632"
@@ -52,7 +57,7 @@
        id="g2164"
        transform="translate(-9.2693178)"><g
          id="g2147"
-         transform="matrix(3.979483,0,0,3.979483,-753.47835,-762.74767)"
+         transform="matrix(3.8079348,0,0,3.8079348,-709.562,-718.83132)"
          style="stroke:#ffffff;stroke-opacity:1"><g
            id="g2032"
            transform="translate(-28.895538,-35.901489)"

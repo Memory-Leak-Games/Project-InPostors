@@ -3,6 +3,7 @@
 #include "Core/HID/Input.h"
 
 #include "Car/CarInput.h"
+#include <spdlog/spdlog.h>
 
 glm::vec2 PlayerOneInput::GetMovementInput() {
     glm::vec2 movement;
