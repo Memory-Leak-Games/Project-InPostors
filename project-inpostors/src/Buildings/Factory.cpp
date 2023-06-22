@@ -77,7 +77,7 @@ std::shared_ptr<Factory> Factory::Create(
         result->AddEmitter(emitterJson);
     }
 
-    result->factoryUi = result->AddComponent<FactoryUI>("FactoryUI").lock();
+    // result->factoryUi = result->AddComponent<FactoryUI>("FactoryUI").lock();
 
     result->AddTriggers(configJson);
     result->mainRigidbody->SetKinematic(true);

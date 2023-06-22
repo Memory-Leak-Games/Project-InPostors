@@ -73,7 +73,7 @@ std::shared_ptr<Player> Player::Create(
                                             equipmentSize)
                                    .lock();
 
-    newPlayer->AddComponent<PlayerUI>("PlayerUI");
+    // newPlayer->AddComponent<PlayerUI>("PlayerUI");
     newPlayer->AddComponent<PlayerFXComponent>("PlayerFXComponent");
 
     return newPlayer;
