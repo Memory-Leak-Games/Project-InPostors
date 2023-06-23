@@ -32,6 +32,8 @@ target_link_libraries(${PROJECT_NAME} tinyobjloader)
 target_link_libraries(${PROJECT_NAME} Tracy::TracyClient)
 target_link_libraries(${PROJECT_NAME} SDL2-static)
 
+target_link_libraries(${PROJECT_NAME} TextFlow)
+
 if (WIN32)
     target_link_libraries(${PROJECT_NAME} -static-libstdc++)
 else()
