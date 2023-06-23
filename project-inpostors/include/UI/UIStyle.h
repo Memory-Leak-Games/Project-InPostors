@@ -15,3 +15,5 @@
 #define WHITE_MATERIAL "res/materials/ui/white_semi_material.json"
 
 #define BUTTON_BASE_POSITION glm::vec2{ 200, 150 }
+
+#define AI_LOGO_MATERIAL "res/materials/ui/gameplay/logo_transparent_material.json"
