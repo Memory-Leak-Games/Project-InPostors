@@ -1,18 +1,22 @@
 #include "UI/PauseMenu.h"
 #include "Core/SceneManager/Scene.h"
 #include "Scenes/MenuScene.h"
+#include "UI/Builders/ButtonBuilder.h"
 #include "UI/Components/Button.h"
 
 #include "UI/Components/Button.h"
+#include "UI/Components/Containers/CanvasPanel.h"
+#include "UI/Components/Containers/Container.h"
+#include "UI/Components/Containers/HorizontalBox.h"
+#include "UI/Components/Containers/VerticalBox.h"
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
 
+#include "Core/SceneManager/SceneManager.h"
 #include "Rendering/Assets/MaterialAsset.h"
 #include "UI/Assets/FontAsset.h"
-#include "Core/SceneManager/SceneManager.h"
 
 #include "UI/UIStyle.h"
-#include <memory>
 
 PauseMenu::PauseMenu(
         uint64_t id, const std::string& name,
@@ -25,38 +29,42 @@ std::shared_ptr<PauseMenu> PauseMenu::Create(
         const std::string& name,
         bool isStatic,
         mlg::Transform* parent) {
-    auto pauseMenu = std::shared_ptr<PauseMenu>(
+    std::shared_ptr<PauseMenu> pauseMenu = std::shared_ptr<PauseMenu>(
             new PauseMenu(id, name, isStatic, parent));
 
-    pauseMenu->background = pauseMenu->AddComponent<mlg::Image>(
+
+    std::weak_ptr<mlg::Image> background = pauseMenu->AddComponent<mlg::Image>(
             "Background",
             mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BACKGROUND_MATERIAL));
-    pauseMenu->background.lock()->SetSize(BACKGROUND_SIZE);
-    pauseMenu->background.lock()->SetRelativePosition(BUTTON_BASE_POSITION);
+    background.lock()->SetSize(BACKGROUND_SIZE);
 
-    pauseMenu->AddResumeButton();
-    pauseMenu->AddExitButton();
+    std::weak_ptr<mlg::VerticalBox> vbox =
+            pauseMenu->AddComponent<mlg::VerticalBox>("VBox");
 
-    pauseMenu->resumeButton.lock()->next.bottom = pauseMenu->exitButton;
-    pauseMenu->exitButton.lock()->next.top = pauseMenu->resumeButton;
+    pauseMenu->AddResumeButton(vbox.lock().get());
+    pauseMenu->AddExitButton(vbox.lock().get());
 
+    pauseMenu->menuPanel = pauseMenu->AddComponent<mlg::CanvasPanel>("MenuPanel");
+    pauseMenu->menuPanel.lock()->SetSize(BACKGROUND_SIZE);
+    pauseMenu->menuPanel.lock()->SetRelativePosition(BUTTON_BASE_POSITION);
+    pauseMenu->menuPanel.lock()->AddChild(background);
+
+    pauseMenu->menuPanel.lock()->AddChild(vbox);
     pauseMenu->SetVisible(false);
 
     return pauseMenu;
 }
 
-void PauseMenu::AddResumeButton() {
-    resumeButton = this->AddComponent<mlg::Button>(
-            "ResumeButton",
-            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BUTTON_MATERIAL),
-            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BUTTON_FOCUSED_MATERIAL),
-            mlg::AssetManager::GetAsset<mlg::FontAsset>(FONT));
+void PauseMenu::AddResumeButton(mlg::Container* container) {
+    mlg::ButtonBuilder buttonBuilder;
+    auto sharedResumeButton =
+            buttonBuilder.SetName("ResumeButton")
+                    .SetSize(BUTTON_SIZE)
+                    .SetText("Resume")
+                    .BuildButton(this)
+                    .lock();
 
-    auto sharedResumeButton = resumeButton.lock();
-    sharedResumeButton->SetSize(BUTTON_SIZE);
-    sharedResumeButton->SetRelativePosition(BUTTON_BASE_POSITION + glm::vec2(0.f, 30.f));
-    sharedResumeButton->GetLabel().lock()->SetTextColor(glm::vec3(0.f));
-    sharedResumeButton->GetLabel().lock()->SetText("Resume");
+    container->AddChild(sharedResumeButton);
 
     sharedResumeButton->OnClick.append([this]() {
         this->SetVisible(false);
@@ -64,18 +72,16 @@ void PauseMenu::AddResumeButton() {
     });
 }
 
-void PauseMenu::AddExitButton() {
-    exitButton = this->AddComponent<mlg::Button>(
-            "ExitButton",
-            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BUTTON_MATERIAL),
-            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BUTTON_FOCUSED_MATERIAL),
-            mlg::AssetManager::GetAsset<mlg::FontAsset>(FONT));
+void PauseMenu::AddExitButton(mlg::Container* container) {
+    mlg::ButtonBuilder buttonBuilder;
+    auto sharedExitButton =
+            buttonBuilder.SetName("ExitButton")
+                    .SetSize(BUTTON_SIZE)
+                    .SetText("Exit")
+                    .BuildButton(this)
+                    .lock();
 
-    auto sharedExitButton = exitButton.lock();
-    sharedExitButton->SetSize(BUTTON_SIZE);
-    sharedExitButton->SetRelativePosition(BUTTON_BASE_POSITION + glm::vec2(0.f, -30.f));
-    sharedExitButton->GetLabel().lock()->SetTextColor(glm::vec3(0.f));
-    sharedExitButton->GetLabel().lock()->SetText("Exit");
+    container->AddChild(sharedExitButton);
 
     sharedExitButton->OnClick.append([this]() {
         auto menuScene = std::make_unique<MenuScene>();
@@ -84,13 +90,8 @@ void PauseMenu::AddExitButton() {
 }
 
 void PauseMenu::SetVisible(bool visible) {
-    background.lock()->SetVisible(visible);
+    menuPanel.lock()->SetVisible(visible);
 
-    resumeButton.lock()->SetActive(visible);
-    resumeButton.lock()->SetVisible(visible);
-
-    exitButton.lock()->SetActive(visible);
-    exitButton.lock()->SetVisible(visible);
-
-    resumeButton.lock()->GrabFocus();
+    if (visible == true)
+        menuPanel.lock()->GrabFocus();
 }
