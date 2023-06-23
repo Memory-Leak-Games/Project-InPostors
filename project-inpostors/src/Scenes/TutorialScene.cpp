@@ -78,7 +78,7 @@ void TutorialScene::Start() {
             });
 
     mlg::TimerManager::Get()->SetTimer(
-            1.f,
+            3.f,
             false, [this, eventHandle]() {
                 OreTutorial();
                 tutorialPanel->OnClosed.remove(eventHandle);
