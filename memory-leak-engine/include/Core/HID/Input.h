@@ -4,6 +4,8 @@
 
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_gamecontroller.h>
+#include <eventpp/callbacklist.h>
+#include <eventpp/eventqueue.h>
 #include <unordered_set>
 #include <vector>
 
@@ -28,6 +30,9 @@ namespace mlg {
         std::unique_ptr<std::unordered_map<std::string, std::unique_ptr<InputAction>>> inputActionsMap;
 
     public:
+        eventpp::CallbackList<void(int)> OnDeviceConnected;
+        eventpp::CallbackList<void(int)> OnDeviceDisconnected;
+
         static void Initialize();
         static void Stop();
         static Input* Get();
