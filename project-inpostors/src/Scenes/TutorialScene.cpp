@@ -10,6 +10,7 @@
 #include "Scenes/LevelScene.h"
 #include "Scenes/MenuScene.h"
 #include "UI/GameplayOverlay.h"
+#include "UI/TutorialPanel.h"
 #include <fstream>
 #include <memory>
 
@@ -24,10 +25,16 @@ void TutorialScene::Load() {
             mlg::EntityManager::FindByName("ChatManager")
                     .lock();
 
+    tutorialPanel = mlg::EntityManager::SpawnEntity<TutorialPanel>(
+                            "TutorialPanel", false, nullptr)
+                            .lock();
+
     chatManager = std::dynamic_pointer_cast<ChatManager>(chatManagerEntity);
-    chatManager->SetWelcome("welcome-tutorial");
-    chatManager->DisableRandomMessages();
+    // chatManager->DisableRandomMessages();
     chatManager->DisableTaskMessages();
+    chatManager->DisableWelcomeMessage();
+
+    tutorialPanel->ShowTutorial("welcome-tutorial");
 
     TaskData oreTaskData{};
     oreTaskData.productId = "ore";
@@ -73,12 +80,12 @@ void TutorialScene::Update() {
 }
 
 void TutorialScene::OreTutorial() {
-    chatManager->NewMessage("ore-tutorial", 30.f);
+    tutorialPanel->ShowTutorial("ore-tutorial");
 }
 
 void TutorialScene::IronTutorial() {
     GetTaskManager()->AcceptNewTask();
-    chatManager->NewMessage("iron-tutorial", 30.f);
+    tutorialPanel->ShowTutorial("iron-tutorial");
 }
 
 void TutorialScene::BonusTutorial() {
@@ -92,7 +99,7 @@ void TutorialScene::BonusTutorial() {
 
     GetTaskManager()->AcceptNewTask();
 
-    chatManager->NewMessage("bonus-tutorial", 30.f);
+    tutorialPanel->ShowTutorial("bonus-tutorial");
     messageSound->Play();
 }
 
@@ -118,23 +125,16 @@ void TutorialScene::AfterIronTutorial() {
         GetTaskManager()->AcceptNewTask();
     }
 
-    chatManager->NewMessage("after-iron-tutorial", 30.f);
+    tutorialPanel->ShowTutorial("after-iron-tutorial");
     messageSound->Play();
 }
 
 void TutorialScene::FinalTutorial() {
-    chatManager->NewMessage("final-tutorial", 10.f);
+    tutorialPanel->ShowTutorial("final-tutorial");
     messageSound->Play();
 
     mlg::TimerManager::Get()->SetTimer(
-            10.f,
-            false, [this]() {
-                chatManager->NewMessage("end-tutorial", 10.f);
-                messageSound->Play();
-            });
-
-    mlg::TimerManager::Get()->SetTimer(
-            15.f,
+            0.5f,
             false, [this]() {
                 std::ifstream file(LEVELS_FILE);
                 nlohmann::json levels = nlohmann::json::parse(file);

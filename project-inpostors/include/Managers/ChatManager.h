@@ -39,6 +39,7 @@ private:
 
     bool taskMessagesEnabled = true;
     bool randomMessagesEnabled = true;
+    bool welcomeMessageEnabled = true;
 
     eventpp::CallbackList<void(const struct TaskData&)>::Handle onTaskFailedHandle;
     eventpp::CallbackList<void(int)>::Handle onProductSoldHandle;
@@ -63,6 +64,7 @@ public:
 
     void DisableRandomMessages();
     void DisableTaskMessages();
+    void DisableWelcomeMessage();
 
     void NewMessage(const std::string& key, float duration = 5.f);
 

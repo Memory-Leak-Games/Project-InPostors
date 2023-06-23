@@ -1,7 +1,5 @@
 #include "Gameplay/Entity.h"
-
-#include <cstddef>
-#include <utility>
+#include "SceneGraph/SceneGraph.h"
 
 namespace mlg {
     Entity::Entity(
@@ -13,6 +11,10 @@ namespace mlg {
           isStatic(isStatic),
           transform(std::make_shared<Transform>()),
           id(id) {
+
+        if (parent == nullptr)
+            parent = SceneGraph::GetRoot();
+
         parent->AddChild(transform);
     }
 

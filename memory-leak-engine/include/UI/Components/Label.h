@@ -1,7 +1,14 @@
 #pragma once
 
 #include "UIComponent.h"
-#include <glm/fwd.hpp>
+
+#define MLG_H_ALIGN_CENTER mlg::Label::HorizontalAlignment::Center
+#define MLG_H_ALIGN_LEFT mlg::Label::HorizontalAlignment::Left
+#define MLG_H_ALIGN_RIGHT mlg::Label::HorizontalAlignment::Right
+
+#define MLG_V_ALIGN_CENTER mlg::Label::VerticalAlignment::Center
+#define MLG_V_ALIGN_UP mlg::Label::VerticalAlignment::Up
+#define MLG_V_ALIGN_DOWN mlg::Label::VerticalAlignment::Down
 
 namespace mlg {
     class Label : public UIComponent {

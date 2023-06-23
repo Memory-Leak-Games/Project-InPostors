@@ -56,7 +56,8 @@ void ChatManager::ParseJson() {
 }
 
 void ChatManager::Start() {
-    ShowWelcomeMessage();
+    if (welcomeMessageEnabled)
+        ShowWelcomeMessage();
 
     if (randomMessagesEnabled)
         StartRandomMessageTimer();
@@ -148,6 +149,10 @@ void ChatManager::DisableTaskMessages() {
     taskManager->OnTaskFailed.remove(onTaskFailedHandle);
     taskManager->OnProductSold.remove(onProductSoldHandle);
     taskMessagesEnabled = false;
+}
+
+void ChatManager::DisableWelcomeMessage() {
+    welcomeMessageEnabled = false;
 }
 
 void ChatManager::NewMessage(const std::string& key, float duration) {
