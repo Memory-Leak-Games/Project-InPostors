@@ -4,6 +4,8 @@
 
 ### Hello **FOSS** Community!
 
+## [Releases](https://github.com/Memory-Leak-Games/Project-InPostors/releases)
+
 TODO: Add readme
 
 ## Parameters
