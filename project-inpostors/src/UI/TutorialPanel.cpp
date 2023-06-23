@@ -32,6 +32,11 @@ std::shared_ptr<TutorialPanel> TutorialPanel::Create(
     auto panel = std::shared_ptr<TutorialPanel>(
             new TutorialPanel(id, name, isStatic, parent));
 
+    auto logoMaterial =
+            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(AI_LOGO_MATERIAL);
+    auto image = panel->AddComponent<mlg::Image>("Logo", logoMaterial).lock();
+    image->SetSize({512.f, 512.f});
+
     auto backgroundMaterial =
             mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BACKGROUND_MATERIAL);
 
@@ -75,6 +80,7 @@ std::shared_ptr<TutorialPanel> TutorialPanel::Create(
 
     panel->panel = panel->AddComponent<mlg::CanvasPanel>("TutorialCanvas").lock();
     panel->panel->SetSize(PANEL_SIZE);
+    panel->panel->AddChild(image);
     panel->panel->AddChild(background);
     panel->panel->AddChild(panel->exitButton);
     panel->panel->AddChild(title);
