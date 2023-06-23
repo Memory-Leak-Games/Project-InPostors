@@ -17,3 +17,5 @@
 #define BUTTON_BASE_POSITION glm::vec2{ 200, 150 }
 
 #define AI_LOGO_MATERIAL "res/materials/ui/gameplay/logo_transparent_material.json"
+
+#define MESSAGE_BOX_SIZE glm::vec2{512, 256}
