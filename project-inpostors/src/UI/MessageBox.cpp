@@ -47,11 +47,11 @@ std::shared_ptr<MessageBox> MessageBox::Create(
     messageBox->textLabel = labelBuilder.SetName("message")
                                     .SetText("Message")
                                     .SetSize(20.f)
-                                    .SetHorizontalAlignment(MLG_H_ALIGN_LEFT)
+                                    .SetHorizontalAlignment(MLG_H_ALIGN_CENTER)
                                     .BuildLabel(messageBox.get())
                                     .lock();
     messageBox->textLabel->SetRelativePosition(
-            {-MESSAGE_BOX_SIZE.x / 2.0f + 10.f, MESSAGE_BOX_SIZE.y / 2.0f - 80.f});
+            {0.f, MESSAGE_BOX_SIZE.y / 2.0f - 80.f});
 
     mlg::ButtonBuilder buttonBuilder;
     std::shared_ptr<mlg::Button> okButton =

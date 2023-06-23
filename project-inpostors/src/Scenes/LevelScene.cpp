@@ -43,8 +43,6 @@ LevelScene::LevelScene(const std::string& path) : levelPath(path) {}
 LevelScene::~LevelScene() = default;
 
 void LevelScene::Load() {
-    InitializeMessageBox();
-    InitializeGamepadCallbacks();
     LoadLevel();
     InitializeLevelTaskManager();
 
@@ -77,6 +75,9 @@ void LevelScene::Load() {
     auto chatManager = mlg::EntityManager::SpawnEntity<ChatManager>(
                                "ChatManager", false, mlg::SceneGraph::GetRoot(), this)
                                .lock();
+
+    InitializeMessageBox();
+    InitializeGamepadCallbacks();
 }
 
 void LevelScene::Start() {
@@ -120,42 +121,6 @@ void LevelScene::HandlePauseGame() {
     bool isGamePaused = mlg::Time::IsGamePaused();
     mlg::Time::PauseGame(!isGamePaused);
     pauseMenu.lock()->SetVisible(!isGamePaused);
-}
-
-const std::shared_ptr<NavigationGraph>& LevelScene::GetNavigationGraph() const {
-    return navigationGraph;
-}
-
-LevelTaskManager* LevelScene::GetLevelTaskManager() {
-    return levelTaskManager.get();
-}
-
-TaskManager* LevelScene::GetTaskManager() {
-    return &levelTaskManager->GetTaskManager();
-}
-
-ScoreManager* LevelScene::GetScoreManager() {
-    return scoreManager.get();
-}
-
-MessageBox& LevelScene::GetMessageBox() {
-    return *messageBox;
-}
-
-const std::string& LevelScene::GetLevelName() const {
-    return levelName;
-}
-
-GameplayOverlay* LevelScene::GetGameplayOverlay() {
-    return gameplayOverlay.get();
-}
-
-GameplayEventsManager& LevelScene::GetGameplayEventsManager() {
-    return *gameplayEventsManager;
-}
-
-StartLevelCountdown& LevelScene::GetLevelCountdown() {
-    return *levelCountdown;
 }
 
 void LevelScene::InitializeLevelTaskManager() {
@@ -242,9 +207,9 @@ void LevelScene::SetTimeLimit() {
 
 void LevelScene::InitializeMessageBox() {
     messageBox = mlg::EntityManager::SpawnEntity<MessageBox>(
-                          "MessageBox", false, mlg::SceneGraph::GetRoot())
-                          .lock();
-    
+                         "MessageBox", false, mlg::SceneGraph::GetRoot())
+                         .lock();
+
     messageBox->OnMessageBoxHide.append([this]() {
         pauseDisabled = false;
         mlg::Time::PauseGame(false);
@@ -257,5 +222,43 @@ void LevelScene::InitializeMessageBox() {
 }
 
 void LevelScene::InitializeGamepadCallbacks() {
-    
+    mlg::Input::Get()->OnDeviceDisconnected.append([this](int deviceID) {
+        messageBox->ShowMessage("WARNING", "Gamepad disconnected");
+    });
+}
+
+const std::shared_ptr<NavigationGraph>& LevelScene::GetNavigationGraph() const {
+    return navigationGraph;
+}
+
+LevelTaskManager* LevelScene::GetLevelTaskManager() {
+    return levelTaskManager.get();
+}
+
+TaskManager* LevelScene::GetTaskManager() {
+    return &levelTaskManager->GetTaskManager();
+}
+
+ScoreManager* LevelScene::GetScoreManager() {
+    return scoreManager.get();
+}
+
+MessageBox& LevelScene::GetMessageBox() {
+    return *messageBox;
+}
+
+const std::string& LevelScene::GetLevelName() const {
+    return levelName;
+}
+
+GameplayOverlay* LevelScene::GetGameplayOverlay() {
+    return gameplayOverlay.get();
+}
+
+GameplayEventsManager& LevelScene::GetGameplayEventsManager() {
+    return *gameplayEventsManager;
+}
+
+StartLevelCountdown& LevelScene::GetLevelCountdown() {
+    return *levelCountdown;
 }
