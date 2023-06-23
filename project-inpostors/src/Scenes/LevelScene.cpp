@@ -42,7 +42,8 @@ LevelScene::LevelScene(const std::string& path) : levelPath(path) {}
 
 LevelScene::~LevelScene() = default;
 
-void LevelScene::Load() {;
+void LevelScene::Load() {
+    ;
     LoadLevel();
     InitializeLevelTaskManager();
 
@@ -106,12 +107,18 @@ void LevelScene::Update() {
 }
 
 void LevelScene::HandlePauseGame() {
-    if (mlg::Input::IsActionJustPressed("pause") &&
-        mlg::TimerManager::Get()->GetTimerRemainingTime(timeLimitTimer) > 0.0f) {
-        bool isGamePaused = mlg::Time::IsGamePaused();
-        mlg::Time::PauseGame(!isGamePaused);
-        pauseMenu.lock()->SetVisible(!isGamePaused);
-    }
+    if (!mlg::Input::IsActionJustPressed("pause"))
+        return;
+
+    if (!levelCountdown->IsCountdownFinished())
+        return;
+
+    if (pauseDisabled)
+        return;
+
+    bool isGamePaused = mlg::Time::IsGamePaused();
+    mlg::Time::PauseGame(!isGamePaused);
+    pauseMenu.lock()->SetVisible(!isGamePaused);
 }
 
 const std::shared_ptr<NavigationGraph>& LevelScene::GetNavigationGraph() const {

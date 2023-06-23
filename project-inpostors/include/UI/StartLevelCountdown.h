@@ -41,6 +41,8 @@ public:
 
     void SetTimeToStart(int timeToStart);
 
+    bool IsCountdownFinished() const;
+
 private:
     void InitializeCountdownLabel();
 };

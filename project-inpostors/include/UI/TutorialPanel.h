@@ -28,6 +28,7 @@ private:
 
 public:
     eventpp::CallbackList<void()> OnClosed;
+    eventpp::CallbackList<void()> OnMessage;
 
     static std::shared_ptr<TutorialPanel> Create(
             uint64_t id, const std::string& name,

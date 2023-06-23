@@ -65,6 +65,15 @@ void TutorialScene::Load() {
             });
 
     messageSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/announcement-sound.mp3");
+
+    tutorialPanel->OnClosed.append(
+            [this]() {
+                pauseDisabled = false;
+            });
+    tutorialPanel->OnMessage.append(
+            [this]() {
+                pauseDisabled = true;
+            });
 }
 
 void TutorialScene::Start() {

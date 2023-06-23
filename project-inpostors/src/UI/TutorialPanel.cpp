@@ -100,6 +100,7 @@ void TutorialPanel::ShowTutorial(const std::string& messageId) {
             messages[messageId], 66);
     text->SetText(wrappedMessage);
     mlg::Time::PauseGame(true);
+    OnMessage();
 }
 
 void TutorialPanel::SetVisible(bool visible) {

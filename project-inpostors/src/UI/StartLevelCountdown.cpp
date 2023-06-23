@@ -73,6 +73,14 @@ void StartLevelCountdown::SetTimeToStart(int timeToStart) {
     this->timeToStart = timeToStart;
 }
 
+bool StartLevelCountdown::IsCountdownFinished() const {
+    if (!isStarted)
+        return false;
+
+    float timeFromStart = mlg::Time::GetTrueSeconds() - startTime;
+    return timeFromStart > timeToStart + 1.f;
+}
+
 void StartLevelCountdown::InitializeCountdownLabel() {
     countdownLabel = AddComponent<mlg::Label>("CountdownLabel");
     auto sharedCountdownLabel = countdownLabel.lock();
