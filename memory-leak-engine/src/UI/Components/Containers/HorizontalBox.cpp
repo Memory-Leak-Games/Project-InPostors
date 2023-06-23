@@ -1,5 +1,6 @@
 #include "UI/Components/Containers/HorizontalBox.h"
 #include "UI/Components/UIFocusableComponent.h"
+#include <spdlog/spdlog.h>
 
 mlg::HorizontalBox::HorizontalBox(
         std::weak_ptr<Entity> owner, const std::string& name)
@@ -12,7 +13,6 @@ void mlg::HorizontalBox::UpdateContainer() {
 
     glm::vec2 position = GetPosition();
     glm::vec2 size = GetSize();
-    glm::vec2 firstSize = children.front().lock()->GetSize();
     float x = size.x / 2.0f + position.x;
 
     for (auto& child : children) {
@@ -25,7 +25,7 @@ void mlg::HorizontalBox::UpdateContainer() {
 }
 
 glm::vec2 mlg::HorizontalBox::GetSize() const {
-    glm::vec2 size;
+    glm::vec2 size {0.f};
 
     for (auto& child : children) {
         glm::vec2 childSize = child.lock()->GetSize();
@@ -56,5 +56,6 @@ void mlg::HorizontalBox::UpdateFocusableComponents() {
                 focusableComponents[(i - 1) % focusableComponents.size()];
     }
 
-    focusableComponents.front().lock()->next.right = focusableComponents.back();
+    if (focusableComponents.size() > 1)
+        focusableComponents.front().lock()->next.right = focusableComponents.back();
 }

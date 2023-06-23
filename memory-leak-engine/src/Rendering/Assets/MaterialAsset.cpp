@@ -222,6 +222,10 @@ namespace mlg {
 
         unsigned int hex = std::stoul(html.substr(1), nullptr, 16);
 
+        if (html.size() == 7) {
+            return glm::vec4(HEX_RGB(hex), 1.0f);
+        }
+
         return HEX_RGBA(hex);
     }
 

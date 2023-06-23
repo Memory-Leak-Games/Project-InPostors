@@ -3,6 +3,7 @@
 #include "Core/HID/Input.h"
 
 #include "Car/CarInput.h"
+#include <spdlog/spdlog.h>
 
 glm::vec2 PlayerOneInput::GetMovementInput() {
     glm::vec2 movement;
@@ -14,6 +15,10 @@ glm::vec2 PlayerOneInput::GetMovementInput() {
     movement.x -= mlg::Input::GetActionStrength("left_one");
 
     return movement;
+}
+
+void PlayerOneInput::SetVibration(float lowStrength, float highStrength, float duration) {
+    mlg::Input::SetVibration(0, lowStrength, highStrength, duration);
 }
 
 PlayerOneInput::~PlayerOneInput() {

@@ -66,6 +66,7 @@ void mlg::Window::Update() {
 
 void mlg::Window::SetIcon(const std::string& path) {
     GLFWimage image;
+    stbi_set_flip_vertically_on_load(false);
     image.pixels = stbi_load(
             path.c_str(), &image.width, &image.height,
             0, 4);

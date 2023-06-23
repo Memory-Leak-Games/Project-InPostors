@@ -25,9 +25,10 @@ private:
 
     std::weak_ptr<class PauseMenu> pauseMenu;
 
-    bool canPlaySound = true;
-
     size_t timeLimitTimer;
+
+protected:
+    bool pauseDisabled = false;
 
 public:
     eventpp::CallbackList<void()> OnLevelFinished;
@@ -36,6 +37,7 @@ public:
     ~LevelScene() override;
 
     void Load() override;
+    void Start() override;
     void Update() override;
 
     void HandlePauseGame();

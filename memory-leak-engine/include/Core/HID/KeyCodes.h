@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SDL2/SDL_gamecontroller.h>
 #include <cstdint>
 
 namespace mlg {
@@ -162,52 +163,7 @@ namespace mlg {
     }// namespace Mouse
 
     namespace Gamepad {
-        using GamepadIndex = int;
-
-        enum : GamepadIndex {
-            Gamepad1 = 0,
-            Gamepad2 = 1,
-            Gamepad3 = 2,
-            Gamepad4 = 3
-        };
-
-        using GamepadCode = int;
-
-        enum : GamepadCode {
-            A = 0,
-            B = 1,
-            X = 2,
-            Y = 3,
-            LB = 4,
-            RB = 5,
-            Back = 6,
-            Start = 7,
-            Guide = 8,
-            ButtonLT = 9,
-            ButtonRT = 10,
-
-            //DPAD
-            Up = 11,
-            Right = 12,
-            Down = 13,
-            Left = 14,
-
-            Last = Left,
-            ButtonsCount = 15
-        };
-
-        using GamepadAxis = int;
-
-        enum : GamepadAxis {
-            LeftX = 0,
-            LeftY = 1,
-            RightX = 2,
-            RightY = 3,
-            AxisLT = 4,
-            AxisRT = 5,
-
-            AxisLast = AxisRT,
-            AxesCount = 6
-        };
+        using GamepadButton = SDL_GameControllerButton;
+        using GamepadAxis = SDL_GameControllerAxis;
     }// namespace Gamepad
 }// namespace mlg

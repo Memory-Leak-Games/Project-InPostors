@@ -23,8 +23,10 @@ std::shared_ptr<StartLevelCountdown> StartLevelCountdown::Create(
 }
 
 void StartLevelCountdown::Start() {
-    if (timeToStart < 0.f)
-        return;
+}
+
+void StartLevelCountdown::StartCountDown() {
+    isStarted = true;
 
     mlg::Time::PauseGame(true);
     startTime = mlg::Time::GetTrueSeconds();
@@ -34,6 +36,9 @@ void StartLevelCountdown::Start() {
 }
 
 void StartLevelCountdown::Update() {
+    if (!isStarted)
+        return;
+
     float timeFromStart = mlg::Time::GetTrueSeconds() - startTime;
     int number = std::ceil(timeToStart - timeFromStart);
 
@@ -66,6 +71,14 @@ void StartLevelCountdown::Update() {
 
 void StartLevelCountdown::SetTimeToStart(int timeToStart) {
     this->timeToStart = timeToStart;
+}
+
+bool StartLevelCountdown::IsCountdownFinished() const {
+    if (!isStarted)
+        return false;
+
+    float timeFromStart = mlg::Time::GetTrueSeconds() - startTime;
+    return timeFromStart > timeToStart + 1.f;
 }
 
 void StartLevelCountdown::InitializeCountdownLabel() {

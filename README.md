@@ -4,6 +4,8 @@
 
 ### Hello **FOSS** Community!
 
+## [Releases](https://github.com/Memory-Leak-Games/Project-InPostors/releases)
+
 TODO: Add readme
 
 ## Parameters
@@ -13,6 +15,7 @@ TODO: Add readme
 - `-w` - run in fullscreen mode (override settings)
 - `-b` - run in fullscreen mode (override settings)
 - `--resolution={}x{}` - change startup resolution (override settings)
+- `--input` - run game in debug input mode
 
 [Changelog](ChangeLog.md)
 

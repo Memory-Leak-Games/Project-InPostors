@@ -14,7 +14,6 @@ namespace LoggingMacros {
 
 // Assertions
 
-#ifdef DEBUG
 #define MLG_ASSERT_MSG(condition, message)                                 \
     do {                                                                   \
         if (!(condition)) {                                                \
@@ -41,21 +40,6 @@ namespace LoggingMacros {
     do {                               \
         SPDLOG_ERROR("Unimplemented"); \
     } while (false)
-
-#else
-#define MLG_ASSERT_MSG(condition, message) \
-    do {                                   \
-    } while (false)
-#define MLG_ASSERT(condition) \
-    do {                      \
-    } while (false)
-#define MLG_UNIMPLEMENTED \
-    do {                  \
-    } while (false)
-#define MLG_UNIMPLEMENTED_SOFT \
-    do {                       \
-    } while (false)
-#endif
 
 #ifndef DEBUG
 #undef TRACY_ENABLE

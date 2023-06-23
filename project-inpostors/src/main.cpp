@@ -4,6 +4,7 @@
 
 
 #include "Core/Core.h"
+#include "Core/HID/Input.h"
 #include "Core/SceneManager/SceneManager.h"
 
 
@@ -25,10 +26,20 @@ public:
     bool resolutionOverride = false;
     glm::ivec2 resolution = {1280, 720};
 
+    bool inputDebug = false;
+
     bool ParseArguments(int argc, char* argv[]) {
         cxxopts::Options options("Project Inpostors", "A game about couriers");
         options.allow_unrecognised_options();
-        options.add_options()("h,help", "Show this help")("test-scene", "Run test scene")("f,fullscreen", "Run in fullscreen mode (overrides config)")("w,windowed", "Run in windowed mode (overrides config)")("b,borderless", "Run in borderless mode (overrides config)")("resolution", "change window resolution (overrides config)", cxxopts::value<std::string>())("l,level", "provide level path", cxxopts::value<std::string>());
+        options.add_options()
+        ("h,help", "Show this help")
+        ("test-scene", "Run test scene")
+        ("f,fullscreen", "Run in fullscreen mode (overrides config)")
+        ("w,windowed", "Run in windowed mode (overrides config)")
+        ("b,borderless", "Run in borderless mode (overrides config)")
+        ("resolution", "change window resolution (overrides config)", cxxopts::value<std::string>())
+        ("l,level", "provide level path", cxxopts::value<std::string>())
+        ("input", "run input debug");
 
         auto result = options.parse(argc, argv);
 
@@ -41,6 +52,10 @@ public:
         } else if (result.count("borderless")) {
             windowTypeOverride = true;
             windowType = mlg::WindowType::Borderless;
+        }
+
+        if (result.count("input")) {
+            inputDebug = true;
         }
 
         if (result.count("resolution")) {
@@ -108,6 +123,17 @@ public:
         return 0;
     }
 
+    void DebugInput() {
+        mlg::Input::Initialize();
+
+        while(true) {
+            mlg::Input::Update();
+            mlg::Input::DebugInput();
+        }
+
+        mlg::Input::Stop();
+    }
+
     virtual ~ProjectInpostors() {
     }
 };
@@ -120,6 +146,9 @@ int main(int argc, char* argv[]) {
 
     if (exit)
         return 0;
+
+    if (game.inputDebug)
+        game.DebugInput();
 
     return game.Main();
 }

@@ -1,0 +1,12 @@
+{
+  "vertexShader": "res/shaders/ui/image.vert",
+  "fragmentShader": "res/shaders/ui/image.frag",
+  "uniforms": [],
+  "textures": [
+    {
+      "name": "image",
+      "index": 0,
+      "path": "res/textures/covers/tutorial_cover.png"
+    }
+  ]
+}
