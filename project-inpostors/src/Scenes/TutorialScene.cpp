@@ -11,6 +11,7 @@
 #include "Scenes/MenuScene.h"
 #include "UI/GameplayOverlay.h"
 #include "UI/TutorialPanel.h"
+#include <eventpp/eventqueue.h>
 #include <fstream>
 #include <memory>
 
@@ -34,7 +35,6 @@ void TutorialScene::Load() {
     chatManager->DisableTaskMessages();
     chatManager->DisableWelcomeMessage();
 
-    tutorialPanel->ShowTutorial("welcome-tutorial");
 
     TaskData oreTaskData{};
     oreTaskData.productId = "ore";
@@ -68,10 +68,20 @@ void TutorialScene::Load() {
 }
 
 void TutorialScene::Start() {
+    tutorialPanel->ShowTutorial("welcome-tutorial");
+
+    using CL = eventpp::CallbackList<void()>;
+
+    CL::Handle eventHandle = tutorialPanel->OnClosed.append(
+            [this]() {
+                GetLevelCountdown().StartCountDown();
+            });
+
     mlg::TimerManager::Get()->SetTimer(
             1.f,
-            false, [this]() {
+            false, [this, eventHandle]() {
                 OreTutorial();
+                tutorialPanel->OnClosed.remove(eventHandle);
             });
 }
 

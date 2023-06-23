@@ -79,6 +79,7 @@ void LevelScene::Load() {;
 
 void LevelScene::Start() {
     levelTaskManager->GetTaskManager().AcceptNewTask();
+    levelCountdown->StartCountDown();
 }
 
 void LevelScene::Update() {

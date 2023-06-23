@@ -16,6 +16,8 @@ private:
     float timeToStart = 4.f;
     float startTime = 0.f;
 
+    bool isStarted = false;
+
     int lastNumber = 0;
 
     StartLevelCountdown(
@@ -33,6 +35,8 @@ public:
     ~StartLevelCountdown() override;
 
     void Start() override;
+    void StartCountDown();
+
     void Update() override;
 
     void SetTimeToStart(int timeToStart);
