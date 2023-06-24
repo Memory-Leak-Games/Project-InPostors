@@ -1,6 +1,6 @@
 {
   "default-material": "res/materials/buildings_material.json",
-  "factory-pool": "res/levels/factories/pools/tutorial.json",
+  "factory-pool": "res/levels/factories/pools/furniture_river.json",
   "tiles": [
     {
       "symbol": "b",
@@ -216,6 +216,29 @@
       ]
     },
     {
+      "symbol": "S",
+      "objects": [
+        {
+          "model": "res/models/buildings/super_big/stadium.obj",
+          "scale": 1,
+          "rotation": 90.0,
+          "collision-type": "rectangle",
+          "collision-size": 10.0
+        }
+      ]
+    },
+    {
+      "symbol": "P",
+      "objects": [
+        {
+          "model": "res/models/buildings/super_big/park.obj",
+          "scale": 0.75,
+          "collision-type": "rectangle",
+          "collision-size": 15.0
+        }
+      ]
+    },
+    {
       "symbol": "o",
       "objects": [
         {
@@ -245,6 +268,71 @@
           "scale": 0.85,
           "collision-type": "rectangle",
           "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "z",
+      "objects": [
+        {
+          "model": "res/models/buildings/special/donut.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/burger.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/caffee.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        },
+        {
+          "model": "res/models/buildings/special/fries.obj",
+          "scale": 0.85,
+          "collision-type": "rectangle",
+          "collision-size": 4.0
+        }
+      ]
+    },
+    {
+      "symbol": "T",
+      "objects": [
+        {
+          "model": "res/models/buildings/super_big/townhall.obj",
+          "rotation": 180.0,
+          "scale": 1.1,
+          "collision-type": "rectangle",
+          "collision-size": 12.0
+        }
+      ]
+    },
+    {
+      "symbol": "G",
+      "objects": [
+        {
+          "model": "res/models/buildings/super_big/cafe_b.obj",
+          "rotation": 180.0,
+          "scale": 1.2,
+          "collision-type": "rectangle",
+          "collision-size": 9.0
+        }
+      ]
+    },
+    {
+      "symbol": "F",
+      "objects": [
+        {
+          "model": "res/models/buildings/special/fan.obj",
+          "rotation": -90.0,
+          "scale": 1.0,
+          "collision-type": "rectangle",
+          "collision-size": 12.0
         }
       ]
     }

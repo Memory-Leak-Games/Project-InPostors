@@ -16,6 +16,18 @@
           "collision-type": "rectangle",
           "collision-size": 4.0,
           "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/big/building_big_3.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
+        },
+        {
+          "model": "res/models/buildings/big/building_big_4.obj",
+          "collision-type": "rectangle",
+          "collision-size": 4.0,
+          "scale": 0.85
         }
       ]
     },
@@ -308,24 +320,6 @@
       "symbol": "z",
       "objects": [
         {
-          "model": "res/models/buildings/small/building_small_1.obj",
-          "scale": 0.85,
-          "collision-type": "rectangle",
-          "collision-size": 4.0
-        },
-        {
-          "model": "res/models/buildings/small/building_small_2.obj",
-          "scale": 0.85,
-          "collision-type": "rectangle",
-          "collision-size": 4.0
-        },
-        {
-          "model": "res/models/buildings/small/building_small_3.obj",
-          "scale": 0.85,
-          "collision-type": "rectangle",
-          "collision-size": 4.0
-        },
-        {
           "model": "res/models/buildings/special/donut.obj",
           "scale": 0.85,
           "collision-type": "rectangle",
@@ -382,7 +376,7 @@
           "rotation": 90.0,
           "scale": 0.9,
           "collision-type": "rectangle",
-          "collision-size": 12.0
+          "collision-size": 15.0
         }
       ]
     },
@@ -500,6 +494,20 @@
         },
         {
           "model": "res/models/buildings/big/building_big_2.obj",
+          "collision-type": "rectangle",
+          "collision-size": 8.0,
+          "rotation": 90.0,
+          "scale": 1.7
+        },
+        {
+          "model": "res/models/buildings/big/building_big_3.obj",
+          "collision-type": "rectangle",
+          "collision-size": 8.0,
+          "rotation": 90.0,
+          "scale": 1.7
+        },
+        {
+          "model": "res/models/buildings/big/building_big_4.obj",
           "collision-type": "rectangle",
           "collision-size": 8.0,
           "rotation": 90.0,

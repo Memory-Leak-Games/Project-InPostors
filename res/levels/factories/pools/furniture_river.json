@@ -1,0 +1,46 @@
+{
+  "factories": [
+    {
+      "symbol": "1",
+      "config": "res/levels/factories/mine.json",
+      "fallback": "S"
+    },
+    {
+      "symbol": "!",
+      "config": "res/levels/factories/mill.json",
+      "fallback": "w"
+    },
+    {
+      "symbol": "2",
+      "config": "res/levels/factories/smelter.json",
+      "fallback": "p"
+    },
+    {
+      "symbol": "3",
+      "config": "res/levels/factories/ikea.json",
+      "fallback": "p"
+    },
+    {
+      "symbol": "0",
+      "config": "res/levels/factories/storage.json",
+      "fallback": "p"
+    }
+  ],
+
+  "tasks": [
+    {
+      "product-id": "iron",
+      "time": 50.0,
+      "quantity": 5,
+      "reward": 100,
+      "bonus": 50
+    },
+    {
+      "product-id": "furniture",
+      "time": 70.0,
+      "quantity": 2,
+      "reward": 200,
+      "bonus": 60
+    }
+  ]
+}

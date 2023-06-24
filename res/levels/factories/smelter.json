@@ -4,22 +4,14 @@
     "material": "res/materials/buildings_material.json",
 
     "position": [0.0, 0.3, 0.0],
-    "rotation": -90.0,
+    "rotation": 90.0,
     "scale": 0.5
   },
 
   "colliders":[
     {
-      "offset": [-3.5, 0.25],
-      "size": [6.0, 10.5]
-    },
-    {
-      "offset": [1.5, 2.0],
-      "size": [2.5, 2.5]
-    },
-    {
-      "offset": [3.0, -2.5],
-      "size": [4.0, 4.0]
+      "offset": [0.0, 0.0],
+      "size": [19.0, 10.0]
     }
   ],
 
@@ -27,13 +19,13 @@
   "type": "SeparateInputOutput",
 
   "input": {
-    "offset": [1.5, 8.0],
-    "size": [16.0, 5.0]
+    "offset": [0.0, 7.5],
+    "size": [18.0, 4.0]
   },
 
   "output": {
-    "offset": [1.5, -7.2],
-    "size": [16.0, 5.0]
+    "offset": [0.0, -7.0],
+    "size": [18.0, 4.0]
   },
 
   "emitters": [

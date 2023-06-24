@@ -4,18 +4,14 @@
     "material": "res/materials/buildings_material.json",
 
     "position": [0.0, 0.3, 0.0],
-    "rotation": 0.0,
+    "rotation": 180.0,
     "scale": 0.55
   },
 
   "colliders":[
     {
-      "offset": [-0.5, 5.0],
-      "size": [18.0, 10.0]
-    },
-    {
-      "offset": [-1.5, -3.0],
-      "size": [16.5, 5.0]
+      "offset": [0.5, 2.0],
+      "size": [20.0, 16.0]
     }
   ],
 
@@ -24,8 +20,8 @@
   "type": "OneOutput",
 
   "output": {
-    "offset": [-0.5, -9.0],
-    "size": [18.5, 6.0]
+    "offset": [0.5, -8.0],
+    "size": [20.0, 4.5]
   },
 
   "emitters": [
