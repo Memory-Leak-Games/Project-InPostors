@@ -1,5 +1,6 @@
 #include "Animation/AnimationLibrary.h"
 
+#include "Animation/Spawners/DonutAnimSpawner.h"
 #include "Animation/Spawners/FanAnimSpawner.h"
 #include "Animation/Spawners/FerrisWheelAnimSpawner.h"
 
@@ -8,6 +9,7 @@ AnimationLibrary* AnimationLibrary::instance;
 AnimationLibrary::AnimationLibrary() {
     animMap["ferris_wheel"] = std::make_shared<FerrisWheelAnimSpawner>();
     animMap["fan"] = std::make_shared<FanAnimSpawner>();
+    animMap["donut"] = std::make_shared<DonutAnimSpawner>();
 }
 
 std::shared_ptr<AnimationSpawner> AnimationLibrary::Get(const std::string& id) {

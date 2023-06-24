@@ -34,8 +34,10 @@ SpecialAnimationComponent::SpecialAnimationComponent(const std::weak_ptr<mlg::En
 SpecialAnimationComponent::~SpecialAnimationComponent() = default;
 
 void SpecialAnimationComponent::Update() {
-    if (animType == rotate) {
-        Rotate();
+    if (animType == rotateZ) {
+        RotateZ();
+    } else if (animType == rotateYZ) {
+        RotateYZ();
     }
 }
 
@@ -54,15 +56,28 @@ void SpecialAnimationComponent::LoadParameters(const std::string& path = "res/co
     workingAnimWeight = parameters["workingAnimWeight"];
 }
 
-void SpecialAnimationComponent::Rotate() {
+void SpecialAnimationComponent::RotateZ() {
     auto rotationAngle = (float) mlg::Time::GetSeconds() / 4;
     float rotationSine = std::sin(rotationAngle / 2);
     float rotationCosine = std::cos(rotationAngle / 2);
 
     glm::quat quaternion = {rotationCosine,
-                            rotationAxis.x * rotationSine,
-                            rotationAxis.y * rotationSine,
-                            rotationAxis.z * rotationSine};
+                            zRotation.x * rotationSine,
+                            zRotation.y * rotationSine,
+                            zRotation.z * rotationSine};
+
+    animMesh.lock()->GetTransform().SetRotation(quaternion);
+}
+
+void SpecialAnimationComponent::RotateYZ() {
+    auto rotationAngle = (float) mlg::Time::GetSeconds() / 2;
+    float rotationSine = std::sin(rotationAngle / 2);
+    float rotationCosine = std::cos(rotationAngle / 2);
+
+    glm::quat quaternion = {rotationCosine,
+                            yzRotation.x * rotationSine,
+                            yzRotation.y * rotationSine,
+                            yzRotation.z * rotationSine};
 
     animMesh.lock()->GetTransform().SetRotation(quaternion);
 }

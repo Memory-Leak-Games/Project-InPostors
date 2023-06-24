@@ -8,7 +8,8 @@ namespace mlg {
 }
 
 enum AnimationType {
-    rotate,
+    rotateZ,
+    rotateYZ,
     jump
 };
 
@@ -18,7 +19,8 @@ private:
 
     // Animation params
     AnimationType animType;
-    glm::vec3 rotationAxis = {0.f, 0.f, 1.f};
+    glm::vec3 zRotation = {0.f, 0.f, 1.f};
+    glm::vec3 yzRotation = {0.f, -1.f, 1.f};
 
     bool outputAnimOn;
     float outputAnimSpeed;
@@ -41,5 +43,6 @@ public:
     void LoadParameters(const std::string& path);
 
 private:
-    void Rotate();
+    void RotateZ();
+    void RotateYZ();
 };

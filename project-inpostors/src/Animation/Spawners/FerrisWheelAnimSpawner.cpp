@@ -18,5 +18,5 @@ void FerrisWheelAnimSpawner::Spawn(const std::shared_ptr<mlg::Entity>& entity, c
     glm::vec3 position = entity->GetTransform().GetPosition();
     animMesh.lock()->GetTransform().SetPosition({ position.x, position.y + 9.45f, position.z });
 
-    auto animComponent = entity->AddComponent<SpecialAnimationComponent>("AnimComponent", animMesh, rotate);
+    auto animComponent = entity->AddComponent<SpecialAnimationComponent>("AnimComponent", animMesh, rotateZ);
 }
