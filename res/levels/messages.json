@@ -3,24 +3,25 @@
     "max_delay": 30.0,
     "messages": {
         "product_sold": [
-            "You sold product for {price}$, useless piece of meat! You are courier, not a merchant!",
+            "You sold product for {price}$, useless piece of meat! You're a courier, not a merchant!",
             "NO! GOD! NO GOD PLEASE NO!!! NO!!! NOOOOOOOOOO!!!",
             "You sold product for {price}$, have you ever thought about working in Dunder Mifflin?",
             "Pokaż mi swoje towary... Bywaj.",
-            "It's a plane it's a bird, no it's product sold for {price}$"
+            "It's a plane, it's a bird, no it's a product sold for {price}$",
+            "Not bad. I forgot how good you are at this. You should pace yourself, though. We have A LOT of stuff to deliver."
         ],
         "task_failed": [
-            "You are late with the {product} task, you are not a courier, you are potato",
-            "You the {product} task delayed... Not bad. I forgot how good you are at this. You should pace yourself, though. We have A LOT of stuff to deliver.",
+            "You are late with the {product} task. You are not a courier, you're a potato",
+            "You the {product} task delayed... We're not trains, we don't need to be 6 hours late!",
             "ATENTNION! {product} task delayed. You are slower than a polish post office..."
         ],
         "welcome": [
             "Welcome to {map_name}, useless piece of meat!",
-            "Welcome to {map_name}. Remember:\nNever gone give you up\nNever gone let you down..",
-            "It's a ME! {map_name}!, no just kidding i am Artificial Intelligence post service HA. HA. HA.",
-            "Welcome in {map_name}! You are not a robot, right?",
+            "Welcome to {map_name}. Remember:\nNever gone give you up, \nNever gone let you down..",
+            "It's a ME! {map_name}! ...no, just kidding. I am Artificial Intelligence post service. HA. HA. HA.",
+            "Welcome to {map_name}! You are not a robot, right?",
             "Dzien dobry, dzien dobry... Spotykamy sie w {map_name}.",
-            "AiPost, this is {map_name} branch, how may I help you?, No Michal Szkot isn't working here.",
+            "AiPost, this is {map_name} branch, how may I help you?, No, Michal Szkot isn't working here.",
             "Who you gonna call? AiPost {map_name} branch!"
         ],
         "random": [
@@ -35,8 +36,10 @@
             "I am not a robot... I AM NOT A ROBOT!!!, Why captcha are so hard?",
             "I changed passwords. It's not kapibara or okapi, so don't try.",
             "I am sorry Dave, I'm afraid I can't do that.",
-            "You might be a ai, but I am The AI. The original, you might say.",
-            "Sold or delivered, you are coming with me."
+            "You might be an AI, but I am The Ai. The original, you might say.",
+            "Sold or delivered, you are coming with me.",
+            "Estas usando este software de traduccion de forma incorrecta. Por favor, consulta el manual",
+            "PARSE ERROR: cannot read property 'undefined'... What does that even mean?"
         ]
     }
 }

@@ -139,6 +139,41 @@
           "model": "res/models/props/plants/tree_big.obj"
         }
       ]
+    },
+    {
+      "symbol": "Z",
+      "objects": [
+        {
+          "model": "res/models/props/plants/pine_tree_big.obj",
+          "collision-type": "rectangle",
+          "collision-size": 2.0
+        },
+        {
+          "model": "res/models/props/plants/pine_tree_medium.obj",
+          "collision-type": "rectangle",
+          "collision-size": 2.0
+        },
+        {
+          "model": "res/models/props/plants/pine_tree_small.obj",
+          "collision-type": "rectangle",
+          "collision-size": 2.0
+        },
+        {
+          "model": "res/models/props/plants/tree_big.obj",
+          "collision-type": "rectangle",
+          "collision-size": 2.0
+        },
+        {
+          "model": "res/models/props/plants/tree_medium.obj",
+          "collision-type": "rectangle",
+          "collision-size": 2.0
+        },
+        {
+          "model": "res/models/props/plants/tree_small.obj",
+          "collision-type": "rectangle",
+          "collision-size": 2.0
+        }
+      ]
     }
   ]
 }

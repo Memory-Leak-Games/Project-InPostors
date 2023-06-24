@@ -1,0 +1,41 @@
+{
+  "name": "small_city__props",
+  "tile-size": 4.0,
+  "tileset": "res/levels/tilesets/props_tileset.json",
+
+  "ignore" : "#",
+
+  "layout": [
+    "                                                              ",
+    "                                                              ",
+    "                                                              ",
+    "                                                              ",
+    "            l##########################l                      ",
+    "            ###v###v##vvvvvvvvv##v##v###                      ",
+    "            ##l#####ll###p#t###ll####l##                      ",
+    "            #h#     ##   b b   ##    #h#                      ",
+    "            #h#a   a##   b b   ##    #h#                      ",
+    "        l###l#l#####ll###t#p###ll####l#l###l                  ",
+    "        #######vvvvv##vvvvvvvvv##vvvv#######                  ",
+    "        l#############################l#l##l                  ",
+    "                                      ###                     ",
+    "                         tlblp        ###                     ",
+    "                          bTb            ###                  ",
+    "                         tlblp           ###                  ",
+    "                                         ###                  ",
+    "                    l####################l#l########l         ",
+    "                    ###vvvvvvvv##vvvvvvv##vvvv##x####         ",
+    "                    ##l########ll######ll#####l#####l         ",
+    "                    #h#        ##      ##a   b#h#             ",
+    "                    #h#        ##      ##    t#h#             ",
+    "                    ##l########ll######ll#####l##             ",
+    "                    ###vvv##vvv##vvvvvv####vvv###             ",
+    "                    l###########################l             ",
+    "                                                              ",
+    "                                                              ",
+    "                                                              ",
+    "                                                              ",
+    "                                                              ",
+    "                                                              "
+  ]
+}

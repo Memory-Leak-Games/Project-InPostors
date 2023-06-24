@@ -1,0 +1,124 @@
+{
+  "name": "El Uc",
+  "tile-size": 4.0,
+  "tileset": "res/levels/tilesets/river_city_tileset.json",
+
+  "time-limit": 180.0,
+
+  "sublevels": ["res/levels/maps/river_city_props.json"],
+
+  "ground": {
+    "mesh": "res/models/ground/ground_small_city.obj",
+    "material": "res/materials/buildings_material.json",
+
+    "scale": 1.65,
+    "offset": [-1.5, 0.0],
+    "rotation": 0.0
+  },
+
+  "layout": [
+    "               ppppp   F        ppppp                         ",
+    "               ppppp        F   ppppp                         ",
+    "               pp1pp            pp1pp                         ",
+    "           smmspppppsmbsmmsmbmsspppppsmbm                     ",
+    "           m############################m                     ",
+    "           s############################b                     ",
+    "           b############################m                     ",
+    "           m###ppTpp##szlppplsm##mbbm###s                     ",
+    "       msmbL###ppppp##msspppszs##mmbb###Lmssb                 ",
+    "       m####################################m                 ",
+    "       b####################################m                 ",
+    "       s####################################s                 ",
+    "       mmsmbsmbmsbmbppppbmbsmsspppppms###ppps                 ",
+    "                   sppppzp###pzpppppbm###p3pm                 ",
+    "                   mp2ppzp###pppp0ppms###pppb                 ",
+    "                   sppppzp###pzpppppsssss###b                 ",
+    "                   sppppssssssspppppsssss###lmmsbmmssb        ",
+    "                   m#################################m        ",
+    "                   m#################################m        ",
+    "                   m#################################s        ",
+    "                   s###mmpsmpmm##lsppzl##ppGpp###lsmms        ",
+    "                   m###mspmmpzm##slppls##opppp###m            ",
+    "                   b#############################b            ",
+    "                   b#############################b            ",
+    "                   m#############################m            ",
+    "                   msmmsmbmsspppppmbbbmpppppmsmmss            ",
+    "                             ppppp     ppppp                  ",
+    "                             pp!pp     pp!pp                  ",
+    "                             ppppp     ppppp                  ",
+    "                             ppppp     ppppp                  ",
+    "                                                              "
+  ],
+
+  "navigation": [
+    "                                                              ",
+    "                                                              ",
+    "                                                              ",
+    "                                                              ",
+    "            ############################                      ",
+    "            #x########################x#                      ",
+    "            ############################                      ",
+    "            ###     ##         ##    ###                      ",
+    "            ###     ##         ##    ###                      ",
+    "        ####################################                  ",
+    "        #####x########################x#####                  ",
+    "        ####################################                  ",
+    "                                      ###                     ",
+    "                                      ###                     ",
+    "                                      ###                     ",
+    "                                         ###                  ",
+    "                                         ###                  ",
+    "                    #################################         ",
+    "                    #x#########################x#####         ",
+    "                    #################################         ",
+    "                    ###        ##       ##    ###             ",
+    "                    ###        ##       ##    ###             ",
+    "                    #############################             ",
+    "                    #x#########################x#             ",
+    "                    #############################             ",
+    "                                                              ",
+    "                                                              ",
+    "                                                              ",
+    "                                                              ",
+    "                                                              ",
+    "                                                              "
+  ],
+
+  "cross-character": "x",
+  "number-of-agents": 8,
+
+  "camera-settings": {
+    "position": [16.0, 50.0, -14.0],
+    "rotation": [65.0, -45.0, 0.0],
+
+    "size": 100.0,
+    "near": 0.1,
+    "far": 200.0
+  },
+
+  "player-one": {
+    "id": 0,
+    "car-type": "res/config/cars/racecar.json",
+    "color": [1.0, 0.0, 0.0],
+
+    "position": [82.0, 21.0],
+    "rotation": 80.0
+  },
+
+  "player-two": {
+    "id": 1,
+    "car-type": "res/config/cars/racecar.json",
+    "color": [0.0, 1.0, 1.0],
+
+    "position": [-76.0, -12.0],
+    "rotation": 190.0
+  },
+
+  "events-config": "res/levels/events/default_events.json",
+  "events": [
+    {
+      "id": "None",
+      "probability": 3
+    }
+  ]
+}

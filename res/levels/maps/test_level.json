@@ -1,7 +1,7 @@
 {
   "name": "Snowiecsons",
   "tile-size": 4.0,
-  "tileset": "res/levels/tilesets/city_tileset.json",
+  "tileset": "res/levels/tilesets/river_city_tileset.json",
 
   "time-limit": 360.0,
 
