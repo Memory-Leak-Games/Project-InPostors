@@ -1,8 +1,8 @@
 {
     "tutorial": {
         "name": "0. Snowiecsons",
-        "path": "res/levels/maps/test_level.json"
-t        "material": "res/materials/covers/tutorial_cover.json",
+        "path": "res/levels/maps/test_level.json",
+        "material": "res/materials/covers/tutorial_cover.json"
     },
     "levels": [
         {
