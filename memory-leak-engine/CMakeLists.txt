@@ -38,7 +38,7 @@ else()
     target_link_libraries(${PROJECT_NAME} stdc++)
 endif()
 
-if (${CMAKE_BUILD_TYPE} MATCHES Debug)
+if (CMAKE_BUILD_TYPE MATCHES Debug)
     target_link_libraries(${PROJECT_NAME} imgui)
     target_link_libraries(${PROJECT_NAME} imgui_impl)
 

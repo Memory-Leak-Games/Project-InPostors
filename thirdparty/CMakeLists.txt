@@ -74,7 +74,7 @@ if (TARGET zlibstatic)
 endif ()
 
 # imGUI
-if (${CMAKE_BUILD_TYPE} MATCHES Debug)
+if (CMAKE_BUILD_TYPE MATCHES Debug)
     CPMAddPackage("gh:ocornut/imgui@1.88")
 
     add_library(imgui STATIC

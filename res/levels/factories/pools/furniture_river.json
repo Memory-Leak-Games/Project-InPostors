@@ -3,27 +3,27 @@
     {
       "symbol": "1",
       "config": "res/levels/factories/mine.json",
-      "fallback": "V"
+      "fallback": "p"
     },
     {
       "symbol": "!",
       "config": "res/levels/factories/mill.json",
-      "fallback": "w"
+      "fallback": "p"
     },
     {
       "symbol": "2",
       "config": "res/levels/factories/smelter.json",
-      "fallback": "G"
+      "fallback": "p"
     },
     {
       "symbol": "3",
       "config": "res/levels/factories/ikea.json",
-      "fallback": " "
+      "fallback": "p"
     },
     {
       "symbol": "0",
-      "config": "res/levels/factories/storage_rotated.json",
-      "fallback": "A"
+      "config": "res/levels/factories/storage.json",
+      "fallback": "p"
     }
   ],
 
