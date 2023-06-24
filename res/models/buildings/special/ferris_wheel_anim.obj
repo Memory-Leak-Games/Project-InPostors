@@ -1,6 +1,5 @@
 # Blender 3.3.1
 # www.blender.org
-mtllib ferris_wheel_anim.mtl
 o kolo_anim
 v -2.279071 -0.051729 -1.077652
 v -2.245378 -0.051729 -1.181348

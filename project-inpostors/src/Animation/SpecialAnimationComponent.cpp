@@ -25,23 +25,18 @@ void SpecialAnimationComponent::Start() {
 
 SpecialAnimationComponent::SpecialAnimationComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
                                                      const std::weak_ptr<mlg::StaticMeshComponent>& animMesh,
-                                                     const std::string& configPath) : Component(owner, name), animMesh(animMesh) {
+                                                     const AnimationType animType,
+                                                     const std::string& configPath)
+    : Component(owner, name), animMesh(animMesh), animType(animType) {
     LoadParameters(configPath);
 }
 
 SpecialAnimationComponent::~SpecialAnimationComponent() = default;
 
 void SpecialAnimationComponent::Update() {
-    auto rotationAngle = (float) mlg::Time::GetSeconds();
-    float rotationSine = std::sin(rotationAngle / 2);
-    float rotationCosine = std::cos(rotationAngle / 2);
-
-    glm::quat quaternion = {rotationCosine,
-                            rotationAxis.x * rotationSine,
-                            rotationAxis.y * rotationSine,
-                            rotationAxis.z * rotationSine};
-
-    animMesh.lock()->GetTransform().SetRotation(quaternion);
+    if (animType == rotate) {
+        Rotate();
+    }
 }
 
 void SpecialAnimationComponent::LoadParameters(const std::string& path = "res/config/anim.json") {
@@ -57,4 +52,17 @@ void SpecialAnimationComponent::LoadParameters(const std::string& path = "res/co
     workingAnimOn = parameters["workingAnimOn"];
     workingAnimSpeed = parameters["workingAnimSpeed"];
     workingAnimWeight = parameters["workingAnimWeight"];
+}
+
+void SpecialAnimationComponent::Rotate() {
+    auto rotationAngle = (float) mlg::Time::GetSeconds() / 4;
+    float rotationSine = std::sin(rotationAngle / 2);
+    float rotationCosine = std::cos(rotationAngle / 2);
+
+    glm::quat quaternion = {rotationCosine,
+                            rotationAxis.x * rotationSine,
+                            rotationAxis.y * rotationSine,
+                            rotationAxis.z * rotationSine};
+
+    animMesh.lock()->GetTransform().SetRotation(quaternion);
 }

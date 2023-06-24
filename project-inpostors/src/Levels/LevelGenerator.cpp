@@ -29,10 +29,10 @@
 #include "Player/Player.h"
 
 #include "Animation/AnimationLibrary.h"
-#include "Animation/FerrisWheelAnim.h"
 #include "Buildings/AutoDestroyComponent.h"
 #include "Buildings/Factory.h"
 #include "Managers/TaskManager.h"
+#include "include/Animation/Spawners/FerrisWheelAnimSpawner.h"
 
 
 using json = nlohmann::json;
@@ -616,6 +616,9 @@ namespace mlg {
         if (mapObject.modelPath == "res/models/buildings/special/ferris_wheel.obj") {
             auto ferris_wheel = AnimationLibrary::Get("ferris_wheel");
             ferris_wheel->Spawn(newEntity, material);
+        } else if (mapObject.modelPath == "res/models/buildings/special/fan.obj") {
+            auto fan = AnimationLibrary::Get("fan");
+            fan->Spawn(newEntity, material);
         }
 
         newEntity->GetTransform().SetPosition(objectPosition);

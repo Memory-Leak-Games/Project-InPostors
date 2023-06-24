@@ -1,14 +1,16 @@
 #include "Animation/AnimationLibrary.h"
 
-#include "Animation/FerrisWheelAnim.h"
+#include "Animation/Spawners/FanAnimSpawner.h"
+#include "Animation/Spawners/FerrisWheelAnimSpawner.h"
 
 AnimationLibrary* AnimationLibrary::instance;
 
 AnimationLibrary::AnimationLibrary() {
-    animMap["ferris_wheel"] = std::make_shared<FerrisWheelAnim>();
+    animMap["ferris_wheel"] = std::make_shared<FerrisWheelAnimSpawner>();
+    animMap["fan"] = std::make_shared<FanAnimSpawner>();
 }
 
-std::shared_ptr<FerrisWheelAnim> AnimationLibrary::Get(const std::string& id) {
+std::shared_ptr<AnimationSpawner> AnimationLibrary::Get(const std::string& id) {
     if (instance == nullptr)
         instance = new AnimationLibrary();
 
