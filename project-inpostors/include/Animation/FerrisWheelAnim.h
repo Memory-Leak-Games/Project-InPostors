@@ -1,21 +1,16 @@
 #pragma once
 
-#include "Levels/LevelGenerator.h"
-
-struct AnimatedEntityData {
-    int id;
-    mlg::MapObject* mapObject;
-    glm::ivec2 position;
-    glm::vec3 objectPosition;
-    float rotation;
-};
+namespace mlg {
+    class Entity;
+    class MaterialAsset;
+}
 
 class FerrisWheelAnim {
 
 public:
     FerrisWheelAnim();
 
-    void Spawn(AnimatedEntityData* animData);
+    void Spawn(const std::shared_ptr<mlg::Entity>& entity, const std::shared_ptr<mlg::MaterialAsset>& material);
 
     ~FerrisWheelAnim() = default;
 };

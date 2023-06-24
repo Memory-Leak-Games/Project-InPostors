@@ -363,7 +363,7 @@ namespace mlg {
         roadsObjects.corner = ParseObject(roadJson["corner"]);
     }
 
-    MapObject LevelGenerator::ParseObject(const json& jsonMapObject) {
+    LevelGenerator::MapObject LevelGenerator::ParseObject(const json& jsonMapObject) {
         MapObject mapObj;
         mapObj.modelPath = jsonMapObject["model"];
         mapObj.materialPath = jsonMapObject.value("material", defaultMaterial);
@@ -602,18 +602,6 @@ namespace mlg {
     }
 
     void LevelGenerator::PutEntity(const MapObject& mapObject, const glm::ivec2& position, float rotation) const {
-        if (mapObject.modelPath == "res/models/buildings/special/ferris_wheel.obj") {
-            AnimatedEntityData* animData;
-            animData->position = position;
-            animData->objectPosition = GetLevelPosition(position);
-            animData->rotation = rotation;
-            animData->mapObject = mapObject;
-
-            auto ferris_wheel = AnimationLibrary::Get("ferris_wheel");
-            ferris_wheel->Spawn(animData);
-            return;
-        }
-
         auto newEntity = mlg::EntityManager::SpawnEntity<mlg::Entity>(
                                  "MapObject", !mapObject.isDynamic, mlg::SceneGraph::GetRoot())
                                  .lock();
@@ -624,6 +612,11 @@ namespace mlg {
         auto staticMesh = newEntity->AddComponent<mlg::StaticMeshComponent>("StaticMesh", model, material);
 
         glm::vec3 objectPosition = GetLevelPosition(position);
+
+        if (mapObject.modelPath == "res/models/buildings/special/ferris_wheel.obj") {
+            auto ferris_wheel = AnimationLibrary::Get("ferris_wheel");
+            ferris_wheel->Spawn(newEntity, material);
+        }
 
         newEntity->GetTransform().SetPosition(objectPosition);
         newEntity->GetTransform().SetEulerRotation({0.f, mapObject.worldRot + rotation, 0.f});
@@ -675,7 +668,7 @@ namespace mlg {
                               mlg::SceneGraph::GetRoot(),
                               configPath)
                               .lock();
-        else 
+        else
             factory = mlg::EntityManager::SpawnEntity<Factory>(
                               "Factory", false,
                               mlg::SceneGraph::GetRoot(),

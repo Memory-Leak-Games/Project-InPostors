@@ -32,7 +32,16 @@ SpecialAnimationComponent::SpecialAnimationComponent(const std::weak_ptr<mlg::En
 SpecialAnimationComponent::~SpecialAnimationComponent() = default;
 
 void SpecialAnimationComponent::Update() {
-    animMesh.lock()->GetTransform().SetScale({2.f, 2.f, 2.f});
+    auto rotationAngle = (float) mlg::Time::GetSeconds();
+    float rotationSine = std::sin(rotationAngle / 2);
+    float rotationCosine = std::cos(rotationAngle / 2);
+
+    glm::quat quaternion = {rotationCosine,
+                            rotationAxis.x * rotationSine,
+                            rotationAxis.y * rotationSine,
+                            rotationAxis.z * rotationSine};
+
+    animMesh.lock()->GetTransform().SetRotation(quaternion);
 }
 
 void SpecialAnimationComponent::LoadParameters(const std::string& path = "res/config/anim.json") {

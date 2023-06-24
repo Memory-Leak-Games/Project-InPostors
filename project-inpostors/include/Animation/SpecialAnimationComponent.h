@@ -12,7 +12,7 @@ private:
     std::weak_ptr<mlg::StaticMeshComponent> animMesh;
 
     // Animation params
-    glm::vec3 meshScale {};
+    glm::vec3 rotationAxis = {0.f, 0.f, 1.f};
 
     bool outputAnimOn;
     float outputAnimSpeed;

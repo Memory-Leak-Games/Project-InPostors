@@ -1,6 +1,5 @@
 #include "Animation/AnimationLibrary.h"
 
-#include "Animation/AnimatedEntity.h"
 #include "Animation/FerrisWheelAnim.h"
 
 AnimationLibrary* AnimationLibrary::instance;
