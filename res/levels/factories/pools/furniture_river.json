@@ -3,12 +3,12 @@
     {
       "symbol": "1",
       "config": "res/levels/factories/mine.json",
-      "fallback": "p"
+      "fallback": "w"
     },
     {
       "symbol": "!",
       "config": "res/levels/factories/mill.json",
-      "fallback": "p"
+      "fallback": "w"
     },
     {
       "symbol": "2",
