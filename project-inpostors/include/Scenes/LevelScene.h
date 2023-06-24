@@ -2,6 +2,7 @@
 
 #include "Audio/Assets/AudioAsset.h"
 #include "Core/SceneManager/Scene.h"
+#include "UI/MessageBox.h"
 #include "UI/StartLevelCountdown.h"
 #include <memory>
 
@@ -23,11 +24,14 @@ private:
     std::shared_ptr<class AudioManager> audioManager;
     std::shared_ptr<class StartLevelCountdown> levelCountdown;
 
+    std::shared_ptr<class MessageBox> messageBox;
+
     std::weak_ptr<class PauseMenu> pauseMenu;
 
-    bool canPlaySound = true;
-
     size_t timeLimitTimer;
+
+protected:
+    bool pauseDisabled = false;
 
 public:
     eventpp::CallbackList<void()> OnLevelFinished;
@@ -46,6 +50,7 @@ public:
     [[nodiscard]] class TaskManager* GetTaskManager();
     [[nodiscard]] ScoreManager* GetScoreManager();
     [[nodiscard]] AudioManager& GetAudioManager();
+    [[nodiscard]] MessageBox& GetMessageBox();
     [[nodiscard]] GameplayEventsManager& GetGameplayEventsManager();
     [[nodiscard]] StartLevelCountdown& GetLevelCountdown();
 
@@ -60,4 +65,7 @@ private:
     void SpawnTraffic();
     void LoadLevel();
     void SetTimeLimit();
+
+    void InitializeMessageBox();
+    void InitializeGamepadCallbacks();
 };

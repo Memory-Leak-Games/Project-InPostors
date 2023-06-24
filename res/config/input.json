@@ -365,7 +365,7 @@
         "deviceType": "Gamepad",
         "deviceIndex": 0,
         "isAxis": false,
-        "code": 7
+        "code": 6
       },
       {
         "deviceType": "Gamepad",

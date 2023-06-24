@@ -5,14 +5,13 @@
 namespace mlg {
     class Button;
     class Image;
+    class CanvasPanel;
+    class Container;
 }// namespace mlg
 
 class PauseMenu : public mlg::Entity {
 private:
-    std::weak_ptr<mlg::Button> resumeButton;
-    std::weak_ptr<mlg::Button> exitButton;
-
-    std::weak_ptr<mlg::Image> background;
+    std::weak_ptr<mlg::CanvasPanel> menuPanel;
 
     bool visible = false;
 
@@ -28,6 +27,6 @@ public:
     void SetVisible(bool visible);
 
 private:
-    void AddResumeButton();
-    void AddExitButton();
+    void AddResumeButton(mlg::Container* container);
+    void AddExitButton(mlg::Container* container);
 };

@@ -5,7 +5,7 @@
     {
       "type": "vec4",
       "name": "tint",
-      "value": [ 0.2, 1.0, 0.5, 1.0]
+      "value": "#ff9c00"
     }
   ],
   "textures": [

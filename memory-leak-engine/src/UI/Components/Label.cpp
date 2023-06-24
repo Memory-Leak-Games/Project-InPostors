@@ -16,6 +16,8 @@
 #include "Rendering/ShaderProgram.h"
 #include "UI/UIRenderer.h"
 
+#include <TextFlow.hpp>
+
 namespace mlg {
 
     Label::Label(std::weak_ptr<Entity> owner, std::string name, const std::shared_ptr<class FontAsset>& font)
@@ -132,22 +134,11 @@ namespace mlg {
     }
 
     std::string Label::WrapText(const std::string& text, int lineLength) {
-        std::istringstream iss(text);
-        std::ostringstream wrappedText;
+        using namespace TextFlow;
+        Column column(text);
+        column.width(lineLength);
 
-        std::string word;
-        int currentLineLength = 0;
-
-        while (iss >> word) {
-            if (currentLineLength + word.length() > lineLength) {
-                wrappedText << '\n';
-                currentLineLength = 0;
-            }
-            wrappedText << word << ' ';
-            currentLineLength += word.length() + 1;
-        }
-
-        return wrappedText.str();
+        return column.toString();
     }
 
     glm::vec2 Label::GetSize() const {

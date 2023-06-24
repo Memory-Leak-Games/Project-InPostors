@@ -131,6 +131,8 @@ namespace mlg {
             int gamepadIndex = FindSmallestValidGamepadIndex();
             gamepads.push_back({gamepadIndex, controller});
 
+            OnDeviceConnected(gamepadIndex);
+
             SPDLOG_INFO("Found gamepad: {} with id: {}",
                         SDL_GameControllerName(controller),
                         gamepadIndex);
@@ -164,7 +166,8 @@ namespace mlg {
 
             if (event.cdevice.which != joystickId)
                 continue;
-
+            
+            OnDeviceDisconnected(gamepad.index);
             SPDLOG_INFO("Gamepad {}: {} disconnected", gamepad.index,
                         SDL_GameControllerName(gamepad.controller));
 

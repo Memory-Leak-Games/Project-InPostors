@@ -22,6 +22,8 @@ INCLUDE(SoLoud.cmake)
 # SDL
 INCLUDE(SDL.cmake)
 
+INCLUDE(TextFlow.cmake)
+
 target_include_directories(soloud PUBLIC ${soloud_SOURCE_DIR}/include)
 set_target_properties(soloud PROPERTIES FOLDER thirdparty)
 

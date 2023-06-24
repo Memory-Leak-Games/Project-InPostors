@@ -27,7 +27,7 @@ void mlg::VerticalBox::UpdateContainer() {
 }
 
 glm::vec2 mlg::VerticalBox::GetSize() const {
-    glm::vec2 size;
+    glm::vec2 size {0.f};
 
     for (auto& child : children) {
         glm::vec2 childSize = child.lock()->GetSize();
