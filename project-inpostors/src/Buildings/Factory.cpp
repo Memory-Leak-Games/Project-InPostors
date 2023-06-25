@@ -40,7 +40,7 @@
 #include "UI/FactoryUI.h"
 #include "Utils/ProductManager.h"
 
-#include "Animation/AnimationComponent.h"
+#include "Animation/FactoryAnimationComponent.h"
 
 
 using json = nlohmann::json;
@@ -154,7 +154,7 @@ void Factory::Start() {
         CheckBlueprintAndStartWorking();
     });
 
-    animComponent = AddComponent<AnimationComponent>("Anim").lock();
+    animComponent = AddComponent<FactoryAnimationComponent>("Anim").lock();
 
 
     GetAllSmokes();

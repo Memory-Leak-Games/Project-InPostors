@@ -28,9 +28,11 @@
 #include "Physics/CollisionManager.h"
 #include "Player/Player.h"
 
+#include "Animation/AnimationLibrary.h"
 #include "Buildings/AutoDestroyComponent.h"
 #include "Buildings/Factory.h"
 #include "Managers/TaskManager.h"
+#include "include/Animation/Spawners/FerrisWheelAnimSpawner.h"
 
 
 using json = nlohmann::json;
@@ -611,6 +613,19 @@ namespace mlg {
 
         glm::vec3 objectPosition = GetLevelPosition(position);
 
+        if (mapObject.modelPath == "res/models/buildings/special/ferris_wheel.obj") {
+            auto ferris_wheel = AnimationLibrary::Get("ferris_wheel");
+            ferris_wheel->Spawn(newEntity, material);
+        } else if (mapObject.modelPath == "res/models/buildings/special/fan.obj") {
+            auto fan = AnimationLibrary::Get("fan");
+            fan->Spawn(newEntity, material);
+        }
+        // TODO: Fix Donuts
+        else if (mapObject.modelPath == "res/models/buildings/special/donut.obj") {
+           auto donut = AnimationLibrary::Get("donut");
+           donut->Spawn(newEntity, material);
+        }
+
         newEntity->GetTransform().SetPosition(objectPosition);
         newEntity->GetTransform().SetEulerRotation({0.f, mapObject.worldRot + rotation, 0.f});
         newEntity->GetTransform().SetScale(glm::vec3{mapObject.scale});
@@ -661,7 +676,7 @@ namespace mlg {
                               mlg::SceneGraph::GetRoot(),
                               configPath)
                               .lock();
-        else 
+        else
             factory = mlg::EntityManager::SpawnEntity<Factory>(
                               "Factory", false,
                               mlg::SceneGraph::GetRoot(),

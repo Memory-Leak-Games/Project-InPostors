@@ -11,14 +11,14 @@ namespace mlg {
     class ParticleSystemComponent;
 }// namespace mlg
 
-class AnimationComponent;
+class FactoryAnimationComponent;
 
 class Factory : public InteractiveBuilding {
 private:
     Factory(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent);
 
     std::shared_ptr<mlg::RigidbodyComponent> mainRigidbody;
-    std::shared_ptr<AnimationComponent> animComponent;
+    std::shared_ptr<FactoryAnimationComponent> animComponent;
 
     std::shared_ptr<mlg::AudioAsset> createProductSound;
     std::string blueprintId;
@@ -32,7 +32,7 @@ private:
     bool working = false;
 
     friend class FactoryUI;
-    friend class AnimationComponent;
+    friend class FactoryAnimationComponent;
 
 public:
     ~Factory() override;
