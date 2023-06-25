@@ -21,6 +21,7 @@
 using json = nlohmann::json;
 
 void MonsterTruckAnimationComponent::Start() {
+    rigidbodyComponent = GetOwner().lock()->GetComponentByClass<mlg::RigidbodyComponent>().lock();
 }
 
 MonsterTruckAnimationComponent::MonsterTruckAnimationComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
@@ -35,14 +36,14 @@ void MonsterTruckAnimationComponent::Update() {
 }
 
 void MonsterTruckAnimationComponent::Rotate() {
-    auto rotationAngle = (float) mlg::Time::GetSeconds();
+    float rotationAngle = (float) mlg::Time::GetSeconds() * rigidbodyComponent->GetLinearVelocity().length();
     float rotationSine = std::sin(rotationAngle / 2);
     float rotationCosine = std::cos(rotationAngle / 2);
 
     glm::quat quaternion = {rotationCosine,
-                            zRotation.x * rotationSine,
-                            zRotation.y * rotationSine,
-                            zRotation.z * rotationSine};
+                            animRotation.x * rotationSine,
+                            animRotation.y * rotationSine,
+                            animRotation.z * rotationSine};
 
     for (const auto& animMesh : animMeshes) {
         animMesh.lock()->GetTransform().SetRotation(quaternion);
