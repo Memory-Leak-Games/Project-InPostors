@@ -216,6 +216,14 @@ namespace mlg {
         return GetOwner().lock()->GetTransform().InverseDirection(GetLinearVelocity3D());
     }
 
+    float RigidbodyComponent::GetForwardSpeed() {
+        return GetLocalVelocity().z;
+    }
+
+    float RigidbodyComponent::GetSpeed() {
+        return glm::length(GetLinearVelocity());
+    }
+
     void RigidbodyComponent::OverlapCircle(float radius, std::vector<std::weak_ptr<Entity>>& output) {
         std::vector<Collider*> overlappedColliders;
         CollisionManager::OverlapCircle(rigidbody->position, radius, overlappedColliders);

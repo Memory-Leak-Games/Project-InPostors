@@ -1,6 +1,8 @@
 #include "Player/Player.h"
 
+#include <array>
 #include <fstream>
+#include <glm/fwd.hpp>
 #include <memory>
 #include <nlohmann/json.hpp>
 
@@ -13,6 +15,7 @@
 #include "Core/TimerManager.h"
 
 #include "Gameplay/Entity.h"
+#include "Player/PlayerAudioComponent.h"
 #include "Player/PlayerFXComponent.h"
 #include "Rendering/Assets/MaterialAsset.h"
 #include "Rendering/Assets/ModelAsset.h"
@@ -81,6 +84,7 @@ std::shared_ptr<Player> Player::Create(
 
     newPlayer->AddComponent<PlayerUI>("PlayerUI");
     newPlayer->AddComponent<PlayerFXComponent>("PlayerFXComponent");
+    newPlayer->AddComponent<PlayerAudioComponent>("PlayerAudioComponent");
 
     return newPlayer;
 }
@@ -135,24 +139,17 @@ void Player::LoadAnimatedModel(const nlohmann::json& configJson) {
     std::vector<std::weak_ptr<mlg::StaticMeshComponent>> animMeshes;
     glm::vec3 position = this->GetTransform().GetPosition();
 
-    for (int i = 0; i < 4; ++i) {
+    auto offsets = std::array{
+            glm::vec2{1.45f, 1.25f},
+            glm::vec2{1.45f, -1.25f},
+            glm::vec2{-1.45f, -1.25f},
+            glm::vec2{-1.45f, +1.25f},
+    };
 
-        SPDLOG_INFO(i);
+    for (const auto& offset : offsets) {
         auto animMesh = this->AddComponent<mlg::StaticMeshComponent>("AnimMesh", animModel, material);
-
-        switch (i) {
-            case 0:
-                animMesh.lock()->GetTransform().SetPosition({ position.x + 1.45f, position.y + 1.1f, position.z + 1.25f }); break;
-            case 1:
-                animMesh.lock()->GetTransform().SetPosition({ position.x + 1.45f, position.y + 1.1f, position.z - 1.25f }); break;
-            case 2:
-                animMesh.lock()->GetTransform().SetPosition({ position.x - 1.45f, position.y + 1.1f, position.z - 1.25f }); break;
-            case 3:
-                animMesh.lock()->GetTransform().SetPosition({ position.x - 1.45f, position.y + 1.1f, position.z + 1.25f }); break;
-            default:
-                break;
-        }
-
+        animMesh.lock()->GetTransform().SetPosition(
+                {position.x + offset.x, position.y + 1.1f, position.z + offset.y});
         animMeshes.push_back(animMesh);
     }
 
@@ -161,10 +158,6 @@ void Player::LoadAnimatedModel(const nlohmann::json& configJson) {
 
 void Player::Start() {
     carInput = GetComponentByClass<CarInput>().lock();
-
-    pickUpSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/pick_up.wav");
-    dropSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/drop.wav");
-    hitSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/hit.wav");
 }
 
 void Player::Update() {
@@ -174,22 +167,8 @@ void Player::Update() {
     }
 
     std::vector<std::weak_ptr<mlg::Collider>> overlappingColliders;
-    rigidbodyComponent.lock()->GetOverlappingColliders(overlappingColliders);
-
-    if (canPlaySound) {
-        auto enableSoundLambda = [this]() {
-            canPlaySound = true;
-        };
-
-        for (const auto& collider : overlappingColliders) {
-            if (collider.lock()->GetTag().empty()) {
-                hitSound->Play();
-                canPlaySound = false;
-                mlg::TimerManager::Get()->SetTimer(
-                        0.3f, false, enableSoundLambda);
-            }
-        }
-    }
+    rigidbodyComponent.lock()->GetOverlappingColliders(
+            overlappingColliders);
 
 #ifdef DEBUG
     if (mlg::SettingsManager::Get<bool>(
@@ -241,7 +220,7 @@ bool Player::PickUp() {
         return false;
 
     equipment->AddProduct(outputProduct);
-    pickUpSound->Play(4.f);
+    OnPickUp();
     carInput->SetVibration(0.f, 1.0f, 0.2f);
 
     return true;
@@ -272,8 +251,8 @@ bool Player::Drop() {
     if (!factory->TakeInputsFromInventory(*equipment))
         return false;
 
-    dropSound->Play(4.f);
     carInput->SetVibration(1.f, 0.0f, 0.2f);
+    OnDrop();
 
     return true;
 }

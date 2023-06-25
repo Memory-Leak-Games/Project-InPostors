@@ -1,0 +1,29 @@
+{
+  "name": "TestMap",
+  "tile-size": 4.0,
+  "tileset": "res/levels/tilesets/props_tileset.json",
+
+  "ground-color": [0.898, 0.854, 0.890, 1.0],
+
+  "ignore" : "#",
+
+  "layout": [
+    "  z     z  z    z z     z   z  ",
+    " z   z z  z         zz    z   z",
+    "  z                            ",
+    " z        l########l##l####l   ",
+    "          b################b z ",
+    "zz        l#l######l#######l   ",
+    "          ###      ####       z",
+    " z    1   ###      ####  2     ",
+    "z         ###   0  ####      z ",
+    " z        ###      ########l   ",
+    "          ###      #########  z",
+    "   l######l#l######l##l####l   ",
+    " z ####################        ",
+    "   l######l##l########l      z ",
+    "                           z   ",
+    " z     z z z  z             z  ",
+    "              z   z     z      "
+  ]
+}
