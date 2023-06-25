@@ -34,10 +34,6 @@ namespace mlg {
         audio->Stop();
     }
 
-    void AudioComponent::StopAll() {
-        audio->StopAll();
-    }
-
     void AudioComponent::SetVolume(float volume) {
         audio->SetVolume(volume);
     }

@@ -1,11 +1,11 @@
 #include "Player/PlayerAudioComponent.h"
 
+#include "Audio/AudioInstance.h"
 #include "Core/TimerManager.h"
 #include "Gameplay/Components/RigidbodyComponent.h"
 
 #include "Physics/Colliders/Collider.h"
 #include "Player/Player.h"
-#include <cstddef>
 
 PlayerAudioComponent::PlayerAudioComponent(
         const std::weak_ptr<mlg::Entity>& owner,
@@ -19,6 +19,7 @@ PlayerAudioComponent::PlayerAudioComponent(
     pickUpSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/pick_up.wav");
     dropSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/drop.wav");
     collisionSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/hit.wav");
+    driftSound = std::make_unique<mlg::AudioInstance>("res/audio/sfx/drift.wav");
 }
 
 PlayerAudioComponent::~PlayerAudioComponent() = default;
@@ -44,6 +45,7 @@ void PlayerAudioComponent::Start() {
 }
 
 void PlayerAudioComponent::Update() {
+    HandleDriftSound();
 }
 
 using Random = effolkronium::random_static;
@@ -65,4 +67,28 @@ void PlayerAudioComponent::PlayCollisionSound() {
             [this]() {
                 collisionSoundPlayed = false;
             });
+}
+
+void PlayerAudioComponent::HandleDriftSound() {
+    float angularVelocity = rigidbodyComponent.lock()->GetAngularAcceleration();
+    float speed = rigidbodyComponent.lock()->GetSpeed();
+
+    if (speed > 0.1f && std::abs(angularVelocity) > 0.1f) {
+        if (driftSoundPlaying) {
+            return;
+        }
+
+        driftSound->Play();
+        driftSoundPlaying = true;
+
+        mlg::TimerManager::Get()->SetTimer(
+                driftSound->GetLength(),
+                false,
+                [this]() {
+                    driftSoundPlaying = false;
+                });
+    } else {
+        driftSound->Stop();
+        driftSoundPlaying = false;
+    }
 }

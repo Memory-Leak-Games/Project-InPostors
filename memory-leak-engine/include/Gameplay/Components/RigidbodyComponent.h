@@ -44,6 +44,7 @@ namespace mlg {
         glm::vec2 GetLinearAcceleration();
 
         glm::vec3 GetLocalVelocity();
+        float GetSpeed();
 
         float GetAngularSpeed();
         float GetAngularAcceleration();

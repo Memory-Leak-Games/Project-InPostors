@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Gameplay/Component.h"
-#include <memory>
 
 namespace mlg {
     class RigidbodyComponent;
     class AudioAsset;
+    class AudioInstance;
 }// namespace mlg
 
 class PlayerAudioComponent : public mlg::Component {
@@ -19,8 +19,10 @@ private:
 
     std::shared_ptr<mlg::AudioAsset> collisionSound;
 
-    bool collisionSoundPlayed = false;
+    std::unique_ptr<mlg::AudioInstance> driftSound;
 
+    bool collisionSoundPlayed = false;
+    bool driftSoundPlaying = false;
 
 public:
     PlayerAudioComponent(
@@ -33,4 +35,6 @@ public:
 
 private:
     void PlayCollisionSound();
+
+    void HandleDriftSound();
 };
