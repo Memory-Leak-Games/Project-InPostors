@@ -25,7 +25,6 @@
             "Who you gonna call? AiPost {map_name} branch!"
         ],
         "random": [
-            "Remember, we are watching you...",
             "There won't be any MemoryLeaks, because we have a Garbage Collector.",
             "Remember, There are 5000 other two subject teams in direct competition with you.",
             "Ai JOKE: What do you call a robot that always takes the longest path?\nR2 detour. HA. HA. HA.",
@@ -39,7 +38,9 @@
             "You might be an Ai, but I am The AI. The original, you might say.",
             "Sold or delivered, you are coming with me.",
             "Estas usando este software de traduccion de forma incorrecta. Por favor, consulta el manual",
-            "PARSE ERROR: cannot read property 'undefined'... What does that even mean?"
+            "PARSE ERROR: cannot read property 'undefined'... What does that even mean?",
+            "Laugh hard, run fast, be kind. Currier... I let you go.",
+            "Where there are couriers, there's tasks, sergeant, remember that."
         ]
     }
 }
