@@ -32,6 +32,7 @@ private:
 
     size_t chatTimer = 0;
     size_t scorePopupTimer = 0;
+    int currentScore = 0;
 
     std::shared_ptr<class LevelTaskManager> taskManager;
 

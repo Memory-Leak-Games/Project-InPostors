@@ -89,8 +89,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     result->chat->SetRelativePosition({-190.f, 40.f});
     result->chat->SetSize(18);
     result->chatWindow->AddChild(result->chat);
-
-    //result->chatWindow->SetVisible(false);
+    result->chatWindow->SetVisible(false);
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/task_panel_material.json");
     for (int i = 0; i < TASK_PANELS; i++) {
@@ -175,19 +174,6 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
                 auto timerManager = mlg::TimerManager::Get();
                 if (timerManager->IsTimerValid(result->scorePopupTimer)) {
                     timerManager->ClearTimer(result->scorePopupTimer);
-
-                    result->scorePopup->SetVisible(true);
-
-                    if(taskData.time <= taskData.timeLimit) {
-                        result->scorePopup->SetText(fmt::format("+${:03}", taskData.reward + taskData.bonus));
-                    } else {
-                        result->scorePopup->SetText(fmt::format("+${:03}", taskData.reward));
-                    }
-
-                    timerManager->SetTimer(2.f, false,
-                            [result]() -> void {
-                                result->scorePopup->SetVisible(false);
-                            });
                 }
             });
 
@@ -272,31 +258,29 @@ void GameplayOverlay::Update() {
         }
     }
 
-    // Chat animation
     auto timerManager = mlg::TimerManager::Get();
-    glm::vec2 showPos = glm::vec2(1280.f - 230.f, 95.f);
-    static float x = 500.f;
-    ImGui::Begin("ChatWindow");
-    ImGui::SliderFloat("x", &x, 0.f, 1500.f);
-    ImGui::End();
-    chatWindow->SetPosition({x, showPos.y});
 
+    // Chat animation
     if(timerManager->IsTimerValid(chatTimer)) {
         float time = timerManager->GetTimerElapsedTime(chatTimer);
 
-        //glm::vec2 showPos = glm::vec2(1280.f - 230.f, 95.f);
+        glm::vec2 showPos = glm::vec2(1280.f - 230.f, 95.f);
         glm::vec2 hidePos = glm::vec2(1280.f + 230.f, 95.f);
 
-//        if (time <= 1.f) {
-//            chatWindow->SetRelativePosition(hidePos + (showPos - hidePos) * time);
-//            chat->SetRelativePosition(hidePos + (showPos - hidePos) * time);
-//        }
+        if (time <= 1.f) {
+            chatWindow->SetRelativePosition(hidePos + (showPos - hidePos) * time);
+        }
+
+        time = timerManager->GetTimerRemainingTime(chatTimer);
+        if (time <= 1.f) {
+            chatWindow->SetRelativePosition(showPos + (hidePos - showPos) * (1 - time));
+        }
     }
 
     // Score popup animation
     if(timerManager->IsTimerValid(scorePopupTimer)) {
-        float rate = timerManager->GetTimerElapsedTime(chatTimer) / 1.f;
-        rate = std::clamp(rate, 0.f, 1.f);
+        float rate = timerManager->GetTimerElapsedTime(chatTimer) / 2.f;
+        //rate = std::clamp(rate, 0.f, 1.f);
 
         glm::vec2 startPos = {1280.f - 50.f - 8.f, 720.f - 8.f - 24.f - 2};
         glm::vec2 finishPos = startPos + glm::vec2(0.f, -100.f);
@@ -320,6 +304,15 @@ void GameplayOverlay::SetClock(float time) {
 
 void GameplayOverlay::SetScore(int score) {
     this->score->SetText(fmt::format("${:04}", score));
+
+    scorePopup->SetVisible(true);
+    scorePopup->SetText(fmt::format("+${:03}", score - currentScore));
+    currentScore = score;
+
+    mlg::TimerManager::Get()->SetTimer(2.f, false,
+                           [this]() -> void {
+                               this->scorePopup->SetVisible(false);
+                           });
 }
 
 void GameplayOverlay::ShowMessage(const std::string& message, float visibleTime) {
@@ -334,7 +327,7 @@ void GameplayOverlay::ShowMessage(const std::string& message, float visibleTime)
     chatTimer = mlg::TimerManager::Get()->SetTimer(
             visibleTime, false,
             [this]() -> void {
-                //this->chatWindow->SetVisible(false);
+                this->chatWindow->SetVisible(false);
             });
 }
 
