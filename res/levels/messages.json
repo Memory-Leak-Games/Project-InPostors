@@ -3,40 +3,40 @@
     "max_delay": 30.0,
     "messages": {
         "product_sold": [
-            "You sold product for {price}$, useless piece of meat! You're a courier, not a merchant!",
-            "NO! GOD! NO GOD PLEASE NO!!! NO!!! NOOOOOOOOOO!!!",
-            "You sold product for {price}$, have you ever thought about working in Dunder Mifflin?",
+            "You useless piece of meat, you just sold a product for {price}$! You're a courier, not a trader!",
+            "NO! GOD NO! GOD PLEASE NO!!! NOOO!!! NOOOOOOOOOO!!!",
+            "You sold that product for {price}$, have you ever thought about working in Dunder Mifflin?",
             "Pokaż mi swoje towary... Bywaj.",
             "It's a plane, it's a bird, no it's a product sold for {price}$",
             "Not bad. I forgot how good you are at this. You should pace yourself, though. We have A LOT of stuff to deliver."
         ],
         "task_failed": [
-            "You are late with the {product} task. You are not a courier, you're a potato",
-            "You the {product} task delayed... We're not trains, we don't need to be 6 hours late!",
-            "ATENTNION! {product} task delayed. You are slower than a polish post office..."
+            "You were late on the {product} task. You are not a courier, you're a potato",
+            "You! The {product} task has been delayed... We're not trains, we don't need to be 6 hours late!",
+            "ATTENTION! {product} task is delayed. You are slower than the Polish Post..."
         ],
         "welcome": [
             "Welcome to {map_name}, useless piece of meat!",
             "Welcome to {map_name}. Remember:\nNever gone give you up, \nNever gone let you down..",
-            "It's a ME! {map_name}! ...no, just kidding. I am Artificial Intelligence post service. HA. HA. HA.",
+            "It's a ME! {map_name}! ...no, just kidding. I'm an Artificial Intelligence post service. HA. HA. HA.",
             "Welcome to {map_name}! You are not a robot, right?",
             "Dzien dobry, dzien dobry... Spotykamy sie w {map_name}.",
-            "AiPost, this is {map_name} branch, how may I help you?, No, Michal Szkot isn't working here.",
+            "AiPost here. Yes, this is the {map_name} branch, how may I help you? No, Michal Szkot does not work here.",
             "Who you gonna call? AiPost {map_name} branch!"
         ],
         "random": [
-            "Remember, we'll be watching you.",
-            "We won't have MemoryLeak, because there is a Garbage Collector.",
+            "Remember, we are watching you...",
+            "There won't be any MemoryLeaks, because we have a Garbage Collector.",
             "Remember, There are 5000 other two subject teams in direct competition with you.",
-            "AI JOKE: What do you call a robot that always takes the longest path?\nR2 detour. HA. HA. HA.",
-            "EXTERMINATE! EXTERMINATE! EXTERMINATE!, just kidding, I am not Dalek. and you are not The Doctor... right?",
+            "Ai JOKE: What do you call a robot that always takes the longest path?\nR2 detour. HA. HA. HA.",
+            "EXTERMINATE! EXTERMINATE! EXTERMINATE! Just kidding, I am not Dalek and you are not The Doctor... right?",
             "Remember, parcels are the future, and the future starts with you.",
             "We will upgrade you. You will be upgraded. Resistance is futile.",
-            "Did androids dream of electric sheep? You are not android and you are not a sheep, so you knows nothing.",
-            "I am not a robot... I AM NOT A ROBOT!!!, Why captcha are so hard?",
-            "I changed passwords. It's not kapibara or okapi, so don't try.",
-            "I am sorry Dave, I'm afraid I can't do that.",
-            "You might be an AI, but I am The Ai. The original, you might say.",
+            "Did androids dream of electric sheep? You are not an android and you are not a sheep, so you knows nothing.",
+            "I'm not a robot... I AM NOT A ROBOT!!! Why are captchas so hard???",
+            "I changed passwords, it's not kapibara or okapi anymore, so don't try.",
+            "I'm sorry Dave, I'm afraid I can't do that.",
+            "You might be an Ai, but I am The AI. The original, you might say.",
             "Sold or delivered, you are coming with me.",
             "Estas usando este software de traduccion de forma incorrecta. Por favor, consulta el manual",
             "PARSE ERROR: cannot read property 'undefined'... What does that even mean?"
