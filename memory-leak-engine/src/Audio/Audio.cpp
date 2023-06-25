@@ -46,16 +46,12 @@ namespace mlg {
         mlg::AudioAPI::GetSoLoud()->setVolume(handle, volume);
     }
 
-    void Audio::SetPitch(float pitch) {
-        MLG_UNIMPLEMENTED_SOFT;
-    }
-
     void Audio::SetLooping() {
-        sound.setLooping(1);
+        sound.setLooping(true);
     }
 
     void Audio::SetSingleInstance() {
-        sound.setSingleInstance(1);
+        sound.setSingleInstance(true);
     }
 
     void Audio::SetFilter(uint32_t filterID, SoLoud::Filter* filter) {

@@ -1,7 +1,10 @@
 #pragma once
 
 #include "Core/AssetManager/Asset.h"
-#include "soloud.h"
+
+namespace SoLoud {
+    class Filter;
+}
 
 namespace mlg {
 
@@ -32,7 +35,7 @@ namespace mlg {
         void Pause() const;
         void UnPause() const;
 
-        void Seek(float time);
+        void Seek(float seconds);
 
         void Stop();
         void StopAll();

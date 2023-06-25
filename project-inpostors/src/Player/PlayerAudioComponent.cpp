@@ -36,6 +36,9 @@ void PlayerAudioComponent::Start() {
 
     rigidbodyComponent.lock()->OnCollisionEnter.append(
             [this](const mlg::CollisionEvent& collision) {
+                if (collision.isTrigger)
+                    return;
+
                 PlayCollisionSound();
             });
 }
@@ -46,20 +49,15 @@ void PlayerAudioComponent::Update() {
 using Random = effolkronium::random_static;
 
 void PlayerAudioComponent::PlayCollisionSound() {
-    constexpr static float collisionSoundDelay = 0.1f;
-    constexpr static float collisionSoundMaxPitch = 1.5f;
-    constexpr static float collisionSoundMinPitch = 0.5f;
+    constexpr static float collisionSoundDelay = 0.5f;
 
     if (collisionSoundPlayed) {
         return;
     }
 
-    float pitch = Random::get(collisionSoundMinPitch, collisionSoundMaxPitch);
-
     collisionSound->SetSingleInstance();
     collisionSound->Play();
     collisionSoundPlayed = true;
-
 
     mlg::TimerManager::Get()->SetTimer(
             collisionSoundDelay,

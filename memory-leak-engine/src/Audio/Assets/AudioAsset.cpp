@@ -30,8 +30,8 @@ namespace mlg {
         audio->UnPause();
     }
 
-    void AudioAsset::Seek(float time) {
-        audio->Seek(time);
+    void AudioAsset::Seek(float seconds) {
+        audio->Seek(seconds);
     }
 
     void AudioAsset::Stop() {
