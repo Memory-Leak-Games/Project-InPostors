@@ -20,6 +20,7 @@ PlayerAudioComponent::PlayerAudioComponent(
     dropSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/drop.wav");
     collisionSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/hit.wav");
     driftSound = std::make_unique<mlg::AudioInstance>("res/audio/sfx/drift.wav");
+    driftSound->GetAudioAsset()->SetLooping(true);
 }
 
 PlayerAudioComponent::~PlayerAudioComponent() = default;
@@ -57,7 +58,6 @@ void PlayerAudioComponent::PlayCollisionSound() {
         return;
     }
 
-    collisionSound->SetSingleInstance();
     collisionSound->Play();
     collisionSoundPlayed = true;
 
@@ -73,20 +73,14 @@ void PlayerAudioComponent::HandleDriftSound() {
     float angularVelocity = rigidbodyComponent.lock()->GetAngularAcceleration();
     float speed = rigidbodyComponent.lock()->GetSpeed();
 
-    if (speed > 0.1f && std::abs(angularVelocity) > 0.1f) {
+    if (speed > 0.1f && std::abs(angularVelocity) > 5.f) {
         if (driftSoundPlaying) {
             return;
         }
 
         driftSound->Play();
+        driftSound->SetVolume(0.1f);
         driftSoundPlaying = true;
-
-        mlg::TimerManager::Get()->SetTimer(
-                driftSound->GetLength(),
-                false,
-                [this]() {
-                    driftSoundPlaying = false;
-                });
     } else {
         driftSound->Stop();
         driftSoundPlaying = false;

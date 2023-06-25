@@ -38,7 +38,7 @@ namespace mlg {
         audio->SetVolume(volume);
     }
 
-    void AudioComponent::SetLooping() {
-        audio->SetLooping();
+    void AudioComponent::SetLooping(bool isLooping) {
+        audio->SetLooping(isLooping);
     }
 }// namespace mlg

@@ -13,36 +13,20 @@ void mlg::AudioInstance::Play(float volume,
                               float pan,
                               uint32_t paused,
                               uint32_t bus) {
-    if (handle == 0) {
-        handle = audioAsset->Play(volume, pan, paused, bus);
-        SPDLOG_DEBUG("Sound {} started", handle);
-        return;
-    }
-
-    audioAsset->UnPause();
+    handle = audioAsset->Play(volume, pan, paused, bus);
 }
 
 void mlg::AudioInstance::PlayBackgroundMusic(float volume,
                                              uint32_t paused,
                                              uint32_t bus) {
-    if (handle == 0) {
-        handle = audioAsset->PlayBackgroundMusic(volume, paused, bus);
-        return;
-    }
-
-    audioAsset->UnPause();
+    handle = audioAsset->PlayBackgroundMusic(volume, paused, bus);
 }
 
 void mlg::AudioInstance::PlayClocked(float delay,
                                      float volume,
                                      float pan,
                                      uint32_t bus) {
-    if (handle == 0) {
-        handle = audioAsset->PlayClocked(delay, volume, pan, bus);
-        return;
-    }
-
-    audioAsset->UnPause();
+    handle = audioAsset->PlayClocked(delay, volume, pan, bus);
 }
 
 void mlg::AudioInstance::Pause() const {
@@ -63,9 +47,6 @@ void mlg::AudioInstance::Stop() {
     }
 
     audioAsset->Stop(handle);
-
-    SPDLOG_DEBUG("Sound {} stopped", handle);
-
     handle = 0;
 }
 
@@ -73,10 +54,10 @@ void mlg::AudioInstance::SetVolume(float volume) {
     audioAsset->SetVolume(handle, volume);
 }
 
-void mlg::AudioInstance::SetLooping() {
-    audioAsset->SetLooping(handle);
-}
-
 double mlg::AudioInstance::GetLength() {
     return audioAsset->GetLength();
+}
+
+std::shared_ptr<mlg::AudioAsset> mlg::AudioInstance::GetAudioAsset() const {
+    return audioAsset;
 }

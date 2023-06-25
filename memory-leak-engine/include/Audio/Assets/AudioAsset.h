@@ -51,8 +51,7 @@ namespace mlg {
         void SetVolume(float volume);
         void SetVolume(uint32_t handle, float volume);
 
-        void SetLooping();
-        void SetLooping(uint32_t handle);
+        void SetLooping(bool isLooping);
 
         void SetSingleInstance();
         void SetFilter(uint32_t filterID, SoLoud::Filter* filter);

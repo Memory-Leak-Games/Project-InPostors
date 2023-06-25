@@ -66,12 +66,8 @@ namespace mlg {
         mlg::AudioAPI::GetSoLoud()->setVolume(handle, volume);
     }
 
-    void AudioAsset::SetLooping() {
-        SetLooping(handle);
-    }
-
-    void AudioAsset::SetLooping(uint32_t handle) {
-        sound.setLooping(true);
+    void AudioAsset::SetLooping(bool isLooping) {
+        sound.setLooping(isLooping);
     }
 
     void AudioAsset::SetSingleInstance() {

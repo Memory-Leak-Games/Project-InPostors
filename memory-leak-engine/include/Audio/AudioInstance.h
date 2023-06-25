@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 namespace mlg {
 
     class AudioInstance {
@@ -37,8 +38,9 @@ namespace mlg {
         void StopAll();
 
         void SetVolume(float volume);
-        void SetLooping();
 
         double GetLength();
+
+        [[nodiscard]] std::shared_ptr<AudioAsset> GetAudioAsset() const;
     };
 }
