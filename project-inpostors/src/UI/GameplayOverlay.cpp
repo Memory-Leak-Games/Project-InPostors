@@ -279,13 +279,14 @@ void GameplayOverlay::Update() {
 
     // Score popup animation
     if(timerManager->IsTimerValid(scorePopupTimer)) {
-        float rate = timerManager->GetTimerElapsedTime(chatTimer) / 2.f;
-        //rate = std::clamp(rate, 0.f, 1.f);
+        float rate = timerManager->GetTimerElapsedTime(chatTimer) / 0.5f;
+        rate = std::clamp(rate, 0.f, 0.5f);
+        rate *= 2.f;
 
         glm::vec2 startPos = {1280.f - 50.f - 8.f, 720.f - 8.f - 24.f - 2};
-        glm::vec2 finishPos = startPos + glm::vec2(0.f, -100.f);
+        glm::vec2 finishPos = startPos + glm::vec2(0.f, -40.f);
 
-        scorePopup->SetRelativePosition(startPos + (finishPos - startPos) * rate);
+        scorePopup->SetPosition(startPos + (finishPos - startPos) * rate);
     }
 }
 
@@ -306,10 +307,12 @@ void GameplayOverlay::SetScore(int score) {
     this->score->SetText(fmt::format("${:04}", score));
 
     scorePopup->SetVisible(true);
-    scorePopup->SetText(fmt::format("+${:03}", score - currentScore));
+    scorePopup->SetText(fmt::format("+${}", score - currentScore));
     currentScore = score;
 
-    mlg::TimerManager::Get()->SetTimer(2.f, false,
+    if (mlg::TimerManager::Get()->IsTimerValid(scorePopupTimer))
+        mlg::TimerManager::Get()->ClearTimer(scorePopupTimer);
+    scorePopupTimer = mlg::TimerManager::Get()->SetTimer(2.f, false,
                            [this]() -> void {
                                this->scorePopup->SetVisible(false);
                            });
