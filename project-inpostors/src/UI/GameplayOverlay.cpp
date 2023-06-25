@@ -45,13 +45,21 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     temp->SetPosition({1280.f - 50.f - 8.f, 720.f - 8.f - 24.f});
     temp->SetAnchor({1.0, 1.0});
 
+    result->scorePopup = result->AddComponent<mlg::Label>("ScorePopup").lock();
+    result->scorePopup->SetPosition({1280.f - 50.f - 8.f, 720.f - 8.f - 24.f - 2});
+    result->scorePopup->SetAnchor({1.0, 1.0});
+    result->scorePopup->SetText("+$000");
+    result->scorePopup->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
+    result->scorePopup->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
+    result->scorePopup->SetTextColor({0.f, 1.f, 0.f});
+    result->scorePopup->SetVisible(false);
+
     result->score = result->AddComponent<mlg::Label>("Score").lock();
     result->score->SetPosition({1280.f - 50.f - 8.f, 720.f - 8.f - 24.f - 2});
     result->score->SetAnchor({1.0, 1.0});
     result->score->SetText("$0000");
     result->score->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
     result->score->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
-
 
     // chat window
     result->chatWindow = result->AddComponent<mlg::CanvasPanel>("ChatWindow").lock();
@@ -82,7 +90,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     result->chat->SetSize(18);
     result->chatWindow->AddChild(result->chat);
 
-    result->chatWindow->SetVisible(false);
+    //result->chatWindow->SetVisible(false);
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/task_panel_material.json");
     for (int i = 0; i < TASK_PANELS; i++) {
@@ -163,6 +171,24 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     result->taskManager->GetTaskManager().OnTaskFinished.append(
             [result](const TaskData& taskData) {
                 result->UpdateAllTasks();
+
+                auto timerManager = mlg::TimerManager::Get();
+                if (timerManager->IsTimerValid(result->scorePopupTimer)) {
+                    timerManager->ClearTimer(result->scorePopupTimer);
+
+                    result->scorePopup->SetVisible(true);
+
+                    if(taskData.time <= taskData.timeLimit) {
+                        result->scorePopup->SetText(fmt::format("+${:03}", taskData.reward + taskData.bonus));
+                    } else {
+                        result->scorePopup->SetText(fmt::format("+${:03}", taskData.reward));
+                    }
+
+                    timerManager->SetTimer(2.f, false,
+                            [result]() -> void {
+                                result->scorePopup->SetVisible(false);
+                            });
+                }
             });
 
     return result;
@@ -245,6 +271,38 @@ void GameplayOverlay::Update() {
             taskBonus[i]->SetVisible(false);
         }
     }
+
+    // Chat animation
+    auto timerManager = mlg::TimerManager::Get();
+    glm::vec2 showPos = glm::vec2(1280.f - 230.f, 95.f);
+    static float x = 500.f;
+    ImGui::Begin("ChatWindow");
+    ImGui::SliderFloat("x", &x, 0.f, 1500.f);
+    ImGui::End();
+    chatWindow->SetPosition({x, showPos.y});
+
+    if(timerManager->IsTimerValid(chatTimer)) {
+        float time = timerManager->GetTimerElapsedTime(chatTimer);
+
+        //glm::vec2 showPos = glm::vec2(1280.f - 230.f, 95.f);
+        glm::vec2 hidePos = glm::vec2(1280.f + 230.f, 95.f);
+
+//        if (time <= 1.f) {
+//            chatWindow->SetRelativePosition(hidePos + (showPos - hidePos) * time);
+//            chat->SetRelativePosition(hidePos + (showPos - hidePos) * time);
+//        }
+    }
+
+    // Score popup animation
+    if(timerManager->IsTimerValid(scorePopupTimer)) {
+        float rate = timerManager->GetTimerElapsedTime(chatTimer) / 1.f;
+        rate = std::clamp(rate, 0.f, 1.f);
+
+        glm::vec2 startPos = {1280.f - 50.f - 8.f, 720.f - 8.f - 24.f - 2};
+        glm::vec2 finishPos = startPos + glm::vec2(0.f, -100.f);
+
+        scorePopup->SetRelativePosition(startPos + (finishPos - startPos) * rate);
+    }
 }
 
 void GameplayOverlay::SetClock(float time) {
@@ -276,7 +334,7 @@ void GameplayOverlay::ShowMessage(const std::string& message, float visibleTime)
     chatTimer = mlg::TimerManager::Get()->SetTimer(
             visibleTime, false,
             [this]() -> void {
-                this->chatWindow->SetVisible(false);
+                //this->chatWindow->SetVisible(false);
             });
 }
 
