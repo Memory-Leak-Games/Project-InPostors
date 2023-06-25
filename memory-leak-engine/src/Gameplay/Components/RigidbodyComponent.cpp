@@ -216,6 +216,10 @@ namespace mlg {
         return GetOwner().lock()->GetTransform().InverseDirection(GetLinearVelocity3D());
     }
 
+    float RigidbodyComponent::GetForwardSpeed() {
+        return GetLocalVelocity().z;
+    }
+
     float RigidbodyComponent::GetSpeed() {
         return glm::length(GetLinearVelocity());
     }

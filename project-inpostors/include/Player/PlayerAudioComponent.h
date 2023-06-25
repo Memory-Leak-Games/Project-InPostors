@@ -13,6 +13,7 @@ private:
     std::shared_ptr<class Player> player;
 
     std::weak_ptr<mlg::RigidbodyComponent> rigidbodyComponent;
+    std::weak_ptr<class CarInput> playerInput;
 
     std::shared_ptr<mlg::AudioAsset> pickUpSound;
     std::shared_ptr<mlg::AudioAsset> dropSound;
@@ -21,8 +22,14 @@ private:
 
     std::unique_ptr<mlg::AudioInstance> driftSound;
 
+    std::unique_ptr<mlg::AudioInstance> stationarySound;
+    std::unique_ptr<mlg::AudioInstance> drivingSound;
+
+
     bool collisionSoundPlayed = false;
     bool driftSoundPlaying = false;
+
+    bool isDriving = false;
 
 public:
     PlayerAudioComponent(
@@ -37,4 +44,6 @@ private:
     void PlayCollisionSound();
 
     void HandleDriftSound();
+
+    void HandleEngineSound();
 };
