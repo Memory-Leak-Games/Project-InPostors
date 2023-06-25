@@ -369,6 +369,18 @@
       ]
     },
     {
+      "symbol": "C",
+      "objects": [
+        {
+          "model": "res/models/buildings/special/court.obj",
+          "rotation": 90.0,
+          "scale": 1.2,
+          "collision-type": "rectangle",
+          "collision-size": 12.0
+        }
+      ]
+    },
+    {
       "symbol": "P",
       "objects": [
         {
@@ -479,39 +491,6 @@
           "rotation": 90.0,
           "collision-type": "rectangle",
           "collision-size": 10.0
-        }
-      ]
-    },
-    {
-      "symbol": "V",
-      "objects": [
-        {
-          "model": "res/models/buildings/big/building_big_1.obj",
-          "collision-type": "rectangle",
-          "collision-size": 8.0,
-          "rotation": 90.0,
-          "scale": 1.7
-        },
-        {
-          "model": "res/models/buildings/big/building_big_2.obj",
-          "collision-type": "rectangle",
-          "collision-size": 8.0,
-          "rotation": 90.0,
-          "scale": 1.7
-        },
-        {
-          "model": "res/models/buildings/big/building_big_3.obj",
-          "collision-type": "rectangle",
-          "collision-size": 8.0,
-          "rotation": 90.0,
-          "scale": 1.7
-        },
-        {
-          "model": "res/models/buildings/big/building_big_4.obj",
-          "collision-type": "rectangle",
-          "collision-size": 8.0,
-          "rotation": 90.0,
-          "scale": 1.7
         }
       ]
     }
