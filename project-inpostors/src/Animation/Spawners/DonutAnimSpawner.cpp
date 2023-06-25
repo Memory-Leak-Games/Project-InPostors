@@ -18,5 +18,5 @@ void DonutAnimSpawner::Spawn(const std::shared_ptr<mlg::Entity>& entity, const s
     glm::vec3 position = entity->GetTransform().GetPosition();
     animMesh.lock()->GetTransform().SetPosition({ position.x, position.y + 2.08f, position.z + 1.7f});
 
-    auto animComponent = entity->AddComponent<SpecialAnimationComponent>("AnimComponent", animMesh, rotateYZ);
+//    auto animComponent = entity->AddComponent<SpecialAnimationComponent>("AnimComponent", animMesh, rotateYZ);
 }

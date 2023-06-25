@@ -51,6 +51,7 @@ public:
 private:
     void AddRigidbody(const nlohmann::json& configJson);
     void LoadModel(const nlohmann::json& configJson);
+    void LoadAnimatedModel(const nlohmann::json& configJson);
 
     bool PickUp();
     bool Drop();

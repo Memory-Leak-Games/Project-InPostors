@@ -619,10 +619,11 @@ namespace mlg {
         } else if (mapObject.modelPath == "res/models/buildings/special/fan.obj") {
             auto fan = AnimationLibrary::Get("fan");
             fan->Spawn(newEntity, material);
-        } else if (mapObject.modelPath == "res/models/buildings/special/donut.obj") {
-            // TODO: Fix Donuts
-//            auto donut = AnimationLibrary::Get("donut");
-//            donut->Spawn(newEntity, material);
+        }
+        // TODO: Fix Donuts
+        else if (mapObject.modelPath == "res/models/buildings/special/donut.obj") {
+           auto donut = AnimationLibrary::Get("donut");
+           donut->Spawn(newEntity, material);
         }
 
         newEntity->GetTransform().SetPosition(objectPosition);

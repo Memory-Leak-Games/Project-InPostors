@@ -39,6 +39,7 @@
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
 
+#include "Animation/MonsterTruckAnimationComponent.h"
 #include "UI/PlayerUI.h"
 
 using json = nlohmann::json;
@@ -62,7 +63,12 @@ std::shared_ptr<Player> Player::Create(
     json configJson = json::parse(configFile);
 
     newPlayer->AddRigidbody(configJson);
-    newPlayer->LoadModel(configJson);
+
+    if (playerData.carData == "res/config/cars/monster_truck.json") {
+        newPlayer->LoadAnimatedModel(configJson);
+    } else {
+        newPlayer->LoadModel(configJson);
+    }
 
     newPlayer->AddComponent<CarMovementComponent>(
             "MovementComponent", playerData.carData);
@@ -109,6 +115,48 @@ void Player::LoadModel(const json& configJson) {
             mlg::AssetManager::GetAsset<mlg::ModelAsset>(configJson["model"]);
     auto staticMeshComponent = this->AddComponent<mlg::StaticMeshComponent>(
             "StaticMeshComponent", model, material);
+}
+
+void Player::LoadAnimatedModel(const nlohmann::json& configJson) {
+    auto material =
+            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
+                    configJson["material"]);
+
+    material = material->CreateDynamicInstance();
+    material->SetVec4("color", playerData.color);
+
+    auto model =
+            mlg::AssetManager::GetAsset<mlg::ModelAsset>(configJson["model"]);
+    auto staticMeshComponent = this->AddComponent<mlg::StaticMeshComponent>(
+            "StaticMeshComponent", model, material);
+
+    auto animModel = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/cars/players/monster_truck_anim.obj");
+
+    std::vector<std::weak_ptr<mlg::StaticMeshComponent>> animMeshes;
+    glm::vec3 position = this->GetTransform().GetPosition();
+
+    for (int i = 0; i < 4; ++i) {
+
+        SPDLOG_INFO(i);
+        auto animMesh = this->AddComponent<mlg::StaticMeshComponent>("AnimMesh", animModel, material);
+
+        switch (i) {
+            case 0:
+                animMesh.lock()->GetTransform().SetPosition({ position.x + 1.45f, position.y + 1.1f, position.z + 1.25f }); break;
+            case 1:
+                animMesh.lock()->GetTransform().SetPosition({ position.x + 1.45f, position.y + 1.1f, position.z - 1.25f }); break;
+            case 2:
+                animMesh.lock()->GetTransform().SetPosition({ position.x - 1.45f, position.y + 1.1f, position.z - 1.25f }); break;
+            case 3:
+                animMesh.lock()->GetTransform().SetPosition({ position.x - 1.45f, position.y + 1.1f, position.z + 1.25f }); break;
+            default:
+                break;
+        }
+
+        animMeshes.push_back(animMesh);
+    }
+
+    auto animComponent = this->AddComponent<MonsterTruckAnimationComponent>("AnimComponent", animMeshes);
 }
 
 void Player::Start() {
