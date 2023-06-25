@@ -1,5 +1,6 @@
 #pragma once
 
+#include "soloud_fftfilter.h"
 #include "soloud_wav.h"
 
 namespace mlg {
@@ -8,6 +9,7 @@ namespace mlg {
         std::string audioPath;
         SoLoud::Wav sound;
         uint32_t handle;
+        SoLoud::FFTFilter fftFilter;
 
     public:
         Audio(const std::string& path);
@@ -40,6 +42,8 @@ namespace mlg {
         static void StopAll();
 
         void SetVolume(float volume);
+        void SetPitch(float pitch);
+
         void SetLooping();
         // TODO: Check if these two work
         void SetSingleInstance();

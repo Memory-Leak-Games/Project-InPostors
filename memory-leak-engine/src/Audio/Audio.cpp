@@ -1,6 +1,7 @@
 #include "Audio/Audio.h"
 
 #include "Audio/AudioAPI.h"
+#include "Macros.h"
 
 namespace mlg {
     Audio::Audio(const std::string& path) : audioPath(path){
@@ -43,6 +44,10 @@ namespace mlg {
 
     void Audio::SetVolume(float volume) {
         mlg::AudioAPI::GetSoLoud()->setVolume(handle, volume);
+    }
+
+    void Audio::SetPitch(float pitch) {
+        MLG_UNIMPLEMENTED_SOFT;
     }
 
     void Audio::SetLooping() {

@@ -21,6 +21,7 @@ private:
 
     bool collisionSoundPlayed = false;
 
+
 public:
     PlayerAudioComponent(
             const std::weak_ptr<mlg::Entity>& owner,
@@ -29,4 +30,7 @@ public:
 
     void Start() override;
     void Update() override;
+
+private:
+    void PlayCollisionSound();
 };
