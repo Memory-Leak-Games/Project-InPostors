@@ -189,12 +189,12 @@ void GameplayOverlay::UpdateTask(int idx) {
         SetTaskVisible(idx, true);
     }
 
-    taskIcon[idx]->material = productManager->GetProduct(tasks[idx].productId).icon;
+    taskIcon[idx]->SetMaterial(productManager->GetProduct(tasks[idx].productId).icon);
     const Blueprint& blueprint = blueprintManager->GetBlueprint(tasks[idx].productId);
 
     for (int j = 0; j < 2; ++j) {
         if (j < blueprint.GetInput().size()) {
-            taskRequired[idx][j]->material = productManager->GetProduct(blueprint.GetInput()[j]).icon;
+            taskRequired[idx][j]->SetMaterial(productManager->GetProduct(blueprint.GetInput()[j]).icon);
             taskRequired[idx][j]->SetVisible(true);
         } else {
             taskRequired[idx][j]->SetVisible(false);

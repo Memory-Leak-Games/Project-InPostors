@@ -1,11 +1,38 @@
 {
-    "welcome-tutorial": "Welcome to your test assignment!\n\nI'm AiPost your possible future (Big) Boss and I want to verify your skills.\n\nIf you are in need of a refresher on how to drive press ESCAPE! SMILEY FACE",
-    "driving-tutorial": "If you are in need of a refresher on how to drive look at the cheat sheet below. You can always access it by pressing ESCAPE! SMILEY FACE",
-    "tasks-tutorial": "You can keep track of your current assignments in the top left corner.",
-    "storage-tutorial": "Deliver required products to the storage facility, marked by the golden dollar sign.",
-    "ore-tutorial": "To complete your first assignment pick up the ore from the factory and deliver it to the main storage.",
-    "iron-tutorial": "Now for something more complex. When you deliver products to some factories they can convert them into other products, you can try that out by delivering ore to the iron factory ;)",
-    "bonus-tutorial": "We put strong emphasis on saving our customer's time, that's why if you manage to deliver required products to the storage quickly, you might receive a bonus!",
-    "after-iron-tutorial": "Now for your last assignment: You have 3 tasks to complete. If you got through all the previous steps this shouldn't be a problem.",
-    "final-tutorial": "You have successfully completed your test assignment, which means you are worthy of working under me! I want to officially welcome you as a new AiPost courier! \nNow you will be exterminated... khm... khm.. old habit... moved to a new city shortly."
+    "welcome-tutorial": {
+        "text": "Welcome to your test assignment!\n\nI'm AiPost your possible future (Big) Boss and I want to verify your skills.\n\nIf you are in need of a refresher on how to drive press ESCAPE! SMILEY FACE",
+        "image": "res/textures/student_texture.png"
+    },
+    "driving-tutorial": {
+        "text": "If you are in need of a refresher on how to drive look at the cheat sheet below. You can always access it by pressing ESCAPE! SMILEY FACE",
+        "image": "res/textures/error_texture.png"
+    },
+    "tasks-tutorial": {
+        "text": "You can keep track of your current assignments in the top left corner.",
+        "image": "res/textures/error_texture.png"
+    },
+    "storage-tutorial": {
+        "text": "Deliver required products to the storage facility, marked by the golden dollar sign.",
+        "image": "res/textures/error_texture.png"
+    },
+    "ore-tutorial": {
+        "text": "To complete your first assignment pick up the ore from the factory and deliver it to the main storage.",
+        "image": "res/textures/error_texture.png"
+    },
+    "iron-tutorial": {
+        "text": "Now for something more complex. When you deliver products to some factories they can convert them into other products, you can try that out by delivering ore to the iron factory ;)",
+        "image": "res/textures/error_texture.png"
+    },
+    "bonus-tutorial": {
+        "text": "We put strong emphasis on saving our customer's time, that's why if you manage to deliver required products to the storage quickly, you might receive a bonus!",
+        "image": "res/textures/error_texture.png"
+    },
+    "after-iron-tutorial": {
+        "text": "Now for your last assignment: You have 3 tasks to complete. If you got through all the previous steps this shouldn't be a problem.",
+        "image": "res/textures/error_texture.png"
+    },
+    "final-tutorial": {
+        "text": "You have successfully completed your test assignment, which means you are worthy of working under me! I want to officially welcome you as a new AiPost courier! \nNow you will be exterminated... khm... khm.. old habit... moved to a new city shortly.",
+        "image": "res/textures/error_texture.png"
+    }
 }
