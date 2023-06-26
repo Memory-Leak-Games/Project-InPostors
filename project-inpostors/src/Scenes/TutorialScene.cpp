@@ -84,7 +84,10 @@ void TutorialScene::Load() {
 void TutorialScene::Start() {
     auto tutorials = std::vector<std::string>{
             "welcome-tutorial",
-            "post-welcome-tutorial",
+            "driving-tutorial",
+            "tasks-tutorial",
+            "storage-tutorial",
+            "traffic-tutorial"
     };
 
     tutorialPanel->ShowTutorials(tutorials);
