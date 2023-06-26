@@ -66,7 +66,7 @@ public:
     void DisableTaskMessages();
     void DisableWelcomeMessage();
 
-    void NewMessage(const std::string& key, float duration = 5.f);
+    void NewMessage(const std::string& key, float duration = 8.f);
 
 private:
     void StartRandomMessageTimer();

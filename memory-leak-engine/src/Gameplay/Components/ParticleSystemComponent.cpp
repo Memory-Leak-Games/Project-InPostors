@@ -33,4 +33,8 @@ namespace mlg {
         particleSystem->Emit(particleProps);
     }
 
+    void ParticleSystemComponent::Emit() {
+        particleSystem->Emit(GetTransform());
+    }
+
 }// namespace mlg
