@@ -2,6 +2,7 @@
 
 #include <fstream>
 
+#include "Audio/Assets/AudioAsset.h"
 #include "Core/SceneManager/SceneManager.h"
 #include "Core/TimerManager.h"
 
@@ -11,6 +12,7 @@
 #include "Managers/ChatManager.h"
 #include "Managers/LevelTaskManager.h"
 #include "Managers/TaskManager.h"
+#include "UI/StartLevelCountdown.h"
 
 #include "Scenes/LevelScene.h"
 #include "Scenes/MenuScene.h"

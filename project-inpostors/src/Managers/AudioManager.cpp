@@ -3,10 +3,13 @@
 #include "Audio/Assets/AudioAsset.h"
 #include "Core/AssetManager/AssetManager.h"
 
+#include "Levels/LevelGenerator.h"
 #include "Managers/TaskManager.h"
 
 #include "Core/SceneManager/SceneManager.h"
 #include "Scenes/LevelScene.h"
+#include "UI/StartLevelCountdown.h"
+#include <cmath>
 
 AudioManager::AudioManager(uint64_t id,
                            const std::string& name,
@@ -55,6 +58,10 @@ void AudioManager::Start() {
     mlg::Scene* scene = mlg::SceneManager::GetCurrentScene();
     LevelScene* levelScene = dynamic_cast<LevelScene*>(scene);
 
+    levelMusic = mlg::LevelGenerator::GetLevelMusic(levelScene->GetLevelPath());
+    levelMusic->SetLooping(true);
+    levelMusic->PlayBackgroundMusic(0.2f);
+
     cityAmbientSound->Play();
 
     levelScene->GetTaskManager()->OnTaskFinished.append(
@@ -85,7 +92,8 @@ void AudioManager::Start() {
             });
 }
 
-void AudioManager::Update() {
+void AudioManager::Stop() {
+    levelMusic->Stop();
 }
 
 void AudioManager::SetTimeLeft(float timeLeft) {

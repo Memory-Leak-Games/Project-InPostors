@@ -246,6 +246,13 @@ namespace mlg {
         return levelJson.value("time-limit", -1.f);
     }
 
+    std::shared_ptr<class AudioAsset> LevelGenerator::GetLevelMusic(const std::string& path) {
+        std::ifstream levelFile{path};
+        json levelJson = json::parse(levelFile);
+        
+        return mlg::AssetManager::GetAsset<mlg::AudioAsset>(levelJson["music"]);
+    }
+
     std::vector<TaskData> LevelGenerator::GetTasks(const std::string& path) {
         std::vector<TaskData> tasks = {};
 

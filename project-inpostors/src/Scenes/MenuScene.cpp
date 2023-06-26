@@ -1,5 +1,6 @@
 #include "Scenes/MenuScene.h"
 
+#include "Audio/Assets/AudioAsset.h"
 #include "Audio/AudioAPI.h"
 #include "Core/AssetManager/AssetManager.h"
 #include "Core/SceneManager/SceneManager.h"
@@ -64,6 +65,11 @@ void MenuScene::Load() {
     LoadBackgroundLevel(BACKGROUND_LEVEL);
 
     mlg::Time::PauseGame(false);
+
+}
+
+void MenuScene::UnLoad() {
+    music->Stop();
 }
 
 std::shared_ptr<NavigationGraph> MenuScene::GetNavigationGraph() const {
@@ -579,6 +585,9 @@ void MenuScene::LoadBackgroundLevel(const std::string& backgroundPath) {
     mlg::LevelGenerator::SetCityBounds(backgroundPath);
     mlg::LevelGenerator::LoadCameraSettings(backgroundPath,
                                             *cameraComponent.lock());
+    music = mlg::LevelGenerator::GetLevelMusic(backgroundPath);
+    music->SetLooping(true);
+    music->Play();
 
     navigationGraph = std::make_shared<NavigationGraph>(backgroundPath);
 

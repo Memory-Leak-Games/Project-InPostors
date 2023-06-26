@@ -90,7 +90,7 @@ void PlayerAudioComponent::HandleDriftSound() {
         }
 
         driftSound->Play();
-        driftSound->SetVolume(0.25f);
+        driftSound->SetVolume(0.15f);
         driftSoundPlaying = true;
     } else {
         driftSound->Stop();

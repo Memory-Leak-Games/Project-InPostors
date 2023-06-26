@@ -4,6 +4,7 @@
 #include <spdlog/spdlog.h>
 #include <vector>
 
+#include "Audio/Assets/AudioAsset.h"
 #include "Buildings/InteractiveBuilding.h"
 #include "Core/SceneManager/SceneManager.h"
 #include "Core/Settings/SettingsManager.h"
@@ -39,6 +40,8 @@
 #include "UI/Components/ProgressBar.h"
 #include "UI/FactoryUI.h"
 #include "Utils/ProductManager.h"
+
+#include "Audio/Assets/AudioAsset.h"
 
 #include "Animation/FactoryAnimationComponent.h"
 
