@@ -3,6 +3,10 @@
         "text": "Welcome to your test assignment!\n\nI'm AiPost your possible future (Big) Boss and I want to verify your skills.\n\nIf you are in need of a refresher on how to drive press ESCAPE! SMILEY FACE",
         "image": "res/textures/student_texture.png"
     },
+    "post-welcome-tutorial": {
+        "text": "hello from second tutorial",
+        "image": "res/textures/student_texture.png"
+    },
     "driving-tutorial": {
         "text": "If you are in need of a refresher on how to drive look at the cheat sheet below. You can always access it by pressing ESCAPE! SMILEY FACE",
         "image": "res/textures/error_texture.png"

@@ -1,5 +1,6 @@
 #include "UI/TutorialPanel.h"
 
+#include <eventpp/callbacklist.h>
 #include <fstream>
 
 #include "Core/AssetManager/AssetManager.h"
@@ -53,6 +54,12 @@ std::shared_ptr<TutorialPanel> TutorialPanel::Create(
                                 .lock();
     panel->exitButton->SetRelativePosition({0.f, -640 / 2.f + 60.f});
 
+    panel->nextButton = buttonBuilder.SetName("NextButton")
+                                .SetText("Next")
+                                .BuildButton(panel.get())
+                                .lock();
+    panel->nextButton->SetRelativePosition({0.f, -640 / 2.f + 60.f});
+
     panel->exitButton->OnClick.append(
             [panel]() {
                 panel->SetVisible(false);
@@ -88,6 +95,7 @@ std::shared_ptr<TutorialPanel> TutorialPanel::Create(
     panel->panel->AddChild(image);
     panel->panel->AddChild(background);
     panel->panel->AddChild(panel->exitButton);
+    panel->panel->AddChild(panel->nextButton);
     panel->panel->AddChild(title);
     panel->panel->AddChild(panel->text);
     panel->panel->AddChild(panel->image);
@@ -102,13 +110,53 @@ TutorialPanel::~TutorialPanel() = default;
 
 void TutorialPanel::ShowTutorial(const std::string& messageId) {
     SetVisible(true);
+    ShowPage(messageId);
+    nextButton->SetVisible(false);
+    exitButton->SetVisible(true);
+    OnMessage();
+}
+
+void TutorialPanel::ShowTutorials(const std::vector<std::string>& messageIds) {
+    if (messageIds.empty()) {
+        return;
+    } else if (messageIds.size() == 1) {
+        ShowTutorial(messageIds[0]);
+        return;
+    }
+
+    pageNumber = 0;
+    SetVisible(true);
+    nextButton->SetVisible(true);
+    nextButton->GrabFocus();
+
+    exitButton->SetVisible(false);
+
+    eventpp::CallbackList<void()>::Handle onClickHandle;
+
+    onClickHandle = nextButton->OnClick.append(
+            [this, messageIds, onClickHandle]() {
+                if (pageNumber == messageIds.size() - 1) {
+                    nextButton->SetVisible(false);
+                    exitButton->SetVisible(true);
+                    exitButton->GrabFocus();
+                    nextButton->OnClick.remove(onClickHandle);
+                }
+
+                ShowPage(messageIds[pageNumber]);
+                pageNumber++;
+            });
+    nextButton->OnClick();
+
+    OnMessage();
+}
+
+void TutorialPanel::ShowPage(const std::string& messageId) {
     std::string wrappedMessage = mlg::Label::WrapText(
             messages[messageId].text, 49);
 
     text->SetText(wrappedMessage);
     image->SetTexture(messages[messageId].image);
     mlg::Time::PauseGame(true);
-    OnMessage();
 }
 
 void TutorialPanel::SetVisible(bool visible) {
