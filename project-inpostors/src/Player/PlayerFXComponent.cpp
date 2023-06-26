@@ -96,10 +96,5 @@ void PlayerFXComponent::OnCollision(glm::vec2 position) {
             GetOwner().lock()->AddComponent<mlg::ParticleSystemComponent>(
                     "SparklesFX", sparkles, true);
 
-    sparklesParticleSystem.lock()->GetTransform().ReParent(
-            mlg::SceneGraph::GetRoot());
-    sparklesParticleSystem.lock()->GetTransform().SetPosition(
-            mlg::Math::ProjectTo3D(position));
-
     collidedThisFrame = true;
 }
