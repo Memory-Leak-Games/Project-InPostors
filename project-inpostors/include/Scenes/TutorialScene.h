@@ -2,6 +2,10 @@
 
 #include "Scenes/LevelScene.h"
 
+namespace mlg {
+    class AudioAsset;
+}
+
 class TutorialScene : public LevelScene {
 private:
     int finishedTaskCount = 0;

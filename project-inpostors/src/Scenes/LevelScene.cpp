@@ -19,6 +19,7 @@
 #include "Levels/NavigationGraph.h"
 #include "SceneGraph/SceneGraph.h"
 
+#include "UI/MessageBox.h"
 #include "ai/AIComponent.h"
 #include "ai/Path.h"
 #include "ai/SteeringBehaviors.h"
@@ -253,6 +254,10 @@ const std::string& LevelScene::GetLevelName() const {
 
 GameplayOverlay* LevelScene::GetGameplayOverlay() {
     return gameplayOverlay.get();
+}
+
+const std::string& LevelScene::GetLevelPath() const {
+    return levelPath;
 }
 
 GameplayEventsManager& LevelScene::GetGameplayEventsManager() {

@@ -25,7 +25,7 @@ namespace mlg {
         // Used for ui scaling
         glm::vec2 anchor{0.0f, 0.0f};
         glm::vec2 actualPosition = position;
-        bool actualPositionDirty = true;
+//        bool actualPositionDirty = true;
 
         bool isBillboard = false;
         std::weak_ptr<ISceneGraphClient> billboardTarget;
@@ -45,7 +45,7 @@ namespace mlg {
 
     public:
         std::weak_ptr<UIRenderable> thisAsRenderable;
-
+        bool actualPositionDirty = true;
         UIComponent(std::weak_ptr<Entity> owner, std::string name);
 
         void Start() override;

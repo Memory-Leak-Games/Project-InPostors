@@ -24,7 +24,10 @@ namespace mlg {
         double logicSeconds = 0.f;
 
     public:
+        eventpp::CallbackList<void(bool isPaused)> OnGamePausedChanged;
+
         static void Initialize();
+        static Time* Get();
         static void Stop();
 
         static double GetTrueSeconds();

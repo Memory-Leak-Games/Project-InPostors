@@ -19,6 +19,7 @@ class AudioManager : public mlg::Entity {
     std::shared_ptr<mlg::AudioAsset> boxingBellSound;
 
     std::shared_ptr<mlg::AudioAsset> cityAmbientSound;
+    std::shared_ptr<mlg::AudioAsset> levelMusic;
 
     int lastWholeSecondLeft = -1;
 
@@ -37,7 +38,7 @@ public:
             mlg::Transform* parent);
 
     void Start() override;
-    void Update() override;
+    void Stop() override;
 
     void SetTimeLeft(float timeLeft);
 };

@@ -17,6 +17,7 @@ class TutorialPanel : public mlg::Entity {
 private:
     std::shared_ptr<mlg::CanvasPanel> panel;
     std::shared_ptr<mlg::Button> exitButton;
+    std::shared_ptr<mlg::Button> nextButton;
     std::shared_ptr<mlg::Label> text;
     std::shared_ptr<mlg::DynamicImage> image;
 
@@ -31,6 +32,7 @@ private:
             uint64_t id, const std::string& name,
             bool isStatic, mlg::Transform* parent);
 
+    int pageNumber = 0;
 public:
     eventpp::CallbackList<void()> OnClosed;
     eventpp::CallbackList<void()> OnMessage;
@@ -41,8 +43,11 @@ public:
     ~TutorialPanel() override;
     
     void ShowTutorial(const std::string& messageId);
+    void ShowTutorials(const std::vector<std::string>& messageIds);
 
 private:
     void SetVisible(bool visible);
     void ParseJson();
+
+    void ShowPage(const std::string& messageId);
 };
