@@ -11,6 +11,8 @@ private:
             bool isStatic,
             mlg::Transform* parent);
 
+    std::shared_ptr<class StorageUI> storageUi;
+
 public:
     ~Storage() override;
 

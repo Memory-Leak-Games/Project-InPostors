@@ -58,6 +58,7 @@ namespace mlg {
 
     void UIComponent::SetPosition(const glm::vec2& position) {
         UIComponent::position = position;
+        actualPositionDirty = true;
     }
 
     void UIComponent::Draw(const UIRenderer* renderer) {
