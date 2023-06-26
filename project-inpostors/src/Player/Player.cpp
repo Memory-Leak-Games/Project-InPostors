@@ -189,6 +189,10 @@ void Player::SetPlayerRotation(float angle) {
     rigidbodyComponent.lock()->SetRotation(angle);
 }
 
+const PlayerData& Player::GetPlayerData() const {
+    return playerData;
+}
+
 bool Player::PickUp() {
     if (equipment->IsFull())
         return false;
