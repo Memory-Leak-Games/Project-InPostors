@@ -7,6 +7,8 @@
 
   "sublevels": [ "res/levels/maps/small_city_props.json" ],
 
+  "music": "res/audio/music/brookers_blues.mp3",
+
   "ground": {
     "mesh": "res/models/ground/ground_small_city.obj",
     "material": "res/materials/buildings_material.json",

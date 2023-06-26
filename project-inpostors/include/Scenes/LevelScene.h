@@ -1,10 +1,6 @@
 #pragma once
 
-#include "Audio/Assets/AudioAsset.h"
 #include "Core/SceneManager/Scene.h"
-#include "UI/MessageBox.h"
-#include "UI/StartLevelCountdown.h"
-#include <memory>
 
 class LevelScene : public mlg::Scene {
 private:
@@ -46,8 +42,8 @@ public:
     void HandlePauseGame();
 
     [[nodiscard]] const std::shared_ptr<NavigationGraph>& GetNavigationGraph() const;
-    [[nodiscard]] LevelTaskManager* GetLevelTaskManager();
     [[nodiscard]] class TaskManager* GetTaskManager();
+    [[nodiscard]] LevelTaskManager* GetLevelTaskManager();
     [[nodiscard]] ScoreManager* GetScoreManager();
     [[nodiscard]] AudioManager& GetAudioManager();
     [[nodiscard]] MessageBox& GetMessageBox();
@@ -55,9 +51,11 @@ public:
     [[nodiscard]] StartLevelCountdown& GetLevelCountdown();
 
     [[nodiscard]] const std::string& GetLevelName() const;
-    [[nodiscard]] GameplayOverlay* GetGameplayOverlay() ;
+    [[nodiscard]] GameplayOverlay* GetGameplayOverlay();
     [[nodiscard]] const std::shared_ptr<class FinishScreen>& GetFinishScreen() const;
     [[nodiscard]] const std::shared_ptr<class PauseMenu>& GetPauseMenu() const;
+
+    [[nodiscard]] const std::string& GetLevelPath() const;
 
 
 private:

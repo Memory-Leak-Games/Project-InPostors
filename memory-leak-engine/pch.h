@@ -4,6 +4,7 @@
 #include <memory>
 #include <utility>
 #include <algorithm>
+#include <ranges>
 #include <functional>
 #include <chrono>
 #include <cstdint>

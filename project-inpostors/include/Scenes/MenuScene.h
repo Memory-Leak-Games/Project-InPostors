@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Audio/Assets/AudioAsset.h"
 #include "Core/SceneManager/Scene.h"
 #include "Levels/NavigationGraph.h"
 #include <memory>
@@ -26,12 +27,14 @@ private:
     std::weak_ptr<mlg::CanvasPanel> levelSelector;
 
     std::shared_ptr<class NavigationGraph> navigationGraph;
+    std::shared_ptr<mlg::AudioAsset> music;
 
 public:
     explicit MenuScene() = default;
     ~MenuScene() override;
 
     void Load() override;
+    void UnLoad() override;
 
     std::shared_ptr<NavigationGraph> GetNavigationGraph() const;
 

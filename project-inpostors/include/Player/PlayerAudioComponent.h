@@ -42,8 +42,6 @@ public:
 
 private:
     void PlayCollisionSound();
-
     void HandleDriftSound();
-
     void HandleEngineSound();
 };
