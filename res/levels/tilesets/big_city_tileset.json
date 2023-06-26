@@ -493,6 +493,39 @@
           "collision-size": 10.0
         }
       ]
+    },
+    {
+      "symbol": "R",
+      "objects": [
+        {
+          "model": "res/models/buildings/super_big/stadium.obj",
+          "scale": 1,
+          "rotation": 90.0,
+          "collision-type": "rectangle",
+          "collision-size": 10.0
+        },
+        {
+          "model": "res/models/buildings/super_big/cafe_b.obj",
+          "rotation": 90.0,
+          "scale": 1.2,
+          "collision-type": "rectangle",
+          "collision-size": 12.0
+        },
+        {
+          "model": "res/models/buildings/super_big/townhall.obj",
+          "rotation": 90.0,
+          "scale": 1.1,
+          "collision-type": "rectangle",
+          "collision-size": 12.0
+        },
+        {
+          "model": "res/models/buildings/super_big/hospital.obj",
+          "rotation": 90.0,
+          "scale": 1.0,
+          "collision-type": "rectangle",
+          "collision-size": 12.0
+        }
+      ]
     }
   ],
   "road": {

@@ -1,7 +1,7 @@
 {
   "name": "TestLevel",
   "tile-size": 4.0,
-  "tileset": "res/levels/tilesets/small_city_tileset.json",
+  "tileset": "res/levels/tilesets/big_city_tileset.json",
 
   "time-limit": 120.0,
 
@@ -29,17 +29,17 @@
   },
 
   "layout": [
-    "sbbbbbbbbsbmbbbbbmbbsbbbbmbbbsbb",
+    "sbbbbmmbbsbmbmsmbmbmsbsmbmbsbsbb",
     "s##############################m",
     "s##############################s",
     "s##############################b",
-    "s###pppppppp###ssssss###ssss###s",
-    "s###pmmmpppp###ssssss###ssss###b",
-    "s###pmmmpppp###sbmmbm###    ###m",
+    "s###pppppppp###smbbss###ssss###s",
+    "s###pmmmpppp###zsmmsz###ssss###b",
+    "s###pmmmpppp###smssms###    ###m",
     "s###pmmmpppp###ssmbls###    ###s",
     "s###pmmmpPpp###pppppp###    ###b",
-    "s###pLLLpppp###pwppwp###    ###m",
-    "s###pppppppp###pppppp###    ###s",
+    "s###pLLLpppp###pwppRp###    ###m",
+    "s###pppppppp###pppppp###o   ###s",
     "s##############################b",
     "s##############################m",
     "s##############################b"
