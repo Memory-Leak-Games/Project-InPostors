@@ -60,6 +60,10 @@ namespace mlg {
         }
     }
 
+    Time* Time::Get() {
+        return instance;
+    }
+
     void Time::Stop() {
         delete instance;
         instance = nullptr;
@@ -105,6 +109,7 @@ namespace mlg {
 
     void Time::PauseGame(bool gamePaused) {
         instance->gamePaused = gamePaused;
+        instance->OnGamePausedChanged(gamePaused);
     }
 
 }// namespace mlg

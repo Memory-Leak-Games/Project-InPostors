@@ -53,11 +53,29 @@ void PlayerAudioComponent::Start() {
 
                 PlayCollisionSound();
             });
+
+    onPauseHandle = mlg::Time::Get()->OnGamePausedChanged.append(
+            [this](bool paused) {
+                if (paused) {
+                    driftSound->Stop();
+                    drivingSound->Stop();
+                    stationarySound->Stop();
+                    driftSoundPlaying = false;
+                }
+            });
 }
 
 void PlayerAudioComponent::Update() {
+    if (mlg::Time::IsGamePaused()) {
+        return;
+    }
+
     HandleDriftSound();
     HandleEngineSound();
+}
+
+void PlayerAudioComponent::Stop() {
+    mlg::Time::Get()->OnGamePausedChanged.remove(onPauseHandle);
 }
 
 using Random = effolkronium::random_static;
