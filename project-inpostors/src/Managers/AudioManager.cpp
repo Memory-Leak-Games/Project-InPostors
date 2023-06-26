@@ -55,6 +55,8 @@ void AudioManager::Start() {
     mlg::Scene* scene = mlg::SceneManager::GetCurrentScene();
     LevelScene* levelScene = dynamic_cast<LevelScene*>(scene);
 
+    cityAmbientSound->Play();
+
     levelScene->GetTaskManager()->OnTaskFinished.append(
             [this](const TaskData& taskData) {
                 int price = taskData.reward;
@@ -81,8 +83,6 @@ void AudioManager::Start() {
             [this]() {
                 boxingBellSound->Play();
             });
-
-    cityAmbientSound->Play();
 }
 
 void AudioManager::Update() {

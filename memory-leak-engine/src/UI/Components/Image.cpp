@@ -43,4 +43,8 @@ namespace mlg {
     void Image::SetSize(const glm::vec2& size) {
         Image::size = size;
     }
+
+    void Image::SetMaterial(const std::shared_ptr<class MaterialAsset>& material) {
+        this->material = material;
+    }
 } // mlg

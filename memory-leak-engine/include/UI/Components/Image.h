@@ -8,8 +8,10 @@ namespace mlg {
     private:
         glm::vec2 size{1.f, 1.f};
 
-    public:
+    protected:
         std::shared_ptr<class MaterialAsset> material;
+
+    public:
         glm::vec4 tint = {1.0, 1.0, 1.0, 1.0};
 
         explicit Image(std::weak_ptr<Entity> owner, std::string name,
@@ -19,6 +21,8 @@ namespace mlg {
 
         [[nodiscard]] glm::vec2 GetSize() const override;
         void SetSize(const glm::vec2& size);
+
+        void SetMaterial(const std::shared_ptr<class MaterialAsset>& material);
     };
 
 }// namespace mlg

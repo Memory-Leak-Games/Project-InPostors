@@ -31,7 +31,7 @@ namespace mlg {
         void StopAll();
 
         void SetVolume(float volume);
-        void SetLooping();
+        void SetLooping(bool isLooping);
     };
 
 }// namespace mlg
