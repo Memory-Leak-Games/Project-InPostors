@@ -288,6 +288,16 @@ void GameplayOverlay::Update() {
 
         scorePopup->SetPosition(startPos + (finishPos - startPos) * rate);
     }
+
+//    ImGui::Begin("scorePopupTimer");
+//    float h;
+//    if(timerManager->IsTimerValid(scorePopupTimer)) {
+//        h = timerManager->GetTimerElapsedTime(scorePopupTimer);
+//    } else {
+//        h = -34;
+//    }
+//    ImGui::SliderFloat("Timer", &h, 0.0f, 2.0f);
+//    ImGui::End();
 }
 
 void GameplayOverlay::SetClock(float time) {
@@ -312,7 +322,7 @@ void GameplayOverlay::SetScore(int score) {
 
     if (mlg::TimerManager::Get()->IsTimerValid(scorePopupTimer))
         mlg::TimerManager::Get()->ClearTimer(scorePopupTimer);
-    scorePopupTimer = mlg::TimerManager::Get()->SetTimer(2.f, false,
+    scorePopupTimer = mlg::TimerManager::Get()->SetTimer(1.4f, false,
                            [this]() -> void {
                                this->scorePopup->SetVisible(false);
                            });
