@@ -29,6 +29,11 @@ PlayerFXComponent::PlayerFXComponent(
                     "SmokeFX", smoke);
     smokeParticleSystem.lock()->GetTransform().SetPosition(
             glm::vec3(0.0f, 0.5f, 0.0f));
+
+    driftParticleSystem =
+            sharedOwner->AddComponent<mlg::ParticleSystemComponent>(
+                    "DriftFX", FXLibrary::Get("drift"));
+    driftParticleSystem.lock()->GetTransform().SetPosition({0.0f, 1.5f, 0.5f});
 }
 
 PlayerFXComponent::~PlayerFXComponent() = default;
@@ -53,6 +58,7 @@ void PlayerFXComponent::Start() {
 
 void PlayerFXComponent::Update() {
     collidedThisFrame = false;
+    HandleDrift();
 
 #ifdef DEBUG
     if (mlg::Input::IsActionJustPressed("debug_particle")) {
@@ -97,4 +103,13 @@ void PlayerFXComponent::OnCollision(glm::vec2 position) {
                     "SparklesFX", sparkles, true);
 
     collidedThisFrame = true;
+}
+
+void PlayerFXComponent::HandleDrift() {
+    float angularVelocity = rigidbodyComponent.lock()->GetAngularAcceleration();
+    float speed = rigidbodyComponent.lock()->GetSpeed();
+
+    if (speed > 0.1f && std::abs(angularVelocity) > 5.f) {
+        driftParticleSystem.lock()->Emit();
+    }
 }

@@ -24,13 +24,13 @@ void CashFX::UpdateSystem(const mlg::Transform& transform) {
             HEX_RGBA(0xA87D0DFF),
             };
 
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < 25; i++) {
         particleProps.lifeTime = Random::get(0.5f, 0.8f);
         particleProps.position = transform.GetWorldPosition();
 
         glm::vec3 direction = mlg::Math::GetRandomDirection();
         particleProps.position += direction * Random::get(1.0f, 2.0f);
-        particleProps.beginVelocity = direction * Random::get(5.f, 10.f);
+        particleProps.beginVelocity = direction * Random::get(10.f, 20.f);
         particleProps.endVelocity = particleProps.beginVelocity;
         particleProps.endVelocity.y = -15.f;
 
