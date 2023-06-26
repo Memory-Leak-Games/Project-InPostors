@@ -26,4 +26,6 @@ private:
     void OnTaskFinished();
     void OnCollision(glm::vec2 position);
     void HandleDrift();
+
+    void AddDriftFX();
 };

@@ -26,7 +26,6 @@ private:
     PlayerData playerData;
 
     friend class PlayerUI;
-
 private:
     Player(
             uint64_t id, const std::string& name,
@@ -48,6 +47,8 @@ public:
     void SetPlayerRotation(float angle);
 
     ~Player() override = default;
+
+    const PlayerData& GetPlayerData() const;
 
 private:
     void AddRigidbody(const nlohmann::json& configJson);
