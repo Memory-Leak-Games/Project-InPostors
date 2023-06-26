@@ -3,6 +3,7 @@
 #include "TextureAsset.h"
 #include "nlohmann/json.hpp"
 #include <glm/fwd.hpp>
+#include <memory>
 
 namespace mlg {
 
@@ -60,6 +61,9 @@ namespace mlg {
         void SetFloat(const std::string& name, float value);
         void SetInt(const std::string& name, int value);
         void SetVec4(const std::string& name, glm::vec4 value);
+        void SetTexture(
+                const std::string& name,
+                const std::shared_ptr<TextureAsset>& texture);
 
         void ParseUniforms(const nlohmann::basic_json<>& materialJson);
         void ParseTextures(const nlohmann::basic_json<>& materialJson);
@@ -71,4 +75,4 @@ namespace mlg {
         glm::vec4 HTMLtoVec4(const std::string& html);
     };
 
-} // mlg
+}// namespace mlg

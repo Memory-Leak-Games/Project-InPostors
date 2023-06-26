@@ -1,19 +1,22 @@
 #include "Scenes/TutorialScene.h"
 
+#include <fstream>
+
 #include "Core/SceneManager/SceneManager.h"
 #include "Core/TimerManager.h"
+
 #include "Gameplay/Entity.h"
 #include "Gameplay/EntityManager.h"
+
 #include "Managers/ChatManager.h"
 #include "Managers/LevelTaskManager.h"
 #include "Managers/TaskManager.h"
+
 #include "Scenes/LevelScene.h"
 #include "Scenes/MenuScene.h"
+
 #include "UI/GameplayOverlay.h"
 #include "UI/TutorialPanel.h"
-#include <eventpp/eventqueue.h>
-#include <fstream>
-#include <memory>
 
 TutorialScene::TutorialScene(const std::string& levelPath)
     : LevelScene(levelPath) {
@@ -31,7 +34,6 @@ void TutorialScene::Load() {
                             .lock();
 
     chatManager = std::dynamic_pointer_cast<ChatManager>(chatManagerEntity);
-    // chatManager->DisableRandomMessages();
     chatManager->DisableTaskMessages();
     chatManager->DisableWelcomeMessage();
 
@@ -78,6 +80,7 @@ void TutorialScene::Load() {
 
 void TutorialScene::Start() {
     tutorialPanel->ShowTutorial("welcome-tutorial");
+    messageSound->Play();
 
     using CL = eventpp::CallbackList<void()>;
 
@@ -100,11 +103,13 @@ void TutorialScene::Update() {
 
 void TutorialScene::OreTutorial() {
     tutorialPanel->ShowTutorial("ore-tutorial");
+    messageSound->Play();
 }
 
 void TutorialScene::IronTutorial() {
     GetTaskManager()->AcceptNewTask();
     tutorialPanel->ShowTutorial("iron-tutorial");
+    messageSound->Play();
 }
 
 void TutorialScene::BonusTutorial() {

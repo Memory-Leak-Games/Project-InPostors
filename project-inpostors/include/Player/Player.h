@@ -1,14 +1,15 @@
 #pragma once
 
-#include <Gameplay/Entity.h>
-#include <memory>
 #include "Audio/Assets/AudioAsset.h"
 #include "Player/PlayerFXComponent.h"
+#include <Gameplay/Entity.h>
+#include <eventpp/callbacklist.h>
+#include <memory>
 
 namespace mlg {
     class RigidbodyComponent;
     class Image;
-}
+}// namespace mlg
 
 struct PlayerData {
     int id;
@@ -18,27 +19,27 @@ struct PlayerData {
 
 class Player : public mlg::Entity {
 private:
-
     std::weak_ptr<mlg::RigidbodyComponent> rigidbodyComponent;
     std::shared_ptr<class CarInput> carInput;
     std::shared_ptr<class EquipmentComponent> equipment;
-
-    std::shared_ptr<class mlg::AudioAsset> pickUpSound;
-    std::shared_ptr<class mlg::AudioAsset> dropSound;
-    std::shared_ptr<class mlg::AudioAsset> hitSound;
-
-    bool canPlaySound = true;
 
     PlayerData playerData;
 
     friend class PlayerUI;
 
 private:
-    Player(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent, const PlayerData& playerData);
+    Player(
+            uint64_t id, const std::string& name,
+            bool isStatic, mlg::Transform* parent,
+            const PlayerData& playerData);
 
 public:
-    static std::shared_ptr<Player> Create(uint64_t id, const std::string& name, bool isStatic,
-                                          mlg::Transform* parent, const PlayerData& playerData);
+    eventpp::CallbackList<void()> OnPickUp;
+    eventpp::CallbackList<void()> OnDrop;
+
+    static std::shared_ptr<Player> Create(
+            uint64_t id, const std::string& name, bool isStatic,
+            mlg::Transform* parent, const PlayerData& playerData);
 
     void Start() override;
     void Update() override;
@@ -55,6 +56,6 @@ private:
 
     bool PickUp();
     bool Drop();
-	
+
     //static void GenerateUI(const std::shared_ptr<Player>& newPlayer);
 };

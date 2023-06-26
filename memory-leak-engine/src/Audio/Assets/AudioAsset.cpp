@@ -1,8 +1,9 @@
 #include "Audio/Assets/AudioAsset.h"
 
-#include "Audio/Audio.h"
+#include "Audio/AudioAPI.h"
 
 #include "Macros.h"
+#include <cstdint>
 
 namespace mlg {
     AudioAsset::AudioAsset(const std::string& path) : Asset(path) {
@@ -10,60 +11,79 @@ namespace mlg {
 
     AudioAsset::~AudioAsset() = default;
 
-    void AudioAsset::Play(float volume, float pan, uint32_t paused, uint32_t bus) {
-        audio->Play(volume, pan, paused, bus);
+    uint32_t AudioAsset::Play(float volume, float pan, uint32_t paused, uint32_t bus) {
+        handle = mlg::AudioAPI::GetSoLoud()->play(sound, volume, pan, paused, bus);
+        return handle;
     }
 
-    void AudioAsset::PlayBackgroundMusic(float volume, uint32_t paused, uint32_t bus) {
-        audio->PlayBackgroundMusic(volume, paused, bus);
+    uint32_t AudioAsset::PlayBackgroundMusic(float volume, uint32_t paused, uint32_t bus) {
+        handle = mlg::AudioAPI::GetSoLoud()->playBackground(sound, volume, paused, bus);
+        return handle;
     }
 
-    void AudioAsset::PlayClocked(float delay, float volume, float pan, uint32_t bus) {
-        audio->PlayClocked(delay, volume, pan, bus);
+    uint32_t AudioAsset::PlayClocked(float delay, float volume, float pan, uint32_t bus) {
+        handle = mlg::AudioAPI::GetSoLoud()->playClocked(delay, sound, volume, pan, bus);
+        return handle;
     }
 
     void AudioAsset::Pause() const {
-        audio->Pause();
+        Pause(handle);
+    }
+
+    void AudioAsset::Pause(uint32_t handle) const {
+        mlg::AudioAPI::GetSoLoud()->setPause(handle, true);
     }
 
     void AudioAsset::UnPause() const {
-        audio->UnPause();
+        UnPause(handle);
     }
 
-    void AudioAsset::Seek(float time) {
-        audio->Seek(time);
+    void AudioAsset::UnPause(uint32_t handle) const {
+        mlg::AudioAPI::GetSoLoud()->setPause(handle, false);
+    }
+
+    void AudioAsset::Seek(float seconds) {
+        Seek(handle, seconds);
+    }
+
+    void AudioAsset::Seek(uint32_t handle, float seconds) {
+        mlg::AudioAPI::GetSoLoud()->seek(handle, seconds);
     }
 
     void AudioAsset::Stop() {
-        audio->Stop();
+        Stop(handle);
     }
 
-    void AudioAsset::StopAll() {
-        audio->StopAll();
+    void AudioAsset::Stop(uint32_t handle) {
+        mlg::AudioAPI::GetSoLoud()->stop(handle);
     }
 
     void AudioAsset::SetVolume(float volume) {
-        audio->SetVolume(volume);
+        SetVolume(handle, volume);
     }
 
-    void AudioAsset::SetLooping() {
-        audio->SetLooping();
+    void AudioAsset::SetVolume(uint32_t handle, float volume) {
+        mlg::AudioAPI::GetSoLoud()->setVolume(handle, volume);
+    }
+
+    void AudioAsset::SetLooping(bool isLooping) {
+        sound.setLooping(isLooping);
     }
 
     void AudioAsset::SetSingleInstance() {
-        audio->SetSingleInstance();
+        sound.setSingleInstance(true);
     }
 
     void AudioAsset::SetFilter(uint32_t filterID, SoLoud::Filter* filter) {
-        audio->SetFilter(filterID, filter);
+        sound.setFilter(filterID, filter);
     }
 
     double AudioAsset::GetLength() {
-        return audio->GetLength();
+        return sound.getLength();
     }
 
     void AudioAsset::Load() {
         SPDLOG_DEBUG("Loading sound Audio at path: {}", GetPath());
-        audio = std::make_unique<Audio>(GetPath());
+        sound.load(GetPath().c_str());
     }
 }// namespace mlg

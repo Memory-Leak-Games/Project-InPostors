@@ -121,12 +121,12 @@ PlayerUI::PlayerUI(const std::weak_ptr<mlg::Entity>& owner, const std::string& n
                         break;
 
                     if (items.size() > i) {
-                        eqIcons[i]->material = productManager->GetProduct(items[i]).icon;
-                        eqBillboards[i]->material = productManager->GetProduct(items[i]).icon;
+                        eqIcons[i]->SetMaterial(productManager->GetProduct(items[i]).icon);
+                        eqBillboards[i]->SetMaterial(productManager->GetProduct(items[i]).icon);
                         eqIcons[i]->SetVisible(true);
                         eqBillboards[i]->SetVisible(true);
                     } else {
-                        eqIcons[i]->material = noneMaterial;
+                        eqIcons[i]->SetMaterial(noneMaterial);
                         eqBillboards[i]->SetVisible(false);
                     }
                 }

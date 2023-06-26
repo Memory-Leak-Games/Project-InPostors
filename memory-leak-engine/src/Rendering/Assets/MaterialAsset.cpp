@@ -124,7 +124,8 @@ namespace mlg {
                 if (jsonUniform["value"].type() == json::value_t::string) {
                     glm::vec4 value = HTMLtoVec4(jsonUniform["value"]);
                     SetVec4(jsonUniform["name"], value);
-                    continue;;
+                    continue;
+                    ;
                 }
 
                 SetVec4(jsonUniform["name"], {
@@ -200,6 +201,21 @@ namespace mlg {
         auto newUniform = std::make_unique<Vec4Uniform>();
         newUniform->name = name;
         newUniform->value = value;
+        uniforms.push_back(std::move(newUniform));
+    }
+
+    void MaterialAsset::SetTexture(
+            const std::string& name,
+            const std::shared_ptr<TextureAsset>& texture) {
+        if (!shaderProgram->IsUniformExist(name)) {
+            SPDLOG_ERROR("Uniform: " + name + " not found");
+            return;
+        }
+
+        RemoveUniform(name);
+        auto newUniform = std::make_unique<Texture>();
+        newUniform->name = name;
+        newUniform->textureAsset = texture;
         uniforms.push_back(std::move(newUniform));
     }
 

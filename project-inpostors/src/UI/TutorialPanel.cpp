@@ -12,6 +12,7 @@
 
 #include "Managers/ChatManager.h"
 
+#include "UI/Components/DynamicImage.h"
 #include "UI/Components/Image.h"
 #include "UI/Components/Label.h"
 #include "UI/Components/UIComponent.h"
@@ -43,14 +44,14 @@ std::shared_ptr<TutorialPanel> TutorialPanel::Create(
     auto background = panel->AddComponent<mlg::Image>(
                                    "background", backgroundMaterial)
                               .lock();
-    background->SetSize(PANEL_SIZE);
+    background->SetSize(glm::vec2{520, 640});
 
     mlg::ButtonBuilder buttonBuilder;
     panel->exitButton = buttonBuilder.SetName("ExitButton")
                                 .SetText("Hide")
                                 .BuildButton(panel.get())
                                 .lock();
-    panel->exitButton->SetRelativePosition({0.f, -PANEL_SIZE.y / 2.f + 60.f});
+    panel->exitButton->SetRelativePosition({0.f, -640 / 2.f + 60.f});
 
     panel->exitButton->OnClick.append(
             [panel]() {
@@ -59,24 +60,28 @@ std::shared_ptr<TutorialPanel> TutorialPanel::Create(
                 panel->OnClosed();
             });
 
+    panel->image = panel->AddComponent<mlg::DynamicImage>("Image").lock();
+    panel->image->SetSize({455, 256});
+    panel->image->SetRelativePosition({0.f, 125.f});
+
     mlg::LabelBuilder labelBuilder;
     auto title = labelBuilder.SetName("Title")
-                         .SetText("You have a brand new message from AiPost!")
+                         .SetText("NEW MESSAGE!")
                          .SetSize(40.f)
                          .SetHorizontalAlignment(MLG_H_ALIGN_CENTER)
                          .BuildLabel(panel.get());
 
-    title.lock()->SetRelativePosition({0.f, PANEL_SIZE.y / 2.f - 50.f});
+    title.lock()->SetRelativePosition({0.f, 640 / 2.f - 50.f});
 
     panel->text = labelBuilder.SetName("Text")
                           .SetText("PLACEHOLDER")
-                          .SetSize(28.f)
+                          .SetSize(20.f)
                           .SetHorizontalAlignment(MLG_H_ALIGN_LEFT)
                           .BuildLabel(panel.get())
                           .lock();
 
     panel->text->SetRelativePosition(
-            {-PANEL_SIZE.x / 2.f + 20, PANEL_SIZE.y / 2.f - 90.f});
+            {-540.f / 2.f + 30.f, -35.f});
 
     panel->panel = panel->AddComponent<mlg::CanvasPanel>("TutorialCanvas").lock();
     panel->panel->SetSize(PANEL_SIZE);
@@ -85,6 +90,7 @@ std::shared_ptr<TutorialPanel> TutorialPanel::Create(
     panel->panel->AddChild(panel->exitButton);
     panel->panel->AddChild(title);
     panel->panel->AddChild(panel->text);
+    panel->panel->AddChild(panel->image);
 
     panel->panel->SetAnchor(MLG_ANCHOR_CENTER);
     panel->panel->SetPosition(MLG_POS_CENTER);
@@ -97,8 +103,10 @@ TutorialPanel::~TutorialPanel() = default;
 void TutorialPanel::ShowTutorial(const std::string& messageId) {
     SetVisible(true);
     std::string wrappedMessage = mlg::Label::WrapText(
-            messages[messageId], 66);
+            messages[messageId].text, 49);
+
     text->SetText(wrappedMessage);
+    image->SetTexture(messages[messageId].image);
     mlg::Time::PauseGame(true);
     OnMessage();
 }
@@ -114,6 +122,13 @@ void TutorialPanel::ParseJson() {
     file.close();
 
     for (const auto& [key, value] : tutorialJson.items()) {
-        messages.insert({key, value});
+        auto image =
+                mlg::AssetManager::GetAsset<mlg::TextureAsset>(
+                        value["image"].get<std::string>());
+
+        messages.insert(
+                {key,
+                 {value["text"],
+                  image}});
     }
 }
