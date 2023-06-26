@@ -1,4 +1,5 @@
 #include "../../include/UI/GameplayOverlay.h"
+#include "Core/Math.h"
 #include "Core/RGBA.h"
 #include "SceneGraph/Transform.h"
 
@@ -16,6 +17,7 @@
 #include "Utils/ProductManager.h"
 #include <glm/fwd.hpp>
 #include <spdlog/fmt/bundled/format.h>
+#include <spdlog/spdlog.h>
 #include <string>
 
 GameplayOverlay::GameplayOverlay(uint64_t id, const std::string& name, bool isStatic, mlg::Transform* parent)
@@ -45,13 +47,21 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     temp->SetPosition({1280.f - 50.f - 8.f, 720.f - 8.f - 24.f});
     temp->SetAnchor({1.0, 1.0});
 
+    result->scorePopup = result->AddComponent<mlg::Label>("ScorePopup").lock();
+    result->scorePopup->SetPosition({1280.f - 50.f - 8.f, 720.f - 8.f - 24.f - 2});
+    result->scorePopup->SetAnchor({1.0, 1.0});
+    result->scorePopup->SetText("+$000");
+    result->scorePopup->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
+    result->scorePopup->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
+    result->scorePopup->SetTextColor({0.f, 1.f, 0.f});
+    result->scorePopup->SetVisible(false);
+
     result->score = result->AddComponent<mlg::Label>("Score").lock();
     result->score->SetPosition({1280.f - 50.f - 8.f, 720.f - 8.f - 24.f - 2});
     result->score->SetAnchor({1.0, 1.0});
     result->score->SetText("$0000");
     result->score->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
     result->score->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
-
 
     // chat window
     result->chatWindow = result->AddComponent<mlg::CanvasPanel>("ChatWindow").lock();
@@ -81,7 +91,6 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     result->chat->SetRelativePosition({-190.f, 40.f});
     result->chat->SetSize(18);
     result->chatWindow->AddChild(result->chat);
-
     result->chatWindow->SetVisible(false);
 
     material = mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/ui/gameplay/task_panel_material.json");
@@ -245,6 +254,42 @@ void GameplayOverlay::Update() {
             taskBonus[i]->SetVisible(false);
         }
     }
+
+    auto timerManager = mlg::TimerManager::Get();
+
+    // Chat animation
+    if (timerManager->IsTimerValid(chatTimer)) {
+        float timeElapsed = timerManager->GetTimerElapsedTime(chatTimer);
+
+        glm::vec2 showPos = glm::vec2(1280.f - 230.f, 95.f);
+        glm::vec2 hidePos = glm::vec2(1280.f + 230.f, 95.f);
+
+
+        if (timeElapsed <= 1.f) {
+            glm::vec2 chatPos = mlg::Math::SmoothStep(hidePos, showPos, timeElapsed);
+            chatWindow->SetRelativePosition(chatPos);
+        }
+
+        float timeRemaining = timerManager->GetTimerRemainingTime(chatTimer);
+        if (timeRemaining <= 1.f) {
+            glm::vec2 chatPos = mlg::Math::SmoothStep(hidePos, showPos, timeRemaining);
+            chatWindow->SetRelativePosition(chatPos);
+        }
+    }
+
+    // Score popup animation
+    if (timerManager->IsTimerValid(scorePopupTimer)) {
+        float rate = timerManager->GetTimerElapsedTime(scorePopupTimer) / 0.5f;
+        rate = std::clamp(rate, 0.f, 0.5f);
+        rate *= 2.f;
+
+        glm::vec2 startPos = {1280.f - 50.f - 8.f, 720.f - 8.f - 24.f - 2};
+        glm::vec2 finishPos = startPos + glm::vec2(0.f, -40.f);
+
+        glm::vec2 position = mlg::Math::SmoothStep(startPos, finishPos, rate);
+
+        scorePopup->SetPosition(position);
+    }
 }
 
 void GameplayOverlay::SetClock(float time) {
@@ -260,8 +305,22 @@ void GameplayOverlay::SetClock(float time) {
     this->clock->SetText(fmt::format("{:02d}:{:02d}", minutes, seconds));
 }
 
-void GameplayOverlay::SetScore(int score) {
-    this->score->SetText(fmt::format("${:04}", score));
+void GameplayOverlay::SetScore(int newScore) {
+    this->score->SetText(fmt::format("${:04}", newScore));
+
+    scorePopup->SetVisible(true);
+    scorePopup->SetText(fmt::format("+${}", newScore - currentScore));
+    currentScore = newScore;
+
+    if (mlg::TimerManager::Get()->IsTimerValid(scorePopupTimer))
+        mlg::TimerManager::Get()->ClearTimer(scorePopupTimer);
+
+    scorePopupTimer = mlg::TimerManager::Get()->SetTimer(
+            1.4f, false,
+            [this]() -> void {
+                this->scorePopup->SetVisible(false);
+                scorePopupTimer = 0;
+            });
 }
 
 void GameplayOverlay::ShowMessage(const std::string& message, float visibleTime) {

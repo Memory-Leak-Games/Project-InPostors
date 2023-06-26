@@ -62,7 +62,7 @@ std::shared_ptr<Storage> Storage::Create(
 
     mainRigidbody->SetKinematic(true);
 
-    storage->AddComponent<StorageUI>("StorageUI");
+    storage->storageUi = storage->AddComponent<StorageUI>("StorageUI").lock();
 
     return storage;
 }

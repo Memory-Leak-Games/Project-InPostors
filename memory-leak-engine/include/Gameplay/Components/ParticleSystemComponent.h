@@ -27,6 +27,7 @@ namespace mlg {
 
         void LateUpdate() override;
         void Emit(ParticleProps particleProps);
+        void Emit();
     };
 
 }// namespace mlg

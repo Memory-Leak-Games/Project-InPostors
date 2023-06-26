@@ -52,11 +52,11 @@ void mlg::Container::GrabFocus() {
         return;
     }
 
-    for (auto& child : std::ranges::reverse_view(children)) {
-        if (TryFocusFocusableComponent(child.lock().get()))
+    for (auto it = children.rbegin(); it != children.rend(); ++it) {
+        if (TryFocusFocusableComponent(it->lock().get()))
             return;
 
-        if (TryFocusContainer(child.lock().get()))
+        if (TryFocusContainer(it->lock().get()))
             return;
     }
 }

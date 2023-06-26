@@ -21,6 +21,7 @@ namespace mlg {
         static TrafficData LoadTrafficData(const std::string& path);
         static std::string LoadLevelName(const std::string& path);
         static float LoadLevelTimeLimit(const std::string& path);
+        static std::shared_ptr<class AudioAsset> GetLevelMusic(const std::string& path);
         //todo: i really need to separate level generator from level data...
         static std::vector<TaskData> GetTasks(const std::string& path);
 

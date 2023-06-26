@@ -11,6 +11,7 @@ class PlayerFXComponent : public mlg::Component {
 private:
     std::weak_ptr<mlg::RigidbodyComponent> rigidbodyComponent;
     std::weak_ptr<mlg::ParticleSystemComponent> smokeParticleSystem;
+    std::weak_ptr<mlg::ParticleSystemComponent> driftParticleSystem;
 
     bool collidedThisFrame = false;
 
@@ -24,4 +25,7 @@ public:
 private:
     void OnTaskFinished();
     void OnCollision(glm::vec2 position);
+    void HandleDrift();
+
+    void AddDriftFX();
 };

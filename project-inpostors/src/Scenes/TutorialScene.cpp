@@ -2,6 +2,7 @@
 
 #include <fstream>
 
+#include "Audio/Assets/AudioAsset.h"
 #include "Core/SceneManager/SceneManager.h"
 #include "Core/TimerManager.h"
 
@@ -11,6 +12,7 @@
 #include "Managers/ChatManager.h"
 #include "Managers/LevelTaskManager.h"
 #include "Managers/TaskManager.h"
+#include "UI/StartLevelCountdown.h"
 
 #include "Scenes/LevelScene.h"
 #include "Scenes/MenuScene.h"
@@ -75,15 +77,22 @@ void TutorialScene::Load() {
     tutorialPanel->OnMessage.append(
             [this]() {
                 pauseDisabled = true;
+                messageSound->Play();
             });
 }
 
 void TutorialScene::Start() {
-    tutorialPanel->ShowTutorial("welcome-tutorial");
-    messageSound->Play();
+    auto tutorials = std::vector<std::string>{
+            "welcome-tutorial",
+            "driving-tutorial",
+            "tasks-tutorial",
+            "storage-tutorial",
+            "traffic-tutorial"
+    };
+
+    tutorialPanel->ShowTutorials(tutorials);
 
     using CL = eventpp::CallbackList<void()>;
-
     CL::Handle eventHandle = tutorialPanel->OnClosed.append(
             [this]() {
                 GetLevelCountdown().StartCountDown();
@@ -103,13 +112,11 @@ void TutorialScene::Update() {
 
 void TutorialScene::OreTutorial() {
     tutorialPanel->ShowTutorial("ore-tutorial");
-    messageSound->Play();
 }
 
 void TutorialScene::IronTutorial() {
     GetTaskManager()->AcceptNewTask();
     tutorialPanel->ShowTutorial("iron-tutorial");
-    messageSound->Play();
 }
 
 void TutorialScene::BonusTutorial() {
@@ -124,7 +131,6 @@ void TutorialScene::BonusTutorial() {
     GetTaskManager()->AcceptNewTask();
 
     tutorialPanel->ShowTutorial("bonus-tutorial");
-    messageSound->Play();
 }
 
 void TutorialScene::AfterIronTutorial() {
@@ -150,12 +156,10 @@ void TutorialScene::AfterIronTutorial() {
     }
 
     tutorialPanel->ShowTutorial("after-iron-tutorial");
-    messageSound->Play();
 }
 
 void TutorialScene::FinalTutorial() {
     tutorialPanel->ShowTutorial("final-tutorial");
-    messageSound->Play();
 
     mlg::TimerManager::Get()->SetTimer(
             0.5f,

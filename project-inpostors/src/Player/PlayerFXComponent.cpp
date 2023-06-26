@@ -11,9 +11,12 @@
 #include "Macros.h"
 #include "Managers/TaskManager.h"
 #include "Physics/Colliders/Collider.h"
+#include "Player/Player.h"
 #include "SceneGraph/SceneGraph.h"
 #include "Scenes/LevelScene.h"
+#include <fstream>
 #include <glm/fwd.hpp>
+#include <memory>
 
 PlayerFXComponent::PlayerFXComponent(
         const std::weak_ptr<mlg::Entity>& owner, const std::string& name)
@@ -29,6 +32,7 @@ PlayerFXComponent::PlayerFXComponent(
                     "SmokeFX", smoke);
     smokeParticleSystem.lock()->GetTransform().SetPosition(
             glm::vec3(0.0f, 0.5f, 0.0f));
+    AddDriftFX();
 }
 
 PlayerFXComponent::~PlayerFXComponent() = default;
@@ -53,6 +57,7 @@ void PlayerFXComponent::Start() {
 
 void PlayerFXComponent::Update() {
     collidedThisFrame = false;
+    HandleDrift();
 
 #ifdef DEBUG
     if (mlg::Input::IsActionJustPressed("debug_particle")) {
@@ -96,10 +101,41 @@ void PlayerFXComponent::OnCollision(glm::vec2 position) {
             GetOwner().lock()->AddComponent<mlg::ParticleSystemComponent>(
                     "SparklesFX", sparkles, true);
 
-    sparklesParticleSystem.lock()->GetTransform().ReParent(
-            mlg::SceneGraph::GetRoot());
-    sparklesParticleSystem.lock()->GetTransform().SetPosition(
-            mlg::Math::ProjectTo3D(position));
-
     collidedThisFrame = true;
+}
+
+void PlayerFXComponent::HandleDrift() {
+    float angularVelocity = rigidbodyComponent.lock()->GetAngularAcceleration();
+    float speed = rigidbodyComponent.lock()->GetSpeed();
+
+    if (speed > 0.1f && std::abs(angularVelocity) > 5.f) {
+        driftParticleSystem.lock()->Emit();
+    }
+}
+
+using json = nlohmann::json;
+
+void PlayerFXComponent::AddDriftFX() {
+    std::shared_ptr<Player> player =
+            std::dynamic_pointer_cast<Player>(GetOwner().lock());
+
+    std::ifstream configFile(player->GetPlayerData().carData);
+    json config = json::parse(configFile);
+
+    glm::vec3 position{0.f, 1.5f, 0.f};
+
+    if (config.contains("particles")) {
+        if (config["particles"].contains("drift")) {
+            position = {
+                    config["particles"]["drift"][0],
+                    config["particles"]["drift"][1],
+                    config["particles"]["drift"][2],
+            };
+        }
+    }
+
+    driftParticleSystem =
+            player->AddComponent<mlg::ParticleSystemComponent>(
+                    "DriftFX", FXLibrary::Get("drift"));
+    driftParticleSystem.lock()->GetTransform().SetPosition(position);
 }

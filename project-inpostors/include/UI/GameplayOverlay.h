@@ -18,6 +18,7 @@ private:
     std::shared_ptr<mlg::Label> clock;
     std::shared_ptr<mlg::Label> chat;
     std::shared_ptr<mlg::CanvasPanel> chatWindow;
+    std::shared_ptr<mlg::Label> scorePopup;
     std::shared_ptr<mlg::Label> score;
 
     std::shared_ptr<class mlg::Image> taskPanel[TASK_PANELS];
@@ -30,6 +31,8 @@ private:
     std::shared_ptr<class mlg::Label> taskBonus[TASK_PANELS];
 
     size_t chatTimer = 0;
+    size_t scorePopupTimer = 0;
+    int currentScore = 0;
 
     std::shared_ptr<class LevelTaskManager> taskManager;
 
