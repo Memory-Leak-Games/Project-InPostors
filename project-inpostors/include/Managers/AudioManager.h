@@ -18,9 +18,22 @@ class AudioManager : public mlg::Entity {
     std::shared_ptr<mlg::AudioAsset> clockCountdownSound;
     std::shared_ptr<mlg::AudioAsset> boxingBellSound;
 
+    std::shared_ptr<mlg::AudioAsset> carHorn1;
+    std::shared_ptr<mlg::AudioAsset> carHorn2;
+    std::shared_ptr<mlg::AudioAsset> carHorn3;
+    std::shared_ptr<mlg::AudioAsset> carHorn4;
+    std::shared_ptr<mlg::AudioAsset> seagull;
+    int currentSoundIndex = 0;
+    std::vector<std::shared_ptr<mlg::AudioAsset>> randomSounds;
+
     std::shared_ptr<mlg::AudioAsset> cityAmbientSound;
 
     int lastWholeSecondLeft = -1;
+
+    float minDelayBetweenRandomSounds = 5.f;
+    float maxDelayBetweenRandomSounds = 10.f;
+    size_t randomSoundTimer = 0;
+
 
     AudioManager(uint64_t id,
                  const std::string& name,
@@ -38,6 +51,8 @@ public:
 
     void Start() override;
     void Update() override;
+
+    void StartRandomSoundTimer();
 
     void SetTimeLeft(float timeLeft);
 };

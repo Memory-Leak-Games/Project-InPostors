@@ -1,4 +1,5 @@
 #include "Managers/AudioManager.h"
+#include <Core/TimerManager.h>
 
 #include "Audio/Assets/AudioAsset.h"
 #include "Core/AssetManager/AssetManager.h"
@@ -7,6 +8,8 @@
 
 #include "Core/SceneManager/SceneManager.h"
 #include "Scenes/LevelScene.h"
+
+using Random = effolkronium::random_static;
 
 AudioManager::AudioManager(uint64_t id,
                            const std::string& name,
@@ -48,6 +51,22 @@ std::shared_ptr<AudioManager> AudioManager::Create(
     audioManager->boxingBellSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>(
             "res/audio/sfx/boxing_bell.mp3");
 
+    audioManager->carHorn1 = mlg::AssetManager::GetAsset<mlg::AudioAsset>(
+            "res/audio/random_sounds/carhorn1.mp3");
+
+    audioManager->carHorn2 = mlg::AssetManager::GetAsset<mlg::AudioAsset>(
+            "res/audio/random_sounds/carhorn2.mp3");
+
+    audioManager->carHorn3 = mlg::AssetManager::GetAsset<mlg::AudioAsset>(
+            "res/audio/random_sounds/carhorn3.mp3");
+
+    audioManager->carHorn4 = mlg::AssetManager::GetAsset<mlg::AudioAsset>(
+            "res/audio/random_sounds/carhorn4.wav");
+
+    audioManager->seagull = mlg::AssetManager::GetAsset<mlg::AudioAsset>(
+            "res/audio/random_sounds/seagull.mp3");
+
+
     return audioManager;
 }
 
@@ -55,8 +74,10 @@ void AudioManager::Start() {
     mlg::Scene* scene = mlg::SceneManager::GetCurrentScene();
     LevelScene* levelScene = dynamic_cast<LevelScene*>(scene);
 
+    randomSounds = {carHorn1, carHorn2, carHorn3, carHorn4, seagull};
     cityAmbientSound->Play();
 
+    StartRandomSoundTimer();
     levelScene->GetTaskManager()->OnTaskFinished.append(
             [this](const TaskData& taskData) {
                 int price = taskData.reward;
@@ -87,6 +108,34 @@ void AudioManager::Start() {
 
 void AudioManager::Update() {
 }
+
+void AudioManager::StartRandomSoundTimer() {
+    float delay = Random::get(
+            minDelayBetweenRandomSounds,
+            maxDelayBetweenRandomSounds);
+
+    if (mlg::TimerManager::Get()->IsTimerValid(randomSoundTimer)) {
+        mlg::TimerManager::Get()->ClearTimer(randomSoundTimer);
+    }
+
+    int index = Random::get(0, int(randomSounds.size()-1));
+
+    while (index == currentSoundIndex)
+    {
+        index = Random::get(0, int(randomSounds.size()-1));
+    }
+
+    currentSoundIndex = index;
+
+    randomSoundTimer = mlg::TimerManager::Get()->SetTimer(
+            delay,
+            false,
+            [this, index](){
+                randomSounds[index]->Play();
+                StartRandomSoundTimer();
+            });
+}
+
 
 void AudioManager::SetTimeLeft(float timeLeft) {
     int wholeSecondLeft = std::ceil(timeLeft);
