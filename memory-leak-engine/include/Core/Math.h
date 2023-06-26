@@ -38,7 +38,15 @@ namespace mlg {
 
         template<typename T>
         static constexpr T Lerp(const T& a, const T& b, float t) {
+            t = Sat(t);
             return a + (b - a) * t;
+        }
+
+        template<typename T>
+        static constexpr T SmoothStep(const T& a, const T& b, float t) {
+            t = Sat(t);
+            t = t * t * (3.f - 2.f * t);
+            return Lerp(a, b, t);
         }
 
         template<typename T>
@@ -60,11 +68,10 @@ namespace mlg {
 
         static glm::vec3 GetRandomDirection() {
             return glm::normalize(glm::vec3{
-                effolkronium::random_static::get<float>(-1.f, 1.f),
-                effolkronium::random_static::get<float>(-1.f, 1.f),
-                effolkronium::random_static::get<float>(-1.f, 1.f)});
+                    effolkronium::random_static::get<float>(-1.f, 1.f),
+                    effolkronium::random_static::get<float>(-1.f, 1.f),
+                    effolkronium::random_static::get<float>(-1.f, 1.f)});
         }
-
     };
 
-} // mlg
+}// namespace mlg

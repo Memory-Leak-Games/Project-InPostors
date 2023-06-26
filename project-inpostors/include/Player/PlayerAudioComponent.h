@@ -25,11 +25,12 @@ private:
     std::unique_ptr<mlg::AudioInstance> stationarySound;
     std::unique_ptr<mlg::AudioInstance> drivingSound;
 
-
     bool collisionSoundPlayed = false;
     bool driftSoundPlaying = false;
 
     bool isDriving = false;
+
+    eventpp::CallbackList<void(bool)>::Handle onPauseHandle;
 
 public:
     PlayerAudioComponent(
@@ -39,6 +40,7 @@ public:
 
     void Start() override;
     void Update() override;
+    void Stop() override;
 
 private:
     void PlayCollisionSound();
