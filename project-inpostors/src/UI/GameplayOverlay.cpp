@@ -172,11 +172,6 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     result->taskManager->GetTaskManager().OnTaskFinished.append(
             [result](const TaskData& taskData) {
                 result->UpdateAllTasks();
-
-                auto timerManager = mlg::TimerManager::Get();
-                if (timerManager->IsTimerValid(result->scorePopupTimer)) {
-                    timerManager->ClearTimer(result->scorePopupTimer);
-                }
             });
 
     return result;
@@ -287,8 +282,6 @@ void GameplayOverlay::Update() {
         float rate = timerManager->GetTimerElapsedTime(scorePopupTimer) / 0.5f;
         rate = std::clamp(rate, 0.f, 0.5f);
         rate *= 2.f;
-
-        SPDLOG_DEBUG("rate: {}", rate);
 
         glm::vec2 startPos = {1280.f - 50.f - 8.f, 720.f - 8.f - 24.f - 2};
         glm::vec2 finishPos = startPos + glm::vec2(0.f, -40.f);
