@@ -1,4 +1,5 @@
 #include "Managers/AudioManager.h"
+#include <Core/TimerManager.h>
 
 #include "Audio/Assets/AudioAsset.h"
 #include "Core/AssetManager/AssetManager.h"
@@ -10,6 +11,10 @@
 #include "Scenes/LevelScene.h"
 #include "UI/StartLevelCountdown.h"
 #include <cmath>
+#include <fstream>
+#include <spdlog/spdlog.h>
+
+using Random = effolkronium::random_static;
 
 AudioManager::AudioManager(uint64_t id,
                            const std::string& name,
@@ -51,6 +56,8 @@ std::shared_ptr<AudioManager> AudioManager::Create(
     audioManager->boxingBellSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>(
             "res/audio/sfx/boxing_bell.mp3");
 
+    audioManager->LoadRandomSounds();
+
     return audioManager;
 }
 
@@ -63,6 +70,8 @@ void AudioManager::Start() {
     levelMusic->PlayBackgroundMusic(0.2f);
 
     cityAmbientSound->Play();
+
+    StartRandomSoundTimer();
 
     levelScene->GetTaskManager()->OnTaskFinished.append(
             [this](const TaskData& taskData) {
@@ -94,6 +103,55 @@ void AudioManager::Start() {
 
 void AudioManager::Stop() {
     levelMusic->Stop();
+}
+
+using json = nlohmann::json;
+using Random = effolkronium::random_static;
+
+void AudioManager::LoadRandomSounds() {
+    std::ifstream file("res/levels/random_sounds.json");
+    json soundsJson = json::parse(file);
+    file.close();
+
+    minDelayBetweenRandomSounds = soundsJson["min_delay"];
+    maxDelayBetweenRandomSounds = soundsJson["max_delay"];
+
+    float volume = soundsJson["volume"];
+
+    for (const auto& sound : soundsJson["sounds"]) {
+        std::shared_ptr<mlg::AudioAsset> audio =
+                mlg::AssetManager::GetAsset<mlg::AudioAsset>(sound);
+        audio->SetVolume(volume);
+        randomSounds.push_back(audio);
+    }
+
+    Random::shuffle(randomSounds);
+}
+
+void AudioManager::StartRandomSoundTimer() {
+
+    if (mlg::TimerManager::Get()->IsTimerValid(randomSoundTimer)) {
+        mlg::TimerManager::Get()->ClearTimer(randomSoundTimer);
+    }
+
+    if (currentSoundIndex >= randomSounds.size() - 1) {
+        currentSoundIndex = 0;
+        Random::shuffle(randomSounds);
+    }
+
+    float delay = Random::get(
+            minDelayBetweenRandomSounds,
+            maxDelayBetweenRandomSounds);
+
+    randomSoundTimer = mlg::TimerManager::Get()->SetTimer(
+            delay,
+            false,
+            [this]() {
+                randomSounds[currentSoundIndex]->Play();
+                StartRandomSoundTimer();
+            });
+
+    currentSoundIndex++;
 }
 
 void AudioManager::SetTimeLeft(float timeLeft) {

@@ -1,0 +1,12 @@
+{
+    "min_delay": 2.0,
+    "max_delay": 7.0,
+    "volume": 0.25,
+    "sounds": [
+        "res/audio/random_sounds/carhorn1.mp3",
+        "res/audio/random_sounds/carhorn2.mp3",
+        "res/audio/random_sounds/carhorn3.mp3",
+        "res/audio/random_sounds/carhorn4.wav",
+        "res/audio/random_sounds/seagull.mp3"
+    ]
+}
