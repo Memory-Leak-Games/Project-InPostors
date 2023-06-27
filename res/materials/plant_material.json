@@ -1,0 +1,12 @@
+{
+  "vertexShader": "res/shaders/wavy_model.vert",
+  "fragmentShader": "res/shaders/textured_model.frag",
+  "uniforms": [],
+  "textures": [
+    {
+      "name": "textureDiffuse",
+      "index": 0,
+      "path": "res/textures/palletes/building_pallete.png"
+    }
+  ]
+}

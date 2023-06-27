@@ -65,7 +65,6 @@ void MenuScene::Load() {
     LoadBackgroundLevel(BACKGROUND_LEVEL);
 
     mlg::Time::PauseGame(false);
-
 }
 
 void MenuScene::UnLoad() {
@@ -194,11 +193,22 @@ void MenuScene::InitializeCredits() {
     creditsContainer.lock()->SetAnchor(MLG_ANCHOR_CENTER);
     creditsContainer.lock()->SetRelativePosition(MLG_POS_CENTER);
 
+    auto catMaterial =
+            mlg::AssetManager::GetAsset<mlg::MaterialAsset>(
+                    "res/materials/ui/cat_ui_material.json");
+    auto catBackground =
+            entity.lock()->AddComponent<mlg::Image>("CatBackground", catMaterial);
+    catBackground.lock()->SetSize(glm::vec2(256.f));
+    catBackground.lock()->SetRelativePosition(glm::vec2(-300.f, 0.f));
+    creditsContainer.lock()->AddChild(catBackground);
+    
+
     auto material =
             mlg::AssetManager::GetAsset<mlg::MaterialAsset>(BACKGROUND_MATERIAL);
     auto background =
             entity.lock()->AddComponent<mlg::Image>("MenuBackground", material);
     background.lock()->SetSize(PANEL_SIZE);
+
 
     creditsContainer.lock()->AddChild(background);
 

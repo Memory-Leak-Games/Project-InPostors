@@ -7,11 +7,13 @@ namespace mlg {
     class Image;
     class CanvasPanel;
     class Container;
+    class DynamicImage;
 }// namespace mlg
 
 class PauseMenu : public mlg::Entity {
 private:
     std::weak_ptr<mlg::CanvasPanel> menuPanel;
+    std::weak_ptr<mlg::DynamicImage> inputMap;
 
     bool visible = false;
 

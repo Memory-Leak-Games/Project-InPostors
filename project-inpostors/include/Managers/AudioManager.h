@@ -21,7 +21,16 @@ class AudioManager : public mlg::Entity {
     std::shared_ptr<mlg::AudioAsset> cityAmbientSound;
     std::shared_ptr<mlg::AudioAsset> levelMusic;
 
+    // used to countdown timer sounds
     int lastWholeSecondLeft = -1;
+
+    int currentSoundIndex = 0;
+    float minDelayBetweenRandomSounds = 5.f;
+    float maxDelayBetweenRandomSounds = 10.f;
+    std::vector<std::shared_ptr<mlg::AudioAsset>> randomSounds;
+
+    size_t randomSoundTimer = 0;
+
 
     AudioManager(uint64_t id,
                  const std::string& name,
@@ -41,4 +50,8 @@ public:
     void Stop() override;
 
     void SetTimeLeft(float timeLeft);
+
+private:
+    void LoadRandomSounds();
+    void StartRandomSoundTimer();
 };

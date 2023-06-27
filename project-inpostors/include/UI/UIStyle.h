@@ -4,6 +4,7 @@
 #define SELECTOR_SIZE glm::vec2 { 50, 50 }
 
 #define BACKGROUND_MATERIAL "res/materials/ui/semi_transparent_background_material.json"
+#define SCREEN_SIZE glm::vec2 { 1280 * 1.25, 720 * 1.25 }
 #define PANEL_SIZE glm::vec2 { 1280 * 0.75, 720 * 0.75 }
 #define BACKGROUND_SIZE glm::vec2 { BUTTON_SIZE.x * 1.25, 4 * 720 }
 

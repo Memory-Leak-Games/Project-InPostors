@@ -18,3 +18,8 @@ mlg::DynamicImage::DynamicImage(std::weak_ptr<Entity> owner, std::string name)
 void mlg::DynamicImage::SetTexture(const std::shared_ptr<TextureAsset>& texture) {
     material->SetTexture("image", texture);
 }
+
+void mlg::DynamicImage::SetTexture(const std::string& texturePath) {
+    auto texture =
+            mlg::AssetManager::GetAsset<mlg::TextureAsset>(texturePath);
+}

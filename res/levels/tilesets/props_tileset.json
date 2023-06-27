@@ -101,28 +101,36 @@
       "symbol": "z",
       "objects": [
         {
-          "model": "res/models/props/plants/bush_big.obj"
+          "model": "res/models/props/plants/bush_big.obj",
+          "material": "res/materials/plant_material.json"
         },
         {
-          "model": "res/models/props/plants/bush_small.obj"
+          "model": "res/models/props/plants/bush_small.obj",
+          "material": "res/materials/plant_material.json"
         },
         {
-          "model": "res/models/props/plants/pine_tree_big.obj"
+          "model": "res/models/props/plants/pine_tree_big.obj",
+          "material": "res/materials/plant_material.json"
         },
         {
-          "model": "res/models/props/plants/pine_tree_medium.obj"
+          "model": "res/models/props/plants/pine_tree_medium.obj",
+          "material": "res/materials/plant_material.json"
         },
         {
-          "model": "res/models/props/plants/pine_tree_small.obj"
+          "model": "res/models/props/plants/pine_tree_small.obj",
+          "material": "res/materials/plant_material.json"
         },
         {
-          "model": "res/models/props/plants/tree_big.obj"
+          "model": "res/models/props/plants/tree_big.obj",
+          "material": "res/materials/plant_material.json"
         },
         {
-          "model": "res/models/props/plants/tree_medium.obj"
+          "model": "res/models/props/plants/tree_medium.obj",
+          "material": "res/materials/plant_material.json"
         },
         {
-          "model": "res/models/props/plants/tree_small.obj"
+          "model": "res/models/props/plants/tree_small.obj",
+          "material": "res/materials/plant_material.json"
         }
       ]
     },
@@ -130,13 +138,16 @@
       "symbol": "T",
       "objects": [
         {
-          "model": "res/models/props/plants/tree_medium.obj"
+          "model": "res/models/props/plants/tree_medium.obj",
+          "material": "res/materials/plant_material.json"
         },
         {
-          "model": "res/models/props/plants/tree_big.obj"
+          "model": "res/models/props/plants/tree_big.obj",
+          "material": "res/materials/plant_material.json"
         },
         {
-          "model": "res/models/props/plants/tree_big.obj"
+          "model": "res/models/props/plants/tree_big.obj",
+          "material": "res/materials/plant_material.json"
         }
       ]
     },
@@ -146,32 +157,38 @@
         {
           "model": "res/models/props/plants/pine_tree_big.obj",
           "collision-type": "rectangle",
-          "collision-size": 2.0
+          "collision-size": 2.0,
+          "material": "res/materials/plant_material.json"
         },
         {
           "model": "res/models/props/plants/pine_tree_medium.obj",
           "collision-type": "rectangle",
-          "collision-size": 2.0
+          "collision-size": 2.0,
+          "material": "res/materials/plant_material.json"
         },
         {
           "model": "res/models/props/plants/pine_tree_small.obj",
           "collision-type": "rectangle",
-          "collision-size": 2.0
+          "collision-size": 2.0,
+          "material": "res/materials/plant_material.json"
         },
         {
           "model": "res/models/props/plants/tree_big.obj",
           "collision-type": "rectangle",
-          "collision-size": 2.0
+          "collision-size": 2.0,
+          "material": "res/materials/plant_material.json"
         },
         {
           "model": "res/models/props/plants/tree_medium.obj",
           "collision-type": "rectangle",
-          "collision-size": 2.0
+          "collision-size": 2.0,
+          "material": "res/materials/plant_material.json"
         },
         {
           "model": "res/models/props/plants/tree_small.obj",
           "collision-type": "rectangle",
-          "collision-size": 2.0
+          "collision-size": 2.0,
+          "material": "res/materials/plant_material.json"
         }
       ]
     }

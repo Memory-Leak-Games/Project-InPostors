@@ -40,7 +40,7 @@
         "image": "res/textures/tutorial/after_iron_texture.png"
     },
     "final-tutorial": {
-        "text": "You have successfully completed your test assignment, which means you are worthy of working under me! \nI want to officially welcome you as a new AiPost courier with a cat meme! \n\nNow you will be exterminated... khm... khm.. old habit... moved to a new city shortly.",
+        "text": "You have successfully completed your test assignment, which means you are worthy of working under me! \nI want to officially welcome you as a new AiPost courier! \n\nNow you will be exterminated... khm... khm.. old habit... moved to a new city shortly. \n\n(Do you know Sarah Connor?)",
         "image": "res/textures/tutorial/final_texture.png"
     }
 }

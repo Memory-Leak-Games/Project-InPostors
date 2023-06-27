@@ -119,6 +119,7 @@ void Player::LoadModel(const json& configJson) {
             mlg::AssetManager::GetAsset<mlg::ModelAsset>(configJson["model"]);
     auto staticMeshComponent = this->AddComponent<mlg::StaticMeshComponent>(
             "StaticMeshComponent", model, material);
+    staticMeshComponent.lock()->GetTransform().SetPosition({0.0f, 0.3f, 0.0f});
 }
 
 void Player::LoadAnimatedModel(const nlohmann::json& configJson) {
