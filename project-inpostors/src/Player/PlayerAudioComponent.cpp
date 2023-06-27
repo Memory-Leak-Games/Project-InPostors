@@ -20,6 +20,8 @@ PlayerAudioComponent::PlayerAudioComponent(
 
     pickUpSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/pick_up.wav");
     dropSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/drop.wav");
+    errorSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/error.wav");
+
     collisionSound = mlg::AssetManager::GetAsset<mlg::AudioAsset>("res/audio/sfx/hit.wav");
     driftSound = std::make_unique<mlg::AudioInstance>("res/audio/sfx/drift.wav");
     driftSound->GetAudioAsset()->SetLooping(true);
@@ -44,6 +46,11 @@ void PlayerAudioComponent::Start() {
     player->OnDrop.append(
             [this]() {
                 dropSound->Play();
+            });
+    
+    player->OnWrongAction.append(
+            [this]() {
+                errorSound->Play();
             });
 
     rigidbodyComponent.lock()->OnCollisionEnter.append(

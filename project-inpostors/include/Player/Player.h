@@ -35,6 +35,7 @@ private:
 public:
     eventpp::CallbackList<void()> OnPickUp;
     eventpp::CallbackList<void()> OnDrop;
+    eventpp::CallbackList<void()> OnWrongAction;
 
     static std::shared_ptr<Player> Create(
             uint64_t id, const std::string& name, bool isStatic,
@@ -57,6 +58,4 @@ private:
 
     bool PickUp();
     bool Drop();
-
-    //static void GenerateUI(const std::shared_ptr<Player>& newPlayer);
 };
