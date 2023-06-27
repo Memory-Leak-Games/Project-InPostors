@@ -1,6 +1,8 @@
 {
   "name": "Animation Settings",
   "parameters": {
+    "storageSpeed": 10.0,
+    "storageAmplitude": 0.2,
     "outputAnimOn": false,
     "outputAnimSpeed": 5.0,
     "outputAnimWeight": 0.02,

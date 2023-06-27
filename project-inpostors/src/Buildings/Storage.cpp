@@ -16,6 +16,8 @@
 #include "UI/StorageUI.h"
 #include "Player/EquipmentComponent.h"
 
+#include "Animation/StorageAnimationComponent.h"
+
 #include <fstream>
 #include <vector>
 
@@ -63,6 +65,8 @@ std::shared_ptr<Storage> Storage::Create(
     mainRigidbody->SetKinematic(true);
 
     storage->storageUi = storage->AddComponent<StorageUI>("StorageUI").lock();
+
+    auto animComponent = storage->AddComponent<StorageAnimationComponent>("Anim").lock();
 
     return storage;
 }
