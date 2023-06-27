@@ -1,22 +1,22 @@
 {
     "tutorial": {
-        "name": "0. Snowiecsons",
+        "name": "1. Snowiecsons",
         "path": "res/levels/maps/tutorial_level.json",
         "material": "res/materials/covers/tutorial_cover.json"
     },
     "levels": [
         {
-            "name": "1. San Domierz",
+            "name": "2. San Domierz",
             "material": "res/materials/covers/san_domierz_cover.json",
             "path": "res/levels/maps/small_city.json"
         },
         {
-            "name": "2. Zeszuv",
+            "name": "3. Zeszuv",
             "material": "res/materials/covers/zesuv_cover.json",
             "path": "res/levels/maps/big_city.json"
         },
         {
-            "name": "3. El Uc",
+            "name": "4. El Uc",
             "material": "res/materials/covers/el_uc_cover.json",
             "path": "res/levels/maps/river_city.json"
         }

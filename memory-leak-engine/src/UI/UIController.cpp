@@ -56,7 +56,7 @@ namespace mlg {
                 next.right.lock()->GrabFocus();
             }
         } else if (Input::IsActionJustPressed("ui_accept")) {
-            if (!focused.expired())
+            if (focused.lock()->IsVisible())
                 focused.lock()->Accept();
         }
     }
