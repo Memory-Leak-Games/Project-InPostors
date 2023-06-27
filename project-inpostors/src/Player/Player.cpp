@@ -8,6 +8,7 @@
 
 #include "Buildings/InteractiveBuilding.h"
 #include "Core/Settings/SettingsManager.h"
+#include "Core/Time.h"
 #include "Gameplay/Components/RigidbodyComponent.h"
 #include "Gameplay/Components/StaticMeshComponent.h"
 
@@ -162,6 +163,9 @@ void Player::Start() {
 }
 
 void Player::Update() {
+    if (mlg::Time::IsGamePaused())
+        return;
+
     if (carInput->GetPickUpInput()) {
         if (PickUp())
             return;
