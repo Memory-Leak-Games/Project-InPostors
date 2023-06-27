@@ -163,23 +163,14 @@ void Player::Start() {
 
 void Player::Update() {
     if (carInput->GetPickUpInput()) {
-        if (!PickUp())
-            Drop();
+        if (PickUp())
+            return;
+
+        if(Drop())
+            return;
+        
+        OnWrongAction();
     }
-
-    std::vector<std::weak_ptr<mlg::Collider>> overlappingColliders;
-    rigidbodyComponent.lock()->GetOverlappingColliders(
-            overlappingColliders);
-
-#ifdef DEBUG
-    if (mlg::SettingsManager::Get<bool>(
-                mlg::SettingsType::Debug, "showPlayerEq")) {
-
-        ImGui::Begin(("Player " + std::to_string(playerData.id)).c_str());
-        ImGui::Text("%s", equipment->ToString().c_str());
-        ImGui::End();
-    }
-#endif
 }
 
 void Player::SetPlayerPosition(const glm::vec2& position) {

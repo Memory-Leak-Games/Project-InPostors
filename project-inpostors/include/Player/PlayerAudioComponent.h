@@ -17,6 +17,7 @@ private:
 
     std::shared_ptr<mlg::AudioAsset> pickUpSound;
     std::shared_ptr<mlg::AudioAsset> dropSound;
+    std::shared_ptr<mlg::AudioAsset> errorSound;
 
     std::shared_ptr<mlg::AudioAsset> collisionSound;
 
