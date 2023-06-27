@@ -8,7 +8,7 @@
 using Random = effolkronium::random_static;
 
 CashFX::CashFX()
-    : mlg::ParticleSystem(15) {
+    : mlg::ParticleSystem(100) {
     SetMaterial(mlg::AssetManager::GetAsset<mlg::MaterialAsset>("res/materials/particles/smoke_fx.json"));
 }
 
@@ -24,8 +24,8 @@ void CashFX::UpdateSystem(const mlg::Transform& transform) {
             HEX_RGBA(0xA87D0DFF),
             };
 
-    for (int i = 0; i < 25; i++) {
-        particleProps.lifeTime = Random::get(0.5f, 0.8f);
+    for (int i = 0; i < 50; i++) {
+        particleProps.lifeTime = Random::get(0.8f, 1.2f);
         particleProps.position = transform.GetWorldPosition();
 
         glm::vec3 direction = mlg::Math::GetRandomDirection();
