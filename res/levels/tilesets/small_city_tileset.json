@@ -265,6 +265,32 @@
           "collision-size": 4.0
         }
       ]
+    },
+    {
+      "symbol": "-",
+      "objects": [
+        {
+          "model": "res/models/props/road_strips.obj"
+        }
+      ]
+    },
+    {
+      "symbol": "|",
+      "objects": [
+        {
+          "model": "res/models/props/road_strips.obj",
+          "rotation": 90.0
+        }
+      ]
+    },
+    {
+      "symbol": "+",
+      "objects": [
+        {
+          "model": "res/models/props/road_strips.obj",
+          "rotation": 45.0
+        }
+      ]
     }
   ],
   "road": {
