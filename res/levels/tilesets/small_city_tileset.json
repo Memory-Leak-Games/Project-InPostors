@@ -270,7 +270,9 @@
       "symbol": "-",
       "objects": [
         {
-          "model": "res/models/props/road_strips.obj"
+          "model": "res/models/props/road_strips.obj",
+          "collision-type": "rectangle",
+          "collision-size": 3.0
         }
       ]
     },
@@ -279,7 +281,9 @@
       "objects": [
         {
           "model": "res/models/props/road_strips.obj",
-          "rotation": 90.0
+          "rotation": 90.0,
+          "collision-type": "rectangle",
+          "collision-size": 3.0
         }
       ]
     },
@@ -288,7 +292,9 @@
       "objects": [
         {
           "model": "res/models/props/road_strips.obj",
-          "rotation": 45.0
+          "rotation": 45.0,
+          "collision-type": "rectangle",
+          "collision-size": 3.0
         }
       ]
     }

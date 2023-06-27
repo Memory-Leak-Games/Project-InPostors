@@ -526,6 +526,38 @@
           "collision-size": 12.0
         }
       ]
+    },
+    {
+      "symbol": "-",
+      "objects": [
+        {
+          "model": "res/models/props/road_strips.obj",
+          "collision-type": "rectangle",
+          "collision-size": 3.0
+        }
+      ]
+    },
+    {
+      "symbol": "|",
+      "objects": [
+        {
+          "model": "res/models/props/road_strips.obj",
+          "rotation": 90.0,
+          "collision-type": "rectangle",
+          "collision-size": 3.0
+        }
+      ]
+    },
+    {
+      "symbol": "+",
+      "objects": [
+        {
+          "model": "res/models/props/road_strips.obj",
+          "rotation": 45.0,
+          "collision-type": "rectangle",
+          "collision-size": 3.0
+        }
+      ]
     }
   ],
   "road": {
