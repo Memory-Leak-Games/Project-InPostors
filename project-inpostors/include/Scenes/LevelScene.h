@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Core/SceneManager/Scene.h"
+#include <eventpp/callbacklist.h>
+#include <eventpp/eventqueue.h>
 
 class LevelScene : public mlg::Scene {
 private:
@@ -26,6 +28,8 @@ private:
 
     size_t timeLimitTimer;
 
+    eventpp::CallbackList<void(int)>::Handle onGamepadDisconnectedHandle;
+
 protected:
     bool pauseDisabled = false;
 
@@ -38,6 +42,7 @@ public:
     void Load() override;
     void Start() override;
     void Update() override;
+    void UnLoad() override;
 
     void HandlePauseGame();
 

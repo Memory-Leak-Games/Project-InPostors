@@ -109,6 +109,10 @@ void LevelScene::Update() {
 #endif
 }
 
+void LevelScene::UnLoad() {
+    mlg::Input::Get()->OnDeviceDisconnected.remove(onGamepadDisconnectedHandle);
+}
+
 void LevelScene::HandlePauseGame() {
     if (!mlg::Input::IsActionJustPressed("pause"))
         return;
@@ -223,9 +227,12 @@ void LevelScene::InitializeMessageBox() {
 }
 
 void LevelScene::InitializeGamepadCallbacks() {
-    mlg::Input::Get()->OnDeviceDisconnected.append([this](int deviceID) {
-        messageBox->ShowMessage("WARNING", "Gamepad disconnected");
-    });
+    onGamepadDisconnectedHandle =
+            mlg::Input::Get()->OnDeviceDisconnected.append(
+                    [this](int deviceID) {
+                        messageBox->ShowMessage(
+                                "WARNING", "Gamepad disconnected");
+                    });
 }
 
 const std::shared_ptr<NavigationGraph>& LevelScene::GetNavigationGraph() const {
