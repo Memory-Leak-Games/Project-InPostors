@@ -267,6 +267,18 @@
       ]
     },
     {
+      "symbol": "F",
+      "objects": [
+        {
+          "model": "res/models/buildings/special/fan.obj",
+          "rotation": 180.0,
+          "scale": 1.0,
+          "collision-type": "rectangle",
+          "collision-size": 12.0
+        }
+      ]
+    },
+    {
       "symbol": "-",
       "objects": [
         {
