@@ -161,7 +161,8 @@ void TutorialPanel::ShowPage(const std::string& messageId) {
 
 void TutorialPanel::SetVisible(bool visible) {
     panel->SetVisible(visible);
-    exitButton->GrabFocus();
+    if (visible)
+        exitButton->GrabFocus();
 }
 
 void TutorialPanel::ParseJson() {
