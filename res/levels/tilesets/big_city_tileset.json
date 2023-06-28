@@ -1,6 +1,6 @@
 {
   "default-material": "res/materials/buildings_material.json",
-  "factory-pool": "res/levels/factories/pools/furniture.json",
+  "factory-pool": "res/levels/factories/pools/light_bulbs.json",
   "tiles": [
     {
       "symbol": "b",
@@ -524,6 +524,75 @@
           "scale": 1.0,
           "collision-type": "rectangle",
           "collision-size": 12.0
+        }
+      ]
+    },
+    {
+      "symbol": "|",
+      "objects": [
+        {
+          "model": "res/models/props/fence/siatka_poziom.obj",
+          "position": [0.0, -0.8, 0.0],
+          "collision-type": "rectangle",
+          "collision-size": 3.0
+        }
+      ]
+    },
+    {
+      "symbol": "-",
+      "objects": [
+        {
+          "model": "res/models/props/fence/siatka_pion.obj",
+          "position": [0.0, -0.8, 0.0],
+          "collision-type": "rectangle",
+          "collision-size": 3.0
+        }
+      ]
+    },
+    {
+      "symbol": "+",
+      "objects": [
+        {
+          "model": "res/models/props/fence/siatka_bok.obj",
+          "position": [0.0, -0.8, 0.0],
+          "collision-type": "rectangle",
+          "collision-size": 3.0
+        }
+      ]
+    },
+    {
+      "symbol": "=",
+      "objects": [
+        {
+          "model": "res/models/props/fence/siatka_bok.obj",
+          "position": [0.0, -0.8, 0.0],
+          "rotation": 180.0,
+          "collision-type": "rectangle",
+          "collision-size": 3.0
+        }
+      ]
+    },
+    {
+      "symbol": "^",
+      "objects": [
+        {
+          "model": "res/models/props/fence/siatka_bok.obj",
+          "position": [0.0, -0.8, 0.0],
+          "rotation": 90.0,
+          "collision-type": "rectangle",
+          "collision-size": 3.0
+        }
+      ]
+    },
+    {
+      "symbol": ".",
+      "objects": [
+        {
+          "model": "res/models/props/fence/siatka_bok.obj",
+          "position": [0.0, -0.8, 0.0],
+          "rotation": -90.0,
+          "collision-type": "rectangle",
+          "collision-size": 3.0
         }
       ]
     }
