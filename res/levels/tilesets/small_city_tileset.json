@@ -283,6 +283,7 @@
       "objects": [
         {
           "model": "res/models/props/fence/siatka_poziom.obj",
+          "position": [0.0, -0.8, 0.0],
           "collision-type": "rectangle",
           "collision-size": 3.0
         }
@@ -293,6 +294,7 @@
       "objects": [
         {
           "model": "res/models/props/fence/siatka_pion.obj",
+          "position": [0.0, -0.8, 0.0],
           "collision-type": "rectangle",
           "collision-size": 3.0
         }
@@ -303,6 +305,43 @@
       "objects": [
         {
           "model": "res/models/props/fence/siatka_bok.obj",
+          "position": [0.0, -0.8, 0.0],
+          "collision-type": "rectangle",
+          "collision-size": 3.0
+        }
+      ]
+    },
+    {
+      "symbol": "=",
+      "objects": [
+        {
+          "model": "res/models/props/fence/siatka_bok.obj",
+          "position": [0.0, -0.8, 0.0],
+          "rotation": 180.0,
+          "collision-type": "rectangle",
+          "collision-size": 3.0
+        }
+      ]
+    },
+    {
+      "symbol": "^",
+      "objects": [
+        {
+          "model": "res/models/props/fence/siatka_bok.obj",
+          "position": [0.0, -0.8, 0.0],
+          "rotation": 90.0,
+          "collision-type": "rectangle",
+          "collision-size": 3.0
+        }
+      ]
+    },
+    {
+      "symbol": ".",
+      "objects": [
+        {
+          "model": "res/models/props/fence/siatka_bok.obj",
+          "position": [0.0, -0.8, 0.0],
+          "rotation": -90.0,
           "collision-type": "rectangle",
           "collision-size": 3.0
         }
