@@ -3,7 +3,7 @@
     {
       "symbol": "1",
       "config": "res/levels/factories/sand_mine.json",
-      "fallback": "S"
+      "fallback": "P"
     },
     {
       "symbol": "!",
@@ -29,23 +29,23 @@
 
   "tasks": [
     {
-      "product-id": "sand",
+      "product-id": "wires",
       "time": 40.0,
-      "quantity": 2,
+      "quantity": 3,
       "reward": 25,
       "bonus": 25
     },
     {
       "product-id": "glass",
       "time": 50.0,
-      "quantity": 1,
+      "quantity": 2,
       "reward": 50,
       "bonus": 50
     },
     {
       "product-id": "bulb",
       "time": 70.0,
-      "quantity": 3,
+      "quantity": 4,
       "reward": 200,
       "bonus": 60
     }
