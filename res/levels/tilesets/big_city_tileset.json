@@ -528,21 +528,20 @@
       ]
     },
     {
-      "symbol": "-",
+      "symbol": "|",
       "objects": [
         {
-          "model": "res/models/props/road_strips.obj",
+          "model": "res/models/props/fence/siatka_poziom.obj",
           "collision-type": "rectangle",
           "collision-size": 3.0
         }
       ]
     },
     {
-      "symbol": "|",
+      "symbol": "-",
       "objects": [
         {
-          "model": "res/models/props/road_strips.obj",
-          "rotation": 90.0,
+          "model": "res/models/props/fence/siatka_pion.obj",
           "collision-type": "rectangle",
           "collision-size": 3.0
         }
@@ -552,8 +551,7 @@
       "symbol": "+",
       "objects": [
         {
-          "model": "res/models/props/road_strips.obj",
-          "rotation": 45.0,
+          "model": "res/models/props/fence/siatka_bok.obj",
           "collision-type": "rectangle",
           "collision-size": 3.0
         }
