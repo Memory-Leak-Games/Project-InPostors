@@ -21,63 +21,42 @@
 using json = nlohmann::json;
 
 void SpecialAnimationComponent::Start() {
+    jumpPosition = animMesh.lock()->GetTransform().GetPosition();
 }
 
 SpecialAnimationComponent::SpecialAnimationComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
                                                      const std::weak_ptr<mlg::StaticMeshComponent>& animMesh,
-                                                     const AnimationType animType,
-                                                     const std::string& configPath)
+                                                     const AnimationType animType)
     : Component(owner, name), animMesh(animMesh), animType(animType) {
-    LoadParameters(configPath);
 }
 
 SpecialAnimationComponent::~SpecialAnimationComponent() = default;
 
 void SpecialAnimationComponent::Update() {
     if (animType == rotateZ) {
-        RotateZ();
+        Rotate(wheelRotation, wheelFactor);
     } else if (animType == rotateYZ) {
-        RotateYZ();
+        Rotate(donutRotation, donutFactor);
+    } else if (animType == jump) {
+        Jump();
+        Rotate(jumpRotation, jumpFactor);
     }
 }
 
-void SpecialAnimationComponent::LoadParameters(const std::string& path = "res/config/anim.json") {
-    std::ifstream configFile{path};
-    json configJson = json::parse(configFile);
-
-    auto parameters = configJson["parameters"];
-
-    outputAnimOn = parameters["outputAnimOn"];
-    outputAnimSpeed = parameters["outputAnimSpeed"];
-    outputAnimWeight = parameters["outputAnimWeight"];
-
-    workingAnimOn = parameters["workingAnimOn"];
-    workingAnimSpeed = parameters["workingAnimSpeed"];
-    workingAnimWeight = parameters["workingAnimWeight"];
-}
-
-void SpecialAnimationComponent::RotateZ() {
-    auto rotationAngle = (float) mlg::Time::GetSeconds() / 4;
+void SpecialAnimationComponent::Rotate(glm::vec3 rotationVector, float factor) {
+    auto rotationAngle = (float) mlg::Time::GetSeconds() / factor;
     float rotationSine = std::sin(rotationAngle / 2);
     float rotationCosine = std::cos(rotationAngle / 2);
 
     glm::quat quaternion = {rotationCosine,
-                            zRotation.x * rotationSine,
-                            zRotation.y * rotationSine,
-                            zRotation.z * rotationSine};
+                            rotationVector.x * rotationSine,
+                            rotationVector.y * rotationSine,
+                            rotationVector.z * rotationSine};
 
     animMesh.lock()->GetTransform().SetRotation(quaternion);
 }
 
-void SpecialAnimationComponent::RotateYZ() {
-    auto rotationAngle = (float) mlg::Time::GetSeconds() / 2;
-    float rotationSine = std::sin(rotationAngle / 2);
-    float rotationCosine = std::cos(rotationAngle / 2);
-
-    glm::quat quaternion = {rotationCosine,
-                            yzRotation.x * rotationSine,
-                            yzRotation.y * rotationSine,
-                            yzRotation.z * rotationSine};
-
-    animMesh.lock()->GetTransform().SetRotation(quaternion);
+void SpecialAnimationComponent::Jump() {
+    jumpPosition.y = std::sin(mlg::Time::GetSeconds()) + 1;
+    animMesh.lock()->GetTransform().SetPosition(jumpPosition);
 }

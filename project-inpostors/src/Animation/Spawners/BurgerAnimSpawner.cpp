@@ -1,4 +1,4 @@
-#include "Animation/Spawners/DonutAnimSpawner.h"
+#include "Animation/Spawners/BurgerAnimSpawner.h"
 
 #include "Animation/SpecialAnimationComponent.h"
 
@@ -8,10 +8,10 @@
 #include "Gameplay/Components/StaticMeshComponent.h"
 #include "Gameplay/Entity.h"
 
-DonutAnimSpawner::DonutAnimSpawner() : AnimationSpawner() {}
+BurgerAnimSpawner::BurgerAnimSpawner() : AnimationSpawner() {}
 
-void DonutAnimSpawner::Spawn(const std::shared_ptr<mlg::Entity>& entity, const std::shared_ptr<mlg::MaterialAsset>& material) {
-    auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/buildings/special/donut_anim.obj");
+void BurgerAnimSpawner::Spawn(const std::shared_ptr<mlg::Entity>& entity, const std::shared_ptr<mlg::MaterialAsset>& material) {
+    auto model = mlg::AssetManager::GetAsset<mlg::ModelAsset>("res/models/buildings/special/burger_anim.obj");
 
     auto animMesh = entity->AddComponent<mlg::StaticMeshComponent>("AnimMesh", model, material);
 
