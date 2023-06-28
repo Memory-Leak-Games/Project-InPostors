@@ -29,16 +29,23 @@
 
   "tasks": [
     {
-      "product-id": "wires",
+      "product-id": "sand",
+      "time": 40.0,
+      "quantity": 2,
+      "reward": 25,
+      "bonus": 25
+    },
+    {
+      "product-id": "glass",
       "time": 50.0,
-      "quantity": 5,
-      "reward": 100,
+      "quantity": 1,
+      "reward": 50,
       "bonus": 50
     },
     {
       "product-id": "bulb",
       "time": 70.0,
-      "quantity": 2,
+      "quantity": 3,
       "reward": 200,
       "bonus": 60
     }
