@@ -325,6 +325,18 @@
       ]
     },
     {
+      "symbol": "H",
+      "objects": [
+        {
+          "model": "res/models/buildings/super_big/hospital.obj",
+          "rotation": 180.0,
+          "scale": 1.2,
+          "collision-type": "rectangle",
+          "collision-size": 9.0
+        }
+      ]
+    },
+    {
       "symbol": "|",
       "objects": [
         {

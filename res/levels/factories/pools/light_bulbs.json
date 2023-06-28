@@ -3,27 +3,27 @@
     {
       "symbol": "1",
       "config": "res/levels/factories/sand_mine.json",
-      "fallback": "w"
+      "fallback": "S"
     },
     {
       "symbol": "!",
       "config": "res/levels/factories/wires_factory.json",
-      "fallback": " "
+      "fallback": "H"
     },
     {
       "symbol": "2",
       "config": "res/levels/factories/glass_smelter.json",
-      "fallback": "G"
+      "fallback": "p"
     },
     {
       "symbol": "3",
       "config": "res/levels/factories/bulb_factory.json",
-      "fallback": " "
+      "fallback": "p"
     },
     {
       "symbol": "0",
       "config": "res/levels/factories/galleria.json",
-      "fallback": "A"
+      "fallback": "p"
     }
   ],
 
@@ -36,7 +36,7 @@
       "bonus": 50
     },
     {
-      "product-id": "bulbs",
+      "product-id": "bulb",
       "time": 70.0,
       "quantity": 2,
       "reward": 200,
