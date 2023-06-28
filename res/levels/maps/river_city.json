@@ -14,7 +14,7 @@
     "material": "res/materials/buildings_material.json",
 
     "scale": 1.65,
-    "offset": [-1.5, 0.0],
+    "offset": [-1.5, 0.8, 0.0],
     "rotation": 0.0
   },
 
