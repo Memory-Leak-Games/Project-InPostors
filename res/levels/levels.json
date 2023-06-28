@@ -11,14 +11,14 @@
             "path": "res/levels/maps/small_city.json"
         },
         {
-            "name": "3. Zeszuv",
-            "material": "res/materials/covers/zesuv_cover.json",
-            "path": "res/levels/maps/big_city.json"
-        },
-        {
-            "name": "4. El Uc",
+            "name": "3. El Uc",
             "material": "res/materials/covers/el_uc_cover.json",
             "path": "res/levels/maps/river_city.json"
+        },
+        {
+            "name": "4. Zeszuv",
+            "material": "res/materials/covers/zesuv_cover.json",
+            "path": "res/levels/maps/big_city.json"
         }
     ]
 }
