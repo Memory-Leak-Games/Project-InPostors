@@ -26,7 +26,8 @@ using json = nlohmann::json;
 
 void StorageAnimationComponent::Start() {
     staticMeshComponent = GetOwner().lock()->GetComponentByClass<mlg::StaticMeshComponent>().lock();
-    meshScale = staticMeshComponent->GetTransform().GetScale();
+//    meshScale = staticMeshComponent->GetTransform().GetScale();
+    meshScale = {1.f, 1.f, 1.f};
 
     storage = dynamic_pointer_cast<Storage>(GetOwner().lock());
 
@@ -48,18 +49,18 @@ StorageAnimationComponent::StorageAnimationComponent(const std::weak_ptr<mlg::En
 StorageAnimationComponent::~StorageAnimationComponent() = default;
 
 void StorageAnimationComponent::Update() {
-    if (!animate)
-        return;
-
-    SPDLOG_INFO("Mesh scale: ({}, {}, {})", meshScale.x, meshScale.y, meshScale.z);
-    if (time > glm::pi<float>()) {
-        storage->GetTransform().SetScale(meshScale);
-        animate = false;
-        time = 0.f;
-        return;
-    }
-
     if (storage != nullptr) {
+        if (!animate)
+            return;
+
+        if (time > glm::two_pi<float>()) {
+            storage->GetTransform().SetScale(meshScale);
+            animate = false;
+            time = 0.f;
+            return;
+        }
+
+
         time += mlg::Time::GetDeltaSeconds() * storageSpeed;
 
         glm::vec3 targetScale = meshScale;
