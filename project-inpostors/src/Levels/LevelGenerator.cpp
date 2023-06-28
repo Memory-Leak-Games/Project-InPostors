@@ -380,6 +380,14 @@ namespace mlg {
 
         mapObj.scale = jsonMapObject.value("scale", 1.f);
 
+        mapObj.modelOffset = glm::vec3{0.f};
+
+        if (jsonMapObject.contains("offset")) {
+            mapObj.modelOffset.x = jsonMapObject["offset"][0];
+            mapObj.modelOffset.y = jsonMapObject["offset"][1];
+            mapObj.modelOffset.z = jsonMapObject["offset"][2];
+        }
+
         if (!jsonMapObject.contains("collision-type"))
             return mapObj;
 
@@ -617,6 +625,7 @@ namespace mlg {
         auto material = mlg::AssetManager::GetAsset<MaterialAsset>(mapObject.materialPath);
 
         auto staticMesh = newEntity->AddComponent<mlg::StaticMeshComponent>("StaticMesh", model, material);
+        staticMesh.lock()->GetTransform().SetPosition(mapObject.modelOffset);
 
         glm::vec3 objectPosition = GetLevelPosition(position);
 
