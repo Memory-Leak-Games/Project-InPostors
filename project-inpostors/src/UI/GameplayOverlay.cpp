@@ -53,7 +53,7 @@ std::shared_ptr<GameplayOverlay> GameplayOverlay::Create(uint64_t id, const std:
     result->scorePopup->SetText("+$000");
     result->scorePopup->SetHorizontalAlignment(mlg::Label::HorizontalAlignment::Center);
     result->scorePopup->SetVerticalAlignment(mlg::Label::VerticalAlignment::Center);
-    result->scorePopup->SetTextColor({0.f, 1.f, 0.f});
+    result->scorePopup->SetTextColor({1.f, 1.f, 1.f});
     result->scorePopup->SetVisible(false);
 
     result->score = result->AddComponent<mlg::Label>("Score").lock();
