@@ -2,6 +2,7 @@
 
 #include "Neighbours.h"
 #include "Managers/TaskManager.h"
+#include <glm/fwd.hpp>
 
 namespace mlg {
 
@@ -32,6 +33,7 @@ namespace mlg {
             std::string modelPath;
             std::string materialPath;
             std::string colliderType;
+            glm::vec3 modelOffset;
             float worldRot;
             float scale;
             float colliderSize = 1.0f;
