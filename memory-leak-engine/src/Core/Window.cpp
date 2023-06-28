@@ -117,11 +117,20 @@ void mlg::Window::SetWindowType(WindowType type) {
         windowWidth = monitorResolution.x;
         windowHeight = monitorResolution.y;
 
+#ifndef DEBUG
+        glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+#endif
+
         SPDLOG_DEBUG("Switching to fullscreen mode: {}x{}",
                      windowWidth, windowHeight);
 
         glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    } else {
+#ifndef DEBUG
+        glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+#endif
     }
+
 
     glm::ivec2 windowPosition = GetMonitorCenter() -
                                 glm::ivec2(windowWidth, windowHeight) / 2;
