@@ -22,4 +22,5 @@ void mlg::DynamicImage::SetTexture(const std::shared_ptr<TextureAsset>& texture)
 void mlg::DynamicImage::SetTexture(const std::string& texturePath) {
     auto texture =
             mlg::AssetManager::GetAsset<mlg::TextureAsset>(texturePath);
+    SetTexture(texture);
 }
