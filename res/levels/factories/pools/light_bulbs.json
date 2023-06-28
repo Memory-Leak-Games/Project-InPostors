@@ -2,41 +2,41 @@
   "factories": [
     {
       "symbol": "1",
-      "config": "res/levels/factories/mine.json",
-      "fallback": "w"
+      "config": "res/levels/factories/sand_mine.json",
+      "fallback": "S"
     },
     {
       "symbol": "!",
-      "config": "res/levels/factories/mill.json",
-      "fallback": " "
+      "config": "res/levels/factories/wires_factory.json",
+      "fallback": "H"
     },
     {
       "symbol": "2",
-      "config": "res/levels/factories/smelter.json",
-      "fallback": "G"
+      "config": "res/levels/factories/glass_smelter.json",
+      "fallback": "p"
     },
     {
       "symbol": "3",
-      "config": "res/levels/factories/ikea.json",
-      "fallback": " "
+      "config": "res/levels/factories/bulb_factory.json",
+      "fallback": "p"
     },
     {
       "symbol": "0",
       "config": "res/levels/factories/galleria.json",
-      "fallback": "A"
+      "fallback": "p"
     }
   ],
 
   "tasks": [
     {
-      "product-id": "iron",
+      "product-id": "wires",
       "time": 50.0,
       "quantity": 5,
       "reward": 100,
       "bonus": 50
     },
     {
-      "product-id": "furniture",
+      "product-id": "bulb",
       "time": 70.0,
       "quantity": 2,
       "reward": 200,

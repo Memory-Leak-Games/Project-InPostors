@@ -12,7 +12,7 @@
     {
       "name": "image",
       "index": 0,
-      "path": "res/textures/ui/metal_icon.png"
+      "path": "res/textures/ui/items/metal_icon.png"
     }
   ]
 }

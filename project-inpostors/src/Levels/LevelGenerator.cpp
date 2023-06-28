@@ -118,8 +118,8 @@ namespace mlg {
 
         glm::vec3 position = {
                 groundJson["offset"][0],
-                -0.01f,
-                groundJson["offset"][1]};
+                groundJson["offset"][1],
+                groundJson["offset"][2]};
 
         float scale = groundJson.value("scale", 1.f);
         float rotation = groundJson.value("rotation", 0.f);

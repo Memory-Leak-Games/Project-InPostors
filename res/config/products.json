@@ -22,5 +22,29 @@
         "icon": "res/materials/ui/icon/furniture_material.json",
         "price" : 20,
         "color": [ 0.643, 0.455, 0.286 ]
+    },
+    {
+        "name": "sand",
+        "price" : 5,
+        "icon": "res/materials/ui/icon/sand_material.json",
+        "color": [ 0.647, 0.612, 0.58 ]
+    },
+    {
+        "name": "glass",
+        "icon": "res/materials/ui/icon/glass_material.json",
+        "price" : 10,
+        "color": [ 0.643, 0.455, 0.2 ]
+    },
+    {
+        "name": "wires",
+        "icon": "res/materials/ui/icon/wires_material.json",
+        "price" : 5,
+        "color": [ 0.643, 0.455, 0.286 ]
+    },
+    {
+        "name": "bulb",
+        "icon": "res/materials/ui/icon/bulb_material.json",
+        "price" : 20,
+        "color": [ 0.643, 0.455, 0.286 ]
     }
 ]

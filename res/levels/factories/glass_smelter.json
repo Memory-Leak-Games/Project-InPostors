@@ -1,0 +1,37 @@
+{
+  "static-mesh": {
+    "model": "res/models/factories/smelter.obj",
+    "material": "res/materials/buildings_material.json",
+
+    "position": [0.0, 0.3, 0.0],
+    "rotation": 90.0,
+    "scale": 0.5
+  },
+
+  "colliders":[
+    {
+      "offset": [0.0, 0.0],
+      "size": [19.0, 10.0]
+    }
+  ],
+
+  "blueprintID": "glass",
+  "type": "SeparateInputOutput",
+
+  "input": {
+    "offset": [0.0, 7.5],
+    "size": [18.0, 4.0]
+  },
+
+  "output": {
+    "offset": [0.0, -7.0],
+    "size": [18.0, 4.0]
+  },
+
+  "emitters": [
+    {
+      "id": "factorySmoke",
+      "position": [3.0, 2.5, -2.5]
+    }
+  ]
+}

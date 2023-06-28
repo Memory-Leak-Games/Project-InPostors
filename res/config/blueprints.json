@@ -27,5 +27,34 @@
         ],
         "output": "furniture",
         "time": 2.0
+    },
+    {
+        "name": "sand",
+        "input": [],
+        "output": "sand",
+        "time": 4.0
+    },
+    {
+        "name": "wires",
+        "input": [],
+        "output": "wires",
+        "time": 6.0
+    },
+    {
+        "name": "glass",
+        "input": [
+            "sand"
+        ],
+        "output": "glass",
+        "time": 5.0
+    },
+    {
+        "name": "bulb",
+        "input": [
+            "wires",
+            "glass"
+        ],
+        "output": "bulb",
+        "time": 2.0
     }
 ]

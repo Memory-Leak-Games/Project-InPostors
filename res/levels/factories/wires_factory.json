@@ -1,0 +1,28 @@
+{
+  "static-mesh": {
+    "model": "res/models/factories/wires_factory.obj",
+    "material": "res/materials/buildings_material.json",
+
+    "position": [0.0, 0.3, 0.0],
+    "rotation": 0.0,
+    "scale": 0.55
+  },
+
+  "colliders":[
+    {
+      "offset": [0.0, -2.0],
+      "size": [20.0, 16.0]
+    }
+  ],
+
+  "blueprintID": "wires",
+  "equipmentSize": 1,
+  "type": "OneOutput",
+
+  "output": {
+    "offset": [-0.5, 8.0],
+    "size": [20.0, 4.5]
+  },
+
+  "emitters": []
+}
