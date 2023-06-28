@@ -19,30 +19,27 @@ private:
 
     // Animation params
     AnimationType animType;
-    glm::vec3 zRotation = {0.f, 0.f, 1.f};
-    glm::vec3 yzRotation = {0.f, -1.f, 1.f};
 
-    bool outputAnimOn;
-    float outputAnimSpeed;
-    float outputAnimWeight;
+    float wheelFactor = 4.f;
+    glm::vec3 wheelRotation = {0.f, 0.f, 1.f};
 
-    bool workingAnimOn;
-    float workingAnimSpeed;
-    float workingAnimWeight;
+    float donutFactor = 2.f;
+    glm::vec3 donutRotation = {0.f, -1.f, 1.f};
+
+    float jumpFactor = 1.f;
+    glm::vec3 jumpRotation = {0.f, 1.f, 0.f};
+    glm::vec3 jumpPosition {};
 
 public:
     SpecialAnimationComponent(const std::weak_ptr<mlg::Entity>& owner, const std::string& name,
                               const std::weak_ptr<mlg::StaticMeshComponent>& animMesh,
-                              AnimationType animType,
-                              const std::string& configPath = "res/config/anim.json");
+                              AnimationType animType);
     ~SpecialAnimationComponent() override;
 
     void Start() override;
     void Update() override;
 
-    void LoadParameters(const std::string& path);
-
 private:
-    void RotateZ();
-    void RotateYZ();
+    void Rotate(glm::vec3 rotationVector, float factor);
+    void Jump();
 };
