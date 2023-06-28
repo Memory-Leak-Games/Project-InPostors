@@ -13,17 +13,17 @@
     {
       "symbol": "2",
       "config": "res/levels/factories/glass_smelter.json",
-      "fallback": "p"
+      "fallback": "A"
     },
     {
       "symbol": "3",
       "config": "res/levels/factories/bulb_factory.json",
-      "fallback": "p"
+      "fallback": "R"
     },
     {
       "symbol": "0",
       "config": "res/levels/factories/galleria.json",
-      "fallback": "p"
+      "fallback": "G"
     }
   ],
 
