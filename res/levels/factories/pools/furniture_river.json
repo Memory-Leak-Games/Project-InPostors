@@ -29,16 +29,23 @@
 
   "tasks": [
     {
-      "product-id": "iron",
+      "product-id": "wood",
       "time": 50.0,
-      "quantity": 5,
+      "quantity": 3,
+      "reward": 50,
+      "bonus": 25
+    },
+    {
+      "product-id": "iron",
+      "time": 60.0,
+      "quantity": 2,
       "reward": 100,
       "bonus": 50
     },
     {
       "product-id": "furniture",
       "time": 70.0,
-      "quantity": 2,
+      "quantity": 4,
       "reward": 200,
       "bonus": 60
     }

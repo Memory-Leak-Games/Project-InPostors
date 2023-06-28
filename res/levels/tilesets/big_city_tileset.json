@@ -1,6 +1,6 @@
 {
   "default-material": "res/materials/buildings_material.json",
-  "factory-pool": "res/levels/factories/pools/furniture.json",
+  "factory-pool": "res/levels/factories/pools/light_bulbs.json",
   "tiles": [
     {
       "symbol": "b",
@@ -346,6 +346,18 @@
       ]
     },
     {
+      "symbol": "H",
+      "objects": [
+        {
+          "model": "res/models/buildings/super_big/hospital.obj",
+          "rotation": 180.0,
+          "scale": 1.2,
+          "collision-type": "rectangle",
+          "collision-size": 9.0
+        }
+      ]
+    },
+    {
       "symbol": "c",
       "objects": [
         {
@@ -442,17 +454,6 @@
       "objects": [
         {
           "model": "res/models/buildings/special/fan.obj",
-          "scale": 1.0,
-          "collision-type": "rectangle",
-          "collision-size": 12.0
-        }
-      ]
-    },
-    {
-      "symbol": "H",
-      "objects": [
-        {
-          "model": "res/models/buildings/super_big/hospital.obj",
           "scale": 1.0,
           "collision-type": "rectangle",
           "collision-size": 12.0
