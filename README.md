@@ -1,12 +1,16 @@
 ![](../../actions/workflows/cmake.yml/badge.svg)
 
-# **AIPOST**
+# **AiPost**
 
 ### Hello **FOSS** Community!
 
 ## [Releases](https://github.com/Memory-Leak-Games/Project-InPostors/releases)
 
-TODO: Add readme
+AiPost is a chaotic couch co-op game for two players. Working as a team of couriers employed by an artificial intelligence, use the capabilities of unconventional vehicles to collect and safely deliver a variety of goods, while keeping an eye out for traffic and roadworks. You must hurry, because customers may run out of patience at any moment!
+
+Project was developed in 4 months using OpenGL and C++ for Problem Based Learning course at Technical University of Lodz. Showcased and awarded at Zespołowe Tworzenie Gier Komputerowych 2023 contest (Game Development track). 
+
+AiPost is also available at: https://tollto.itch.io/aipost.
 
 ## Parameters
 - `--test-scene` - run test scene
@@ -20,6 +24,8 @@ TODO: Add readme
 [Changelog](ChangeLog.md)
 
 ## Credits:
+
+Created by Memory Leak Games:
 * Anastazja Załataja
 * Filip Stróżyk
 * Karolina Leszczyńska
