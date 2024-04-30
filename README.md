@@ -12,8 +12,8 @@ TODO: Add readme
 - `--test-scene` - run test scene
 - `--level=<PathTolevel>` - run level 
 - `-f` - run in fullscreen mode (override settings)
-- `-w` - run in fullscreen mode (override settings)
-- `-b` - run in fullscreen mode (override settings)
+- `-w` - run in windowed mode (override settings)
+- `-b` - run in borderless mode (override settings)
 - `--resolution={}x{}` - change startup resolution (override settings)
 - `--input` - run game in debug input mode
 
